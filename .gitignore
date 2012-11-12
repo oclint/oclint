@@ -1,0 +1,21 @@
+# Third-party dependencies and build directory
+googletest
+llvm
+build
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# System files
+.DS_Store

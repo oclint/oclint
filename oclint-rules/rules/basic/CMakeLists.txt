@@ -1,0 +1,12 @@
+SET(LIST_OF_RULES
+    ConstantIfExpression
+    DeadCode
+    EmptyElseBlock
+    EmptyIfStatement
+    )
+
+IF(TEST_BUILD)
+    BUILD_STATIC_RULES(Basic "${LIST_OF_RULES}")
+ELSE(TEST_BUILD)
+    BUILD_DYNAMIC_RULES("${LIST_OF_RULES}")
+ENDIF()

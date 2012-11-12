@@ -1,0 +1,10 @@
+SET(LIST_OF_RULES
+    UnusedLocalVariable
+    UnusedMethodParameter
+    )
+
+IF(TEST_BUILD)
+    BUILD_STATIC_RULES(Unused "${LIST_OF_RULES}")
+ELSE(TEST_BUILD)
+    BUILD_DYNAMIC_RULES("${LIST_OF_RULES}")
+ENDIF()
