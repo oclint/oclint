@@ -6,5 +6,6 @@ ADD_LIBRARY(OCLintCore
     )
 
 ADD_LIBRARY(OCLintRuleSet
+    RuleConfiguration.cpp
     RuleSet.cpp
     )

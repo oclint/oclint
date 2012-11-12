@@ -14,11 +14,12 @@ private:
     {
         int ccn = getCyclomaticComplexity(decl);
 
-        // In McBABE, 1976, A Complexity Measure, he suggested a reasonable number of 10,
-        if (ccn > 10)
+        // In McBABE, 1976, A Complexity Measure, he suggested a reasonable number of 10
+        int threshold = ruleConfiguration("CYCLOMATIC_COMPLEXITY", 10);
+        if (ccn > threshold)
         {
             string description = "Cyclomatic Complexity Number " +
-                intToString(ccn) + " exceeds limit of 10";
+                intToString(ccn) + " exceeds limit of " + intToString(threshold);
             _violationSet->addViolation(decl, this, description);
         }
     }

@@ -25,10 +25,11 @@ private:
             unsigned endLineNumber = sourceManager->getPresumedLineNumber(endLocation);
             int length = endLineNumber - startLineNumber + 1;
 
-            if (length > 50)
+            int threshold = ruleConfiguration("LONG_METHOD", 50);
+            if (length > threshold)
             {
                 string description = "Method with " +
-                    intToString(length) + " lines exceeds limit of 50";
+                    intToString(length) + " lines exceeds limit of " + intToString(threshold);
                 _violationSet->addViolation(decl, this, description);
             }
         }

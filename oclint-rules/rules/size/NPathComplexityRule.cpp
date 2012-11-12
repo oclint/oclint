@@ -19,10 +19,11 @@ private:
             {
                 int npath = getNPathComplexity(bodyStmt);
 
-                if (npath > 200)
+                int threshold = ruleConfiguration("NPATH_COMPLEXITY", 200);
+                if (npath > threshold)
                 {
                     string description = "NPath Complexity Number " +
-                        intToString(npath) + " exceeds limit of 200";
+                        intToString(npath) + " exceeds limit of " + intToString(threshold);
                     _violationSet->addViolation(decl, this, description);
                 }
             }

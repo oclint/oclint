@@ -5,6 +5,7 @@
 
 #include <clang/AST/ASTContext.h>
 
+#include "oclint/RuleConfiguration.h"
 #include "oclint/ViolationSet.h"
 
 using namespace std;
@@ -23,6 +24,12 @@ protected:
         _violationSet = violationSet;
         _astContext = &astContext;
         apply();
+    }
+
+    int ruleConfiguration(string key, int defaultValue)
+    {
+        return RuleConfiguration::hasKey(key) ?
+            atoi(RuleConfiguration::valueForKey(key).c_str()) : defaultValue;
     }
 
 public:

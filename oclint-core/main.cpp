@@ -1,22 +1,22 @@
 #include <dlfcn.h>
 #include <dirent.h>
+#include <iostream>
+#include <string>
 
-#include "llvm/Support/raw_ostream.h"
-#include "clang/AST/AST.h"
-#include "clang/AST/ASTConsumer.h"
-#include "clang/AST/ASTContext.h"
-#include "clang/AST/PrettyPrinter.h"
-#include "clang/AST/RecordLayout.h"
-#include "clang/Driver/OptTable.h"
-#include "clang/Driver/Options.h"
-#include "clang/Tooling/CommonOptionsParser.h"
-#include "clang/Tooling/Tooling.h"
-#include "llvm/Support/CommandLine.h"
-#include "llvm/Support/Path.h"
+#include <llvm/Support/raw_ostream.h>
+#include <clang/AST/AST.h>
+#include <clang/AST/ASTConsumer.h>
+#include <clang/AST/ASTContext.h>
+#include <clang/AST/PrettyPrinter.h>
+#include <clang/AST/RecordLayout.h>
+#include <clang/Tooling/Tooling.h>
+#include <llvm/Support/Path.h>
 #include <llvm/ADT/SmallString.h>
 #include <llvm/Support/Program.h>
 #include <llvm/Support/FileSystem.h>
 
+#include "oclint/CommandLineOptions.h"
+#include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 #include "oclint/ViolationSet.h"
 #include "oclint/Violation.h"
@@ -24,23 +24,9 @@
 #include "oclint/Reporter.h"
 #include "oclint/Processor.h"
 
-using namespace clang::driver;
-using namespace clang::tooling;
+using namespace std;
 using namespace llvm;
 using namespace clang;
-
-#include <iostream>
-#include <string>
-using namespace std;
-
-static cl::extrahelp CommonHelp(CommonOptionsParser::HelpMessage);
-static cl::extrahelp MoreHelp(
-    "\tFor example, to run clang-check on all files in a subtree of the\n"
-);
-
-static cl::list<string> argRulesPath("R", cl::Prefix, cl::desc("Add directory to rule loading path"), cl::value_desc("directory"), cl::ZeroOrMore);
-
-static OwningPtr<OptTable> Options(createDriverOptTable());
 
 class PlainTextReporter : public Reporter
 {
@@ -127,11 +113,25 @@ int consumeArgRulesPath(const char* executablePath) {
   return returnFlag;
 }
 
+void consumeRuleConfigurations()
+{
+    for (unsigned i = 0; i < argRuleConfiguration.size(); ++i)
+    {
+        string configuration = argRuleConfiguration[i];
+        int indexOfSeparator = configuration.find_last_of("=");
+        string key = configuration.substr(0, indexOfSeparator);
+        string value = configuration.substr(indexOfSeparator + 1, configuration.size() - indexOfSeparator - 1);
+        RuleConfiguration::addConfiguration(key, value);
+    }
+}
+
 int main(int argc, const char **argv) {
   ActionFactory Factory;
   CommonOptionsParser OptionsParser(argc, argv);
 
   if (consumeArgRulesPath(argv[0]) == 0 && RuleSet::numberOfRules() > 0) {
+    consumeRuleConfigurations();
+
     for (int i = 0; i < OptionsParser.GetSourcePathList().size(); i++) {
       string sourcePath = OptionsParser.GetSourcePathList().at(i);
       cout << i << " : " << sourcePath << endl;
