@@ -34,16 +34,24 @@ class PlainTextReporter : public Reporter
 public:
     virtual void report(Results *results)
     {
+        cout << "OCLint Report" << endl << endl;
+        cout << "Summary: TotalFiles=" << results->numberOfFiles() << " ";
+        cout << "FilesWithViolations=" << results->numberOfFilesWithViolations() << " ";
+        cout << "P1=" << results->numberOfViolationsWithPriority(1) << " ";
+        cout << "P2=" << results->numberOfViolationsWithPriority(2) << " ";
+        cout << "P3=" << results->numberOfViolationsWithPriority(3) << " ";
+        cout << endl << endl;
         vector<Violation> violationSet = results->allViolations();
         for (int index = 0, numberOfViolations = violationSet.size();
             index < numberOfViolations; index++)
         {
             Violation violation = violationSet.at(index);
             cout << violation.path << ":" << violation.startLine << ":" << violation.startColumn;
-            cout << "-" << violation.endLine << ":" << violation.endColumn;
             const RuleBase *rule = violation.rule;
-            cout << ": oclint: " << rule->name() << " (" << rule->priority() << ") " << violation.message << endl;
+            cout << ": " << rule->name() << " P" << rule->priority() << " " << violation.message << endl;
         }
+
+        cout << endl << "[OCLint (http://oclint.org) v0.6]" << endl;
     }
 };
 

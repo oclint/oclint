@@ -21,6 +21,11 @@ public:
     void add(ViolationSet *violationSet);
 
     vector<Violation> allViolations();
+
+    int numberOfViolations();
+    int numberOfViolationsWithPriority(int priority);
+    int numberOfFiles();
+    int numberOfFilesWithViolations();
 };
 
 #endif
