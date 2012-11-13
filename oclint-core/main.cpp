@@ -123,6 +123,13 @@ void consumeRuleConfigurations()
     }
 }
 
+bool numberOfViolationsExceedThreshold(Results *results)
+{
+    return results->numberOfViolationsWithPriority(1) > argMaxP1 ||
+        results->numberOfViolationsWithPriority(2) > argMaxP2 ||
+        results->numberOfViolationsWithPriority(3) > argMaxP3;
+}
+
 enum ExitCode
 {
     SUCCESS,
@@ -143,8 +150,13 @@ int main(int argc, const char **argv)
         ProcessorActionFactory actionFactory;
         if (clangTool.run(newFrontendActionFactory(&actionFactory)) == 0)
         {
+            Results *results = Results::getInstance();
             Reporter *reporter = new PlainTextReporter();
-            reporter->report(Results::getInstance());
+            reporter->report(results);
+            if (numberOfViolationsExceedThreshold(results))
+            {
+                return VIOLATIONS_EXCEED_THRESHOLD;
+            }
             return SUCCESS;
         }
         return ERROR_WHILE_PROCESSING;

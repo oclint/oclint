@@ -31,6 +31,9 @@ cl::opt<ReportType> argReportType(cl::desc("Choose report type:"), cl::values(cl
 
 cl::list<string> argRulesPath("R", cl::Prefix, cl::desc("Add directory to rule loading path"), cl::value_desc("directory"), cl::ZeroOrMore);
 cl::list<string> argRuleConfiguration("rc", cl::desc("Override the default baheviour of rules"), cl::value_desc("paramemter>=<value"), cl::ZeroOrMore);
+cl::opt<int> argMaxP1("max-priority-1", cl::desc("The max allowed number of priority 1 violations"), cl::value_desc("threshold"), cl::init(0));
+cl::opt<int> argMaxP2("max-priority-2", cl::desc("The max allowed number of priority 2 violations"), cl::value_desc("threshold"), cl::init(10));
+cl::opt<int> argMaxP3("max-priority-3", cl::desc("The max allowed number of priority 3 violations"), cl::value_desc("threshold"), cl::init(20));
 
 /* -------------
    libTooling cl
