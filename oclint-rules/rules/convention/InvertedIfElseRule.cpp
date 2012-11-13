@@ -29,7 +29,7 @@ public:
             ((binaryOperator && binaryOperator->getOpcode() == BO_NE) ||
             (unaryOperator && unaryOperator->getOpcode() == UO_LNot)))
         {
-            _violationSet->addViolation(ifStmt->getCond(), this);
+            addViolation(ifStmt->getCond(), this);
         }
 
         return true;

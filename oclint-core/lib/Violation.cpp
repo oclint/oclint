@@ -1,9 +1,18 @@
 #include "oclint/RuleBase.h"
 #include "oclint/Violation.h"
 
-Violation::Violation(ViolationNode *currentNode,
-    RuleBase *violatedRule, const string& detailDescription) : description(detailDescription)
+Violation::Violation(RuleBase *violatedRule,
+    const string& violationFilePath,
+    int violationStartLine,
+    int violationStartColumn,
+    int violationEndLine,
+    int violationEndColumn,
+    const string& violationMessage)
+    : message(violationMessage), path(violationFilePath)
 {
-    node = currentNode;
     rule = violatedRule;
+    startLine = violationStartLine;
+    startColumn = violationStartColumn;
+    endLine = violationEndLine;
+    endColumn = violationEndColumn;
 }

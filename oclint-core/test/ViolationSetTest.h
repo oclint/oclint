@@ -27,55 +27,16 @@ TEST_F(ViolationSetTest, EmptySet)
 
 TEST_F(ViolationSetTest, AddViolation)
 {
-    void *stmtPointer;
-    Stmt *stmt = (Stmt *)stmtPointer;
-    ViolationNode *node = makeViolationNode(stmt);
     RuleBase *rule = new ViolationSetTest_MockRuleBase();
-    Violation violation(node, rule, "test description");
+    Violation violation(rule, "test path", 1, 2, 3, 4, "test message");
     ViolationSetTest_violationSet.addViolation(violation);
     EXPECT_EQ(1, ViolationSetTest_violationSet.numberOfViolations());
     Violation compareViolation = ViolationSetTest_violationSet.getViolations().at(0);
-    EXPECT_EQ("test description", compareViolation.description);
-    EXPECT_EQ(node, compareViolation.node);
+    EXPECT_EQ("test path", compareViolation.path);
+    EXPECT_EQ("test message", compareViolation.message);
     EXPECT_EQ(rule, compareViolation.rule);
-}
-
-TEST_F(ViolationSetTest, AddViolationNode)
-{
-    void *declPointer;
-    Decl *decl = (Decl *)declPointer;
-    ViolationNode *node = makeViolationNode(decl);
-    RuleBase *rule = new ViolationSetTest_MockRuleBase();
-    ViolationSetTest_violationSet.addViolation(node, rule, "test description");
-    EXPECT_EQ(1, ViolationSetTest_violationSet.numberOfViolations());
-    Violation compareViolation = ViolationSetTest_violationSet.getViolations().at(0);
-    EXPECT_EQ("test description", compareViolation.description);
-    EXPECT_EQ(node, compareViolation.node);
-    EXPECT_EQ(rule, compareViolation.rule);
-}
-
-TEST_F(ViolationSetTest, AddViolationDecl)
-{
-    void *declPointer;
-    Decl *decl = (Decl *)declPointer;
-    RuleBase *rule = new ViolationSetTest_MockRuleBase();
-    ViolationSetTest_violationSet.addViolation(decl, rule, "test description");
-    EXPECT_EQ(1, ViolationSetTest_violationSet.numberOfViolations());
-    Violation compareViolation = ViolationSetTest_violationSet.getViolations().at(0);
-    EXPECT_EQ("test description", compareViolation.description);
-    EXPECT_EQ(decl, compareViolation.node->node);
-    EXPECT_EQ(rule, compareViolation.rule);
-}
-
-TEST_F(ViolationSetTest, AddViolationStmt)
-{
-    void *stmtPointer;
-    Stmt *stmt = (Stmt *)stmtPointer;
-    RuleBase *rule = new ViolationSetTest_MockRuleBase();
-    ViolationSetTest_violationSet.addViolation(stmt, rule, "test description");
-    EXPECT_EQ(1, ViolationSetTest_violationSet.numberOfViolations());
-    Violation compareViolation = ViolationSetTest_violationSet.getViolations().at(0);
-    EXPECT_EQ("test description", compareViolation.description);
-    EXPECT_EQ(stmt, compareViolation.node->node);
-    EXPECT_EQ(rule, compareViolation.rule);
+    EXPECT_EQ(1, compareViolation.startLine);
+    EXPECT_EQ(2, compareViolation.startColumn);
+    EXPECT_EQ(3, compareViolation.endLine);
+    EXPECT_EQ(4, compareViolation.endColumn);
 }

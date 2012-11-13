@@ -24,7 +24,7 @@ public:
         if (varDecl && !varDecl->isUsed() &&
             varDecl->isLocalVarDecl() && !varDecl->isStaticDataMember())
         {
-            _violationSet->addViolation(varDecl, this);
+            addViolation(varDecl, this);
         }
         return true;
     }

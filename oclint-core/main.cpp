@@ -18,6 +18,7 @@
 #include "oclint/CommandLineOptions.h"
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
+#include "oclint/Results.h"
 #include "oclint/ViolationSet.h"
 #include "oclint/Violation.h"
 #include "oclint/RuleBase.h"
@@ -31,38 +32,27 @@ using namespace clang;
 class PlainTextReporter : public Reporter
 {
 public:
-    virtual void report(ASTContext &astContext, ViolationSet *violationSet)
+    virtual void report(Results *results)
     {
-        SourceManager *sourceManager = &astContext.getSourceManager();
-        for (int index = 0, numberOfViolations = violationSet->numberOfViolations();
+        vector<Violation> violationSet = results->allViolations();
+        for (int index = 0, numberOfViolations = violationSet.size();
             index < numberOfViolations; index++)
         {
-            Violation violation = violationSet->getViolations().at(index);
-            const ViolationNode *violationNode = violation.node;
-            if (violationNode->type == DECL)
-            {
-                Decl *node = (Decl *)violationNode->node;
-                SourceLocation startLocation = node->getLocStart();
-                startLocation.print(outs(), *sourceManager);
-            }
-            if (violationNode->type == STMT)
-            {
-                Stmt *node = (Stmt *)violationNode->node;
-                SourceLocation startLocation = node->getLocStart();
-                startLocation.print(outs(), *sourceManager);
-            }
+            Violation violation = violationSet.at(index);
+            cout << violation.path << ":" << violation.startLine << ":" << violation.startColumn;
+            cout << "-" << violation.endLine << ":" << violation.endColumn;
             const RuleBase *rule = violation.rule;
-            cout << ": oclint: " << rule->name() << " (" << rule->priority() << ") " << violation.description << endl;
+            cout << ": oclint: " << rule->name() << " (" << rule->priority() << ") " << violation.message << endl;
         }
     }
 };
 
-class ActionFactory
+class ProcessorActionFactory
 {
 public:
     ASTConsumer *newASTConsumer()
     {
-      return new Processor(new PlainTextReporter());
+      return new Processor();
     }
 };
 
@@ -125,23 +115,31 @@ void consumeRuleConfigurations()
     }
 }
 
-int main(int argc, const char **argv) {
-  ActionFactory Factory;
-  CommonOptionsParser OptionsParser(argc, argv);
+enum ExitCode
+{
+    SUCCESS,
+    RULE_NOT_FOUND,
+    ERROR_WHILE_PROCESSING,
+    VIOLATIONS_EXCEED_THRESHOLD
+};
 
-  if (consumeArgRulesPath(argv[0]) == 0 && RuleSet::numberOfRules() > 0) {
-    consumeRuleConfigurations();
+int main(int argc, const char **argv)
+{
+    CommonOptionsParser OptionsParser(argc, argv);
+    if (consumeArgRulesPath(argv[0]) == 0 && RuleSet::numberOfRules() > 0)
+    {
+        consumeRuleConfigurations();
 
-    for (int i = 0; i < OptionsParser.GetSourcePathList().size(); i++) {
-      string sourcePath = OptionsParser.GetSourcePathList().at(i);
-      cout << i << " : " << sourcePath << endl;
+        ClangTool clangTool(OptionsParser.GetCompilations(), OptionsParser.GetSourcePathList());
+
+        ProcessorActionFactory actionFactory;
+        if (clangTool.run(newFrontendActionFactory(&actionFactory)) == 0)
+        {
+            Reporter *reporter = new PlainTextReporter();
+            reporter->report(Results::getInstance());
+            return SUCCESS;
+        }
+        return ERROR_WHILE_PROCESSING;
     }
-
-    ClangTool Tool(OptionsParser.GetCompilations(),
-                   OptionsParser.GetSourcePathList());
-
-    return Tool.run(newFrontendActionFactory(&Factory));
-  }
-
-  return 0;
+    return RULE_NOT_FOUND;
 }

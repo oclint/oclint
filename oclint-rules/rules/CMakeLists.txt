@@ -10,6 +10,7 @@ MACRO(build_dynamic_rule name)
     TARGET_LINK_LIBRARIES(${name}Rule
         OCLintMetric
         OCLintUtil
+        OCLintCore
         )
 ENDMACRO(build_dynamic_rule)
 

@@ -1,16 +1,14 @@
 #ifndef OCLINT_REPORTER_H
 #define OCLINT_REPORTER_H
 
-#include <clang/AST/ASTContext.h>
-
-#include "oclint/ViolationSet.h"
+#include "oclint/Results.h"
 
 using namespace clang;
 
 class Reporter
 {
 public:
-    virtual void report(ASTContext &astContext, ViolationSet *violationSet) = 0;
+    virtual void report(Results *results) = 0;
 };
 
 #endif

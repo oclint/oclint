@@ -14,10 +14,7 @@ private:
     vector<Violation> _violations;
 
 public:
-    void addViolation(const Violation& violation);
-    void addViolation(ViolationNode *currentNode, RuleBase *rule, const string& description = "");
-    void addViolation(Decl *decl, RuleBase *rule, const string& description = "");
-    void addViolation(Stmt *stmt, RuleBase *rule, const string& description = "");
+    void addViolation(Violation& violation);
     int numberOfViolations() const;
     const vector<Violation> getViolations() const;
 };

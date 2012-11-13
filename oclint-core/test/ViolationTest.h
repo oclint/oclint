@@ -1,7 +1,6 @@
 #include <clang/AST/AST.h>
 
 #include "oclint/Violation.h"
-#include "oclint/ViolationNode.h"
 
 class ViolationTest_MockRuleBase : public RuleBase
 {
@@ -14,12 +13,13 @@ public:
 
 TEST(ViolationTest, Constructor)
 {
-    void *stmtPointer;
-    Stmt *stmt = (Stmt *)stmtPointer;
-    ViolationNode *node = makeViolationNode(stmt);
     RuleBase *rule = new ViolationTest_MockRuleBase();
-    Violation violation(node, rule, "test description");
-    EXPECT_EQ("test description", violation.description);
-    EXPECT_EQ(node, violation.node);
+    Violation violation(rule, "test path", 1, 2, 3, 4, "test message");
+    EXPECT_EQ("test path", violation.path);
+    EXPECT_EQ("test message", violation.message);
     EXPECT_EQ(rule, violation.rule);
+    EXPECT_EQ(1, violation.startLine);
+    EXPECT_EQ(2, violation.startColumn);
+    EXPECT_EQ(3, violation.endLine);
+    EXPECT_EQ(4, violation.endColumn);
 }

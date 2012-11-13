@@ -84,7 +84,7 @@ public:
     {
         if (varDecl && !varDecl->isUsed() && !isExistingByContract(varDecl))
         {
-            _violationSet->addViolation(varDecl, this);
+            addViolation(varDecl, this);
         }
 
         return true;

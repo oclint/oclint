@@ -1,8 +1,9 @@
 ADD_LIBRARY(OCLintCore
     Processor.cpp
+    Results.cpp
+    RuleBase.cpp
     Violation.cpp
     ViolationSet.cpp
-    ViolationNode.cpp
     )
 
 ADD_LIBRARY(OCLintRuleSet

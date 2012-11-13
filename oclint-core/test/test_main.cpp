@@ -2,11 +2,9 @@
 #include <gmock/gmock.h>
 
 #include "CanaryTest.h"
-#include "ProcessorTest.h"
 #include "RuleBaseTest.h"
 #include "RuleConfigurationTest.h"
 #include "RuleSetTest.h"
-#include "ViolationNodeTest.h"
 #include "ViolationSetTest.h"
 #include "ViolationTest.h"
 

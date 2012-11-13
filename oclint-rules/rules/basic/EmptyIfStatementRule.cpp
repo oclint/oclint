@@ -27,7 +27,7 @@ public:
         
         if (thenStmt && isLexicalEmpty(thenStmt))
         {
-            _violationSet->addViolation(thenStmt, this);
+            addViolation(thenStmt, this);
         }
 
         return true;

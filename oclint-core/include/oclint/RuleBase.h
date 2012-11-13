@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include <clang/AST/AST.h>
 #include <clang/AST/ASTContext.h>
 
 #include "oclint/RuleConfiguration.h"
@@ -19,18 +20,13 @@ protected:
     ViolationSet *_violationSet;
     ASTContext *_astContext;
 
-    void apply(ASTContext &astContext, ViolationSet *violationSet)
-    {
-        _violationSet = violationSet;
-        _astContext = &astContext;
-        apply();
-    }
+    void apply(ASTContext &astContext, ViolationSet *violationSet);
+    int ruleConfiguration(string key, int defaultValue);
 
-    int ruleConfiguration(string key, int defaultValue)
-    {
-        return RuleConfiguration::hasKey(key) ?
-            atoi(RuleConfiguration::valueForKey(key).c_str()) : defaultValue;
-    }
+    void addViolation(SourceLocation startLocation,
+        SourceLocation endLocation, RuleBase *rule, const string& message = "");
+    void addViolation(Decl *decl, RuleBase *rule, const string& message = "");
+    void addViolation(Stmt *stmt, RuleBase *rule, const string& message = "");
 
 public:
 

@@ -27,7 +27,7 @@ public:
         
         if (elseStmt && isLexicalEmpty(elseStmt))
         {
-            _violationSet->addViolation(elseStmt, this);
+            addViolation(elseStmt, this);
         }
 
         return true;
