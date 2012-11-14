@@ -1,6 +1,6 @@
 SET(LIST_OF_RULES
-    ConstantIfExpression
-    DeadCode
+    EmptyElseBlock
+    EmptyIfStatement
     )
 
 IF(TEST_BUILD)
