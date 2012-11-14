@@ -31,5 +31,7 @@ ENDMACRO(build_static_rules)
 
 ADD_SUBDIRECTORY(basic)
 ADD_SUBDIRECTORY(convention)
+ADD_SUBDIRECTORY(empty)
+ADD_SUBDIRECTORY(redundant)
 ADD_SUBDIRECTORY(size)
 ADD_SUBDIRECTORY(unused)
