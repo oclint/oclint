@@ -15,7 +15,7 @@
     }                                                                   \
     return true;
 
-class DeadCode : public Rule<DeadCode>
+class DeadCodeRule : public Rule<DeadCodeRule>
 {
 private:
     static RuleSet rules;
@@ -98,4 +98,4 @@ public:
     }
 };
 
-RuleSet DeadCode::rules(new DeadCode());
+RuleSet DeadCodeRule::rules(new DeadCodeRule());

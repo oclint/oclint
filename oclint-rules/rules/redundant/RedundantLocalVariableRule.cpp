@@ -4,7 +4,7 @@
 #include "oclint/RuleSet.h"
 
 
-class RedundantLocalVariable : public Rule<RedundantLocalVariable>
+class RedundantLocalVariableRule : public Rule<RedundantLocalVariableRule>
 {
 private:
     static RuleSet rules;
@@ -70,4 +70,4 @@ public:
     }
 };
 
-RuleSet RedundantLocalVariable::rules(new RedundantLocalVariable());
+RuleSet RedundantLocalVariableRule::rules(new RedundantLocalVariableRule());
