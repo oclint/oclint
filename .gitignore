@@ -3,6 +3,9 @@ googletest
 llvm
 build
 
+# Compile Commands
+compile_commands.json
+
 # Compiled Object files
 *.slo
 *.lo
