@@ -52,8 +52,8 @@ IF(TEST_BUILD)
 ELSE(TEST_BUILD)
     ADD_EXECUTABLE(oclint-0.6 main.cpp)
     TARGET_LINK_LIBRARIES(oclint-0.6
-        OCLintCore
         OCLintRuleSet
+        OCLintCore
         ${CLANG_LIBRARIES}
         ${REQ_LLVM_LIBRARIES}
         dl

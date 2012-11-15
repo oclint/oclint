@@ -1,7 +1,7 @@
 ADD_EXECUTABLE(oclint_test test_main.cpp)
 TARGET_LINK_LIBRARIES(oclint_test
-    OCLintCore
     OCLintRuleSet
+    OCLintCore
     gmock
     profile_rt
     ${CLANG_LIBRARIES}
