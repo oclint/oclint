@@ -1,6 +1,7 @@
 SET(LIST_OF_RULES
     ConstantIfExpression
     DeadCode
+    DoubleNegative
     )
 
 IF(TEST_BUILD)
