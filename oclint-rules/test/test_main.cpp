@@ -181,8 +181,10 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 }
 
 #include "CanaryTest.h"
+
 #include "basic/ConstantIfExpressionRuleTest.h"
 #include "basic/DeadCodeRuleTest.h"
+#include "basic/DoubleNegativeRuleTest.h"
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleMock(&argc, argv);
