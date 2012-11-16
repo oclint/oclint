@@ -10,14 +10,17 @@ using namespace std;
 
 class Results
 {
-private:
+protected:
     static Results *_singleton;
     Results();
 
+public:
+    static Results* getInstance();
+
+protected:
     vector<ViolationSet*>* _collection;
 
 public:
-    static Results* getInstance();
     void add(ViolationSet *violationSet);
 
     vector<Violation> allViolations();
