@@ -186,6 +186,8 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 #include "basic/DeadCodeRuleTest.h"
 #include "basic/DoubleNegativeRuleTest.h"
 
+#include "convention/InvertedIfElseRuleTest.h"
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleMock(&argc, argv);
   return RUN_ALL_TESTS();
