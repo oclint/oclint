@@ -188,6 +188,12 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 
 #include "convention/InvertedIfElseRuleTest.h"
 
+#include "empty/EmptyElseBlockRuleTest.h"
+#include "empty/EmptyIfStatementRuleTest.h"
+
+#include "redundant/RedundantIfStatementRuleTest.h"
+#include "redundant/RedundantLocalVariableRuleTest.h"
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleMock(&argc, argv);
   return RUN_ALL_TESTS();
