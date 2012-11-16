@@ -34,24 +34,20 @@ ADD_DEFINITIONS( ${LLVM_DEFINITIONS} )
 
 LLVM_MAP_COMPONENTS_TO_LIBRARIES(REQ_LLVM_LIBRARIES arminfo cellspuinfo cppbackendinfo debuginfo hexagoninfo mblazeinfo mipsinfo msp430info nvptxinfo powerpcinfo sparcinfo x86info xcoreinfo armdesc cellspudesc hexagondesc mblazedesc mipsdesc msp430desc nvptxdesc powerpcdesc sparcdesc x86desc xcoredesc armasmparser asmparser mblazeasmparser mcparser mipsasmparser x86asmparser)
 
-INCLUDE_DIRECTORIES(${OCLINT_SOURCE_DIR}/include ${OCLINT_RULES_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES(
+    ${OCLINT_SOURCE_DIR}/include
+    ${OCLINT_RULES_SOURCE_DIR}/include
+    ${OCLINT_RULES_SOURCE_DIR}
+    )
 LINK_DIRECTORIES(${OCLINT_BUILD_DIR}/lib)
 
-IF(TEST_BUILD)
-    ADD_DEFINITIONS(
-        --coverage
-        )
-ENDIF()
-
 ADD_SUBDIRECTORY(lib)
-ADD_SUBDIRECTORY(rules)
 
 IF(TEST_BUILD)
-    IF( NOT EXISTS ${CXXTEST_PATH}/bin/cxxtestgen )
-        MESSAGE(FATAL_ERROR "CXXTEST_PATH (${CXXTEST_PATH}) is not a valid CxxTest repo")
-    ENDIF()
-    SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CXXTEST_PATH}/build_tools/cmake")
-    INCLUDE(CxxTest)
+    INCLUDE_DIRECTORIES(${GOOGLETEST_SRC}/include ${GOOGLETEST_SRC}/gtest/include)
+    LINK_DIRECTORIES(${GOOGLETEST_BUILD})
 
     ADD_SUBDIRECTORY(test)
+ELSE(TEST_BUILD)
+    ADD_SUBDIRECTORY(rules)
 ENDIF()
