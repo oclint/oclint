@@ -27,7 +27,7 @@ public:
         bool evaluatedResult;
         if (conditionExpression->EvaluateAsBooleanCondition(evaluatedResult, *_astContext))
         {
-            addViolation(ifStmt, this);
+            addViolation(conditionExpression, this);
         }
 
         return true;

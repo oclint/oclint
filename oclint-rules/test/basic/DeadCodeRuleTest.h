@@ -7,6 +7,11 @@ TEST(DeadCodeRuleTest, PropertyTest)
     EXPECT_EQ("dead code", rule.name());
 }
 
+TEST(DeadCodeRuleTest, CleanCode)
+{
+    testRuleOnCode(new DeadCodeRule(), "void a() { int b; }");
+}
+
 TEST(DeadCodeRuleTest, CodeAfterReturn)
 {
     testRuleOnCode(new DeadCodeRule(), "void a() { return; int b; }",

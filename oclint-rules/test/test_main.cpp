@@ -102,16 +102,22 @@ void testRuleOnCode(const Twine &fileName,
     if (runToolOnCode(action, twine, fileName))
     {
         vector<Violation> violations = violationSet->getViolations();
-
-        EXPECT_LT(violationIndex, violations.size());
-        if (violationIndex < violations.size())
+        if (violationIndex < 0)
         {
-            Violation violation = violations.at(violationIndex);
-            EXPECT_EQ(expectStartLine, violation.startLine);
-            EXPECT_EQ(expectStartColumn, violation.startColumn);
-            EXPECT_EQ(expectEndLine, violation.endLine);
-            EXPECT_EQ(expectEndColumn, violation.endColumn);
-            EXPECT_EQ(expectMessage, violation.message);
+            EXPECT_EQ(0, violations.size());
+        }
+        else
+        {
+            EXPECT_LT(violationIndex, violations.size());
+            if (violationIndex < violations.size())
+            {
+                Violation violation = violations.at(violationIndex);
+                EXPECT_EQ(expectStartLine, violation.startLine);
+                EXPECT_EQ(expectStartColumn, violation.startColumn);
+                EXPECT_EQ(expectEndLine, violation.endLine);
+                EXPECT_EQ(expectEndColumn, violation.endColumn);
+                EXPECT_EQ(expectMessage, violation.message);
+            }
         }
     }
     else
@@ -159,7 +165,23 @@ void testRuleOnObjCCode(RuleBase *rule,
         expectStartLine, expectStartColumn, expectEndLine, expectEndColumn, expectMessage);
 }
 
+void testRuleOnCode(RuleBase *rule, const string &code)
+{
+    testRuleOnCode("input.c", rule, code, -1, 0, 0, 0, 0);
+}
+
+void testRuleOnCXXCode(RuleBase *rule, const string &code)
+{
+    testRuleOnCode("input.cpp", rule, code, -1, 0, 0, 0, 0);
+}
+
+void testRuleOnObjCCode(RuleBase *rule, const string &code)
+{
+    testRuleOnCode("input.m", rule, code, -1, 0, 0, 0, 0);
+}
+
 #include "CanaryTest.h"
+#include "basic/ConstantIfExpressionRuleTest.h"
 #include "basic/DeadCodeRuleTest.h"
 
 int main(int argc, char **argv) {
