@@ -20,15 +20,6 @@ MACRO(build_dynamic_rules rules)
     ENDFOREACH(it)
 ENDMACRO(build_dynamic_rules)
 
-MACRO(build_static_rules name rules)
-    SET(cpp_files)
-    FOREACH(it ${rules})
-        LIST(APPEND cpp_files ${it}Rule.cpp)
-    ENDFOREACH(it)
-
-    ADD_LIBRARY(OCLint${name}Rule ${cpp_files})
-ENDMACRO(build_static_rules)
-
 ADD_SUBDIRECTORY(basic)
 ADD_SUBDIRECTORY(convention)
 ADD_SUBDIRECTORY(empty)
