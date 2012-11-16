@@ -65,8 +65,7 @@ private:
 
     bool isNotEquals(Expr *firstExpr, Expr *secondExpr)
     {
-        return (isCIntegerViolated(firstExpr, secondExpr) ||
-            isCXXBoolViolated(firstExpr, secondExpr) || isObjCBOOLViolated(firstExpr, secondExpr));
+        return isCXXBoolViolated(firstExpr, secondExpr) || isObjCBOOLViolated(firstExpr, secondExpr);
     }
 
     bool doesReturnStatementsViolateRule(ReturnStmt *first, ReturnStmt *second)
