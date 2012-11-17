@@ -19,7 +19,7 @@ bool CyclomaticComplexityMetric::VisitForStmt(ForStmt *stmt)
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitForStmt(ObjCForCollectionStmt *stmt)
+bool CyclomaticComplexityMetric::VisitObjCForCollectionStmt(ObjCForCollectionStmt *stmt)
 {
     _count++;
     return true;
@@ -44,6 +44,12 @@ bool CyclomaticComplexityMetric::VisitCaseStmt(CaseStmt *stmt)
 }
 
 bool CyclomaticComplexityMetric::VisitObjCAtCatchStmt(ObjCAtCatchStmt *stmt)
+{
+    _count++;
+    return true;
+}
+
+bool CyclomaticComplexityMetric::VisitCXXCatchStmt(CXXCatchStmt *stmt)
 {
     _count++;
     return true;

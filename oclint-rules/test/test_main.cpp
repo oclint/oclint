@@ -25,9 +25,9 @@ public:
 
 void RuleConfiguration::addConfiguration(string key, string value) {}
 
-bool RuleConfiguration::hasKey(string key) { return false; }
+bool RuleConfiguration::hasKey(string key) { return true; }
 
-string RuleConfiguration::valueForKey(string key) { return ""; }
+string RuleConfiguration::valueForKey(string key) { return "0"; }
 
 void RuleConfiguration::removeAll() {}
 
@@ -193,6 +193,8 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 
 #include "redundant/RedundantIfStatementRuleTest.h"
 #include "redundant/RedundantLocalVariableRuleTest.h"
+
+#include "size/CyclomaticComplexityRuleTest.h"
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleMock(&argc, argv);

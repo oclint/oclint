@@ -16,11 +16,12 @@ public:
 
     bool VisitIfStmt(IfStmt *stmt);
     bool VisitForStmt(ForStmt *stmt);
-    bool VisitForStmt(ObjCForCollectionStmt *stmt);
+    bool VisitObjCForCollectionStmt(ObjCForCollectionStmt *stmt);
     bool VisitWhileStmt(WhileStmt *stmt);
     bool VisitDoStmt(DoStmt *stmt);
     bool VisitCaseStmt(CaseStmt *stmt);
     bool VisitObjCAtCatchStmt(ObjCAtCatchStmt *stmt);
+    bool VisitCXXCatchStmt(CXXCatchStmt *stmt);
     bool VisitConditionalOperator(ConditionalOperator *op);
     bool VisitBinaryOperator(BinaryOperator *op);
 };
