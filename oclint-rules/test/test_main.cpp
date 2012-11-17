@@ -196,6 +196,7 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 
 #include "size/CyclomaticComplexityRuleTest.h"
 #include "size/LongMethodRuleTest.h"
+#include "size/NPathComplexityRuleTest.h"
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleMock(&argc, argv);
