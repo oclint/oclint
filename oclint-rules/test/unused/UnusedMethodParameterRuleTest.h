@@ -18,6 +18,11 @@ TEST(UnusedMethodParameterRuleTest, MethodWithUnusedParameter)
         0, 1, 14, 1, 18);
 }
 
+TEST(UnusedMethodParameterRuleTest, CppParameterHasNoNameShouldBeIgnored)
+{
+    testRuleOnCXXCode(new UnusedMethodParameterRule(), "void aMethod(int) {}");
+}
+
 TEST(UnusedMethodParameterRuleTest, ObjCMethodWithUnusedParameter)
 {
     testRuleOnObjCCode(new UnusedMethodParameterRule(), "@interface AnInterface\n\

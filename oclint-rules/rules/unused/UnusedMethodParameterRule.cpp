@@ -17,7 +17,7 @@ private:
 
     bool isBlockDeclaration(DeclContext *context)
     {
-        return dyn_cast<BlockDecl>(context);
+        return context->isClosure();
     }
 
     bool isObjCMethodDeclaration(DeclContext *context)
@@ -49,9 +49,9 @@ private:
     {
         return isFunctionDeclaration(context) ||
             isBlockDeclaration(context) ||
-            isObjCMethodDeclaration(context) || 
-            isObjCOverrideMethod(context) || 
-            isCppFunctionDeclaration(context) || 
+            isObjCMethodDeclaration(context) ||
+            isObjCOverrideMethod(context) ||
+            isCppFunctionDeclaration(context) ||
             isCppOverrideFunction(context);
     }
 
@@ -69,6 +69,11 @@ private:
         return false;
     }
 
+    bool hasVariableName(ParmVarDecl *varDecl)
+    {
+        return varDecl->getNameAsString() != "";
+    }
+
 public:
     virtual const string name() const
     {
@@ -82,7 +87,8 @@ public:
 
     bool VisitParmVarDecl(ParmVarDecl *varDecl)
     {
-        if (varDecl && !varDecl->isUsed() && !isExistingByContract(varDecl))
+        if (varDecl && !varDecl->isUsed() &&
+            hasVariableName(varDecl) && !isExistingByContract(varDecl))
         {
             addViolation(varDecl, this);
         }
