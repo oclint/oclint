@@ -7,55 +7,55 @@ int CyclomaticComplexityMetric::calculate(Decl *decl)
     return _count + 1;
 }
 
-bool CyclomaticComplexityMetric::VisitIfStmt(IfStmt *stmt)
+bool CyclomaticComplexityMetric::VisitIfStmt(IfStmt *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitForStmt(ForStmt *stmt)
+bool CyclomaticComplexityMetric::VisitForStmt(ForStmt *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitObjCForCollectionStmt(ObjCForCollectionStmt *stmt)
+bool CyclomaticComplexityMetric::VisitObjCForCollectionStmt(ObjCForCollectionStmt *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitWhileStmt(WhileStmt *stmt)
+bool CyclomaticComplexityMetric::VisitWhileStmt(WhileStmt *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitDoStmt(DoStmt *stmt)
+bool CyclomaticComplexityMetric::VisitDoStmt(DoStmt *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitCaseStmt(CaseStmt *stmt)
+bool CyclomaticComplexityMetric::VisitCaseStmt(CaseStmt *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitObjCAtCatchStmt(ObjCAtCatchStmt *stmt)
+bool CyclomaticComplexityMetric::VisitObjCAtCatchStmt(ObjCAtCatchStmt *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitCXXCatchStmt(CXXCatchStmt *stmt)
+bool CyclomaticComplexityMetric::VisitCXXCatchStmt(CXXCatchStmt *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitConditionalOperator(ConditionalOperator *op)
+bool CyclomaticComplexityMetric::VisitConditionalOperator(ConditionalOperator *)
 {
     _count++;
     return true;
