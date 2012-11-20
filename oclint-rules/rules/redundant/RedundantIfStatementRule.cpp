@@ -18,10 +18,9 @@ private:
             {
                 return dyn_cast<nodeType>(fromStmt);
             }
-            CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(fromStmt);
-            if (compoundStmt && compoundStmt->size() == 1)
+            if (isa<CompoundStmt>(fromStmt) && dyn_cast<CompoundStmt>(fromStmt)->size() == 1)
             {
-                return extractStmt<nodeType>(*(compoundStmt->body_begin()));
+                return extractStmt<nodeType>(*(dyn_cast<CompoundStmt>(fromStmt)->body_begin()));
             }
         }
         return NULL;

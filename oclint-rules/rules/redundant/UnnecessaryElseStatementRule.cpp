@@ -40,10 +40,7 @@ private:
             {
                 return areAllBranchesReturn(dyn_cast<IfStmt>(stmt));
             }
-            else
-            {
-                return isa<ReturnStmt>(stmt);
-            }
+            return isa<ReturnStmt>(stmt);
         }
         return false;
     }
