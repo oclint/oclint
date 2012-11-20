@@ -1,4 +1,5 @@
 SET(LIST_OF_RULES
+    CollapsibleIfStatements
     ConstantIfExpression
     DeadCode
     DoubleNegative
