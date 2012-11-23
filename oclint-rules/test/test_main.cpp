@@ -192,6 +192,7 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 #include "empty/EmptyCatchStatementRuleTest.h"
 #include "empty/EmptyElseBlockRuleTest.h"
 #include "empty/EmptyFinallyStatementRuleTest.h"
+#include "empty/EmptyForStatementRuleTest.h"
 #include "empty/EmptyIfStatementRuleTest.h"
 #include "empty/EmptyTryStatementRuleTest.h"
 
