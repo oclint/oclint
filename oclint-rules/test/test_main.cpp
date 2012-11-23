@@ -190,6 +190,7 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 #include "convention/InvertedIfElseRuleTest.h"
 
 #include "empty/EmptyCatchStatementRuleTest.h"
+#include "empty/EmptyDoWhileStatementRuleTest.h"
 #include "empty/EmptyElseBlockRuleTest.h"
 #include "empty/EmptyFinallyStatementRuleTest.h"
 #include "empty/EmptyForStatementRuleTest.h"

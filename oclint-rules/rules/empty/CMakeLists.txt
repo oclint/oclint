@@ -1,5 +1,6 @@
 SET(LIST_OF_RULES
     EmptyCatchStatement
+    EmptyDoWhileStatement
     EmptyElseBlock
     EmptyFinallyStatement
     EmptyForStatement
