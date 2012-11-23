@@ -5,6 +5,7 @@ SET(LIST_OF_RULES
     EmptyFinallyStatement
     EmptyForStatement
     EmptyIfStatement
+    EmptySwitchStatement
     EmptyTryStatement
     EmptyWhileStatement
     )
