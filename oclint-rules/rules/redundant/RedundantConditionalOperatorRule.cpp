@@ -14,10 +14,9 @@ private:
     {
         if (fromExpr)
         {
-            ImplicitCastExpr *castExpr = dyn_cast<ImplicitCastExpr>(fromExpr);
-            if (castExpr)
+            if (isa<ImplicitCastExpr>(fromExpr))
             {
-                return dyn_cast<nodeType>(castExpr->getSubExpr());
+                return dyn_cast<nodeType>(dyn_cast<ImplicitCastExpr>(fromExpr)->getSubExpr());
             }
         }
         return NULL;
