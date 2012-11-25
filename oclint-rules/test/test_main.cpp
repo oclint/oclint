@@ -201,6 +201,7 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 #include "empty/EmptyTryStatementRuleTest.h"
 #include "empty/EmptyWhileStatementRuleTest.h"
 
+#include "redundant/RedundantConditionalOperatorRuleTest.h"
 #include "redundant/RedundantIfStatementRuleTest.h"
 #include "redundant/RedundantLocalVariableRuleTest.h"
 #include "redundant/UnnecessaryElseStatementRuleTest.h"
