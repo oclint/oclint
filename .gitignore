@@ -1,3 +1,6 @@
+# Optional modules
+oclint-json-compilation-database
+
 # Third-party dependencies and build directory
 googletest
 llvm

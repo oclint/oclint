@@ -29,25 +29,11 @@ cp $OCLINT_RULES_TMP/compile_commands.json $OCLINT_RULES_SRC/compile_commands.js
 
 # dog fooding for core
 cd $OCLINT_CORE_SRC
-FILES='main.cpp'
-for file in `find lib -name "*.cpp"`
-do
-  FILES="$FILES $file"
-done
-$OCLINT_RELEASE_BUILD/bin/oclint-0.6 $FILES
+$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database
 
 # dog fooding for rules
 cd $OCLINT_RULES_SRC
-FILES=''
-for file in `find lib -name "*.cpp"`
-do
-  FILES="$FILES $file"
-done
-for file in `find rules -name "*.cpp"`
-do
-  FILES="$FILES $file"
-done
-$OCLINT_RELEASE_BUILD/bin/oclint-0.6 $FILES
+$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database
 
 # delete temporary folders
 rm -rf $OCLINT_CORE_TMP
