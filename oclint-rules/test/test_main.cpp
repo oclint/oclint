@@ -187,6 +187,7 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 #include "basic/ConstantIfExpressionRuleTest.h"
 #include "basic/DeadCodeRuleTest.h"
 #include "basic/DoubleNegativeRuleTest.h"
+#include "basic/ReturnFromFinallyBlockRuleTest.h"
 
 #include "convention/InvertedIfElseRuleTest.h"
 

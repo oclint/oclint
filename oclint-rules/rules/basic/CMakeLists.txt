@@ -4,6 +4,7 @@ SET(LIST_OF_RULES
     ConstantIfExpression
     DeadCode
     DoubleNegative
+    ReturnFromFinallyBlock
     )
 
 BUILD_DYNAMIC_RULES("${LIST_OF_RULES}")
