@@ -1,6 +1,6 @@
 #! /bin/bash
 
 ./checkoutClangHead.sh
-./checkoutCxxTestHead.sh
+./checkoutGoogleTestHead.sh
 
 # Add other existence tests for system dependencies
