@@ -12,12 +12,9 @@ private:
     template<typename nodeType>
     nodeType* extractFromImplicitCastExpr(Expr *fromExpr)
     {
-        if (fromExpr)
+        if (fromExpr && isa<ImplicitCastExpr>(fromExpr))
         {
-            if (isa<ImplicitCastExpr>(fromExpr))
-            {
-                return dyn_cast<nodeType>(dyn_cast<ImplicitCastExpr>(fromExpr)->getSubExpr());
-            }
+            return dyn_cast<nodeType>(dyn_cast<ImplicitCastExpr>(fromExpr)->getSubExpr());
         }
         return NULL;
     }
