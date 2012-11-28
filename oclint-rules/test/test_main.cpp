@@ -205,6 +205,7 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 #include "redundant/RedundantIfStatementRuleTest.h"
 #include "redundant/RedundantLocalVariableRuleTest.h"
 #include "redundant/UnnecessaryElseStatementRuleTest.h"
+#include "redundant/UselessParenthesesRuleTest.h"
 
 #include "size/CyclomaticComplexityRuleTest.h"
 #include "size/LongMethodRuleTest.h"
