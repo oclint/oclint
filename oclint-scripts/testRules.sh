@@ -34,8 +34,8 @@ if [ $SUCCESS -eq 0 ]; then
     $OCLINT_RULES_BUILD/bin/rules_test > $OCLINT_RULES_BUILD/testresults.txt
     if [ $? -ne 0 ]; then
         SUCCESS=3
+        cat $OCLINT_RULES_BUILD/testresults.txt
     fi
-    cat $OCLINT_RULES_BUILD/testresults.txt
 fi
 
 # back to the current folder
