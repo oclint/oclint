@@ -3,7 +3,6 @@
 #include "oclint/Rule.h"
 #include "oclint/RuleSet.h"
 
-
 class ThrowExceptionFromFinallyBlockRule : public Rule<ThrowExceptionFromFinallyBlockRule>
 {
     class ExtractObjCAtThrowStmts : public RecursiveASTVisitor<ExtractObjCAtThrowStmts>
@@ -12,15 +11,46 @@ class ThrowExceptionFromFinallyBlockRule : public Rule<ThrowExceptionFromFinally
         vector<ObjCAtThrowStmt*> *_throws;
 
     public:
-        void extract(CompoundStmt *finallyBlock, vector<ObjCAtThrowStmt*> *throws)
+        void extract(ObjCAtFinallyStmt *finallyStmt, vector<ObjCAtThrowStmt*> *throws)
         {
             _throws = throws;
-            TraverseStmt(finallyBlock);
+            TraverseStmt(finallyStmt);
         }
 
         bool VisitObjCAtThrowStmt(ObjCAtThrowStmt *throwStmt)
         {
             _throws->push_back(throwStmt);
+            return true;
+        }
+    };
+
+    class ExtractNSExceptionRaiser : public RecursiveASTVisitor<ExtractNSExceptionRaiser>
+    {
+    private:
+        vector<ObjCMessageExpr*> *_raisers;
+
+    public:
+        void extract(ObjCAtFinallyStmt *finallyStmt, vector<ObjCMessageExpr*> *raisers)
+        {
+            _raisers = raisers;
+            TraverseStmt(finallyStmt);
+        }
+
+        bool VisitObjCMessageExpr(ObjCMessageExpr *objCMsgExpr)
+        {
+            string selectorString = objCMsgExpr->getSelector().getAsString();
+            bool isRaiseMethod = selectorString == "raise" || selectorString == "raise:format:" ||
+                selectorString == "raise:format:arguments:";
+
+            ObjCInterfaceDecl *objCInterfaceDecl = objCMsgExpr->getReceiverInterface();
+            bool isNSExceptionClass = objCInterfaceDecl && 
+                objCInterfaceDecl->getNameAsString() == "NSException";
+
+            if (isRaiseMethod && isNSExceptionClass)
+            {
+                _raisers->push_back(objCMsgExpr);
+            }
+            
             return true;
         }
     };
@@ -41,17 +71,22 @@ public:
 
     bool VisitObjCAtFinallyStmt(ObjCAtFinallyStmt *finallyStmt)
     {
-        CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(finallyStmt->getFinallyBody());
-        if (compoundStmt)
+        vector<ObjCAtThrowStmt*> *throws = new vector<ObjCAtThrowStmt*>();
+        ExtractObjCAtThrowStmts extractObjCAtThrowStmts;
+        extractObjCAtThrowStmts.extract(finallyStmt, throws);
+        for (int index = 0; index < throws->size(); index++)
         {
-            vector<ObjCAtThrowStmt*> *throws = new vector<ObjCAtThrowStmt*>();
-            ExtractObjCAtThrowStmts extractObjCAtThrowStmts;
-            extractObjCAtThrowStmts.extract(compoundStmt, throws);
-            for (int index = 0; index < throws->size(); index++)
-            {
-                ObjCAtThrowStmt *throwStmt = throws->at(index);
-                addViolation(throwStmt, this);
-            }
+            ObjCAtThrowStmt *throwStmt = throws->at(index);
+            addViolation(throwStmt, this);
+        }
+
+        vector<ObjCMessageExpr*> *exceptionRaisers = new vector<ObjCMessageExpr*>();
+        ExtractNSExceptionRaiser extractExceptionRaiser;
+        extractExceptionRaiser.extract(finallyStmt, exceptionRaisers);
+        for (int index = 0; index < exceptionRaisers->size(); index++)
+        {
+            ObjCMessageExpr *raiseExpr = exceptionRaisers->at(index);
+            addViolation(raiseExpr, this);
         }
 
         return true;
