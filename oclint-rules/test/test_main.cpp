@@ -189,6 +189,7 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 #include "basic/DoubleNegativeRuleTest.h"
 #include "basic/ForLoopShouldBeWhileLoopRuleTest.h"
 #include "basic/ReturnFromFinallyBlockRuleTest.h"
+#include "basic/ThrowExceptionFromFinallyBlockRuleTest.h"
 
 #include "convention/InvertedIfElseRuleTest.h"
 
