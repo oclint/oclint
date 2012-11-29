@@ -12,10 +12,10 @@ class ReturnFromFinallyBlockRule : public Rule<ReturnFromFinallyBlockRule>
         vector<ReturnStmt*> *_returns;
 
     public:
-        void extract(CompoundStmt *finallyBlock, vector<ReturnStmt*> *returns)
+        void extract(ObjCAtFinallyStmt *finallyStmt, vector<ReturnStmt*> *returns)
         {
             _returns = returns;
-            TraverseStmt(finallyBlock);
+            TraverseStmt(finallyStmt);
         }
 
         bool VisitReturnStmt(ReturnStmt *returnStmt)
@@ -41,17 +41,13 @@ public:
 
     bool VisitObjCAtFinallyStmt(ObjCAtFinallyStmt *finallyStmt)
     {
-        CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(finallyStmt->getFinallyBody());
-        if (compoundStmt)
+        vector<ReturnStmt*> *returns = new vector<ReturnStmt*>();
+        ExtractReturnStmts extractReturnStmts;
+        extractReturnStmts.extract(finallyStmt, returns);
+        for (int index = 0; index < returns->size(); index++)
         {
-            vector<ReturnStmt*> *returns = new vector<ReturnStmt*>();
-            ExtractReturnStmts extractReturnStmts;
-            extractReturnStmts.extract(compoundStmt, returns);
-            for (int index = 0; index < returns->size(); index++)
-            {
-                ReturnStmt *returnStmt = returns->at(index);
-                addViolation(returnStmt, this);
-            }
+            ReturnStmt *returnStmt = returns->at(index);
+            addViolation(returnStmt, this);
         }
 
         return true;
