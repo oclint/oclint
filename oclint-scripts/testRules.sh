@@ -36,6 +36,7 @@ if [ $SUCCESS -eq 0 ]; then
         SUCCESS=3
         cat $OCLINT_RULES_BUILD/testresults.txt
     fi
+    tail -n 2 $OCLINT_RULES_BUILD/testresults.txt
 fi
 
 # back to the current folder
