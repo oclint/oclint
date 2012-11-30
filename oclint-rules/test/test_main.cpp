@@ -192,6 +192,7 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 #include "basic/ThrowExceptionFromFinallyBlockRuleTest.h"
 
 #include "convention/InvertedIfElseRuleTest.h"
+#include "convention/SwitchStatementsShouldHaveDefaultRuleTest.h"
 
 #include "empty/EmptyCatchStatementRuleTest.h"
 #include "empty/EmptyDoWhileStatementRuleTest.h"
