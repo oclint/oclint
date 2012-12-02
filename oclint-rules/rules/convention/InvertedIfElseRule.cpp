@@ -12,7 +12,7 @@ private:
 public:
     virtual const string name() const
     {
-        return "inserted if-else statement";
+        return "inverted if-else statement";
     }
 
     virtual const int priority() const
@@ -25,7 +25,7 @@ public:
         Stmt *elseStmt = ifStmt->getElse();
         BinaryOperator *binaryOperator = dyn_cast<BinaryOperator>(ifStmt->getCond());
         UnaryOperator *unaryOperator = dyn_cast<UnaryOperator>(ifStmt->getCond());
-        if (elseStmt && 
+        if (elseStmt &&
             ((binaryOperator && binaryOperator->getOpcode() == BO_NE) ||
             (unaryOperator && unaryOperator->getOpcode() == UO_LNot)))
         {

@@ -4,7 +4,7 @@ TEST(InvertedIfElseRuleTest, PropertyTest)
 {
     InvertedIfElseRule rule;
     EXPECT_EQ(3, rule.priority());
-    EXPECT_EQ("inserted if-else statement", rule.name());
+    EXPECT_EQ("inverted if-else statement", rule.name());
 }
 
 TEST(InvertedIfElseRuleTest, IfElseInCorrectOrder)
