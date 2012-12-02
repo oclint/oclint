@@ -8,6 +8,7 @@ OCLINT_CORE_BUILD="$PROJECT_ROOT/build/oclint-core"
 OCLINT_RULES_BUILD="$PROJECT_ROOT/build/oclint-rules"
 OCLINT_RELEASE_BUILD="$PROJECT_ROOT/build/oclint-release"
 OCLINT_JSON_CD_FOLDER="$PROJECT_ROOT/oclint-json-compilation-database"
+OCLINT_XCODBUILD_FOLDER="$PROJECT_ROOT/oclint-xcodebuild"
 
 # create directory and prepare for build
 mkdir -p $OCLINT_RELEASE_BUILD
@@ -26,7 +27,12 @@ cp -rp $LLVM_BUILD/lib/clang $OCLINT_RELEASE_BUILD/lib
 
 # put oclint-json-compilation-database in place if exists
 if [ -d "$OCLINT_JSON_CD_FOLDER" ]; then
-    cp $OCLINT_JSON_CD_FOLDER/oclint-json-compilation-database $OCLINT_RELEASE_BUILD/bin
+    cp $OCLINT_JSON_CD_FOLDER/oclint* $OCLINT_RELEASE_BUILD/bin
+fi
+
+# put oclint-xcodebuild in place if exists
+if [ -d "$OCLINT_XCODBUILD_FOLDER" ]; then
+    cp $OCLINT_XCODBUILD_FOLDER/oclint* $OCLINT_RELEASE_BUILD/bin
 fi
 
 # back to the current folder
