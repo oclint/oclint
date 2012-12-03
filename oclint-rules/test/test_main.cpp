@@ -167,17 +167,17 @@ void testRuleOnObjCCode(RuleBase *rule,
 
 void testRuleOnCode(RuleBase *rule, const string &code)
 {
-    testRuleOnCode("input.c", rule, code, -1, 0, 0, 0, 0);
+    testRuleOnCode(rule, code, -1, 0, 0, 0, 0);
 }
 
 void testRuleOnCXXCode(RuleBase *rule, const string &code)
 {
-    testRuleOnCode("input.cpp", rule, code, -1, 0, 0, 0, 0);
+    testRuleOnCXXCode(rule, code, -1, 0, 0, 0, 0);
 }
 
 void testRuleOnObjCCode(RuleBase *rule, const string &code)
 {
-    testRuleOnCode("input.m", rule, code, -1, 0, 0, 0, 0);
+    testRuleOnObjCCode(rule, code, -1, 0, 0, 0, 0);
 }
 
 #include "CanaryTest.h"

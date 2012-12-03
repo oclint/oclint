@@ -17,11 +17,12 @@ void RuleBase::addViolation(SourceLocation startLocation,
     SourceLocation endLocation, RuleBase *rule, const string& message)
 {
     SourceManager *sourceManager = &_astContext->getSourceManager();
-    string sourceBufferName(sourceManager->getBufferName(startLocation));
-    if (sourceBufferName != "")
+    StringRef filename = sourceManager->getFilename(startLocation);
+    string filenameString(filename.data());
+    if (filenameString != "")
     {
         Violation violation(rule,
-            sourceBufferName,
+            filenameString,
             sourceManager->getPresumedLineNumber(startLocation),
             sourceManager->getPresumedColumnNumber(startLocation),
             sourceManager->getPresumedLineNumber(endLocation),
