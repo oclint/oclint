@@ -1,6 +1,7 @@
 SET(LIST_OF_RULES
     DefaultLabelNotLastInSwitchStatement
     InvertedIfElse
+    NonCaseLabelInSwitchStatement
     SwitchStatementsShouldHaveDefault
     )
 
