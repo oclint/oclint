@@ -17,14 +17,18 @@ void RuleBase::addViolation(SourceLocation startLocation,
     SourceLocation endLocation, RuleBase *rule, const string& message)
 {
     SourceManager *sourceManager = &_astContext->getSourceManager();
-    Violation violation(rule,
-        string(sourceManager->getBufferName(startLocation)),
-        sourceManager->getPresumedLineNumber(startLocation),
-        sourceManager->getPresumedColumnNumber(startLocation),
-        sourceManager->getPresumedLineNumber(endLocation),
-        sourceManager->getPresumedColumnNumber(endLocation),
-        message);
-    _violationSet->addViolation(violation);
+    string sourceBufferName(sourceManager->getBufferName(startLocation));
+    if (sourceBufferName != "")
+    {
+        Violation violation(rule,
+            sourceBufferName,
+            sourceManager->getPresumedLineNumber(startLocation),
+            sourceManager->getPresumedColumnNumber(startLocation),
+            sourceManager->getPresumedLineNumber(endLocation),
+            sourceManager->getPresumedColumnNumber(endLocation),
+            message);
+        _violationSet->addViolation(violation);
+    }
 }
 
 void RuleBase::addViolation(Decl *decl, RuleBase *rule, const string& message)
