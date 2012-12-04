@@ -192,6 +192,7 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 
 #include "convention/DefaultLabelNotLastInSwitchStatementRuleTest.h"
 #include "convention/InvertedIfElseRuleTest.h"
+#include "convention/MissingBreakInSwitchStatementRuleTest.h"
 #include "convention/NonCaseLabelInSwitchStatementRuleTest.h"
 #include "convention/SwitchStatementsShouldHaveDefaultRuleTest.h"
 #include "convention/TooFewBranchesInSwitchStatementRuleTest.h"
