@@ -16,20 +16,19 @@ using namespace clang::tooling;
 
 class RuleConfiguration
 {
+private:
+    static string _value;
+
 public:
-    static void addConfiguration(string key, string value);
+    static void setValue(string value);
     static bool hasKey(string key);
     static string valueForKey(string key);
-    static void removeAll();
 };
 
-void RuleConfiguration::addConfiguration(string key, string value) {}
-
+string RuleConfiguration::_value = "0";
+void RuleConfiguration::setValue(string value) { _value = value; }
 bool RuleConfiguration::hasKey(string key) { return true; }
-
-string RuleConfiguration::valueForKey(string key) { return "0"; }
-
-void RuleConfiguration::removeAll() {}
+string RuleConfiguration::valueForKey(string key) { return _value; }
 
 #define OCLINT_RULESET_H
 
@@ -195,6 +194,7 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 #include "convention/InvertedIfElseRuleTest.h"
 #include "convention/NonCaseLabelInSwitchStatementRuleTest.h"
 #include "convention/SwitchStatementsShouldHaveDefaultRuleTest.h"
+#include "convention/TooFewBranchesInSwitchStatementRuleTest.h"
 
 #include "empty/EmptyCatchStatementRuleTest.h"
 #include "empty/EmptyDoWhileStatementRuleTest.h"
