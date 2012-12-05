@@ -182,6 +182,7 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 #include "CanaryTest.h"
 
 #include "basic/BitwiseOperatorInConditionalRuleTest.h"
+#include "basic/BrokenOddnessCheckRuleTest.h"
 #include "basic/CollapsibleIfStatementsRuleTest.h"
 #include "basic/ConstantConditionalOperatorRuleTest.h"
 #include "basic/ConstantIfExpressionRuleTest.h"
