@@ -1,7 +1,6 @@
 SET(LIST_OF_RULES
-    ConfusingConditionalOperator
     DefaultLabelNotLastInSwitchStatement
-    InvertedIfElse
+    InvertedLogic
     MissingBreakInSwitchStatement
     NonCaseLabelInSwitchStatement
     SwitchStatementsShouldHaveDefault
