@@ -193,6 +193,7 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 #include "basic/ReturnFromFinallyBlockRuleTest.h"
 #include "basic/ThrowExceptionFromFinallyBlockRuleTest.h"
 
+#include "convention/ConfusingConditionalOperatorRuleTest.h"
 #include "convention/DefaultLabelNotLastInSwitchStatementRuleTest.h"
 #include "convention/InvertedIfElseRuleTest.h"
 #include "convention/MissingBreakInSwitchStatementRuleTest.h"
