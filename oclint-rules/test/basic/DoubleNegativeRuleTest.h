@@ -41,3 +41,13 @@ TEST(DoubleNegativeRuleTest, DoubleNegativeWithNestedParentheses)
     testRuleOnCode(new DoubleNegativeRule(), "void aMethod() { int b = !(((!1))); }",
         0, 1, 26, 1, 34);
 }
+
+TEST(DoubleNegativeRuleTest, NotFollowByLogicalNot)
+{
+    testRuleOnCode(new DoubleNegativeRule(), "void aMethod() { int b = ~!1; }");
+}
+
+TEST(DoubleNegativeRuleTest, LogicalNotFollowByNot)
+{
+    testRuleOnCode(new DoubleNegativeRule(), "void aMethod() { int b = !~1; }");
+}
