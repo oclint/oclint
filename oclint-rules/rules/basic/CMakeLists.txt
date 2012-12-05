@@ -7,6 +7,7 @@ SET(LIST_OF_RULES
     DeadCode
     DoubleNegative
     ForLoopShouldBeWhileLoop
+    MultipleUnaryOperator
     ReturnFromFinallyBlock
     ThrowExceptionFromFinallyBlock
     )
