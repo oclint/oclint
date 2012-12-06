@@ -3,7 +3,7 @@
 #include "oclint/Rule.h"
 #include "oclint/RuleSet.h"
 
-#define GET_COMPOUNDSTMT_AND_APPLY                                      \
+#define DEADCODERULE_GET_COMPOUNDSTMT_AND_APPLY                         \
     Stmt *bodyStmt = stmt->getBody();                                   \
     if (bodyStmt)                                                       \
     {                                                                   \
@@ -55,22 +55,22 @@ public:
 
     bool VisitForStmt(ForStmt *stmt)
     {
-        GET_COMPOUNDSTMT_AND_APPLY
+        DEADCODERULE_GET_COMPOUNDSTMT_AND_APPLY
     }
 
     bool VisitObjCForCollectionStmt(ObjCForCollectionStmt *stmt)
     {
-        GET_COMPOUNDSTMT_AND_APPLY
+        DEADCODERULE_GET_COMPOUNDSTMT_AND_APPLY
     }
 
     bool VisitDoStmt(DoStmt* stmt)
     {
-        GET_COMPOUNDSTMT_AND_APPLY
+        DEADCODERULE_GET_COMPOUNDSTMT_AND_APPLY
     }
 
     bool VisitWhileStmt(WhileStmt* stmt)
     {
-        GET_COMPOUNDSTMT_AND_APPLY
+        DEADCODERULE_GET_COMPOUNDSTMT_AND_APPLY
     }
 
     bool VisitCompoundStmt(CompoundStmt *compoundStmt)

@@ -3,7 +3,7 @@
 #include "oclint/Rule.h"
 #include "oclint/RuleSet.h"
 
-#define analyze(STMT) Expr *cond = STMT->getCond(); \
+#define BITWISEOPERATORINCONDITIONALRULE_ANALYZE(STMT) Expr *cond = STMT->getCond(); \
     if (_finder.find(cond)) { addViolation(cond, this); } return true
 
 class BitwiseOperatorInConditionalRule : public Rule<BitwiseOperatorInConditionalRule>
@@ -50,22 +50,22 @@ public:
 
     bool VisitIfStmt(IfStmt *ifStmt)
     {
-        analyze(ifStmt);
+        BITWISEOPERATORINCONDITIONALRULE_ANALYZE(ifStmt);
     }
 
     bool VisitWhileStmt(WhileStmt *whileStmt)
     {
-        analyze(whileStmt);
+        BITWISEOPERATORINCONDITIONALRULE_ANALYZE(whileStmt);
     }
 
     bool VisitDoStmt(DoStmt *doStmt)
     {
-        analyze(doStmt);
+        BITWISEOPERATORINCONDITIONALRULE_ANALYZE(doStmt);
     }
 
     bool VisitConditionalOperator(ConditionalOperator *condOp)
     {
-        analyze(condOp);
+        BITWISEOPERATORINCONDITIONALRULE_ANALYZE(condOp);
     }
 };
 

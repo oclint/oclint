@@ -35,7 +35,7 @@ class ParameterReassignmentRule : public Rule<ParameterReassignmentRule>
         vector<BinaryOperator*> _binaryOperators;
 
     public:
-        vector<BinaryOperator*> check(Decl *decl, vector<string> &names)
+        vector<BinaryOperator*> analyze(Decl *decl, vector<string> &names)
         {
             _names = names;
             _binaryOperators.clear();
@@ -72,7 +72,7 @@ private:
         if (names.size() > 0)
         {
             BinaryOperatorAnalyzer binaryOperatorAnalyzer;
-            vector<BinaryOperator*> binaryOperators = binaryOperatorAnalyzer.check(decl, names);
+            vector<BinaryOperator*> binaryOperators = binaryOperatorAnalyzer.analyze(decl, names);
             for (int index = 0; index < binaryOperators.size(); index++)
             {
                 addViolation(binaryOperators.at(index), this);

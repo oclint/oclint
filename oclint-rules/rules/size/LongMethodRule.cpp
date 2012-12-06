@@ -35,21 +35,6 @@ private:
         }
     }
 
-    bool isMethodDeclarationAndHasBody(Decl* decl)
-    {
-        return (isa<ObjCMethodDecl>(decl) || isa<FunctionDecl>(decl)) && decl->hasBody();
-    }
-
-    bool isMethodNotPureDeclaration(Decl* decl)
-    {
-        return !isCppMethodDeclLocatedInCppRecordDecl(dyn_cast<CXXMethodDecl>(decl));
-    }
-
-    bool isMethodDefination(Decl* decl)
-    {
-        return decl && isMethodDeclarationAndHasBody(decl) && isMethodNotPureDeclaration(decl);
-    }
-
 public:
     virtual const string name() const
     {
