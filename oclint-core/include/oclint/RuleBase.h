@@ -23,6 +23,8 @@ protected:
     void apply(ASTContext &astContext, ViolationSet *violationSet);
     int ruleConfiguration(string key, int defaultValue);
 
+    void addViolation(string filePath, int startLine, int startColumn,
+        int endLine, int endColumn, RuleBase *rule, const string& message = "");
     void addViolation(SourceLocation startLocation,
         SourceLocation endLocation, RuleBase *rule, const string& message = "");
     void addViolation(Decl *decl, RuleBase *rule, const string& message = "");

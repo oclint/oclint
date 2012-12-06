@@ -13,23 +13,30 @@ int RuleBase::ruleConfiguration(string key, int defaultValue)
         atoi(RuleConfiguration::valueForKey(key).c_str()) : defaultValue;
 }
 
+void RuleBase::addViolation(string filePath, int startLine, int startColumn,
+    int endLine, int endColumn, RuleBase *rule, const string& message)
+{
+    if (filePath != "")
+    {
+        Violation violation(rule,
+            filePath, startLine, startColumn, endLine, endColumn, message);
+        _violationSet->addViolation(violation);
+    }
+}
+
 void RuleBase::addViolation(SourceLocation startLocation,
     SourceLocation endLocation, RuleBase *rule, const string& message)
 {
     SourceManager *sourceManager = &_astContext->getSourceManager();
     StringRef filename = sourceManager->getFilename(startLocation);
     string filenameString(filename.data());
-    if (filenameString != "")
-    {
-        Violation violation(rule,
-            filenameString,
-            sourceManager->getPresumedLineNumber(startLocation),
-            sourceManager->getPresumedColumnNumber(startLocation),
-            sourceManager->getPresumedLineNumber(endLocation),
-            sourceManager->getPresumedColumnNumber(endLocation),
-            message);
-        _violationSet->addViolation(violation);
-    }
+    addViolation(filenameString,
+        sourceManager->getPresumedLineNumber(startLocation),
+        sourceManager->getPresumedColumnNumber(startLocation),
+        sourceManager->getPresumedLineNumber(endLocation),
+        sourceManager->getPresumedColumnNumber(endLocation),
+        rule,
+        message);
 }
 
 void RuleBase::addViolation(Decl *decl, RuleBase *rule, const string& message)
