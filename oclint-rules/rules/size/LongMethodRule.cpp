@@ -13,7 +13,8 @@ private:
 
     void applyDecl(Decl *decl)
     {
-        if (decl->hasBody() && !isCppMethodDeclLocatedInCppRecordDecl(dyn_cast<CXXMethodDecl>(decl)))
+        if (decl->hasBody() &&
+            !isCppMethodDeclLocatedInCppRecordDecl(dyn_cast<CXXMethodDecl>(decl)))
         {
             CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(decl->getBody());
 

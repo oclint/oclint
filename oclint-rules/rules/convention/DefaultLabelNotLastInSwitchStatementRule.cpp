@@ -3,7 +3,8 @@
 #include "oclint/Rule.h"
 #include "oclint/RuleSet.h"
 
-class DefaultLabelNotLastInSwitchStatementRule : public Rule<DefaultLabelNotLastInSwitchStatementRule>
+class DefaultLabelNotLastInSwitchStatementRule :
+    public Rule<DefaultLabelNotLastInSwitchStatementRule>
 {
 private:
     static RuleSet rules;
@@ -39,4 +40,5 @@ public:
     }
 };
 
-RuleSet DefaultLabelNotLastInSwitchStatementRule::rules(new DefaultLabelNotLastInSwitchStatementRule());
+RuleSet DefaultLabelNotLastInSwitchStatementRule::rules(
+    new DefaultLabelNotLastInSwitchStatementRule());

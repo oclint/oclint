@@ -8,7 +8,8 @@
 
 class BitwiseOperatorInConditionalRule : public Rule<BitwiseOperatorInConditionalRule>
 {
-    class BitwiseOperatorInConditionalFinder : public RecursiveASTVisitor<BitwiseOperatorInConditionalFinder>
+    class BitwiseOperatorInConditionalFinder :
+        public RecursiveASTVisitor<BitwiseOperatorInConditionalFinder>
     {
     private:
         bool _found;

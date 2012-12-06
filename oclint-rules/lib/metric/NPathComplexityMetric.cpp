@@ -71,8 +71,8 @@ int NPathComplexityMetric::nPath(ForStmt *stmt)
     // switch (i) { case 1: foo(1); break; case 2: foo(2); break; }, the NPath is 2 here
     // Converted to for statement, it is
     // for (int i = 1; i <= 2; i++) { foo(i); }, the NPath is 3
-    // As a conclusion, in my opinion, same logic in different formats should not reduce the complexity
-    // However, here, I will follow Nejmeh's NPath
+    // As a conclusion, in my opinion, same logic in different formats should not reduce
+    // the complexity. However, here, I will follow Nejmeh's NPath
 
     return nPath(stmt->getInit()) + nPath(stmt->getCond()) + nPath(stmt->getInc())
         + nPath(stmt->getBody()) + 1;

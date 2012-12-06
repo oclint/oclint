@@ -30,7 +30,8 @@ public:
         if (isa<UnaryOperator>(subExpr))
         {
             UnaryOperator *subUnaryOperator = dyn_cast<UnaryOperator>(subExpr);
-            if ((unaryOperator->getOpcode() == UO_LNot && subUnaryOperator->getOpcode() == UO_LNot) ||
+            if ((unaryOperator->getOpcode() == UO_LNot &&
+                subUnaryOperator->getOpcode() == UO_LNot) ||
                 (unaryOperator->getOpcode() == UO_Not && subUnaryOperator->getOpcode() == UO_Not))
             {
                 addViolation(unaryOperator, this);

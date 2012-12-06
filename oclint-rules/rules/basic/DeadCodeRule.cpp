@@ -87,7 +87,8 @@ public:
             }
             else
             {
-                if (isa<ReturnStmt>(bodyStmt) || isa<CXXThrowExpr>(bodyStmt) || isa<ObjCAtThrowStmt>(bodyStmt))
+                if (isa<ReturnStmt>(bodyStmt) ||
+                    isa<CXXThrowExpr>(bodyStmt) || isa<ObjCAtThrowStmt>(bodyStmt))
                 {
                     hasBreakPoint = true;
                 }

@@ -48,7 +48,8 @@ public:
             Violation violation = violationSet.at(index);
             cout << violation.path << ":" << violation.startLine << ":" << violation.startColumn;
             const RuleBase *rule = violation.rule;
-            cout << ": " << rule->name() << " P" << rule->priority() << " " << violation.message << endl;
+            cout << ": " << rule->name()
+                << " P" << rule->priority() << " " << violation.message << endl;
         }
 
         cout << endl << "[OCLint (http://oclint.org) v0.6]" << endl;
@@ -118,7 +119,8 @@ void consumeRuleConfigurations()
         string configuration = argRuleConfiguration[i];
         int indexOfSeparator = configuration.find_last_of("=");
         string key = configuration.substr(0, indexOfSeparator);
-        string value = configuration.substr(indexOfSeparator + 1, configuration.size() - indexOfSeparator - 1);
+        string value = configuration.substr(indexOfSeparator + 1,
+            configuration.size() - indexOfSeparator - 1);
         RuleConfiguration::addConfiguration(key, value);
     }
 }
