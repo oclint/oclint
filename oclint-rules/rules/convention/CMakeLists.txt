@@ -3,6 +3,7 @@ SET(LIST_OF_RULES
     InvertedLogic
     MissingBreakInSwitchStatement
     NonCaseLabelInSwitchStatement
+    ParameterReassignment
     SwitchStatementsShouldHaveDefault
     TooFewBranchesInSwitchStatement
     )
