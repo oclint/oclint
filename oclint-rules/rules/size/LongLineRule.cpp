@@ -2,7 +2,6 @@
 
 #include "oclint/Rule.h"
 #include "oclint/RuleSet.h"
-#include "oclint/util/ASTUtil.h"
 #include "oclint/util/StdUtil.h"
 
 class LongLineRule : public RuleBase

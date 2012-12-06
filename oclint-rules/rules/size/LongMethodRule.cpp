@@ -2,7 +2,6 @@
 
 #include "oclint/Rule.h"
 #include "oclint/RuleSet.h"
-#include "oclint/metric/CyclomaticComplexityMetric.h"
 #include "oclint/util/ASTUtil.h"
 #include "oclint/util/StdUtil.h"
 
