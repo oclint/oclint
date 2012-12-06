@@ -218,6 +218,7 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 #include "redundant/UselessParenthesesRuleTest.h"
 
 #include "size/CyclomaticComplexityRuleTest.h"
+#include "size/LongLineRuleTest.h"
 #include "size/LongMethodRuleTest.h"
 #include "size/NPathComplexityRuleTest.h"
 

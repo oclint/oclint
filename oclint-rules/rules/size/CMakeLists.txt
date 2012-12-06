@@ -1,5 +1,6 @@
 SET(LIST_OF_RULES
     CyclomaticComplexity
+    LongLine
     LongMethod
     NPathComplexity
     )
