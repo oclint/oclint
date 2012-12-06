@@ -29,8 +29,7 @@ void RuleBase::addViolation(SourceLocation startLocation,
 {
     SourceManager *sourceManager = &_astContext->getSourceManager();
     StringRef filename = sourceManager->getFilename(startLocation);
-    string filenameString(filename.data());
-    addViolation(filenameString,
+    addViolation(filename.str(),
         sourceManager->getPresumedLineNumber(startLocation),
         sourceManager->getPresumedColumnNumber(startLocation),
         sourceManager->getPresumedLineNumber(endLocation),
