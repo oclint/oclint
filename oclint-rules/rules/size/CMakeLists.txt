@@ -3,6 +3,7 @@ SET(LIST_OF_RULES
     LongClass
     LongLine
     LongMethod
+    NcssMethodCount
     NPathComplexity
     )
 
