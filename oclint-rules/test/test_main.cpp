@@ -223,6 +223,7 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 #include "size/LongLineRuleTest.h"
 #include "size/LongMethodRuleTest.h"
 #include "size/NcssMethodCountRuleTest.h"
+#include "size/NestedBlockDepthRuleTest.h"
 #include "size/NPathComplexityRuleTest.h"
 
 #include "unused/UnusedLocalVariableRuleTest.h"

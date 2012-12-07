@@ -4,6 +4,7 @@ SET(LIST_OF_RULES
     LongLine
     LongMethod
     NcssMethodCount
+    NestedBlockDepth
     NPathComplexity
     )
 
