@@ -18,6 +18,11 @@ public:
         return ruleConfiguration(key, value);
     }
 
+    double fakeRuleConfiguration(string key, double value)
+    {
+        return ruleConfiguration(key, value);
+    }
+
     using RuleBase::apply;
     using RuleBase::ruleConfiguration;
     MOCK_METHOD0(apply, void());
@@ -33,16 +38,46 @@ TEST(RuleBaseTest, CanApply)
     rule.fakeApplyWithASTContextAndViolationSet();
 }
 
-TEST(RuleBaseTest, UseDefaultRuleConfigurationValue)
+TEST(RuleBaseTest, UseDefaultRuleConfigurationValue_Int)
 {
     RuleBaseTest_MockRuleBase rule;
     EXPECT_EQ(-1, rule.fakeRuleConfiguration("WHATEVER", -1));
 }
 
-TEST(RuleBaseTest, SetRuleConfigurationValue)
+TEST(RuleBaseTest, SetRuleConfigurationValue_IntInt)
 {
     RuleBaseTest_MockRuleBase rule;
     RuleConfiguration::addConfiguration("KEY", "1");
     EXPECT_EQ(1, rule.fakeRuleConfiguration("KEY", -1));
+    RuleConfiguration::removeAll();
+}
+
+TEST(RuleBaseTest, SetRuleConfigurationValue_DoubleInt)
+{
+    RuleBaseTest_MockRuleBase rule;
+    RuleConfiguration::addConfiguration("KEY", "1.01");
+    EXPECT_EQ(1, rule.fakeRuleConfiguration("KEY", -1));
+    RuleConfiguration::removeAll();
+}
+
+TEST(RuleBaseTest, UseDefaultRuleConfigurationValue_Double)
+{
+    RuleBaseTest_MockRuleBase rule;
+    EXPECT_EQ(-1.01, rule.fakeRuleConfiguration("WHATEVER", -1.01));
+}
+
+TEST(RuleBaseTest, SetRuleConfigurationValue_IntDouble)
+{
+    RuleBaseTest_MockRuleBase rule;
+    RuleConfiguration::addConfiguration("KEY", "1");
+    EXPECT_EQ(1.0, rule.fakeRuleConfiguration("KEY", -1.01));
+    RuleConfiguration::removeAll();
+}
+
+TEST(RuleBaseTest, SetRuleConfigurationValue_DoubleDouble)
+{
+    RuleBaseTest_MockRuleBase rule;
+    RuleConfiguration::addConfiguration("KEY", "1.01");
+    EXPECT_EQ(1.01, rule.fakeRuleConfiguration("KEY", -1.01));
     RuleConfiguration::removeAll();
 }

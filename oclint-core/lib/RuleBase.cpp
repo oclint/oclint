@@ -13,6 +13,12 @@ int RuleBase::ruleConfiguration(string key, int defaultValue)
         atoi(RuleConfiguration::valueForKey(key).c_str()) : defaultValue;
 }
 
+double RuleBase::ruleConfiguration(string key, double defaultValue)
+{
+    return RuleConfiguration::hasKey(key) ?
+        atof(RuleConfiguration::valueForKey(key).c_str()) : defaultValue;
+}
+
 void RuleBase::addViolation(string filePath, int startLine, int startColumn,
     int endLine, int endColumn, RuleBase *rule, const string& message)
 {

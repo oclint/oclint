@@ -1,19 +1,32 @@
 #include "rules/size/LongLineRule.cpp"
 
-TEST(LongLineRuleTest, PropertyTest)
+class LongLineRuleTest : public ::testing::Test {
+protected:
+    virtual void SetUp()
+    {
+        RuleConfiguration::addConfiguration("LONG_LINE", "0");
+    }
+
+    virtual void TearDown()
+    {
+        RuleConfiguration::removeAll();
+    }
+};
+
+TEST_F(LongLineRuleTest, PropertyTest)
 {
     LongLineRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("long line", rule.name());
 }
 
-TEST(LongLineRuleTest, GetNumberOfCharactersForALine)
+TEST_F(LongLineRuleTest, GetNumberOfCharactersForALine)
 {
     testRuleOnCode(new LongLineRule(), "void m() {}",
         0, 1, 1, 1, 11, "Line with 11 characters exceeds limit of 0");
 }
 
-TEST(LongLineRuleTest, GetNumberOfCharactersForThreeLines)
+TEST_F(LongLineRuleTest, GetNumberOfCharactersForThreeLines)
 {
     testRuleOnCode(new LongLineRule(), "void m() {\n  \n}",
         0, 1, 1, 1, 10, "Line with 10 characters exceeds limit of 0");
@@ -24,7 +37,7 @@ TEST(LongLineRuleTest, GetNumberOfCharactersForThreeLines)
 }
 
 #if defined(__APPLE__) || defined(__MACH__)
-TEST(LongLineRuleTest, HeaderFileInObjC)
+TEST_F(LongLineRuleTest, HeaderFileInObjC)
 {
     testRuleOnCXXCode(new LongLineRule(), "#import <objc/objc.h>\nvoid m() {}",
         0, 1, 1, 1, 21, "Line with 21 characters exceeds limit of 0");

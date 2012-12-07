@@ -22,6 +22,7 @@ protected:
 
     void apply(ASTContext &astContext, ViolationSet *violationSet);
     int ruleConfiguration(string key, int defaultValue);
+    double ruleConfiguration(string key, double defaultValue);
 
     void addViolation(string filePath, int startLine, int startColumn,
         int endLine, int endColumn, RuleBase *rule, const string& message = "");
