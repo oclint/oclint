@@ -8,3 +8,10 @@ string intToString(int number)
     buffer << number;
     return buffer.str();
 }
+
+string doubleToString(double number)
+{
+	stringstream buffer;
+	buffer << number;
+	return buffer.str();
+}

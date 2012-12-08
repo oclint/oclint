@@ -6,5 +6,6 @@
 using namespace std;
 
 string intToString(int number);
+string doubleToString(double number);
 
 #endif
