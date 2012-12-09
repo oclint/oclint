@@ -1,6 +1,9 @@
-#include "oclint/RuleBase.h"
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include <clang/AST/ASTContext.h>
+
+#include "oclint/RuleBase.h"
 #include "oclint/ViolationSet.h"
 
 class RuleBaseTest_MockRuleBase : public RuleBase
@@ -80,4 +83,10 @@ TEST(RuleBaseTest, SetRuleConfigurationValue_DoubleDouble)
     RuleConfiguration::addConfiguration("KEY", "1.01");
     EXPECT_EQ(1.01, rule.fakeRuleConfiguration("KEY", -1.01));
     RuleConfiguration::removeAll();
+}
+
+int main(int argc, char **argv)
+{
+    ::testing::InitGoogleMock(&argc, argv);
+    return RUN_ALL_TESTS();
 }

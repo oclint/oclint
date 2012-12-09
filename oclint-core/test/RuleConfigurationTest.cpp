@@ -1,3 +1,8 @@
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+
+#include "oclint/RuleConfiguration.h"
+
 TEST(RuleConfigurationTest, AddConfiguration)
 {
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
@@ -22,4 +27,10 @@ TEST(RuleConfigurationTest, AddTwoConfigurations)
     RuleConfiguration::removeAll();
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
     EXPECT_FALSE(RuleConfiguration::hasKey("bar"));
+}
+
+int main(int argc, char **argv)
+{
+    ::testing::InitGoogleMock(&argc, argv);
+    return RUN_ALL_TESTS();
 }

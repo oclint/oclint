@@ -1,3 +1,6 @@
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+
 #include "oclint/RuleBase.h"
 #include "oclint/Results.h"
 #include "oclint/Violation.h"
@@ -7,7 +10,7 @@ class ResultsTest_MockRuleBase_One : public RuleBase
 public:
     MOCK_METHOD0(apply, void());
     MOCK_CONST_METHOD0(name, const string());
-    
+
     virtual const int priority() const
     {
         return 1;
@@ -19,7 +22,7 @@ class ResultsTest_MockRuleBase_Two : public RuleBase
 public:
     MOCK_METHOD0(apply, void());
     MOCK_CONST_METHOD0(name, const string());
-    
+
     virtual const int priority() const
     {
         return 2;
@@ -112,4 +115,10 @@ TEST(ResultsTest, NumberOfViolationsWithPrioerity)
     results->add(violationSetWithTwoViolations);
     EXPECT_EQ(2, results->numberOfViolationsWithPriority(1));
     EXPECT_EQ(1, results->numberOfViolationsWithPriority(2));
+}
+
+int main(int argc, char **argv)
+{
+    ::testing::InitGoogleMock(&argc, argv);
+    return RUN_ALL_TESTS();
 }

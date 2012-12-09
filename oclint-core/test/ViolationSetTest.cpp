@@ -1,3 +1,7 @@
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+
+#include "oclint/RuleBase.h"
 #include "oclint/ViolationSet.h"
 
 class ViolationSetTest_MockRuleBase : public RuleBase
@@ -39,4 +43,10 @@ TEST_F(ViolationSetTest, AddViolation)
     EXPECT_EQ(2, compareViolation.startColumn);
     EXPECT_EQ(3, compareViolation.endLine);
     EXPECT_EQ(4, compareViolation.endColumn);
+}
+
+int main(int argc, char **argv)
+{
+    ::testing::InitGoogleMock(&argc, argv);
+    return RUN_ALL_TESTS();
 }

@@ -37,6 +37,7 @@ LLVM_MAP_COMPONENTS_TO_LIBRARIES(REQ_LLVM_LIBRARIES arminfo cellspuinfo cppbacke
 INCLUDE_DIRECTORIES(${OCLINT_SOURCE_DIR}/include)
 
 IF(TEST_BUILD)
+    ENABLE_TESTING()
     ADD_DEFINITIONS(
         --coverage
         )

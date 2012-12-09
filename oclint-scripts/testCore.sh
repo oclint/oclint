@@ -29,7 +29,7 @@ if [ $SUCCESS -eq 0 ]; then
     fi
 fi
 if [ $SUCCESS -eq 0 ]; then
-    $OCLINT_CORE_BUILD/bin/oclint_test > $OCLINT_CORE_BUILD/testresults.txt
+    ctest --output-on-failure > $OCLINT_CORE_BUILD/testresults.txt
     if [ $? -ne 0 ]; then
         SUCCESS=3
     fi
