@@ -1,0 +1,7 @@
+BUILD_TEST(CyclomaticComplexityRuleTest)
+BUILD_TEST(LongClassRuleTest)
+BUILD_TEST(LongLineRuleTest)
+BUILD_TEST(LongMethodRuleTest)
+BUILD_TEST(NcssMethodCountRuleTest)
+BUILD_TEST(NestedBlockDepthRuleTest)
+BUILD_TEST(NPathComplexityRuleTest)

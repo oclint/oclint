@@ -1,0 +1,7 @@
+BUILD_TEST(DefaultLabelNotLastInSwitchStatementRuleTest)
+BUILD_TEST(InvertedLogicRuleTest)
+BUILD_TEST(MissingBreakInSwitchStatementRuleTest)
+BUILD_TEST(NonCaseLabelInSwitchStatementRuleTest)
+BUILD_TEST(ParameterReassignmentRuleTest)
+BUILD_TEST(SwitchStatementsShouldHaveDefaultRuleTest)
+BUILD_TEST(TooFewBranchesInSwitchStatementRuleTest)

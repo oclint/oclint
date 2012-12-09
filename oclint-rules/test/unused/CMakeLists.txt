@@ -1,0 +1,2 @@
+BUILD_TEST(UnusedLocalVariableRuleTest)
+BUILD_TEST(UnusedMethodParameterRuleTest)
