@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-PROJECT(OCLINT_RULES)
+PROJECT(OCLINT_METRICS)
 
 SET(CMAKE_DISABLE_SOURCE_CHANGES ON)
 SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
@@ -34,29 +34,20 @@ ADD_DEFINITIONS( ${LLVM_DEFINITIONS} )
 
 LLVM_MAP_COMPONENTS_TO_LIBRARIES(REQ_LLVM_LIBRARIES arminfo cellspuinfo cppbackendinfo debuginfo hexagoninfo mblazeinfo mipsinfo msp430info nvptxinfo powerpcinfo sparcinfo x86info xcoreinfo armdesc cellspudesc hexagondesc mblazedesc mipsdesc msp430desc nvptxdesc powerpcdesc sparcdesc x86desc xcoredesc armasmparser asmparser mblazeasmparser mcparser mipsasmparser x86asmparser)
 
-INCLUDE_DIRECTORIES(
-    ${OCLINT_SOURCE_DIR}/include
-    ${OCLINT_METRICS_SOURCE_DIR}/include
-    ${OCLINT_RULES_SOURCE_DIR}/include
-    ${OCLINT_RULES_SOURCE_DIR}
-    )
-LINK_DIRECTORIES(
-    ${OCLINT_BUILD_DIR}/lib
-    ${OCLINT_METRICS_BUILD_DIR}/lib
-    )
+INCLUDE_DIRECTORIES(${OCLINT_METRICS_SOURCE_DIR}/include)
+
+IF(TEST_BUILD)
+    ENABLE_TESTING()
+    ADD_DEFINITIONS(
+        --coverage
+        )
+ENDIF()
 
 ADD_SUBDIRECTORY(lib)
 
 IF(TEST_BUILD)
-    ENABLE_TESTING()
-    INCLUDE_DIRECTORIES(
-        ${GOOGLETEST_SRC}/include
-        ${GOOGLETEST_SRC}/gtest/include
-        ${OCLINT_RULES_SOURCE_DIR}/test/headers
-        )
+    INCLUDE_DIRECTORIES(${GOOGLETEST_SRC}/include ${GOOGLETEST_SRC}/gtest/include)
     LINK_DIRECTORIES(${GOOGLETEST_BUILD})
 
     ADD_SUBDIRECTORY(test)
-ELSE(TEST_BUILD)
-    ADD_SUBDIRECTORY(rules)
 ENDIF()
