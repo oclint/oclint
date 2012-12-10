@@ -1,9 +1,7 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-class UnnecessaryElseStatementRule : public Rule<UnnecessaryElseStatementRule>
+class UnnecessaryElseStatementRule : public AbstractAstVisitorRule<UnnecessaryElseStatementRule>
 {
 private:
     static RuleSet rules;

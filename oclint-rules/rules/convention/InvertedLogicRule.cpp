@@ -1,10 +1,7 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-
-class InvertedLogicRule : public Rule<InvertedLogicRule>
+class InvertedLogicRule : public AbstractAstVisitorRule<InvertedLogicRule>
 {
 private:
     static RuleSet rules;

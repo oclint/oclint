@@ -1,11 +1,9 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 #include "oclint/metric/CyclomaticComplexityMetric.h"
 #include "oclint/util/StdUtil.h"
 
-class CyclomaticComplexityRule : public Rule<CyclomaticComplexityRule>
+class CyclomaticComplexityRule : public AbstractAstVisitorRule<CyclomaticComplexityRule>
 {
 private:
     static RuleSet rules;

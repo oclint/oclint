@@ -1,9 +1,8 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-class ThrowExceptionFromFinallyBlockRule : public Rule<ThrowExceptionFromFinallyBlockRule>
+class ThrowExceptionFromFinallyBlockRule :
+    public AbstractAstVisitorRule<ThrowExceptionFromFinallyBlockRule>
 {
     class ExtractObjCAtThrowStmts : public RecursiveASTVisitor<ExtractObjCAtThrowStmts>
     {
@@ -43,14 +42,14 @@ class ThrowExceptionFromFinallyBlockRule : public Rule<ThrowExceptionFromFinally
                 selectorString == "raise:format:arguments:";
 
             ObjCInterfaceDecl *objCInterfaceDecl = objCMsgExpr->getReceiverInterface();
-            bool isNSExceptionClass = objCInterfaceDecl && 
+            bool isNSExceptionClass = objCInterfaceDecl &&
                 objCInterfaceDecl->getNameAsString() == "NSException";
 
             if (isRaiseMethod && isNSExceptionClass)
             {
                 _raisers->push_back(objCMsgExpr);
             }
-            
+
             return true;
         }
     };

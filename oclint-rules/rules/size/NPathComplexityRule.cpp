@@ -1,11 +1,9 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 #include "oclint/metric/NPathComplexityMetric.h"
 #include "oclint/util/StdUtil.h"
 
-class NPathComplexityRule : public Rule<NPathComplexityRule>
+class NPathComplexityRule : public AbstractAstVisitorRule<NPathComplexityRule>
 {
 private:
     static RuleSet rules;

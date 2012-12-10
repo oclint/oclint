@@ -1,11 +1,10 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 
 #include "EmptyBlockStmtRule.h"
 
-class EmptyFinallyStatementRule : public Rule<EmptyFinallyStatementRule>, public EmptyBlockStmtRule
+class EmptyFinallyStatementRule :
+    public AbstractAstVisitorRule<EmptyFinallyStatementRule>, public EmptyBlockStmtRule
 {
 private:
     static RuleSet rules;

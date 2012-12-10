@@ -1,10 +1,8 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-
-class RedundantIfStatementRule : public Rule<RedundantIfStatementRule>
+class RedundantIfStatementRule :
+    public AbstractAstVisitorRule<RedundantIfStatementRule>
 {
 private:
     static RuleSet rules;

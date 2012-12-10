@@ -4,7 +4,6 @@
 #include <string>
 
 #include <clang/AST/AST.h>
-#include <clang/AST/ASTContext.h>
 
 #include "oclint/RuleConfiguration.h"
 #include "oclint/ViolationSet.h"

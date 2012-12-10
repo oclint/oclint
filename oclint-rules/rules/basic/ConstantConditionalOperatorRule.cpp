@@ -1,10 +1,8 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-
-class ConstantConditionalOperatorRule : public Rule<ConstantConditionalOperatorRule>
+class ConstantConditionalOperatorRule :
+    public AbstractAstVisitorRule<ConstantConditionalOperatorRule>
 {
 private:
     static RuleSet rules;

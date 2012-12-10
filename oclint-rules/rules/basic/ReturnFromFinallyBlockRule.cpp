@@ -1,10 +1,7 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-
-class ReturnFromFinallyBlockRule : public Rule<ReturnFromFinallyBlockRule>
+class ReturnFromFinallyBlockRule : public AbstractAstVisitorRule<ReturnFromFinallyBlockRule>
 {
     class ExtractReturnStmts : public RecursiveASTVisitor<ExtractReturnStmts>
     {

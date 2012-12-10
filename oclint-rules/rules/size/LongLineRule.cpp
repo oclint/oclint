@@ -1,6 +1,4 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/RuleBase.h"
 #include "oclint/RuleSet.h"
 #include "oclint/util/StdUtil.h"
 

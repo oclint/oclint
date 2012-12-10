@@ -1,9 +1,7 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-class UnusedLocalVariableRule : public Rule<UnusedLocalVariableRule>
+class UnusedLocalVariableRule : public AbstractAstVisitorRule<UnusedLocalVariableRule>
 {
 private:
     static RuleSet rules;

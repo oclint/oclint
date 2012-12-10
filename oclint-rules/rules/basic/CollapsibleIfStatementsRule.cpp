@@ -1,10 +1,7 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-
-class CollapsibleIfStatementsRule : public Rule<CollapsibleIfStatementsRule>
+class CollapsibleIfStatementsRule : public AbstractAstVisitorRule<CollapsibleIfStatementsRule>
 {
 private:
     static RuleSet rules;

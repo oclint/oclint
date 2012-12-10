@@ -1,10 +1,7 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-
-class ConstantIfExpressionRule : public Rule<ConstantIfExpressionRule>
+class ConstantIfExpressionRule : public AbstractAstVisitorRule<ConstantIfExpressionRule>
 {
 private:
     static RuleSet rules;

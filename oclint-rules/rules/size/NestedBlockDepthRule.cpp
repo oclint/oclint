@@ -1,11 +1,9 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 #include "oclint/metric/StmtDepthMetric.h"
 #include "oclint/util/StdUtil.h"
 
-class NestedBlockDepthRule : public Rule<NestedBlockDepthRule>
+class NestedBlockDepthRule : public AbstractAstVisitorRule<NestedBlockDepthRule>
 {
 private:
     static RuleSet rules;

@@ -1,12 +1,11 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 
 #define BITWISEOPERATORINCONDITIONALRULE_ANALYZE(STMT) Expr *cond = STMT->getCond(); \
     if (_finder.find(cond)) { addViolation(cond, this); } return true
 
-class BitwiseOperatorInConditionalRule : public Rule<BitwiseOperatorInConditionalRule>
+class BitwiseOperatorInConditionalRule :
+    public AbstractAstVisitorRule<BitwiseOperatorInConditionalRule>
 {
     class BitwiseOperatorInConditionalFinder :
         public RecursiveASTVisitor<BitwiseOperatorInConditionalFinder>

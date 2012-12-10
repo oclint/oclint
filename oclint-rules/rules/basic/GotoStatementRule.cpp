@@ -1,9 +1,7 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-class GotoStatementRule : public Rule<GotoStatementRule>
+class GotoStatementRule : public AbstractAstVisitorRule<GotoStatementRule>
 {
 private:
     static RuleSet rules;

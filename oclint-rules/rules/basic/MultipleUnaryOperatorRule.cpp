@@ -1,9 +1,7 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-class MultipleUnaryOperatorRule : public Rule<MultipleUnaryOperatorRule>
+class MultipleUnaryOperatorRule : public AbstractAstVisitorRule<MultipleUnaryOperatorRule>
 {
 private:
     static RuleSet rules;

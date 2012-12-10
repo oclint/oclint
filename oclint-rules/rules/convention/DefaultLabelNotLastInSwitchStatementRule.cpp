@@ -1,10 +1,8 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 
 class DefaultLabelNotLastInSwitchStatementRule :
-    public Rule<DefaultLabelNotLastInSwitchStatementRule>
+    public AbstractAstVisitorRule<DefaultLabelNotLastInSwitchStatementRule>
 {
 private:
     static RuleSet rules;

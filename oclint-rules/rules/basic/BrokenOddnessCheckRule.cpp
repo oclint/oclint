@@ -1,9 +1,7 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-class BrokenOddnessCheckRule : public Rule<BrokenOddnessCheckRule>
+class BrokenOddnessCheckRule : public AbstractAstVisitorRule<BrokenOddnessCheckRule>
 {
 private:
     static RuleSet rules;

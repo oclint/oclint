@@ -1,9 +1,7 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-class MissingBreakInSwitchStatementRule : public Rule<MissingBreakInSwitchStatementRule>
+class MissingBreakInSwitchStatementRule : public AbstractAstVisitorRule<MissingBreakInSwitchStatementRule>
 {
     class FindingBreak : public RecursiveASTVisitor<FindingBreak>
     {

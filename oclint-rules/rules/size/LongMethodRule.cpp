@@ -1,11 +1,9 @@
-#include <clang/AST/AST.h>
-
-#include "oclint/Rule.h"
+#include "oclint/AbstractAstVisitorRule.h"
 #include "oclint/RuleSet.h"
 #include "oclint/util/ASTUtil.h"
 #include "oclint/util/StdUtil.h"
 
-class LongMethodRule : public Rule<LongMethodRule>
+class LongMethodRule : public AbstractAstVisitorRule<LongMethodRule>
 {
 private:
     static RuleSet rules;
