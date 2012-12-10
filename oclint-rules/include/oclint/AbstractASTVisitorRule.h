@@ -34,10 +34,10 @@ protected:
     }
 
 public:
-  virtual ~AbstractASTVisitorRule() {}
+    virtual ~AbstractASTVisitorRule() {}
 
-  virtual void setUp() {}
-  virtual void tearDown() {}
+    virtual void setUp() {}
+    virtual void tearDown() {}
 };
 
 #endif
