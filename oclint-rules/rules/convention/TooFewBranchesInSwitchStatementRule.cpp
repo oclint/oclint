@@ -1,8 +1,8 @@
-#include "oclint/AbstractAstVisitorRule.h"
+#include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
 class TooFewBranchesInSwitchStatementRule :
-    public AbstractAstVisitorRule<TooFewBranchesInSwitchStatementRule>
+    public AbstractASTVisitorRule<TooFewBranchesInSwitchStatementRule>
 {
     class CountCaseStmts : public RecursiveASTVisitor<CountCaseStmts>
     {

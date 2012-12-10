@@ -1,7 +1,7 @@
-#include "oclint/AbstractAstVisitorRule.h"
+#include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-class DoubleNegativeRule : public AbstractAstVisitorRule<DoubleNegativeRule>
+class DoubleNegativeRule : public AbstractASTVisitorRule<DoubleNegativeRule>
 {
 private:
     static RuleSet rules;

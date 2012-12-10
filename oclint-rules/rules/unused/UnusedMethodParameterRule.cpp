@@ -1,8 +1,8 @@
-#include "oclint/AbstractAstVisitorRule.h"
+#include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 #include "oclint/util/ASTUtil.h"
 
-class UnusedMethodParameterRule : public AbstractAstVisitorRule<UnusedMethodParameterRule>
+class UnusedMethodParameterRule : public AbstractASTVisitorRule<UnusedMethodParameterRule>
 {
 private:
     static RuleSet rules;

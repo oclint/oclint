@@ -1,7 +1,7 @@
-#include "oclint/AbstractAstVisitorRule.h"
+#include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-class ForLoopShouldBeWhileLoopRule : public AbstractAstVisitorRule<ForLoopShouldBeWhileLoopRule>
+class ForLoopShouldBeWhileLoopRule : public AbstractASTVisitorRule<ForLoopShouldBeWhileLoopRule>
 {
 private:
     static RuleSet rules;

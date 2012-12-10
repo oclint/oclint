@@ -1,8 +1,8 @@
-#include "oclint/AbstractAstVisitorRule.h"
+#include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
 class SwitchStatementsShouldHaveDefaultRule :
-    public AbstractAstVisitorRule<SwitchStatementsShouldHaveDefaultRule>
+    public AbstractASTVisitorRule<SwitchStatementsShouldHaveDefaultRule>
 {
 private:
     static RuleSet rules;

@@ -1,7 +1,7 @@
-#include "oclint/AbstractAstVisitorRule.h"
+#include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-class ParameterReassignmentRule : public AbstractAstVisitorRule<ParameterReassignmentRule>
+class ParameterReassignmentRule : public AbstractASTVisitorRule<ParameterReassignmentRule>
 {
     class ParametersNameFinder : public RecursiveASTVisitor<ParametersNameFinder>
     {

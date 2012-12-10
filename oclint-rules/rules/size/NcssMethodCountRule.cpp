@@ -1,9 +1,9 @@
-#include "oclint/AbstractAstVisitorRule.h"
+#include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 #include "oclint/metric/NcssMetric.h"
 #include "oclint/util/StdUtil.h"
 
-class NcssMethodCountRule : public AbstractAstVisitorRule<NcssMethodCountRule>
+class NcssMethodCountRule : public AbstractASTVisitorRule<NcssMethodCountRule>
 {
 private:
     static RuleSet rules;

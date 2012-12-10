@@ -1,4 +1,4 @@
-#include "oclint/AbstractAstVisitorRule.h"
+#include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
 #define DEADCODERULE_GET_COMPOUNDSTMT_AND_APPLY                         \
@@ -13,7 +13,7 @@
     }                                                                   \
     return true;
 
-class DeadCodeRule : public AbstractAstVisitorRule<DeadCodeRule>
+class DeadCodeRule : public AbstractASTVisitorRule<DeadCodeRule>
 {
 private:
     static RuleSet rules;

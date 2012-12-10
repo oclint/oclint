@@ -1,8 +1,8 @@
-#include "oclint/AbstractAstVisitorRule.h"
+#include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
 class NonCaseLabelInSwitchStatementRule :
-    public AbstractAstVisitorRule<NonCaseLabelInSwitchStatementRule>
+    public AbstractASTVisitorRule<NonCaseLabelInSwitchStatementRule>
 {
     class ExtractLabelStmts : public RecursiveASTVisitor<ExtractLabelStmts>
     {

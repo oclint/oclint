@@ -1,7 +1,7 @@
-#include "oclint/AbstractAstVisitorRule.h"
+#include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-class BrokenOddnessCheckRule : public AbstractAstVisitorRule<BrokenOddnessCheckRule>
+class BrokenOddnessCheckRule : public AbstractASTVisitorRule<BrokenOddnessCheckRule>
 {
 private:
     static RuleSet rules;

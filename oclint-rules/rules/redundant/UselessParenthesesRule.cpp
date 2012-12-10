@@ -1,7 +1,7 @@
-#include "oclint/AbstractAstVisitorRule.h"
+#include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-class UselessParenthesesRule : public AbstractAstVisitorRule<UselessParenthesesRule>
+class UselessParenthesesRule : public AbstractASTVisitorRule<UselessParenthesesRule>
 {
 private:
     static RuleSet rules;

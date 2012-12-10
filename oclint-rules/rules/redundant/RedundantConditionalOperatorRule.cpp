@@ -1,8 +1,8 @@
-#include "oclint/AbstractAstVisitorRule.h"
+#include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
 class RedundantConditionalOperatorRule :
-    public AbstractAstVisitorRule<RedundantConditionalOperatorRule>
+    public AbstractASTVisitorRule<RedundantConditionalOperatorRule>
 {
 private:
     static RuleSet rules;

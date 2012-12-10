@@ -1,7 +1,7 @@
-#include "oclint/AbstractAstVisitorRule.h"
+#include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-class ConstantIfExpressionRule : public AbstractAstVisitorRule<ConstantIfExpressionRule>
+class ConstantIfExpressionRule : public AbstractASTVisitorRule<ConstantIfExpressionRule>
 {
 private:
     static RuleSet rules;

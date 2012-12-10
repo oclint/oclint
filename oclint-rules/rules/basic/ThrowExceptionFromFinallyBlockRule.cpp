@@ -1,8 +1,8 @@
-#include "oclint/AbstractAstVisitorRule.h"
+#include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
 class ThrowExceptionFromFinallyBlockRule :
-    public AbstractAstVisitorRule<ThrowExceptionFromFinallyBlockRule>
+    public AbstractASTVisitorRule<ThrowExceptionFromFinallyBlockRule>
 {
     class ExtractObjCAtThrowStmts : public RecursiveASTVisitor<ExtractObjCAtThrowStmts>
     {

@@ -12,7 +12,7 @@ using namespace std;
 using namespace clang;
 
 template<typename T>
-class Rule : public RuleBase, public RecursiveASTVisitor<T>
+class AbstractASTVisitorRule : public RuleBase, public RecursiveASTVisitor<T>
 {
 protected:
     virtual void apply()
@@ -34,7 +34,7 @@ protected:
     }
 
 public:
-  virtual ~Rule() {}
+  virtual ~AbstractASTVisitorRule() {}
 
   virtual void setUp() {}
   virtual void tearDown() {}

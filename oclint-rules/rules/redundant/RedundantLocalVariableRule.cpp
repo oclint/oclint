@@ -1,7 +1,7 @@
-#include "oclint/AbstractAstVisitorRule.h"
+#include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-class RedundantLocalVariableRule : public AbstractAstVisitorRule<RedundantLocalVariableRule>
+class RedundantLocalVariableRule : public AbstractASTVisitorRule<RedundantLocalVariableRule>
 {
 private:
     static RuleSet rules;

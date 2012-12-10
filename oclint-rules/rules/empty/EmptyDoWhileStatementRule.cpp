@@ -1,10 +1,10 @@
-#include "oclint/AbstractAstVisitorRule.h"
+#include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
 #include "EmptyBlockStmtRule.h"
 
 class EmptyDoWhileStatementRule :
-    public AbstractAstVisitorRule<EmptyDoWhileStatementRule>, public EmptyBlockStmtRule
+    public AbstractASTVisitorRule<EmptyDoWhileStatementRule>, public EmptyBlockStmtRule
 {
 private:
     static RuleSet rules;
