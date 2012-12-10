@@ -1,8 +1,8 @@
-#include "oclint/RuleBase.h"
+#include "oclint/AbstractSourceCodeReaderRule.h"
 #include "oclint/RuleSet.h"
 #include "oclint/util/StdUtil.h"
 
-class LongLineRule : public RuleBase
+class LongLineRule : public AbstractSourceCodeReaderRule
 {
 private:
     static RuleSet rules;
@@ -18,32 +18,16 @@ public:
         return 3;
     }
 
-    virtual void apply()
+    virtual void eachLine(int lineNumber, string line, string filePath)
     {
         int threshold = ruleConfiguration("LONG_LINE", 100);
-        SourceManager *sourceManager = &_astContext->getSourceManager();
-        FileID mainFileID = sourceManager->getMainFileID();
-
-        SourceLocation startOfMainFile = sourceManager->getLocForStartOfFile(mainFileID);
-        StringRef filePath = sourceManager->getFilename(startOfMainFile);
-
-        StringRef mainFileStringRef = sourceManager->getBufferData(mainFileID);
-        StringRef remaining = mainFileStringRef;
-        int currentLineNumber = 1;
-        while (remaining.size() > 0)
+        int currentLineSize = line.size();
+        if (currentLineSize > threshold)
         {
-            pair<StringRef, StringRef> splitPair = remaining.split('\n');
-            StringRef currentLine = splitPair.first;
-            int currentLineSize = currentLine.size();
-            if (currentLineSize > threshold)
-            {
-                string description = "Line with " + intToString(currentLineSize) +
-                    " characters exceeds limit of " + intToString(threshold);
-                addViolation(filePath.str(), currentLineNumber, 1,
-                    currentLineNumber, currentLineSize, this, description);
-            }
-            remaining = splitPair.second;
-            currentLineNumber++;
+            string description = "Line with " + intToString(currentLineSize) +
+                " characters exceeds limit of " + intToString(threshold);
+            addViolation(filePath,
+                lineNumber, 1, lineNumber, currentLineSize, this, description);
         }
     }
 };
