@@ -1,30 +1,5 @@
 #include "oclint/metric/StmtDepthMetric.h"
 
-#define DISPATH(STMT_TYPE) if (isa<STMT_TYPE>(node)) return depth(dyn_cast<STMT_TYPE>(node))
-
-int StmtDepthMetric::depth(Stmt *node)
-{
-    if (node)
-    {
-        DISPATH(CompoundStmt);
-        DISPATH(IfStmt);
-        DISPATH(WhileStmt);
-        DISPATH(DoStmt);
-        DISPATH(ForStmt);
-        DISPATH(ObjCForCollectionStmt);
-        DISPATH(SwitchStmt);
-        DISPATH(SwitchCase);
-        DISPATH(CXXTryStmt);
-        DISPATH(CXXCatchStmt);
-        DISPATH(ObjCAtTryStmt);
-        DISPATH(ObjCAtCatchStmt);
-        DISPATH(ObjCAtFinallyStmt);
-        DISPATH(ObjCAtSynchronizedStmt);
-        DISPATH(ObjCAutoreleasePoolStmt);
-    }
-    return 0;
-}
-
 int StmtDepthMetric::depth(CompoundStmt *stmt)
 {
     int maxDepth = 0;

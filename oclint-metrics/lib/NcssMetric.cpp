@@ -1,32 +1,5 @@
 #include "oclint/metric/NcssMetric.h"
 
-#define DISPATH(STMT_TYPE) if (isa<STMT_TYPE>(node)) return ncss(dyn_cast<STMT_TYPE>(node))
-
-int NcssMetric::ncss(Stmt *node)
-{
-    if (node)
-    {
-        DISPATH(NullStmt);
-        DISPATH(CompoundStmt);
-        DISPATH(IfStmt);
-        DISPATH(WhileStmt);
-        DISPATH(DoStmt);
-        DISPATH(ForStmt);
-        DISPATH(ObjCForCollectionStmt);
-        DISPATH(SwitchStmt);
-        DISPATH(SwitchCase);
-        DISPATH(CXXTryStmt);
-        DISPATH(CXXCatchStmt);
-        DISPATH(ObjCAtTryStmt);
-        DISPATH(ObjCAtCatchStmt);
-        DISPATH(ObjCAtFinallyStmt);
-        DISPATH(ObjCAtSynchronizedStmt);
-        DISPATH(ObjCAutoreleasePoolStmt);
-        return 1;
-    }
-    return 0;
-}
-
 int NcssMetric::ncss(NullStmt *)
 {
     return 0;

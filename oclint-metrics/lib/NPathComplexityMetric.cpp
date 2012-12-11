@@ -1,22 +1,5 @@
 #include "oclint/metric/NPathComplexityMetric.h"
 
-#define DISPATH(STMT_TYPE) if (isa<STMT_TYPE>(node)) return nPath(dyn_cast<STMT_TYPE>(node))
-
-int NPathComplexityMetric::nPath(Stmt *node)
-{
-    if (node)
-    {
-        DISPATH(CompoundStmt);
-        DISPATH(IfStmt);
-        DISPATH(WhileStmt);
-        DISPATH(DoStmt);
-        DISPATH(ForStmt);
-        DISPATH(SwitchStmt);
-        DISPATH(ObjCForCollectionStmt);
-    }
-    return 1;
-}
-
 int NPathComplexityMetric::nPath(CompoundStmt *stmt)
 {
     int npath = 1;
@@ -110,18 +93,6 @@ int NPathComplexityMetric::nPath(SwitchStmt *stmt)
         }
     }
     return nPathSwitchStmt + internalNPath;
-}
-
-int NPathComplexityMetric::nPath(Expr *node)
-{
-    if (node)
-    {
-        DISPATH(ConditionalOperator);
-        DISPATH(BinaryOperator);
-        DISPATH(ParenExpr);
-        DISPATH(CastExpr);
-    }
-    return 0;
 }
 
 int NPathComplexityMetric::nPath(ConditionalOperator *expr)

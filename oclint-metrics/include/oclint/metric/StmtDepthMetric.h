@@ -1,6 +1,8 @@
 #ifndef OCLINT_METRIC_STMTDEPTHMETRIC_H
 #define OCLINT_METRIC_STMTDEPTHMETRIC_H
 
+#define DISPATH(STMT_TYPE) if (isa<STMT_TYPE>(node)) return depth(dyn_cast<STMT_TYPE>(node))
+
 #include <clang/AST/AST.h>
 
 using namespace clang;
@@ -8,7 +10,29 @@ using namespace clang;
 class StmtDepthMetric
 {
 public:
-    int depth(Stmt *stmt);
+    int depth(Stmt *node)
+    {
+        if (node)
+        {
+            DISPATH(CompoundStmt);
+            DISPATH(IfStmt);
+            DISPATH(WhileStmt);
+            DISPATH(DoStmt);
+            DISPATH(ForStmt);
+            DISPATH(ObjCForCollectionStmt);
+            DISPATH(SwitchStmt);
+            DISPATH(SwitchCase);
+            DISPATH(CXXTryStmt);
+            DISPATH(CXXCatchStmt);
+            DISPATH(ObjCAtTryStmt);
+            DISPATH(ObjCAtCatchStmt);
+            DISPATH(ObjCAtFinallyStmt);
+            DISPATH(ObjCAtSynchronizedStmt);
+            DISPATH(ObjCAutoreleasePoolStmt);
+        }
+        return 0;
+    }
+
     int depth(CompoundStmt *stmt);
     int depth(IfStmt *stmt);
     int depth(WhileStmt *stmt);
@@ -27,5 +51,7 @@ public:
 };
 
 int getStmtDepth(Stmt *stmt);
+
+#undef DISPATH
 
 #endif
