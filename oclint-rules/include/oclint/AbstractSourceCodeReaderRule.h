@@ -1,3 +1,6 @@
+#ifndef OCLINT_ABSTRACTSOURCECODEREADERRULE_H
+#define OCLINT_ABSTRACTSOURCECODEREADERRULE_H
+
 #include "oclint/RuleBase.h"
 
 class AbstractSourceCodeReaderRule : public RuleBase
@@ -28,3 +31,5 @@ public:
 
     virtual void eachLine(int lineNumber, string line, string filePath) = 0;
 };
+
+#endif
