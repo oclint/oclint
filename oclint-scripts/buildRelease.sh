@@ -10,6 +10,12 @@ OCLINT_RELEASE_BUILD="$PROJECT_ROOT/build/oclint-release"
 OCLINT_JSON_CD_FOLDER="$PROJECT_ROOT/oclint-json-compilation-database"
 OCLINT_XCODBUILD_FOLDER="$PROJECT_ROOT/oclint-xcodebuild"
 
+# clean test directory
+if [ $# -eq 1 ] && [ $1 == "clean" ]; then
+    rm -rf $OCLINT_RELEASE_BUILD
+    exit 0
+fi
+
 # create directory and prepare for build
 mkdir -p $OCLINT_RELEASE_BUILD
 mkdir -p $OCLINT_RELEASE_BUILD/bin
@@ -18,6 +24,8 @@ cd $OCLINT_RELEASE_BUILD
 
 # put exetuable in place
 cp $OCLINT_CORE_BUILD/bin/oclint* $OCLINT_RELEASE_BUILD/bin
+cd $OCLINT_RELEASE_BUILD/bin
+ln -s oclint* oclint
 
 # put rules in place
 cp -rp $OCLINT_RULES_BUILD/rules.dl $OCLINT_RELEASE_BUILD/lib/oclint/rules
@@ -31,7 +39,7 @@ if [ -d "$OCLINT_JSON_CD_FOLDER" ]; then
 fi
 
 # put oclint-xcodebuild in place if exists
-if [ -d "$OCLINT_XCODBUILD_FOLDER" ]; then
+if [ -d "$OCLINT_XCODBUILD_FOLDER" ] && [ `uname` == "Darwin" ]; then
     cp $OCLINT_XCODBUILD_FOLDER/oclint* $OCLINT_RELEASE_BUILD/bin
 fi
 

@@ -12,6 +12,12 @@ OCLINT_METRICS_BUILD="$PROJECT_ROOT/build/oclint-metrics"
 OCLINT_RULES_SRC="$PROJECT_ROOT/oclint-rules"
 OCLINT_RULES_BUILD="$PROJECT_ROOT/build/oclint-rules"
 
+# clean test directory
+if [ $# -eq 1 ] && [ $1 == "clean" ]; then
+    rm -rf $OCLINT_RULES_BUILD
+    exit 0
+fi
+
 # create directory and prepare for build
 mkdir -p $OCLINT_RULES_BUILD
 cd $OCLINT_RULES_BUILD

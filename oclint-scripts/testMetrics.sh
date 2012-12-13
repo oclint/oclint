@@ -8,8 +8,14 @@ LLVM_BUILD="$PROJECT_ROOT/build/llvm-install"
 GOOGLE_TEST_SRC="$PROJECT_ROOT/googletest"
 GOOGLE_TEST_BUILD="$PROJECT_ROOT/build/googletest"
 OCLINT_METRICS_SRC="$PROJECT_ROOT/oclint-metrics"
-OCLINT_METRICS_BUILD="$PROJECT_ROOT/build/oclint-metrics"
+OCLINT_METRICS_BUILD="$PROJECT_ROOT/build/oclint-metrics-test"
 SUCCESS=0
+
+# clean test directory
+if [ $# -eq 1 ] && [ $1 == "clean" ]; then
+    rm -rf $OCLINT_METRICS_BUILD
+    exit 0
+fi
 
 # create directory and prepare for build
 mkdir -p $OCLINT_METRICS_BUILD
@@ -34,15 +40,6 @@ if [ $SUCCESS -eq 0 ]; then
         SUCCESS=3
     fi
     cat $OCLINT_METRICS_BUILD/testresults.txt
-fi
-if [ $SUCCESS -eq 0 ]; then
-    lcov -b . -d . -c -o $OCLINT_METRICS_BUILD/output.lcov
-    lcov -e $OCLINT_METRICS_BUILD/output.lcov "*oclint-metrics*" -o $OCLINT_METRICS_BUILD/output.lcov
-    lcov -r $OCLINT_METRICS_BUILD/output.lcov "*test*" -o $OCLINT_METRICS_BUILD/output.lcov
-    genhtml -o $OCLINT_METRICS_BUILD/coveragereport -t "OCLint Metrics test coverage" --num-spaces 4 $OCLINT_METRICS_BUILD/output.lcov
-    if [ $? -ne 0 ]; then
-        SUCCESS=4
-    fi
 fi
 
 # back to the current folder
