@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/bash -e
 
 # setup environment variables
 CWD=`pwd`
