@@ -1,6 +1,7 @@
 #include <dlfcn.h>
 #include <dirent.h>
 #include <iostream>
+#include <ctime>
 #include <string>
 
 #include <llvm/Support/raw_ostream.h>
@@ -29,6 +30,49 @@ using namespace std;
 using namespace llvm;
 using namespace clang;
 
+class HTMLReporter : public Reporter
+{
+public:
+    virtual void report(Results *results)
+    {
+        cout << "<!DOCTYPE html>";
+        cout << "<html>";
+        cout << "<head><title>OCLint Report</title></head>";
+        cout << "<body>";
+        cout << "<h1>OCLint Report</h1>";
+        cout << "<hr />";
+        cout << "<h2>Summary</h2>";
+        cout << "<table><thead><tr><th>Total Files</th><th>Files with Violations</th>"
+            << "<th>Priority 1</th><th>Priority 2</th><th>Priority 3</th></tr></thead>";
+        cout << "<tbody><tr><td>" << results->numberOfFiles() << "</td><td>"
+            << results->numberOfFilesWithViolations() << "</td><td>"
+            << results->numberOfViolationsWithPriority(1) << "</td><td>"
+            << results->numberOfViolationsWithPriority(2) << "</td><td>"
+            << results->numberOfViolationsWithPriority(3) << "</td></tr></tbody></table>";
+        cout << "<hr />";
+        cout << "<table><thead><tr><th>File</th><th>Location</th><th>Rule Name</th>"
+            << "<th>Priority</th><th>Message</th></tr></thead><tbody>";
+        vector<Violation> violationSet = results->allViolations();
+        for (int index = 0, numberOfViolations = violationSet.size();
+            index < numberOfViolations; index++)
+        {
+            Violation violation = violationSet.at(index);
+            cout << "<tr><td>" << violation.path << "</td><td>" << violation.startLine
+                << ":" << violation.startColumn << "</td>";
+            const RuleBase *rule = violation.rule;
+            cout << "<td>" << rule->name() << "</td><td>" << rule->priority()
+                << "</td><td>" << violation.message << "<td></tr>";
+        }
+        cout << "</tbody></table>";
+        cout << "<hr />";
+        time_t now = time(0);
+        cout << ctime(&now)
+            << "| Generated with <a href=\"http://oclint.org\">OCLint v0.6</a>.</p>";
+        cout << "</body>";
+        cout << "</html>" << endl;
+    }
+};
+
 class PlainTextReporter : public Reporter
 {
 public:
@@ -51,7 +95,6 @@ public:
             cout << ": " << rule->name()
                 << " P" << rule->priority() << " " << violation.message << endl;
         }
-
         cout << endl << "[OCLint (http://oclint.org) v0.6]" << endl;
     }
 };
@@ -132,6 +175,15 @@ bool numberOfViolationsExceedThreshold(Results *results)
         results->numberOfViolationsWithPriority(3) > argMaxP3;
 }
 
+Reporter* reporter()
+{
+    if (argReportType == html)
+    {
+        return new HTMLReporter();
+    }
+    return new PlainTextReporter();
+}
+
 enum ExitCode
 {
     SUCCESS,
@@ -153,8 +205,7 @@ int main(int argc, const char **argv)
         if (clangTool.run(newFrontendActionFactory(&actionFactory)) == 0)
         {
             Results *results = Results::getInstance();
-            Reporter *reporter = new PlainTextReporter();
-            reporter->report(results);
+            reporter()->report(results);
             if (numberOfViolationsExceedThreshold(results))
             {
                 return VIOLATIONS_EXCEED_THRESHOLD;
