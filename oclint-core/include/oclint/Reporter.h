@@ -8,7 +8,7 @@ using namespace clang;
 class Reporter
 {
 public:
-    virtual void report(Results *results) = 0;
+    virtual void report(Results *results, ostream &out) = 0;
 };
 
 #endif

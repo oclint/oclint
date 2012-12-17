@@ -1,6 +1,7 @@
 #include <dlfcn.h>
 #include <dirent.h>
 #include <iostream>
+#include <fstream>
 #include <ctime>
 #include <string>
 
@@ -28,74 +29,75 @@
 
 using namespace std;
 using namespace llvm;
+using namespace llvm::sys;
 using namespace clang;
 
 class HTMLReporter : public Reporter
 {
 public:
-    virtual void report(Results *results)
+    virtual void report(Results *results, ostream &out)
     {
-        cout << "<!DOCTYPE html>";
-        cout << "<html>";
-        cout << "<head><title>OCLint Report</title></head>";
-        cout << "<body>";
-        cout << "<h1>OCLint Report</h1>";
-        cout << "<hr />";
-        cout << "<h2>Summary</h2>";
-        cout << "<table><thead><tr><th>Total Files</th><th>Files with Violations</th>"
+        out << "<!DOCTYPE html>";
+        out << "<html>";
+        out << "<head><title>OCLint Report</title></head>";
+        out << "<body>";
+        out << "<h1>OCLint Report</h1>";
+        out << "<hr />";
+        out << "<h2>Summary</h2>";
+        out << "<table><thead><tr><th>Total Files</th><th>Files with Violations</th>"
             << "<th>Priority 1</th><th>Priority 2</th><th>Priority 3</th></tr></thead>";
-        cout << "<tbody><tr><td>" << results->numberOfFiles() << "</td><td>"
+        out << "<tbody><tr><td>" << results->numberOfFiles() << "</td><td>"
             << results->numberOfFilesWithViolations() << "</td><td>"
             << results->numberOfViolationsWithPriority(1) << "</td><td>"
             << results->numberOfViolationsWithPriority(2) << "</td><td>"
             << results->numberOfViolationsWithPriority(3) << "</td></tr></tbody></table>";
-        cout << "<hr />";
-        cout << "<table><thead><tr><th>File</th><th>Location</th><th>Rule Name</th>"
+        out << "<hr />";
+        out << "<table><thead><tr><th>File</th><th>Location</th><th>Rule Name</th>"
             << "<th>Priority</th><th>Message</th></tr></thead><tbody>";
         vector<Violation> violationSet = results->allViolations();
         for (int index = 0, numberOfViolations = violationSet.size();
             index < numberOfViolations; index++)
         {
             Violation violation = violationSet.at(index);
-            cout << "<tr><td>" << violation.path << "</td><td>" << violation.startLine
+            out << "<tr><td>" << violation.path << "</td><td>" << violation.startLine
                 << ":" << violation.startColumn << "</td>";
             const RuleBase *rule = violation.rule;
-            cout << "<td>" << rule->name() << "</td><td>" << rule->priority()
+            out << "<td>" << rule->name() << "</td><td>" << rule->priority()
                 << "</td><td>" << violation.message << "<td></tr>";
         }
-        cout << "</tbody></table>";
-        cout << "<hr />";
+        out << "</tbody></table>";
+        out << "<hr />";
         time_t now = time(0);
-        cout << ctime(&now)
+        out << ctime(&now)
             << "| Generated with <a href=\"http://oclint.org\">OCLint v0.6</a>.</p>";
-        cout << "</body>";
-        cout << "</html>" << endl;
+        out << "</body>";
+        out << "</html>" << endl;
     }
 };
 
 class PlainTextReporter : public Reporter
 {
 public:
-    virtual void report(Results *results)
+    virtual void report(Results *results, ostream &out)
     {
-        cout << "OCLint Report" << endl << endl;
-        cout << "Summary: TotalFiles=" << results->numberOfFiles() << " ";
-        cout << "FilesWithViolations=" << results->numberOfFilesWithViolations() << " ";
-        cout << "P1=" << results->numberOfViolationsWithPriority(1) << " ";
-        cout << "P2=" << results->numberOfViolationsWithPriority(2) << " ";
-        cout << "P3=" << results->numberOfViolationsWithPriority(3) << " ";
-        cout << endl << endl;
+        out << "OCLint Report" << endl << endl;
+        out << "Summary: TotalFiles=" << results->numberOfFiles() << " ";
+        out << "FilesWithViolations=" << results->numberOfFilesWithViolations() << " ";
+        out << "P1=" << results->numberOfViolationsWithPriority(1) << " ";
+        out << "P2=" << results->numberOfViolationsWithPriority(2) << " ";
+        out << "P3=" << results->numberOfViolationsWithPriority(3) << " ";
+        out << endl << endl;
         vector<Violation> violationSet = results->allViolations();
         for (int index = 0, numberOfViolations = violationSet.size();
             index < numberOfViolations; index++)
         {
             Violation violation = violationSet.at(index);
-            cout << violation.path << ":" << violation.startLine << ":" << violation.startColumn;
+            out << violation.path << ":" << violation.startLine << ":" << violation.startColumn;
             const RuleBase *rule = violation.rule;
-            cout << ": " << rule->name()
+            out << ": " << rule->name()
                 << " P" << rule->priority() << " " << violation.message << endl;
         }
-        cout << endl << "[OCLint (http://oclint.org) v0.6]" << endl;
+        out << endl << "[OCLint (http://oclint.org) v0.6]" << endl;
     }
 };
 
@@ -108,51 +110,72 @@ public:
     }
 };
 
-string getExecutablePath(const char *argv) {
-  llvm::SmallString<128> installedPath(argv);
-  if (llvm::sys::path::filename(installedPath) == installedPath) {
-    llvm::sys::Path intermediatePath = llvm::sys::Program::FindProgramByName(
-      llvm::sys::path::filename(installedPath.str()));
-    if (!intermediatePath.empty()) {
-      installedPath = intermediatePath.str();
+static string absoluteWorkingPath("");
+
+void preserveWorkingPath()
+{
+    char path[300];
+    if (getcwd(path, 300))
+    {
+        absoluteWorkingPath = string(path);
     }
-  }
-  llvm::sys::fs::make_absolute(installedPath);
-  installedPath = llvm::sys::path::parent_path(installedPath);
-  return string(installedPath.c_str());
 }
 
-int dynamicLoadRules(string ruleDirPath) {
-  DIR *dp = opendir(ruleDirPath.c_str());
-  if (dp != NULL) {
-    struct dirent *dirp;
-    while ((dirp = readdir(dp))) {
-      if (dirp->d_name[0] == '.') {
-        continue;
-      }
-      string rulePath = ruleDirPath + "/" + string(dirp->d_name);
-      if (dlopen(rulePath.c_str(), RTLD_NOW) == NULL){
-        cerr << dlerror() << endl;
+string getExecutablePath(const char *argv)
+{
+    llvm::SmallString<128> installedPath(argv);
+    if (path::filename(installedPath) == installedPath)
+    {
+        Path intermediatePath = Program::FindProgramByName(path::filename(installedPath.str()));
+        if (!intermediatePath.empty())
+        {
+            installedPath = intermediatePath.str();
+        }
+    }
+    fs::make_absolute(installedPath);
+    installedPath = path::parent_path(installedPath);
+    return string(installedPath.c_str());
+}
+
+int dynamicLoadRules(string ruleDirPath)
+{
+    DIR *dp = opendir(ruleDirPath.c_str());
+    if (dp != NULL)
+    {
+        struct dirent *dirp;
+        while ((dirp = readdir(dp)))
+        {
+            if (dirp->d_name[0] == '.')
+            {
+                continue;
+            }
+            string rulePath = ruleDirPath + "/" + string(dirp->d_name);
+            if (dlopen(rulePath.c_str(), RTLD_NOW) == NULL)
+            {
+                cerr << dlerror() << endl;
+                closedir(dp);
+                return 3;
+            }
+        }
         closedir(dp);
-        return 3;
-      }
     }
-    closedir(dp);
-  }
-  return 0;
+    return 0;
 }
 
-int consumeArgRulesPath(const char* executablePath) {
-  if (argRulesPath.size() == 0) {
-    string exeStrPath = getExecutablePath(executablePath);
-    string defaultRulePath = exeStrPath + "/../lib/oclint/rules";
-    return dynamicLoadRules(defaultRulePath);
-  }
-  int returnFlag = 0;
-  for (unsigned i = 0; i < argRulesPath.size() && returnFlag == 0; ++i) {
-    returnFlag = dynamicLoadRules(argRulesPath[i]);
-  }
-  return returnFlag;
+int consumeArgRulesPath(const char* executablePath)
+{
+    if (argRulesPath.size() == 0)
+    {
+        string exeStrPath = getExecutablePath(executablePath);
+        string defaultRulePath = exeStrPath + "/../lib/oclint/rules";
+        return dynamicLoadRules(defaultRulePath);
+    }
+    int returnFlag = 0;
+    for (unsigned i = 0; i < argRulesPath.size() && returnFlag == 0; ++i)
+    {
+        returnFlag = dynamicLoadRules(argRulesPath[i]);
+    }
+    return returnFlag;
 }
 
 void consumeRuleConfigurations()
@@ -173,6 +196,31 @@ bool numberOfViolationsExceedThreshold(Results *results)
     return results->numberOfViolationsWithPriority(1) > argMaxP1 ||
         results->numberOfViolationsWithPriority(2) > argMaxP2 ||
         results->numberOfViolationsWithPriority(3) > argMaxP3;
+}
+
+ostream* outStream()
+{
+    if (argOutput == "-")
+    {
+        return &cout;
+    }
+    string absoluteOutputPath = absoluteWorkingPath + "/" + argOutput;
+    cout << "output path: " << absoluteOutputPath << endl;
+    ofstream *out = new ofstream(absoluteOutputPath.c_str());
+    if (!out->is_open())
+    {
+        throw string("Cannot open file " + argOutput);
+    }
+    return out;
+}
+
+void disposeOutStream(ostream* out)
+{
+    if (out && argOutput != "-")
+    {
+        ofstream *fout = (ofstream *)out;
+        fout->close();
+    }
 }
 
 Reporter* reporter()
@@ -198,14 +246,16 @@ int main(int argc, const char **argv)
     if (consumeArgRulesPath(argv[0]) == 0 && RuleSet::numberOfRules() > 0)
     {
         consumeRuleConfigurations();
+        preserveWorkingPath();
 
         ClangTool clangTool(OptionsParser.GetCompilations(), OptionsParser.GetSourcePathList());
-
         ProcessorActionFactory actionFactory;
         if (clangTool.run(newFrontendActionFactory(&actionFactory)) == 0)
         {
+            ostream *out = outStream();
             Results *results = Results::getInstance();
-            reporter()->report(results);
+            reporter()->report(results, *out);
+            disposeOutStream(out);
             if (numberOfViolationsExceedThreshold(results))
             {
                 return VIOLATIONS_EXCEED_THRESHOLD;

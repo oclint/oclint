@@ -4,7 +4,6 @@
 #include "oclint/RuleBase.h"
 #include "oclint/Violation.h"
 #include "oclint/ViolationSet.h"
-#include "oclint/Reporter.h"
 
 Results* Results::_singleton = NULL;
 
