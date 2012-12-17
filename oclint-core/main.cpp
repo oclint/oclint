@@ -205,7 +205,6 @@ ostream* outStream()
         return &cout;
     }
     string absoluteOutputPath = absoluteWorkingPath + "/" + argOutput;
-    cout << "output path: " << absoluteOutputPath << endl;
     ofstream *out = new ofstream(absoluteOutputPath.c_str());
     if (!out->is_open())
     {

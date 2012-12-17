@@ -1,5 +1,3 @@
-#include <clang/AST/ASTContext.h>
-
 #include "oclint/Results.h"
 #include "oclint/RuleBase.h"
 #include "oclint/Violation.h"
