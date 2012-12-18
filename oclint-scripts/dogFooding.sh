@@ -45,18 +45,20 @@ cp $OCLINT_DOGFOODING_RULES/compile_commands.json $OCLINT_RULES_SRC/compile_comm
 
 # dog fooding for core
 cd $OCLINT_CORE_SRC
-$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database > $OCLINT_DOGFOODING/dogfoodingresults.txt
+$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database -- -o $OCLINT_DOGFOODING/dogfooding_core_results.txt
 
 # dog fooding for metrics
 cd $OCLINT_METRICS_SRC
-$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database >> $OCLINT_DOGFOODING/dogfoodingresults.txt
+$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database -- -o $OCLINT_DOGFOODING/dogfooding_metrics_results.txt
 
 # dog fooding for rules
 cd $OCLINT_RULES_SRC
-$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database >> $OCLINT_DOGFOODING/dogfoodingresults.txt
+$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database -- -o $OCLINT_DOGFOODING/dogfooding_rules_results.txt
 
 # display the results
-cat $OCLINT_DOGFOODING/dogfoodingresults.txt
+cat $OCLINT_DOGFOODING/dogfooding_core_results.txt
+cat $OCLINT_DOGFOODING/dogfooding_metrics_results.txt
+cat $OCLINT_DOGFOODING/dogfooding_rules_results.txt
 
 # back to the current folder
 cd $CWD
