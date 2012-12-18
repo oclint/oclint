@@ -204,7 +204,8 @@ ostream* outStream()
     {
         return &cout;
     }
-    string absoluteOutputPath = absoluteWorkingPath + "/" + argOutput;
+    string absoluteOutputPath = argOutput.at(0) == '/' ?
+        argOutput : absoluteWorkingPath + "/" + argOutput;
     ofstream *out = new ofstream(absoluteOutputPath.c_str());
     if (!out->is_open())
     {
