@@ -34,8 +34,7 @@ TEST(UnusedMethodParameterRuleTest, ObjCMethodWithUnusedParameter)
 @end                            \n\
 @implementation AClass          \n\
 - (void)aMethod:(int)a {}       \n\
-@end",
-        0, 7, 18, 7, 22);
+@end");
 }
 
 TEST(UnusedMethodParameterRuleTest, FunctionDeclarationWithoutDefincationShouldBeIgnored)

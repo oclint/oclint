@@ -21,7 +21,12 @@ private:
     bool isObjCMethodDeclaration(DeclContext *context)
     {
         ObjCMethodDecl *decl = dyn_cast<ObjCMethodDecl>(context);
-        return isObjCMethodDeclLocatedInInterfaceContainer(decl);
+        if (decl)
+        {
+            DeclContext *context = decl->getDeclContext();
+            return isa<ObjCContainerDecl>(context);
+        }
+        return false;
     }
 
     bool isObjCOverrideMethod(DeclContext *context)
