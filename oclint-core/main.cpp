@@ -271,13 +271,13 @@ enum ExitCode
 
 int main(int argc, const char **argv)
 {
-    CommonOptionsParser OptionsParser(argc, argv);
+    CommonOptionsParser optionsParser(argc, argv);
     if (consumeArgRulesPath(argv[0]) == 0 && RuleSet::numberOfRules() > 0)
     {
         consumeRuleConfigurations();
         preserveWorkingPath();
 
-        ClangTool clangTool(OptionsParser.GetCompilations(), OptionsParser.GetSourcePathList());
+        ClangTool clangTool(optionsParser.getCompilations(), optionsParser.getSourcePathList());
         ProcessorActionFactory actionFactory;
         if (clangTool.run(newFrontendActionFactory(&actionFactory)) == 0)
         {
