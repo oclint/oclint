@@ -3,12 +3,12 @@
 # setup environment variables
 CWD=`pwd`
 PROJECT_ROOT="$CWD/.."
-BRANCH="trunk"
+BRANCH="tags/RELEASE_32/final"
 
 if [ $# -eq 1 ] && [ $1 == "branch" ]; then
-    echo "trunk (default)"
+    echo "trunk"
     echo "branches/release_32"
-    echo "tags/RELEASE_32/final"
+    echo "tags/RELEASE_32/final (default)"
     exit 0
 fi
 
