@@ -99,7 +99,7 @@ th {                                        \
         out << "<hr />";
         time_t now = time(0);
         out << ctime(&now)
-            << "| Generated with <a href='http://oclint.org'>OCLint v0.6</a>.</p>";
+            << "| Generated with <a href='http://oclint.org'>OCLint v0.7</a>.</p>";
         out << "</body>";
         out << "</html>" << endl;
     }
@@ -127,7 +127,7 @@ public:
             out << ": " << rule->name()
                 << " P" << rule->priority() << " " << violation.message << endl;
         }
-        out << endl << "[OCLint (http://oclint.org) v0.6]" << endl;
+        out << endl << "[OCLint (http://oclint.org) v0.7]" << endl;
     }
 };
 

@@ -51,8 +51,8 @@ IF(TEST_BUILD)
 
     ADD_SUBDIRECTORY(test)
 ELSE(TEST_BUILD)
-    ADD_EXECUTABLE(oclint-0.6 main.cpp)
-    TARGET_LINK_LIBRARIES(oclint-0.6
+    ADD_EXECUTABLE(oclint-0.7 main.cpp)
+    TARGET_LINK_LIBRARIES(oclint-0.7
         OCLintRuleSet
         OCLintCore
         ${CLANG_LIBRARIES}
