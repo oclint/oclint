@@ -35,6 +35,8 @@ cl::opt<int> argMaxP1("max-priority-1", cl::desc("The max allowed number of prio
 cl::opt<int> argMaxP2("max-priority-2", cl::desc("The max allowed number of priority 2 violations"), cl::value_desc("threshold"), cl::init(10));
 cl::opt<int> argMaxP3("max-priority-3", cl::desc("The max allowed number of priority 3 violations"), cl::value_desc("threshold"), cl::init(20));
 
+cl::opt<string> argRulesConfigurationFile("rcfile", cl::desc("Rules configuration file"), cl::value_desc("path"), cl::Optional);
+
 /* -------------
    libTooling cl
    ------------- */

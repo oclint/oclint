@@ -25,6 +25,9 @@ cd $OCLINT_RELEASE_BUILD
 # put exetuable in place
 cp $OCLINT_CORE_BUILD/bin/oclint* $OCLINT_RELEASE_BUILD/bin
 cd $OCLINT_RELEASE_BUILD/bin
+if [ -e oclint ]; then
+    rm oclint
+fi
 ln -s oclint* oclint
 
 # put rules in place
