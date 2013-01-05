@@ -28,5 +28,7 @@ ELSE(TEST_BUILD)
         dl
         ${LIBXML2_LIBRARIES}
         ${CMAKE_DL_LIBS}
+        dl
+        ${LIBXML2_LIBRARIES}
         )
 ENDIF()

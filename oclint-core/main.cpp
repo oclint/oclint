@@ -233,6 +233,76 @@ int loadReporter(const char* executablePath)
     return selectedReporter == NULL ? 1 : 0;
 }
 
+void consumeRulesConfigurationFile()
+{
+    cout << argRulesConfigurationFile << endl;
+    string xmlFile = argRulesConfigurationFile;
+    if (!xmlFile.empty())
+    {
+        xmlDocPtr doc = xmlParseFile(xmlFile.c_str());
+        if (doc == NULL)
+        {
+        }
+        xmlNodePtr root = xmlDocGetRootElement(doc);
+
+        
+        xmlXPathInit();
+        xmlXPathContextPtr ctxt = xmlXPathNewContext(doc);
+        if (ctxt == NULL) {
+            cerr << "Error on XPath context" << endl;
+            exit(-1);
+        }
+        // Evaluation de l'expression XPath
+        xmlXPathObjectPtr xpathRes = xmlXPathEvalExpression(BAD_CAST "/rules/rule", ctxt);
+        if (xpathRes == NULL) {
+            cerr << "Error on XPath expression" << endl;
+            exit(-1);
+        }
+
+        if (xpathRes->type == XPATH_NODESET)
+        {
+            for (int i = 0; i < xpathRes->nodesetval->nodeNr; i++)
+                {
+                xmlNodePtr n = xpathRes->nodesetval->nodeTab[i];
+                cout << "Node rule found with name: " << n->name << endl;
+                
+                xmlNodePtr child = n->children;
+                string key;
+                string value;
+                for (; child != NULL; child = child->next)
+                {
+                    if (child->type == XML_ELEMENT_NODE)
+                    {
+                        static const string RULE_NODE_KEY = "name";
+                        static const string RULE_NODE_VALUE = "value";
+
+                        cout << "Node rule value: " << child->name << " / " << child->children->content << endl;
+                        string nodeName = reinterpret_cast<const char*>(child->name);
+                        if (nodeName == RULE_NODE_KEY)
+                        {
+                            key = reinterpret_cast<const char*>(child->children->content);
+                        }
+                        else if (nodeName == RULE_NODE_VALUE)
+                        {
+                            value = reinterpret_cast<const char*>(child->children->content);
+                        }
+                    }
+                }
+                
+                if ( !key.empty() && !value.empty() )
+                {
+                    cout << "Adding rule conf via xml file: " << key << " / " << value << endl;
+                    RuleConfiguration::addConfiguration(key, value);
+                }
+            }
+        }
+
+        xmlXPathFreeObject(xpathRes);
+        xmlXPathFreeContext(ctxt);
+        xmlFreeDoc(doc);    
+    }
+}
+
 bool numberOfViolationsExceedThreshold(Results *results)
 {
     return results->numberOfViolationsWithPriority(1) > argMaxP1 ||
