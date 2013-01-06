@@ -1,5 +1,6 @@
 #include <dlfcn.h>
 #include <dirent.h>
+#include <unistd.h>
 #include <iostream>
 #include <fstream>
 #include <ctime>
@@ -101,7 +102,7 @@ th {                                        \
         out << "<hr />";
         time_t now = time(0);
         out << ctime(&now)
-            << "| Generated with <a href='http://oclint.org'>OCLint v0.6</a>.</p>";
+            << "| Generated with <a href='http://oclint.org'>OCLint v0.7</a>.</p>";
         out << "</body>";
         out << "</html>" << endl;
     }
@@ -129,7 +130,7 @@ public:
             out << ": " << rule->name()
                 << " P" << rule->priority() << " " << violation.message << endl;
         }
-        out << endl << "[OCLint (http://oclint.org) v0.6]" << endl;
+        out << endl << "[OCLint (http://oclint.org) v0.7]" << endl;
     }
 };
 
@@ -344,14 +345,14 @@ enum ExitCode
 
 int main(int argc, const char **argv)
 {
-    CommonOptionsParser OptionsParser(argc, argv);
+    CommonOptionsParser optionsParser(argc, argv);
     if (consumeArgRulesPath(argv[0]) == 0 && RuleSet::numberOfRules() > 0)
     {
         consumeRuleConfigurations();
         consumeRulesConfigurationFile();
         preserveWorkingPath();
 
-        ClangTool clangTool(OptionsParser.GetCompilations(), OptionsParser.GetSourcePathList());
+        ClangTool clangTool(optionsParser.getCompilations(), optionsParser.getSourcePathList());
         ProcessorActionFactory actionFactory;
         if (clangTool.run(newFrontendActionFactory(&actionFactory)) == 0)
         {
