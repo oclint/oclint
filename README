@@ -9,7 +9,7 @@ It looks for potential problems that aren't visible to compilers, for example:
 * Possible bugs - empty if/else/try/catch/finally statements
 * Unused code - unused local variables and parameters
 * Complicated code - high cyclomatic complexity, NPath complexity and high NCSS
-* Redundant code - redundant if statement and useless parenthese
+* Redundant code - redundant if statement and useless parentheses
 * Code smells - long method and long parameter list
 * Bad practices - inverted logic and parameter reassignment
 * ...

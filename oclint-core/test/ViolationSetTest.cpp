@@ -4,6 +4,8 @@
 #include "oclint/RuleBase.h"
 #include "oclint/ViolationSet.h"
 
+using namespace ::testing;
+
 class ViolationSetTest_MockRuleBase : public RuleBase
 {
 public:
@@ -26,7 +28,7 @@ protected:
 
 TEST_F(ViolationSetTest, EmptySet)
 {
-    EXPECT_EQ(0, ViolationSetTest_violationSet.numberOfViolations());
+    EXPECT_THAT(ViolationSetTest_violationSet.numberOfViolations(), Eq(0));
 }
 
 TEST_F(ViolationSetTest, AddViolation)
@@ -34,15 +36,15 @@ TEST_F(ViolationSetTest, AddViolation)
     RuleBase *rule = new ViolationSetTest_MockRuleBase();
     Violation violation(rule, "test path", 1, 2, 3, 4, "test message");
     ViolationSetTest_violationSet.addViolation(violation);
-    EXPECT_EQ(1, ViolationSetTest_violationSet.numberOfViolations());
+    EXPECT_THAT(ViolationSetTest_violationSet.numberOfViolations(), Eq(1));
     Violation compareViolation = ViolationSetTest_violationSet.getViolations().at(0);
-    EXPECT_EQ("test path", compareViolation.path);
-    EXPECT_EQ("test message", compareViolation.message);
-    EXPECT_EQ(rule, compareViolation.rule);
-    EXPECT_EQ(1, compareViolation.startLine);
-    EXPECT_EQ(2, compareViolation.startColumn);
-    EXPECT_EQ(3, compareViolation.endLine);
-    EXPECT_EQ(4, compareViolation.endColumn);
+    EXPECT_THAT(compareViolation.path, StrEq("test path"));
+    EXPECT_THAT(compareViolation.message, StrEq("test message"));
+    EXPECT_THAT(compareViolation.rule, Eq(rule));
+    EXPECT_THAT(compareViolation.startLine, Eq(1));
+    EXPECT_THAT(compareViolation.startColumn, Eq(2));
+    EXPECT_THAT(compareViolation.endLine, Eq(3));
+    EXPECT_THAT(compareViolation.endColumn, Eq(4));
 }
 
 int main(int argc, char **argv)
