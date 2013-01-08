@@ -17,7 +17,7 @@ void testRuleOnCode(const Twine &fileName,
         vector<Violation> violations = violationSet->getViolations();
         if (violationIndex < 0)
         {
-            EXPECT_EQ(0, violations.size());
+            EXPECT_THAT(violations.size(), Eq(0));
         }
         else
         {
@@ -25,11 +25,11 @@ void testRuleOnCode(const Twine &fileName,
             if (violationIndex < violations.size())
             {
                 Violation violation = violations.at(violationIndex);
-                EXPECT_EQ(expectStartLine, violation.startLine);
-                EXPECT_EQ(expectStartColumn, violation.startColumn);
-                EXPECT_EQ(expectEndLine, violation.endLine);
-                EXPECT_EQ(expectEndColumn, violation.endColumn);
-                EXPECT_EQ(expectMessage, violation.message);
+                EXPECT_THAT(violation.startLine, Eq(expectStartLine));
+                EXPECT_THAT(violation.startColumn, Eq(expectStartColumn));
+                EXPECT_THAT(violation.endLine, Eq(expectEndLine));
+                EXPECT_THAT(violation.endColumn, Eq(expectEndColumn));
+                EXPECT_THAT(violation.message, StrEq(expectMessage));
             }
         }
     }
