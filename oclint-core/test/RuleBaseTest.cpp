@@ -6,6 +6,8 @@
 #include "oclint/RuleBase.h"
 #include "oclint/ViolationSet.h"
 
+using namespace ::testing;
+
 class RuleBaseTest_MockRuleBase : public RuleBase
 {
 public:
@@ -44,14 +46,14 @@ TEST(RuleBaseTest, CanApply)
 TEST(RuleBaseTest, UseDefaultRuleConfigurationValue_Int)
 {
     RuleBaseTest_MockRuleBase rule;
-    EXPECT_EQ(-1, rule.fakeRuleConfiguration("WHATEVER", -1));
+    EXPECT_THAT(rule.fakeRuleConfiguration("WHATEVER", -1), Eq(-1));
 }
 
 TEST(RuleBaseTest, SetRuleConfigurationValue_IntInt)
 {
     RuleBaseTest_MockRuleBase rule;
     RuleConfiguration::addConfiguration("KEY", "1");
-    EXPECT_EQ(1, rule.fakeRuleConfiguration("KEY", -1));
+    EXPECT_THAT(rule.fakeRuleConfiguration("KEY", -1), Eq(1));
     RuleConfiguration::removeAll();
 }
 
@@ -59,21 +61,21 @@ TEST(RuleBaseTest, SetRuleConfigurationValue_DoubleInt)
 {
     RuleBaseTest_MockRuleBase rule;
     RuleConfiguration::addConfiguration("KEY", "1.01");
-    EXPECT_EQ(1, rule.fakeRuleConfiguration("KEY", -1));
+    EXPECT_THAT(rule.fakeRuleConfiguration("KEY", -1), Eq(1));
     RuleConfiguration::removeAll();
 }
 
 TEST(RuleBaseTest, UseDefaultRuleConfigurationValue_Double)
 {
     RuleBaseTest_MockRuleBase rule;
-    EXPECT_EQ(-1.01, rule.fakeRuleConfiguration("WHATEVER", -1.01));
+    EXPECT_THAT(rule.fakeRuleConfiguration("WHATEVER", -1.01), DoubleEq(-1.01));
 }
 
 TEST(RuleBaseTest, SetRuleConfigurationValue_IntDouble)
 {
     RuleBaseTest_MockRuleBase rule;
     RuleConfiguration::addConfiguration("KEY", "1");
-    EXPECT_EQ(1.0, rule.fakeRuleConfiguration("KEY", -1.01));
+    EXPECT_THAT(rule.fakeRuleConfiguration("KEY", -1.01), DoubleEq(1.0));
     RuleConfiguration::removeAll();
 }
 
@@ -81,7 +83,7 @@ TEST(RuleBaseTest, SetRuleConfigurationValue_DoubleDouble)
 {
     RuleBaseTest_MockRuleBase rule;
     RuleConfiguration::addConfiguration("KEY", "1.01");
-    EXPECT_EQ(1.01, rule.fakeRuleConfiguration("KEY", -1.01));
+    EXPECT_THAT(rule.fakeRuleConfiguration("KEY", -1.01), DoubleEq(1.01));
     RuleConfiguration::removeAll();
 }
 

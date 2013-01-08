@@ -4,6 +4,8 @@
 #include "oclint/RuleBase.h"
 #include "oclint/RuleSet.h"
 
+using namespace ::testing;
+
 int RuleSetTest_applyCount;
 
 class RuleSetTest_MockRuleBase : public RuleBase
@@ -17,7 +19,7 @@ public:
 
 TEST(RuleSetTest, EmptyRuleSet)
 {
-    EXPECT_EQ(0, RuleSet::numberOfRules());
+    EXPECT_THAT(RuleSet::numberOfRules(), Eq(0));
 }
 
 TEST(RuleSetTest, AddRuleToRuleSet)
@@ -29,7 +31,7 @@ TEST(RuleSetTest, AddRuleToRuleSet)
     void *context;
     ASTContext *astContext = (ASTContext *)context;
     RuleSet::apply(*astContext, NULL);
-    EXPECT_EQ(1, RuleSet::numberOfRules());
+    EXPECT_THAT(RuleSet::numberOfRules(), Eq(1));
 }
 
 TEST(RuleSetTest, StaticRuleVector)
@@ -41,7 +43,7 @@ TEST(RuleSetTest, StaticRuleVector)
     void *context;
     ASTContext *astContext = (ASTContext *)context;
     RuleSet::apply(*astContext, NULL);
-    EXPECT_EQ(2, RuleSet::numberOfRules());
+    EXPECT_THAT(RuleSet::numberOfRules(), Eq(2));
 }
 
 int main(int argc, char **argv)
