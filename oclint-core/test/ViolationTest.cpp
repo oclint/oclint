@@ -6,6 +6,8 @@
 #include "oclint/RuleBase.h"
 #include "oclint/Violation.h"
 
+using namespace ::testing;
+
 class ViolationTest_MockRuleBase : public RuleBase
 {
 public:
@@ -19,13 +21,13 @@ TEST(ViolationTest, Constructor)
 {
     RuleBase *rule = new ViolationTest_MockRuleBase();
     Violation violation(rule, "test path", 1, 2, 3, 4, "test message");
-    EXPECT_EQ("test path", violation.path);
-    EXPECT_EQ("test message", violation.message);
-    EXPECT_EQ(rule, violation.rule);
-    EXPECT_EQ(1, violation.startLine);
-    EXPECT_EQ(2, violation.startColumn);
-    EXPECT_EQ(3, violation.endLine);
-    EXPECT_EQ(4, violation.endColumn);
+    EXPECT_THAT(violation.path, StrEq("test path"));
+    EXPECT_THAT(violation.message, StrEq("test message"));
+    EXPECT_THAT(violation.rule, Eq(rule));
+    EXPECT_THAT(violation.startLine, Eq(1));
+    EXPECT_THAT(violation.startColumn, Eq(2));
+    EXPECT_THAT(violation.endLine, Eq(3));
+    EXPECT_THAT(violation.endColumn, Eq(4));
 }
 
 int main(int argc, char **argv)

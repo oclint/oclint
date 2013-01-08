@@ -5,6 +5,8 @@
 #include "oclint/Results.h"
 #include "oclint/Violation.h"
 
+using namespace ::testing;
+
 class ResultsTest_MockRuleBase_One : public RuleBase
 {
 public:
@@ -38,23 +40,23 @@ public:
 TEST(ResultsTest, EmptyResults)
 {
     Results *results = Results::getInstance();
-    EXPECT_EQ(0, results->numberOfViolations());
-    EXPECT_EQ(0, results->numberOfViolationsWithPriority(0));
-    EXPECT_EQ(0, results->numberOfViolationsWithPriority(1));
-    EXPECT_EQ(0, results->numberOfViolationsWithPriority(2));
-    EXPECT_EQ(0, results->numberOfViolationsWithPriority(3));
-    EXPECT_EQ(0, results->numberOfFiles());
-    EXPECT_EQ(0, results->numberOfFilesWithViolations());
+    EXPECT_THAT(results->numberOfViolations(), Eq(0));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(0), Eq(0));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(0));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(2), Eq(0));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(3), Eq(0));
+    EXPECT_THAT(results->numberOfFiles(), Eq(0));
+    EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(0));
 }
 
 TEST(ResultsTest, NumberOfFiles)
 {
     Results *results = new ResultsTest_ResultsStub();
     results->add(new ViolationSet());
-    EXPECT_EQ(1, results->numberOfFiles());
+    EXPECT_THAT(results->numberOfFiles(), Eq(1));
     results->add(new ViolationSet());
-    EXPECT_EQ(2, results->numberOfFiles());
-    EXPECT_EQ(0, results->numberOfFilesWithViolations());
+    EXPECT_THAT(results->numberOfFiles(), Eq(2));
+    EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(0));
 }
 
 TEST(ResultsTest, NumberOfFilesWithViolations)
@@ -64,16 +66,16 @@ TEST(ResultsTest, NumberOfFilesWithViolations)
     Violation violation1(new ResultsTest_MockRuleBase_One(), "", 1, 2, 3, 4);
     violationSetWithOneViolation->addViolation(violation1);
     results->add(violationSetWithOneViolation);
-    EXPECT_EQ(1, results->numberOfFilesWithViolations());
+    EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(1));
     results->add(new ViolationSet());
-    EXPECT_EQ(1, results->numberOfFilesWithViolations());
+    EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(1));
     ViolationSet *violationSetWithTwoViolations = new ViolationSet();
     Violation violation2(new ResultsTest_MockRuleBase_One(), "", 1, 2, 3, 4);
     Violation violation3(new ResultsTest_MockRuleBase_Two(), "", 1, 2, 3, 4);
     violationSetWithTwoViolations->addViolation(violation2);
     violationSetWithTwoViolations->addViolation(violation3);
     results->add(violationSetWithTwoViolations);
-    EXPECT_EQ(2, results->numberOfFilesWithViolations());
+    EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(2));
 }
 
 TEST(ResultsTest, NumberOfViolations)
@@ -83,16 +85,16 @@ TEST(ResultsTest, NumberOfViolations)
     Violation violation1(new ResultsTest_MockRuleBase_One(), "", 1, 2, 3, 4);
     violationSetWithOneViolation->addViolation(violation1);
     results->add(violationSetWithOneViolation);
-    EXPECT_EQ(1, results->numberOfViolations());
+    EXPECT_THAT(results->numberOfViolations(), Eq(1));
     results->add(new ViolationSet());
-    EXPECT_EQ(1, results->numberOfViolations());
+    EXPECT_THAT(results->numberOfViolations(), Eq(1));
     ViolationSet *violationSetWithTwoViolations = new ViolationSet();
     Violation violation2(new ResultsTest_MockRuleBase_One(), "", 1, 2, 3, 4);
     Violation violation3(new ResultsTest_MockRuleBase_Two(), "", 1, 2, 3, 4);
     violationSetWithTwoViolations->addViolation(violation2);
     violationSetWithTwoViolations->addViolation(violation3);
     results->add(violationSetWithTwoViolations);
-    EXPECT_EQ(3, results->numberOfViolations());
+    EXPECT_THAT(results->numberOfViolations(), Eq(3));
 }
 
 TEST(ResultsTest, NumberOfViolationsWithPrioerity)
@@ -102,19 +104,19 @@ TEST(ResultsTest, NumberOfViolationsWithPrioerity)
     Violation violation1(new ResultsTest_MockRuleBase_One(), "", 1, 2, 3, 4);
     violationSetWithOneViolation->addViolation(violation1);
     results->add(violationSetWithOneViolation);
-    EXPECT_EQ(1, results->numberOfViolationsWithPriority(1));
-    EXPECT_EQ(0, results->numberOfViolationsWithPriority(2));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(1));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(2), Eq(0));
     results->add(new ViolationSet());
-    EXPECT_EQ(1, results->numberOfViolationsWithPriority(1));
-    EXPECT_EQ(0, results->numberOfViolationsWithPriority(2));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(1));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(2), Eq(0));
     ViolationSet *violationSetWithTwoViolations = new ViolationSet();
     Violation violation2(new ResultsTest_MockRuleBase_One(), "", 1, 2, 3, 4);
     Violation violation3(new ResultsTest_MockRuleBase_Two(), "", 1, 2, 3, 4);
     violationSetWithTwoViolations->addViolation(violation2);
     violationSetWithTwoViolations->addViolation(violation3);
     results->add(violationSetWithTwoViolations);
-    EXPECT_EQ(2, results->numberOfViolationsWithPriority(1));
-    EXPECT_EQ(1, results->numberOfViolationsWithPriority(2));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(2));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(2), Eq(1));
 }
 
 int main(int argc, char **argv)
