@@ -17,8 +17,7 @@ TestProcessor::TestProcessor(RuleBase *rule, ViolationSet *violationSet)
 
 void TestProcessor::HandleTranslationUnit(ASTContext &astContext)
 {
-    RuleSet ruleSet(_rule);
-    ruleSet.apply(_rule, astContext, _violationSet);
+    _rule->apply(astContext, _violationSet);
 }
 
 class TestFrontendAction : public clang::ASTFrontendAction

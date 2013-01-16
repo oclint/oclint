@@ -5,7 +5,6 @@
 
 #include <clang/AST/AST.h>
 
-#include "oclint/RuleConfiguration.h"
 #include "oclint/ViolationSet.h"
 
 using namespace std;
@@ -16,9 +15,6 @@ class RuleBase
 protected:
     ViolationSet *_violationSet;
     ASTContext *_astContext;
-
-    int ruleConfiguration(string key, int defaultValue);
-    double ruleConfiguration(string key, double defaultValue);
 
     void addViolation(string filePath, int startLine, int startColumn,
         int endLine, int endColumn, RuleBase *rule, const string& message = "");
