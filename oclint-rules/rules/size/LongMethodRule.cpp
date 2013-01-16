@@ -1,4 +1,5 @@
 #include "oclint/AbstractASTVisitorRule.h"
+#include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 #include "oclint/util/ASTUtil.h"
 #include "oclint/util/StdUtil.h"
@@ -23,7 +24,7 @@ private:
             unsigned endLineNumber = sourceManager->getPresumedLineNumber(endLocation);
             int length = endLineNumber - startLineNumber + 1;
 
-            int threshold = ruleConfiguration("LONG_METHOD", 50);
+            int threshold = RuleConfiguration::intForKey("LONG_METHOD", 50);
             if (length > threshold)
             {
                 string description = "Method with " +

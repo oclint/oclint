@@ -1,4 +1,5 @@
 #include "oclint/AbstractASTVisitorRule.h"
+#include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 #include "oclint/util/StdUtil.h"
 
@@ -33,7 +34,7 @@ public:
 
     virtual void setUp()
     {
-        _threshold = ruleConfiguration("LONG_CLASS", 1000);
+        _threshold = RuleConfiguration::intForKey("LONG_CLASS", 1000);
     }
 
     bool VisitObjCInterfaceDecl(ObjCInterfaceDecl *decl)

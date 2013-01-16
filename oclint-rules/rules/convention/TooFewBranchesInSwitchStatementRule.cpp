@@ -1,4 +1,5 @@
 #include "oclint/AbstractASTVisitorRule.h"
+#include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 
 class TooFewBranchesInSwitchStatementRule :
@@ -42,7 +43,7 @@ public:
     {
         CountCaseStmts countCaseStmts;
         int numberOfCaseStmts = countCaseStmts.count(switchStmt);
-        int threshold = ruleConfiguration("MINIMUM_CASES_IN_SWITCH", 3);
+        int threshold = RuleConfiguration::intForKey("MINIMUM_CASES_IN_SWITCH", 3);
         if (numberOfCaseStmts < threshold)
         {
             addViolation(switchStmt, this);
