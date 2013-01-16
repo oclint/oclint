@@ -20,30 +20,26 @@ public:
 TEST(RuleSetTest, EmptyRuleSet)
 {
     EXPECT_THAT(RuleSet::numberOfRules(), Eq(0));
+    EXPECT_THAT(RuleSet::getRuleAtIndex(0), IsNull());
 }
 
 TEST(RuleSetTest, AddRuleToRuleSet)
 {
-    RuleSetTest_MockRuleBase rule;
-    EXPECT_CALL(rule, apply());
-
-    RuleSet set(&rule);
-    void *context;
-    ASTContext *astContext = (ASTContext *)context;
-    RuleSet::apply(*astContext, NULL);
+    RuleBase *rule = new RuleSetTest_MockRuleBase();
+    RuleSet set(rule);
     EXPECT_THAT(RuleSet::numberOfRules(), Eq(1));
+    EXPECT_THAT(RuleSet::getRuleAtIndex(0), Eq(rule));
+    EXPECT_THAT(RuleSet::getRuleAtIndex(1), IsNull());
 }
 
 TEST(RuleSetTest, StaticRuleVector)
 {
-    RuleSetTest_MockRuleBase rule;
-    EXPECT_CALL(rule, apply()).Times(2);
-
-    RuleSet set(&rule);
-    void *context;
-    ASTContext *astContext = (ASTContext *)context;
-    RuleSet::apply(*astContext, NULL);
+    RuleBase *rule = new RuleSetTest_MockRuleBase();
+    RuleSet set(rule);
     EXPECT_THAT(RuleSet::numberOfRules(), Eq(2));
+    EXPECT_THAT(RuleSet::getRuleAtIndex(0), NotNull());
+    EXPECT_THAT(RuleSet::getRuleAtIndex(1), Eq(rule));
+    EXPECT_THAT(RuleSet::getRuleAtIndex(2), IsNull());
 }
 
 int main(int argc, char **argv)

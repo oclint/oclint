@@ -13,13 +13,10 @@ using namespace clang;
 
 class RuleBase
 {
-friend class RuleSet;
-
 protected:
     ViolationSet *_violationSet;
     ASTContext *_astContext;
 
-    void apply(ASTContext &astContext, ViolationSet *violationSet);
     int ruleConfiguration(string key, int defaultValue);
     double ruleConfiguration(string key, double defaultValue);
 
@@ -31,6 +28,7 @@ protected:
     void addViolation(Stmt *stmt, RuleBase *rule, const string& message = "");
 
 public:
+    void apply(ASTContext &astContext, ViolationSet *violationSet);
 
     virtual ~RuleBase() {}
     virtual void apply() = 0;
