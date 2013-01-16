@@ -65,5 +65,6 @@ ELSE(TEST_BUILD)
         ${REQ_LLVM_LIBRARIES}
         dl
         ${LIBXML2_LIBRARIES}
+        ${CMAKE_DL_LIBS}
         )
 ENDIF()
