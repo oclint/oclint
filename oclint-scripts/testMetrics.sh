@@ -12,7 +12,7 @@ OCLINT_METRICS_BUILD="$PROJECT_ROOT/build/oclint-metrics-test"
 SUCCESS=0
 
 # clean test directory
-if [ $# -eq 1 ] && [ $1 == "clean" ]; then
+if [ $# -eq 1 ] && [ "$1" = "clean" ]; then
     rm -rf $OCLINT_METRICS_BUILD
     exit 0
 fi

@@ -9,7 +9,7 @@ OCLINT_CORE_SRC="$PROJECT_ROOT/oclint-core"
 OCLINT_CORE_BUILD="$PROJECT_ROOT/build/oclint-core"
 
 # clean test directory
-if [ $# -eq 1 ] && [ $1 == "clean" ]; then
+if [ $# -eq 1 ] && [ "$1" = "clean" ]; then
     rm -rf $OCLINT_CORE_BUILD
     exit 0
 fi
