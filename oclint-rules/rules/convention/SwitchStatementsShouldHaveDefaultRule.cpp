@@ -33,7 +33,7 @@ public:
         }
         if (!hasDefault)
         {
-            _carrier->addViolation(switchStmt, this);
+            addViolation(switchStmt, this);
         }
 
         return true;

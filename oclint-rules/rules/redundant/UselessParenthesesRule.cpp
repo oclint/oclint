@@ -10,7 +10,7 @@ private:
     {
         if (expr && isa<ParenExpr>(expr))
         {
-            _carrier->addViolation(expr, this);
+            addViolation(expr, this);
         }
     }
 

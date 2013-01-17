@@ -96,7 +96,7 @@ public:
         if (doesReturnStatementsViolateRule(thenReturnStmt, elseReturnStmt) ||
             doesBinaryOperatorsViolateRule(thenBinaryOperator, elseBinaryOperator))
         {
-            _carrier->addViolation(ifStmt, this);
+            addViolation(ifStmt, this);
         }
 
         return true;

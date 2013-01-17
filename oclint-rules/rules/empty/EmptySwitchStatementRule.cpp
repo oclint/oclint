@@ -26,7 +26,7 @@ public:
 
         if (switchBody && isLexicalEmpty(switchBody))
         {
-            _carrier->addViolation(switchBody, this);
+            addViolation(switchBody, this);
         }
 
         return true;

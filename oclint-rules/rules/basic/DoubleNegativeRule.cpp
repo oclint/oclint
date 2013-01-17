@@ -32,7 +32,7 @@ public:
                 subUnaryOperator->getOpcode() == UO_LNot) ||
                 (unaryOperator->getOpcode() == UO_Not && subUnaryOperator->getOpcode() == UO_Not))
             {
-                _carrier->addViolation(unaryOperator, this);
+                addViolation(unaryOperator, this);
             }
         }
 

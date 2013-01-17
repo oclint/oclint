@@ -26,7 +26,7 @@ public:
 
         if (tryBlock && isLexicalEmpty(tryBlock))
         {
-            _carrier->addViolation(tryBlock, this);
+            addViolation(tryBlock, this);
         }
 
         return true;
@@ -38,7 +38,7 @@ public:
 
         if (tryBody && isLexicalEmpty(tryBody))
         {
-            _carrier->addViolation(tryBody, this);
+            addViolation(tryBody, this);
         }
 
         return true;

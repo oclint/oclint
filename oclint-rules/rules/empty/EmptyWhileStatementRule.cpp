@@ -26,7 +26,7 @@ public:
 
         if (whileBody && isLexicalEmpty(whileBody))
         {
-            _carrier->addViolation(whileBody, this);
+            addViolation(whileBody, this);
         }
 
         return true;

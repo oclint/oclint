@@ -44,7 +44,7 @@ public:
         for (int index = 0; index < returns->size(); index++)
         {
             ReturnStmt *returnStmt = returns->at(index);
-            _carrier->addViolation(returnStmt, this);
+            addViolation(returnStmt, this);
         }
 
         return true;
