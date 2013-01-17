@@ -12,6 +12,14 @@ MACRO(build_dynamic_rule name)
         OCLintUtil
         OCLintCore
         )
+
+    IF (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+        TARGET_LINK_LIBRARIES(${name}Rule
+            ${CLANG_LIBRARIES}
+            ${REQ_LLVM_LIBRARIES}
+            OCLintRuleSet
+        )
+    ENDIF()
 ENDMACRO(build_dynamic_rule)
 
 MACRO(build_dynamic_rules rules)
