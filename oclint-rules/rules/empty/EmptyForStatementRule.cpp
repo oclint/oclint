@@ -26,7 +26,7 @@ public:
 
         if (forBody && isLexicalEmpty(forBody))
         {
-            addViolation(forBody, this);
+            _carrier->addViolation(forBody, this);
         }
 
         return true;
@@ -38,7 +38,7 @@ public:
 
         if (forBody && isLexicalEmpty(forBody))
         {
-            addViolation(forBody, this);
+            _carrier->addViolation(forBody, this);
         }
 
         return true;

@@ -45,7 +45,7 @@ public:
         for (int index = 0; index < labels->size(); index++)
         {
             LabelStmt *labelStmt = labels->at(index);
-            addViolation(labelStmt, this);
+            _carrier->addViolation(labelStmt, this);
         }
 
         return true;

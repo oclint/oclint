@@ -19,7 +19,7 @@ private:
         {
             string description = "Cyclomatic Complexity Number " +
                 intToString(ccn) + " exceeds limit of " + intToString(threshold);
-            addViolation(decl, this, description);
+            _carrier->addViolation(decl, this, description);
         }
     }
 

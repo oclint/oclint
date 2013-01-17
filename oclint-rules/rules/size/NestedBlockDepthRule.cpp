@@ -28,7 +28,7 @@ public:
         {
             string description = "Block depth of " + intToString(depth) +
                 " exceeds limit of " + intToString(threshold);
-            addViolation(compoundStmt, this, description);
+            _carrier->addViolation(compoundStmt, this, description);
         }
 
         return true;

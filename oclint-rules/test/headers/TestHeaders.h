@@ -16,6 +16,7 @@ using namespace llvm;
 using namespace clang;
 using namespace clang::tooling;
 
+#include "oclint/RuleCarrier.h"
 #include "oclint/RuleBase.h"
 
 #include "TestEngine.h"

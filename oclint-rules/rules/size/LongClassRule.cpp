@@ -14,7 +14,7 @@ private:
     {
         SourceLocation startLocation = sourceRange.getBegin();
         SourceLocation endLocation = sourceRange.getEnd();
-        SourceManager *sourceManager = &_astContext->getSourceManager();
+        SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
 
         unsigned startLineNumber = sourceManager->getPresumedLineNumber(startLocation);
         unsigned endLineNumber = sourceManager->getPresumedLineNumber(endLocation);
@@ -44,7 +44,7 @@ public:
         {
             string description = "Objective-C interface with " +
                 intToString(length) + " lines exceeds limit of " + intToString(_threshold);
-            addViolation(decl, this, description);
+            _carrier->addViolation(decl, this, description);
         }
         return true;
     }
@@ -56,7 +56,7 @@ public:
         {
             string description = "Objective-C category with " +
                 intToString(length) + " lines exceeds limit of " + intToString(_threshold);
-            addViolation(decl, this, description);
+            _carrier->addViolation(decl, this, description);
         }
         return true;
     }
@@ -68,7 +68,7 @@ public:
         {
             string description = "Objective-C protocol with " +
                 intToString(length) + " lines exceeds limit of " + intToString(_threshold);
-            addViolation(decl, this, description);
+            _carrier->addViolation(decl, this, description);
         }
         return true;
     }
@@ -80,7 +80,7 @@ public:
         {
             string description = "Objective-C implementation with " +
                 intToString(length) + " lines exceeds limit of " + intToString(_threshold);
-            addViolation(decl, this, description);
+            _carrier->addViolation(decl, this, description);
         }
         return true;
     }
@@ -92,7 +92,7 @@ public:
         {
             string description = "C++ class with " +
                 intToString(length) + " lines exceeds limit of " + intToString(_threshold);
-            addViolation(decl, this, description);
+            _carrier->addViolation(decl, this, description);
         }
         return true;
     }

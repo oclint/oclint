@@ -115,7 +115,7 @@ public:
 
             if (lastElseStmt && areAllBranchesReturn(ifStmts))
             {
-                addViolation(lastElseStmt, this);
+                _carrier->addViolation(lastElseStmt, this);
             }
         }
 

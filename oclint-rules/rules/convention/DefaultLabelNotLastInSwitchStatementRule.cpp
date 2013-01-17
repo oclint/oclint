@@ -29,7 +29,7 @@ public:
             SwitchCase *nextSwitchCase = currentSwitchCase->getNextSwitchCase();
             if (nextSwitchCase && isa<DefaultStmt>(nextSwitchCase))
             {
-                addViolation(nextSwitchCase, this);
+                _carrier->addViolation(nextSwitchCase, this);
             }
             currentSwitchCase = nextSwitchCase;
         }

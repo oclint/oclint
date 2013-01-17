@@ -8,7 +8,7 @@ class AbstractSourceCodeReaderRule : public RuleBase
 protected:
     virtual void apply()
     {
-        SourceManager *sourceManager = &_astContext->getSourceManager();
+        SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
         FileID mainFileID = sourceManager->getMainFileID();
 
         SourceLocation startOfMainFile = sourceManager->getLocForStartOfFile(mainFileID);

@@ -19,7 +19,7 @@ public:
 
     bool VisitGotoStmt(GotoStmt *gotoStmt)
     {
-        addViolation(gotoStmt, this);
+        _carrier->addViolation(gotoStmt, this);
 
         return true;
     }

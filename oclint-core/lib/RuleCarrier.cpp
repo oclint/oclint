@@ -1,13 +1,17 @@
-#include "oclint/RuleBase.h"
+#include "oclint/RuleCarrier.h"
 
-void RuleBase::apply(ASTContext &astContext, ViolationSet *violationSet)
+RuleCarrier::RuleCarrier(ASTContext *astContext, ViolationSet *violationSet)
 {
     _violationSet = violationSet;
-    _astContext = &astContext;
-    apply();
+    _astContext = astContext;
 }
 
-void RuleBase::addViolation(string filePath, int startLine, int startColumn,
+ASTContext* RuleCarrier::astContext()
+{
+    return _astContext;
+}
+
+void RuleCarrier::addViolation(string filePath, int startLine, int startColumn,
     int endLine, int endColumn, RuleBase *rule, const string& message)
 {
     if (filePath != "")
@@ -18,7 +22,7 @@ void RuleBase::addViolation(string filePath, int startLine, int startColumn,
     }
 }
 
-void RuleBase::addViolation(SourceLocation startLocation,
+void RuleCarrier::addViolation(SourceLocation startLocation,
     SourceLocation endLocation, RuleBase *rule, const string& message)
 {
     SourceManager *sourceManager = &_astContext->getSourceManager();
@@ -32,12 +36,12 @@ void RuleBase::addViolation(SourceLocation startLocation,
         message);
 }
 
-void RuleBase::addViolation(Decl *decl, RuleBase *rule, const string& message)
+void RuleCarrier::addViolation(Decl *decl, RuleBase *rule, const string& message)
 {
     addViolation(decl->getLocStart(), decl->getLocEnd(), rule, message);
 }
 
-void RuleBase::addViolation(Stmt *stmt, RuleBase *rule, const string& message)
+void RuleCarrier::addViolation(Stmt *stmt, RuleBase *rule, const string& message)
 {
     addViolation(stmt->getLocStart(), stmt->getLocEnd(), rule, message);
 }

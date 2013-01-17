@@ -64,7 +64,7 @@ public:
             FindingBreak findingBreak;
             if (!findingBreak.findBreak(currentSwitchCase))
             {
-                addViolation(switchStmt, this);
+                _carrier->addViolation(switchStmt, this);
                 break;
             }
             currentSwitchCase = currentSwitchCase->getNextSwitchCase();

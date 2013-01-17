@@ -42,7 +42,7 @@ public:
         Expr *rightExpr = binaryOperator->getRHS();
         if (binaryOperator->getOpcode() == BO_EQ && isRemainderEqualsOne(leftExpr, rightExpr))
         {
-            addViolation(binaryOperator, this);
+            _carrier->addViolation(binaryOperator, this);
         }
 
         return true;

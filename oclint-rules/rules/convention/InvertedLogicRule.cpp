@@ -29,7 +29,7 @@ public:
     {
         if (ifStmt->getElse() && isInvertedLogic(ifStmt->getCond()))
         {
-            addViolation(ifStmt->getCond(), this);
+            _carrier->addViolation(ifStmt->getCond(), this);
         }
 
         return true;
@@ -39,7 +39,7 @@ public:
     {
         if (isInvertedLogic(conditionalOperator->getCond()))
         {
-            addViolation(conditionalOperator->getCond(), this);
+            _carrier->addViolation(conditionalOperator->getCond(), this);
         }
 
         return true;

@@ -17,7 +17,7 @@ private:
         {
             string description = "Method of " + intToString(ncss) +
                 " non-commenting source statements exceeds limit of " + intToString(threshold);
-            addViolation(decl, this, description);
+            _carrier->addViolation(decl, this, description);
         }
     }
 
