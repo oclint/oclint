@@ -8,7 +8,7 @@ class AbstractSourceCodeReaderRule : public RuleBase
 protected:
     virtual void apply()
     {
-        SourceManager *sourceManager = &_astContext->getSourceManager();
+        SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
         FileID mainFileID = sourceManager->getMainFileID();
 
         SourceLocation startOfMainFile = sourceManager->getLocForStartOfFile(mainFileID);
@@ -24,6 +24,19 @@ protected:
             eachLine(currentLineNumber++, currentLine.str(), filePath.str());
             remaining = splitPair.second;
         }
+    }
+
+    void addViolation(int startLine, int startColumn,
+        int endLine, int endColumn, RuleBase *rule, const string& message = "")
+    {
+        SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
+        FileID mainFileID = sourceManager->getMainFileID();
+
+        SourceLocation startOfMainFile = sourceManager->getLocForStartOfFile(mainFileID);
+        StringRef filePath = sourceManager->getFilename(startOfMainFile); // TODO: Duplicated code
+
+        _carrier->addViolation(filePath.str(),
+            startLine, startColumn, endLine, endColumn, rule, message);
     }
 
 public:

@@ -1,4 +1,5 @@
 #include "oclint/AbstractASTVisitorRule.h"
+#include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 #include "oclint/util/StdUtil.h"
 
@@ -13,7 +14,7 @@ private:
     {
         SourceLocation startLocation = sourceRange.getBegin();
         SourceLocation endLocation = sourceRange.getEnd();
-        SourceManager *sourceManager = &_astContext->getSourceManager();
+        SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
 
         unsigned startLineNumber = sourceManager->getPresumedLineNumber(startLocation);
         unsigned endLineNumber = sourceManager->getPresumedLineNumber(endLocation);
@@ -33,7 +34,7 @@ public:
 
     virtual void setUp()
     {
-        _threshold = ruleConfiguration("LONG_CLASS", 1000);
+        _threshold = RuleConfiguration::intForKey("LONG_CLASS", 1000);
     }
 
     bool VisitObjCInterfaceDecl(ObjCInterfaceDecl *decl)

@@ -1,4 +1,5 @@
 #include "oclint/AbstractSourceCodeReaderRule.h"
+#include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 #include "oclint/util/StdUtil.h"
 
@@ -20,14 +21,13 @@ public:
 
     virtual void eachLine(int lineNumber, string line, string filePath)
     {
-        int threshold = ruleConfiguration("LONG_LINE", 100);
+        int threshold = RuleConfiguration::intForKey("LONG_LINE", 100);
         int currentLineSize = line.size();
         if (currentLineSize > threshold)
         {
             string description = "Line with " + intToString(currentLineSize) +
                 " characters exceeds limit of " + intToString(threshold);
-            addViolation(filePath,
-                lineNumber, 1, lineNumber, currentLineSize, this, description);
+            addViolation(lineNumber, 1, lineNumber, currentLineSize, this, description);
         }
     }
 };

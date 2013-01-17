@@ -4,6 +4,7 @@ MACRO(build_test name)
         OCLintMetric
         OCLintUtil
         OCLintCore
+        OCLintRuleSet
         gmock
         profile_rt
         ${CLANG_LIBRARIES}

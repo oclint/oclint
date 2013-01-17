@@ -1,4 +1,5 @@
 #include "oclint/AbstractASTVisitorRule.h"
+#include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 #include "oclint/metric/StmtDepthMetric.h"
 #include "oclint/util/StdUtil.h"
@@ -22,7 +23,7 @@ public:
     bool VisitCompoundStmt(CompoundStmt *compoundStmt)
     {
         int depth = getStmtDepth(compoundStmt);
-        int threshold = ruleConfiguration("NESTED_BLOCK_DEPTH", 5);
+        int threshold = RuleConfiguration::intForKey("NESTED_BLOCK_DEPTH", 5);
         if (depth > threshold)
         {
             string description = "Block depth of " + intToString(depth) +
