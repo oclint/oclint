@@ -17,10 +17,11 @@ int RuleSet::numberOfRules()
     return _rules == NULL ? 0 : _rules->size();
 }
 
-void RuleSet::apply(ASTContext &astContext, ViolationSet* violationSet)
+RuleBase* RuleSet::getRuleAtIndex(int index)
 {
-    for (int index = 0, numRules = numberOfRules(); index < numRules; index++)
+    if (index >= numberOfRules())
     {
-        _rules->at(index)->apply(astContext, violationSet);
+        return NULL; // Better throwing an exception
     }
+    return _rules->at(index);
 }

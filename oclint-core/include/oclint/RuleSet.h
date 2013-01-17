@@ -3,13 +3,9 @@
 
 #include <vector>
 
-#include <clang/AST/ASTContext.h>
-
 class RuleBase;
-class ViolationSet;
 
 using namespace std;
-using namespace clang;
 
 class RuleSet
 {
@@ -19,7 +15,7 @@ private:
 public:
     RuleSet(RuleBase* rule);
     static int numberOfRules();
-    static void apply(ASTContext &astContext, ViolationSet* violationSet);
+    static RuleBase* getRuleAtIndex(int index);
 };
 
 #endif

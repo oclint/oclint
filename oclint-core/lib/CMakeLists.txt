@@ -1,7 +1,7 @@
 ADD_LIBRARY(OCLintCore
     Processor.cpp
     Results.cpp
-    RuleBase.cpp
+    RuleCarrier.cpp
     Violation.cpp
     ViolationSet.cpp
     )

@@ -15,7 +15,7 @@ ENDMACRO(build_test)
 
 BUILD_TEST(CanaryTest)
 BUILD_TEST(ResultsTest)
-BUILD_TEST(RuleBaseTest)
+BUILD_TEST(RuleCarrierTest)
 BUILD_TEST(RuleConfigurationTest)
 BUILD_TEST(RuleSetTest)
 TARGET_LINK_LIBRARIES(RuleSetTest OCLintRuleSet)
