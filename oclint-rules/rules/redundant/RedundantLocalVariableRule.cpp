@@ -59,7 +59,7 @@ public:
             NamedDecl *namedDecl = extractNamedDecl(compoundStmt);
             if (returnDeclRef && namedDecl && returnDeclRef->getName().equals(namedDecl->getName()))
             {
-                _carrier->addViolation(namedDecl, this);
+                addViolation(namedDecl, this);
             }
         }
 

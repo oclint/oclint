@@ -24,7 +24,7 @@ public:
         bool evaluatedResult;
         if (conditionExpr->EvaluateAsBooleanCondition(evaluatedResult, *_carrier->astContext()))
         {
-            _carrier->addViolation(conditionExpr, this);
+            addViolation(conditionExpr, this);
         }
 
         return true;

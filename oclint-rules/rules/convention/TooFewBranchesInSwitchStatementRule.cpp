@@ -46,7 +46,7 @@ public:
         int threshold = RuleConfiguration::intForKey("MINIMUM_CASES_IN_SWITCH", 3);
         if (numberOfCaseStmts < threshold)
         {
-            _carrier->addViolation(switchStmt, this);
+            addViolation(switchStmt, this);
         }
 
         return true;

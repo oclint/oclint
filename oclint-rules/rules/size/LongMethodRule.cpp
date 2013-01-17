@@ -29,7 +29,7 @@ private:
             {
                 string description = "Method with " +
                     intToString(length) + " lines exceeds limit of " + intToString(threshold);
-                _carrier->addViolation(decl, this, description);
+                addViolation(decl, this, description);
             }
         }
     }

@@ -27,8 +27,7 @@ public:
         {
             string description = "Line with " + intToString(currentLineSize) +
                 " characters exceeds limit of " + intToString(threshold);
-            _carrier->addViolation(filePath,
-                lineNumber, 1, lineNumber, currentLineSize, this, description);
+            addViolation(lineNumber, 1, lineNumber, currentLineSize, this, description);
         }
     }
 };

@@ -22,10 +22,6 @@ public:
 
     void addViolation(string filePath, int startLine, int startColumn,
         int endLine, int endColumn, RuleBase *rule, const string& message = "");
-    void addViolation(SourceLocation startLocation,
-        SourceLocation endLocation, RuleBase *rule, const string& message = "");
-    void addViolation(Decl *decl, RuleBase *rule, const string& message = "");
-    void addViolation(Stmt *stmt, RuleBase *rule, const string& message = "");
 };
 
 #endif

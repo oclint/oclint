@@ -88,7 +88,7 @@ public:
         if (varDecl && !varDecl->isUsed() &&
             hasVariableName(varDecl) && !isExistingByContract(varDecl))
         {
-            _carrier->addViolation(varDecl, this);
+            addViolation(varDecl, this);
         }
 
         return true;

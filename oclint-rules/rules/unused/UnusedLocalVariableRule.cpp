@@ -22,7 +22,7 @@ public:
         if (varDecl && !varDecl->isUsed() &&
             varDecl->isLocalVarDecl() && !varDecl->isStaticDataMember())
         {
-            _carrier->addViolation(varDecl, this);
+            addViolation(varDecl, this);
         }
         return true;
     }
