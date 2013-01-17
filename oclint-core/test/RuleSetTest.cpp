@@ -11,7 +11,6 @@ int RuleSetTest_applyCount;
 class RuleSetTest_MockRuleBase : public RuleBase
 {
 public:
-    using RuleBase::apply;
     MOCK_METHOD0(apply, void());
     MOCK_CONST_METHOD0(name, const string());
     MOCK_CONST_METHOD0(priority, const int());
