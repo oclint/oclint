@@ -1,4 +1,5 @@
 #include "oclint/AbstractASTVisitorRule.h"
+#include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 #include "oclint/metric/CyclomaticComplexityMetric.h"
 #include "oclint/util/StdUtil.h"
@@ -13,7 +14,7 @@ private:
         int ccn = getCyclomaticComplexity(decl);
 
         // In McBABE, 1976, A Complexity Measure, he suggested a reasonable number of 10
-        int threshold = ruleConfiguration("CYCLOMATIC_COMPLEXITY", 10);
+        int threshold = RuleConfiguration::intForKey("CYCLOMATIC_COMPLEXITY", 10);
         if (ccn > threshold)
         {
             string description = "Cyclomatic Complexity Number " +

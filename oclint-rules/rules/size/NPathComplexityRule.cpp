@@ -1,4 +1,5 @@
 #include "oclint/AbstractASTVisitorRule.h"
+#include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 #include "oclint/metric/NPathComplexityMetric.h"
 #include "oclint/util/StdUtil.h"
@@ -17,7 +18,7 @@ private:
             {
                 int npath = getNPathComplexity(bodyStmt);
 
-                int threshold = ruleConfiguration("NPATH_COMPLEXITY", 200);
+                int threshold = RuleConfiguration::intForKey("NPATH_COMPLEXITY", 200);
                 if (npath > threshold)
                 {
                     string description = "NPath Complexity Number " +

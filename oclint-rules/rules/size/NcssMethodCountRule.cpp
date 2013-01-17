@@ -1,4 +1,5 @@
 #include "oclint/AbstractASTVisitorRule.h"
+#include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 #include "oclint/metric/NcssMetric.h"
 #include "oclint/util/StdUtil.h"
@@ -11,7 +12,7 @@ private:
     void applyDecl(Decl *decl)
     {
         int ncss = getNcssCount(decl);
-        int threshold = ruleConfiguration("NCSS_METHOD", 30);
+        int threshold = RuleConfiguration::intForKey("NCSS_METHOD", 30);
         if (ncss > threshold)
         {
             string description = "Method of " + intToString(ncss) +
