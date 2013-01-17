@@ -24,7 +24,7 @@ public:
         Expr *incExpr = forStmt->getInc();
         if (!initStmt && !incExpr && condExpr && !isa<NullStmt>(condExpr))
         {
-            addViolation(forStmt, this);
+            _carrier->addViolation(forStmt, this);
         }
 
         return true;

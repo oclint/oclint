@@ -27,7 +27,7 @@ private:
             Stmt *bodyStmt = (Stmt *)*body;
             if (hasBreakPoint)
             {
-                addViolation(bodyStmt, this);
+                _carrier->addViolation(bodyStmt, this);
                 break;
             }
             else
@@ -80,7 +80,7 @@ public:
             Stmt *bodyStmt = (Stmt *)*body;
             if (hasBreakPoint)
             {
-                addViolation(bodyStmt, this);
+                _carrier->addViolation(bodyStmt, this);
                 break;
             }
             else

@@ -167,17 +167,17 @@ public:
         Expr *falseExpression = conditionalOperator->getFalseExpr();
         if (isNotEquals(trueExpression, falseExpression))
         {
-            addViolation(conditionalOperator, this);
+            _carrier->addViolation(conditionalOperator, this);
         }
 
         if (isSameConstant(trueExpression, falseExpression))
         {
-            addViolation(conditionalOperator, this);
+            _carrier->addViolation(conditionalOperator, this);
         }
 
         if (isSameVariable(trueExpression, falseExpression))
         {
-            addViolation(conditionalOperator, this);
+            _carrier->addViolation(conditionalOperator, this);
         }
 
         return true;

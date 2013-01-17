@@ -18,7 +18,7 @@ private:
 
             SourceLocation startLocation = compoundStmt->getLocStart();
             SourceLocation endLocation = compoundStmt->getLocEnd();
-            SourceManager *sourceManager = &_astContext->getSourceManager();
+            SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
 
             unsigned startLineNumber = sourceManager->getPresumedLineNumber(startLocation);
             unsigned endLineNumber = sourceManager->getPresumedLineNumber(endLocation);
@@ -29,7 +29,7 @@ private:
             {
                 string description = "Method with " +
                     intToString(length) + " lines exceeds limit of " + intToString(threshold);
-                addViolation(decl, this, description);
+                _carrier->addViolation(decl, this, description);
             }
         }
     }

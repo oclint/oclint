@@ -73,7 +73,7 @@ private:
             vector<BinaryOperator*> binaryOperators = binaryOperatorAnalyzer.analyze(decl, names);
             for (int index = 0; index < binaryOperators.size(); index++)
             {
-                addViolation(binaryOperators.at(index), this);
+                _carrier->addViolation(binaryOperators.at(index), this);
             }
         }
     }

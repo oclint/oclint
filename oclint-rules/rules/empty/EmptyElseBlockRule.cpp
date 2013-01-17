@@ -26,7 +26,7 @@ public:
 
         if (elseStmt && isLexicalEmpty(elseStmt))
         {
-            addViolation(elseStmt, this);
+            _carrier->addViolation(elseStmt, this);
         }
 
         return true;

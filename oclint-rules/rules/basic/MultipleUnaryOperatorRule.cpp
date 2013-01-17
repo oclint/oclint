@@ -36,7 +36,7 @@ public:
             UnaryOperator *subUnaryOperator = dyn_cast<UnaryOperator>(subExpr);
             if (isTargetUnaryOperator(unaryOperator) && isTargetUnaryOperator(subUnaryOperator))
             {
-                addViolation(unaryOperator, this);
+                _carrier->addViolation(unaryOperator, this);
             }
         }
 

@@ -28,7 +28,7 @@ public:
             (isa<CompoundStmt>(ifStmt->getThen()) &&
                 compoundStmtContainsOnlyOneIfStmt(dyn_cast<CompoundStmt>(ifStmt->getThen()))))
         {
-            addViolation(ifStmt, this);
+            _carrier->addViolation(ifStmt, this);
         }
 
         return true;

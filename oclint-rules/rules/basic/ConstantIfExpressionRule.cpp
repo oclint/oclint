@@ -22,9 +22,9 @@ public:
         Expr *conditionExpression = ifStmt->getCond();
 
         bool evaluatedResult;
-        if (conditionExpression->EvaluateAsBooleanCondition(evaluatedResult, *_astContext))
+        if (conditionExpression->EvaluateAsBooleanCondition(evaluatedResult, *_carrier->astContext()))
         {
-            addViolation(conditionExpression, this);
+            _carrier->addViolation(conditionExpression, this);
         }
 
         return true;

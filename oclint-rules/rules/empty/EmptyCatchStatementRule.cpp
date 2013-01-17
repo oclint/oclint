@@ -26,7 +26,7 @@ public:
 
         if (catchBlock && isLexicalEmpty(catchBlock))
         {
-            addViolation(catchBlock, this);
+            _carrier->addViolation(catchBlock, this);
         }
 
         return true;
@@ -38,7 +38,7 @@ public:
 
         if (catchBody && isLexicalEmpty(catchBody))
         {
-            addViolation(catchBody, this);
+            _carrier->addViolation(catchBody, this);
         }
 
         return true;

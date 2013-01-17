@@ -18,8 +18,8 @@ protected:
     virtual void apply()
     {
         setUp();
-        SourceManager *sourceManager = &_astContext->getSourceManager();
-        DeclContext *decl = _astContext->getTranslationUnitDecl();
+        SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
+        DeclContext *decl = _carrier->astContext()->getTranslationUnitDecl();
         for (DeclContext::decl_iterator it = decl->decls_begin(), declEnd = decl->decls_end();
             it != declEnd; ++it)
         {

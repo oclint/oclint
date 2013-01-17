@@ -76,7 +76,7 @@ public:
         for (int index = 0; index < throws->size(); index++)
         {
             ObjCAtThrowStmt *throwStmt = throws->at(index);
-            addViolation(throwStmt, this);
+            _carrier->addViolation(throwStmt, this);
         }
 
         vector<ObjCMessageExpr*> *exceptionRaisers = new vector<ObjCMessageExpr*>();
@@ -85,7 +85,7 @@ public:
         for (int index = 0; index < exceptionRaisers->size(); index++)
         {
             ObjCMessageExpr *raiseExpr = exceptionRaisers->at(index);
-            addViolation(raiseExpr, this);
+            _carrier->addViolation(raiseExpr, this);
         }
 
         return true;

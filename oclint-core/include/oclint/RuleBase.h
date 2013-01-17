@@ -5,7 +5,7 @@
 
 #include <clang/AST/AST.h>
 
-#include "oclint/ViolationSet.h"
+#include "oclint/RuleCarrier.h"
 
 using namespace std;
 using namespace clang;
@@ -13,18 +13,14 @@ using namespace clang;
 class RuleBase
 {
 protected:
-    ViolationSet *_violationSet;
-    ASTContext *_astContext;
-
-    void addViolation(string filePath, int startLine, int startColumn,
-        int endLine, int endColumn, RuleBase *rule, const string& message = "");
-    void addViolation(SourceLocation startLocation,
-        SourceLocation endLocation, RuleBase *rule, const string& message = "");
-    void addViolation(Decl *decl, RuleBase *rule, const string& message = "");
-    void addViolation(Stmt *stmt, RuleBase *rule, const string& message = "");
+    RuleCarrier *_carrier;
 
 public:
-    void apply(ASTContext &astContext, ViolationSet *violationSet);
+    void takeoff(RuleCarrier *carrier)
+    {
+        _carrier = carrier;
+        apply();
+    }
 
     virtual ~RuleBase() {}
     virtual void apply() = 0;

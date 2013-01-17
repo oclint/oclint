@@ -23,7 +23,7 @@ private:
                 {
                     string description = "NPath Complexity Number " +
                         intToString(npath) + " exceeds limit of " + intToString(threshold);
-                    addViolation(decl, this, description);
+                    _carrier->addViolation(decl, this, description);
                 }
             }
         }

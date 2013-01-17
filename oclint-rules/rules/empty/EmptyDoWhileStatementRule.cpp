@@ -26,7 +26,7 @@ public:
 
         if (doBody && isLexicalEmpty(doBody))
         {
-            addViolation(doBody, this);
+            _carrier->addViolation(doBody, this);
         }
 
         return true;
