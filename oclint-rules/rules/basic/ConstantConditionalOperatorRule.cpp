@@ -20,12 +20,12 @@ public:
 
     bool VisitConditionalOperator(ConditionalOperator *conditionalOperator)
     {
-        Expr *conditionExpression = conditionalOperator->getCond();
+        Expr *conditionExpr = conditionalOperator->getCond();
 
         bool evaluatedResult;
-        if (conditionExpression->EvaluateAsBooleanCondition(evaluatedResult, *_carrier->astContext()))
+        if (conditionExpr->EvaluateAsBooleanCondition(evaluatedResult, *_carrier->astContext()))
         {
-            _carrier->addViolation(conditionExpression, this);
+            _carrier->addViolation(conditionExpr, this);
         }
 
         return true;

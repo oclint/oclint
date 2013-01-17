@@ -19,12 +19,12 @@ public:
 
     bool VisitIfStmt(IfStmt *ifStmt)
     {
-        Expr *conditionExpression = ifStmt->getCond();
+        Expr *conditionExpr = ifStmt->getCond();
 
         bool evaluatedResult;
-        if (conditionExpression->EvaluateAsBooleanCondition(evaluatedResult, *_carrier->astContext()))
+        if (conditionExpr->EvaluateAsBooleanCondition(evaluatedResult, *_carrier->astContext()))
         {
-            _carrier->addViolation(conditionExpression, this);
+            _carrier->addViolation(conditionExpr, this);
         }
 
         return true;
