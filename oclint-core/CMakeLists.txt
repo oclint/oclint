@@ -57,6 +57,6 @@ ELSE(TEST_BUILD)
         OCLintCore
         ${CLANG_LIBRARIES}
         ${REQ_LLVM_LIBRARIES}
-        dl
+        ${CMAKE_DL_LIBS}
         )
 ENDIF()

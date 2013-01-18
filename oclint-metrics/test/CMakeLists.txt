@@ -6,7 +6,7 @@ MACRO(build_test name)
         profile_rt
         ${CLANG_LIBRARIES}
         ${REQ_LLVM_LIBRARIES}
-        dl
+        ${CMAKE_DL_LIBS}
         )
 
     ADD_TEST(${name} ${EXECUTABLE_OUTPUT_PATH}/${name})

@@ -1,10 +1,10 @@
-#! /bin/bash -e
+#! /bin/sh -e
 
 # setup environment variables
 CWD=`pwd`
 PROJECT_ROOT="$CWD/.."
 
-if [ $# -eq 1 ] && [ $1 == "update" ]; then
+if [ $# -eq 1 ] && [ "$1" = "update" ]; then
     cd $PROJECT_ROOT/googletest
     svn up
     exit 0

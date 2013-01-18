@@ -1,4 +1,4 @@
-#! /bin/bash -e
+#! /bin/sh -e
 
 ./testCore.sh clean
 ./testMetrics.sh clean

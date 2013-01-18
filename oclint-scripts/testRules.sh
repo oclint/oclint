@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 
 # setup environment variables
 CWD=`pwd`
@@ -16,7 +16,7 @@ OCLINT_RULES_BUILD="$PROJECT_ROOT/build/oclint-rules-test"
 SUCCESS=0
 
 # clean test directory
-if [ $# -eq 1 ] && [ $1 == "clean" ]; then
+if [ $# -eq 1 ] && [ "$1" = "clean" ]; then
     rm -rf $OCLINT_RULES_BUILD
     exit 0
 fi
