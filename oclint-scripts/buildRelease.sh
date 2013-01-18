@@ -1,4 +1,4 @@
-#! /bin/bash -e
+#! /bin/sh -e
 
 # setup environment variables
 CWD=`pwd`
@@ -13,7 +13,7 @@ OCLINT_JSON_CD_FOLDER="$PROJECT_ROOT/oclint-json-compilation-database"
 OCLINT_XCODBUILD_FOLDER="$PROJECT_ROOT/oclint-xcodebuild"
 
 # clean test directory
-if [ $# -eq 1 ] && [ $1 == "clean" ]; then
+if [ $# -eq 1 ] && [ "$1" = "clean" ]; then
     rm -rf $OCLINT_RELEASE_BUILD
     exit 0
 fi

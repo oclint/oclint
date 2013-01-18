@@ -1,18 +1,18 @@
-#! /bin/bash -e
+#! /bin/sh -e
 
 # setup environment variables
 CWD=`pwd`
 PROJECT_ROOT="$CWD/.."
 BRANCH="trunk"
 
-if [ $# -eq 1 ] && [ $1 == "branch" ]; then
+if [ $# -eq 1 ] && [ "$1" = "branch" ]; then
     echo "trunk (default)"
     echo "branches/release_32"
     echo "tags/RELEASE_32/final"
     exit 0
 fi
 
-if [ $# -eq 1 ] && [ $1 == "update" ]; then
+if [ $# -eq 1 ] && [ "$1" = "update" ]; then
     cd $PROJECT_ROOT/llvm
     svn update
     cd tools/clang

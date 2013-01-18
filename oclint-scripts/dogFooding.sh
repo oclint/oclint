@@ -1,4 +1,4 @@
-#! /bin/bash -e
+#! /bin/sh -e
 
 # setup environment variables
 CWD=`pwd`
@@ -19,8 +19,10 @@ OCLINT_DOGFOODING_RULES="$OCLINT_DOGFOODING/oclint-rules"
 OCLINT_DOGFOODING_METRICS="$OCLINT_DOGFOODING/oclint-metrics"
 
 # only show existing dogfooding results
-if [ $# -eq 1 ] && [ $1 == "show" ]; then
-    less $OCLINT_DOGFOODING/dogfoodingresults.txt
+if [ $# -eq 1 ] && [ "$1" = "show" ]; then
+    cat $OCLINT_DOGFOODING/dogfooding_core_results.txt
+    cat $OCLINT_DOGFOODING/dogfooding_metrics_results.txt
+    cat $OCLINT_DOGFOODING/dogfooding_rules_results.txt
     exit 0
 fi
 
