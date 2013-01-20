@@ -3,7 +3,6 @@
 # setup environment variables
 CWD=`pwd`
 PROJECT_ROOT="$CWD/.."
-LLVM_SRC="$PROJECT_ROOT/llvm"
 LLVM_BUILD="$PROJECT_ROOT/build/llvm-install"
 GOOGLE_TEST_SRC="$PROJECT_ROOT/googletest"
 GOOGLE_TEST_BUILD="$PROJECT_ROOT/build/googletest"

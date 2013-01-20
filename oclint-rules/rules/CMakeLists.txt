@@ -1,5 +1,7 @@
 MACRO(build_dynamic_rule name)
-    SET(CMAKE_SHARED_LINKER_FLAGS "-undefined dynamic_lookup")
+    IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+        SET(CMAKE_SHARED_LINKER_FLAGS "-undefined dynamic_lookup")
+    ENDIF()
 
     ADD_LIBRARY(${name}Rule SHARED ${name}Rule.cpp)
 
