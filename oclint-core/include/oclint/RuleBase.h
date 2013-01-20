@@ -3,12 +3,9 @@
 
 #include <string>
 
-#include <clang/AST/AST.h>
-
 #include "oclint/RuleCarrier.h"
 
 using namespace std;
-using namespace clang;
 
 class RuleBase
 {

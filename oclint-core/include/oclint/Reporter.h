@@ -1,9 +1,11 @@
 #ifndef OCLINT_REPORTER_H
 #define OCLINT_REPORTER_H
 
+#include <ostream>
+
 #include "oclint/Results.h"
 
-using namespace clang;
+using namespace std;
 
 class Reporter
 {
