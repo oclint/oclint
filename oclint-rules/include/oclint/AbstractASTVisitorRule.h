@@ -1,14 +1,11 @@
 #ifndef OCLINT_ABSTRACTASTVISITORRULE_H
 #define OCLINT_ABSTRACTASTVISITORRULE_H
 
-#include <string>
-
-#include <clang/AST/ASTContext.h>
+#include <clang/AST/AST.h>
 #include <clang/AST/RecursiveASTVisitor.h>
 
 #include "oclint/RuleBase.h"
 
-using namespace std;
 using namespace clang;
 
 template<typename T>

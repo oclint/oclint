@@ -3,7 +3,10 @@
 
 #include <string>
 
-#include <clang/AST/AST.h>
+namespace clang
+{
+    class ASTContext;
+}
 
 #include "oclint/ViolationSet.h"
 

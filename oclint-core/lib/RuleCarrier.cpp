@@ -1,3 +1,5 @@
+#include <clang/AST/AST.h>
+
 #include "oclint/RuleCarrier.h"
 
 RuleCarrier::RuleCarrier(ASTContext *astContext, ViolationSet *violationSet)
