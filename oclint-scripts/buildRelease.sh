@@ -6,6 +6,7 @@ PROJECT_ROOT="$CWD/.."
 LLVM_BUILD="$PROJECT_ROOT/build/llvm-install"
 OCLINT_CORE_BUILD="$PROJECT_ROOT/build/oclint-core"
 OCLINT_RULES_BUILD="$PROJECT_ROOT/build/oclint-rules"
+OCLINT_REPORTERS_BUILD="$PROJECT_ROOT/build/oclint-reporters"
 OCLINT_RELEASE_BUILD="$PROJECT_ROOT/build/oclint-release"
 LLVM_SRC="$PROJECT_ROOT/llvm"
 OCLINT_CORE_SRC="$PROJECT_ROOT/oclint-core"
@@ -29,8 +30,9 @@ cp $OCLINT_CORE_BUILD/bin/oclint* $OCLINT_RELEASE_BUILD/bin
 cd $OCLINT_RELEASE_BUILD/bin
 ln -s oclint* oclint
 
-# put rules in place
+# put rules and reporters in place
 cp -rp $OCLINT_RULES_BUILD/rules.dl $OCLINT_RELEASE_BUILD/lib/oclint/rules
+cp -rp $OCLINT_REPORTERS_BUILD/reporters.dl $OCLINT_RELEASE_BUILD/lib/oclint/reporters
 
 # put clang headers in place
 cp -rp $LLVM_BUILD/lib/clang $OCLINT_RELEASE_BUILD/lib
