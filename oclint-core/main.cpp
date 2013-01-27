@@ -36,104 +36,6 @@ using namespace llvm;
 using namespace llvm::sys;
 using namespace clang;
 
-class HTMLReporter : public Reporter
-{
-public:
-    virtual void report(Results *results, ostream &out)
-    {
-        out << "<!DOCTYPE html>";
-        out << "<html>";
-        out << "<head>";
-        out << "<title>OCLint Report</title>";
-        out << "<style type='text/css'>"
-            << "                            \
-.priority1, .priority2, .priority3 {        \
-    font-weight: bold;                      \
-    text-align: center;                     \
-    color: #B40527;                         \
-}                                           \
-.priority1 { background-color: #FFC200; }   \
-.priority2 { background-color: #FFD3A6; }   \
-.priority3 { background-color: #FFEEB5; }   \
-table {                                     \
-    border: 2px solid gray;                 \
-    border-collapse: collapse;              \
-    -moz-box-shadow: 3px 3px 4px #AAA;      \
-    -webkit-box-shadow: 3px 3px 4px #AAA;   \
-    box-shadow: 3px 3px 4px #AAA;           \
-}                                           \
-td, th {                                    \
-    border: 1px solid #D3D3D3;              \
-    padding: 4px 20px 4px 20px;             \
-}                                           \
-th {                                        \
-    text-shadow: 2px 2px 2px white;         \
-    border-bottom: 1px solid gray;          \
-    background-color: #E9F4FF;              \
-}"
-            << "</style>";
-        out << "</head>";
-        out << "<body>";
-        out << "<h1>OCLint Report</h1>";
-        out << "<hr />";
-        out << "<h2>Summary</h2>";
-        out << "<table><thead><tr><th>Total Files</th><th>Files with Violations</th>"
-            << "<th>Priority 1</th><th>Priority 2</th><th>Priority 3</th></tr></thead>";
-        out << "<tbody><tr><td>" << results->numberOfFiles() << "</td><td>"
-            << results->numberOfFilesWithViolations() << "</td><td class='priority1'>"
-            << results->numberOfViolationsWithPriority(1) << "</td><td class='priority2'>"
-            << results->numberOfViolationsWithPriority(2) << "</td><td class='priority3'>"
-            << results->numberOfViolationsWithPriority(3) << "</td></tr></tbody></table>";
-        out << "<hr />";
-        out << "<table><thead><tr><th>File</th><th>Location</th><th>Rule Name</th>"
-            << "<th>Priority</th><th>Message</th></tr></thead><tbody>";
-        vector<Violation> violationSet = results->allViolations();
-        for (int index = 0, numberOfViolations = violationSet.size();
-            index < numberOfViolations; index++)
-        {
-            Violation violation = violationSet.at(index);
-            out << "<tr><td>" << violation.path << "</td><td>" << violation.startLine
-                << ":" << violation.startColumn << "</td>";
-            const RuleBase *rule = violation.rule;
-            out << "<td>" << rule->name() << "</td><td class='priority" << rule->priority() << "'>"
-                << rule->priority() << "</td><td>" << violation.message << "</td></tr>";
-        }
-        out << "</tbody></table>";
-        out << "<hr />";
-        time_t now = time(0);
-        out << ctime(&now)
-            << "| Generated with <a href='http://oclint.org'>OCLint v0.7</a>.</p>";
-        out << "</body>";
-        out << "</html>" << endl;
-    }
-};
-
-class PlainTextReporter : public Reporter
-{
-public:
-    virtual void report(Results *results, ostream &out)
-    {
-        out << "OCLint Report" << endl << endl;
-        out << "Summary: TotalFiles=" << results->numberOfFiles() << " ";
-        out << "FilesWithViolations=" << results->numberOfFilesWithViolations() << " ";
-        out << "P1=" << results->numberOfViolationsWithPriority(1) << " ";
-        out << "P2=" << results->numberOfViolationsWithPriority(2) << " ";
-        out << "P3=" << results->numberOfViolationsWithPriority(3) << " ";
-        out << endl << endl;
-        vector<Violation> violationSet = results->allViolations();
-        for (int index = 0, numberOfViolations = violationSet.size();
-            index < numberOfViolations; index++)
-        {
-            Violation violation = violationSet.at(index);
-            out << violation.path << ":" << violation.startLine << ":" << violation.startColumn;
-            const RuleBase *rule = violation.rule;
-            out << ": " << rule->name()
-                << " P" << rule->priority() << " " << violation.message << endl;
-        }
-        out << endl << "[OCLint (http://oclint.org) v0.7]" << endl;
-    }
-};
-
 class ProcessorActionFactory
 {
 public:
@@ -144,6 +46,7 @@ public:
 };
 
 static string absoluteWorkingPath("");
+static Reporter *selectedReporter = NULL;
 
 void preserveWorkingPath()
 {
@@ -294,6 +197,42 @@ void consumeRulesConfigurationFile()
     }
 }
 
+int loadReporter(const char* executablePath)
+{
+    selectedReporter = NULL;
+    string exeStrPath = getExecutablePath(executablePath);
+    string defaultReportersPath = exeStrPath + "/../lib/oclint/reporters";
+    DIR *dp = opendir(defaultReportersPath.c_str());
+    if (dp != NULL)
+    {
+        struct dirent *dirp;
+        while ((dirp = readdir(dp)))
+        {
+            if (dirp->d_name[0] == '.')
+            {
+                continue;
+            }
+            string rulePath = defaultReportersPath + "/" + string(dirp->d_name);
+            void *reporterHandle = dlopen(rulePath.c_str(), RTLD_NOW);
+            if (reporterHandle == NULL)
+            {
+                cerr << dlerror() << endl;
+                closedir(dp);
+            }
+            Reporter* (*createMethodPointer)();
+            createMethodPointer = (Reporter* (*)())dlsym(reporterHandle, "create");
+            Reporter* reporter = (Reporter*)createMethodPointer();
+            if (reporter->name() == argReportType)
+            {
+                selectedReporter = reporter;
+                break;
+            }
+        }
+        closedir(dp);
+    } // TODO: Remove the duplication pf loading rules and reporters
+    return selectedReporter == NULL ? 1 : 0;
+}
+
 bool numberOfViolationsExceedThreshold(Results *results)
 {
     return results->numberOfViolationsWithPriority(1) > argMaxP1 ||
@@ -328,17 +267,14 @@ void disposeOutStream(ostream* out)
 
 Reporter* reporter()
 {
-    if (argReportType == html)
-    {
-        return new HTMLReporter();
-    }
-    return new PlainTextReporter();
+    return selectedReporter;
 }
 
 enum ExitCode
 {
     SUCCESS,
     RULE_NOT_FOUND,
+    REPORTER_NOT_FOUND,
     ERROR_WHILE_PROCESSING,
     VIOLATIONS_EXCEED_THRESHOLD
 };
@@ -346,27 +282,31 @@ enum ExitCode
 int main(int argc, const char **argv)
 {
     CommonOptionsParser optionsParser(argc, argv);
-    if (consumeArgRulesPath(argv[0]) == 0 && RuleSet::numberOfRules() > 0)
+    if (consumeArgRulesPath(argv[0]) || RuleSet::numberOfRules() <= 0)
     {
-        consumeRuleConfigurations();
-        consumeRulesConfigurationFile();
-        preserveWorkingPath();
+        return RULE_NOT_FOUND;
+    }
+    if (loadReporter(argv[0]))
+    {
+        return REPORTER_NOT_FOUND;
+    }
+    consumeRuleConfigurations();
+    consumeRulesConfigurationFile();
+    preserveWorkingPath();
 
-        ClangTool clangTool(optionsParser.getCompilations(), optionsParser.getSourcePathList());
-        ProcessorActionFactory actionFactory;
-        if (clangTool.run(newFrontendActionFactory(&actionFactory)) == 0)
-        {
-            ostream *out = outStream();
-            Results *results = Results::getInstance();
-            reporter()->report(results, *out);
-            disposeOutStream(out);
-            if (numberOfViolationsExceedThreshold(results))
-            {
-                return VIOLATIONS_EXCEED_THRESHOLD;
-            }
-            return SUCCESS;
-        }
+    ClangTool clangTool(optionsParser.getCompilations(), optionsParser.getSourcePathList());
+    ProcessorActionFactory actionFactory;
+    if (clangTool.run(newFrontendActionFactory(&actionFactory)))
+    {
         return ERROR_WHILE_PROCESSING;
     }
-    return RULE_NOT_FOUND;
+    ostream *out = outStream();
+    Results *results = Results::getInstance();
+    reporter()->report(results, *out);
+    disposeOutStream(out);
+    if (numberOfViolationsExceedThreshold(results))
+    {
+        return VIOLATIONS_EXCEED_THRESHOLD;
+    }
+    return SUCCESS;
 }

@@ -5,6 +5,11 @@
 class HTMLReporter : public Reporter
 {
 public:
+    virtual const string name() const
+    {
+        return "html";
+    }
+
     virtual void report(Results *results, ostream &out)
     {
         out << "<!DOCTYPE html>";
@@ -73,3 +78,8 @@ th {                                        \
         out << "</html>" << endl;
     }
 };
+
+extern "C" Reporter* create()
+{
+  return new HTMLReporter();
+}
