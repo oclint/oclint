@@ -5,6 +5,11 @@
 class TextReporter : public Reporter
 {
 public:
+    virtual const string name() const
+    {
+        return "text";
+    }
+
     virtual void report(Results *results, ostream &out)
     {
         out << "OCLint Report" << endl << endl;
@@ -27,3 +32,8 @@ public:
         out << endl << "[OCLint (http://oclint.org) v0.7]" << endl;
     }
 };
+
+extern "C" Reporter* create()
+{
+  return new TextReporter();
+}

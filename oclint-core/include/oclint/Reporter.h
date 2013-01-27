@@ -11,6 +11,7 @@ class Reporter
 {
 public:
     virtual void report(Results *results, ostream &out) = 0;
+    virtual const string name() const = 0;
 };
 
 #endif
