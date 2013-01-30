@@ -1,7 +1,11 @@
 #ifndef OCLINT_ABSTRACTSOURCECODEREADERRULE_H
 #define OCLINT_ABSTRACTSOURCECODEREADERRULE_H
 
+#include <clang/AST/AST.h>
+
 #include "oclint/RuleBase.h"
+
+using namespace clang;
 
 class AbstractSourceCodeReaderRule : public RuleBase
 {
