@@ -1,5 +1,6 @@
 #include "oclint/Reporter.h"
 #include "oclint/RuleBase.h"
+#include "oclint/Version.h"
 #include "oclint/ViolationSet.h"
 
 class TextReporter : public Reporter
@@ -24,7 +25,7 @@ public:
             out << endl;
         }
         out << endl;
-        writeFooter(out, "0.7");
+        writeFooter(out, Version::identifier());
         out << endl;
     }
 

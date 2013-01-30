@@ -1,5 +1,6 @@
 #include "oclint/Reporter.h"
 #include "oclint/RuleBase.h"
+#include "oclint/Version.h"
 #include "oclint/ViolationSet.h"
 
 class HTMLReporter : public Reporter
@@ -31,7 +32,7 @@ public:
         }
         out << "</tbody></table>";
         out << "<hr />";
-        writeFooter(out, "0.7");
+        writeFooter(out, Version::identifier());
         out << "</body>";
         out << "</html>";
         out << endl;
