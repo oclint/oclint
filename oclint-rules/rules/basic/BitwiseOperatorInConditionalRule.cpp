@@ -1,41 +1,11 @@
-#include "oclint/AbstractASTVisitorRule.h"
+#include "oclint/AbstractASTMatcherRule.h"
 #include "oclint/RuleSet.h"
 
-#define BITWISEOPERATORINCONDITIONALRULE_ANALYZE(STMT) Expr *cond = STMT->getCond(); \
-    if (_finder.find(cond)) { addViolation(cond, this); } return true
-
-class BitwiseOperatorInConditionalRule :
-    public AbstractASTVisitorRule<BitwiseOperatorInConditionalRule>
+class BitwiseOperatorInConditionalRule : public AbstractASTMatcherRule
 {
-    class BitwiseOperatorInConditionalFinder :
-        public RecursiveASTVisitor<BitwiseOperatorInConditionalFinder>
-    {
-    private:
-        bool _found;
-
-    public:
-        bool find(Expr *conditionalExpression)
-        {
-            _found = false;
-            TraverseStmt(conditionalExpression);
-            return _found;
-        }
-
-        bool VisitBinaryOperator(BinaryOperator *op)
-        {
-            if (op->getOpcode() == BO_And || op->getOpcode() == BO_Or || op->getOpcode() == BO_Xor)
-            {
-                _found = true;
-                return false;
-            }
-            return true;
-        }
-    };
 
 private:
     static RuleSet rules;
-
-    BitwiseOperatorInConditionalFinder _finder;
 
 public:
     virtual const string name() const
@@ -48,25 +18,58 @@ public:
         return 2;
     }
 
-    bool VisitIfStmt(IfStmt *ifStmt)
+    virtual void callback(const MatchFinder::MatchResult &result)
     {
-        BITWISEOPERATORINCONDITIONALRULE_ANALYZE(ifStmt);
+        if (const IfStmt *constIfStmt = result.Nodes.getNodeAs<IfStmt>("ifStmt"))
+        {
+            IfStmt *ifStmt = (IfStmt *)constIfStmt;
+            addViolation(ifStmt->getCond(), this);
+        }
+        if (const WhileStmt *constWhileStmt = result.Nodes.getNodeAs<WhileStmt>("whileStmt"))
+        {
+            WhileStmt *whileStmt = (WhileStmt *)constWhileStmt;
+            addViolation(whileStmt->getCond(), this);
+        }
+        if (const DoStmt *constDoStmt = result.Nodes.getNodeAs<DoStmt>("doStmt"))
+        {
+            DoStmt *doStmt = (DoStmt *)constDoStmt;
+            addViolation(doStmt->getCond(), this);
+        }
+        if (const ConditionalOperator *constCondOper =
+            result.Nodes.getNodeAs<ConditionalOperator>("conditionalOperator"))
+        {
+            ConditionalOperator *conditionalOperator = (ConditionalOperator *)constCondOper;
+            addViolation(conditionalOperator->getCond(), this);
+        }
     }
 
-    bool VisitWhileStmt(WhileStmt *whileStmt)
+    virtual void setUpMatcher()
     {
-        BITWISEOPERATORINCONDITIONALRULE_ANALYZE(whileStmt);
+        StatementMatcher binaryOperatorMatcher = binaryOperator(
+            anyOf(hasOperatorName("&"), hasOperatorName("|"), hasOperatorName("^")));
+
+        addMatcher(
+            ifStmt(anyOf(
+                hasCondition(binaryOperatorMatcher),
+                hasCondition(expr(hasDescendant(binaryOperatorMatcher)))))
+            .bind("ifStmt"));
+        addMatcher(
+            whileStmt(anyOf(
+                hasCondition(binaryOperatorMatcher),
+                hasCondition(expr(hasDescendant(binaryOperatorMatcher)))))
+            .bind("whileStmt"));
+        addMatcher(
+            doStmt(anyOf(
+                hasCondition(binaryOperatorMatcher),
+                hasCondition(expr(hasDescendant(binaryOperatorMatcher)))))
+            .bind("doStmt"));
+        addMatcher(
+            conditionalOperator(anyOf(
+                hasCondition(binaryOperatorMatcher),
+                hasCondition(expr(hasDescendant(binaryOperatorMatcher)))))
+            .bind("conditionalOperator"));
     }
 
-    bool VisitDoStmt(DoStmt *doStmt)
-    {
-        BITWISEOPERATORINCONDITIONALRULE_ANALYZE(doStmt);
-    }
-
-    bool VisitConditionalOperator(ConditionalOperator *condOp)
-    {
-        BITWISEOPERATORINCONDITIONALRULE_ANALYZE(condOp);
-    }
 };
 
 RuleSet BitwiseOperatorInConditionalRule::rules(new BitwiseOperatorInConditionalRule());
