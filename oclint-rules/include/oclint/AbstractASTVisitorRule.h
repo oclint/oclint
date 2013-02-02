@@ -1,15 +1,12 @@
 #ifndef OCLINT_ABSTRACTASTVISITORRULE_H
 #define OCLINT_ABSTRACTASTVISITORRULE_H
 
-#include <clang/AST/AST.h>
 #include <clang/AST/RecursiveASTVisitor.h>
 
-#include "oclint/RuleBase.h"
-
-using namespace clang;
+#include "oclint/AbstractASTRuleBase.h"
 
 template<typename T>
-class AbstractASTVisitorRule : public RuleBase, public RecursiveASTVisitor<T>
+class AbstractASTVisitorRule : public AbstractASTRuleBase, public RecursiveASTVisitor<T>
 {
 protected:
     virtual void apply()
@@ -28,31 +25,6 @@ protected:
             }
         }
         tearDown();
-    }
-
-
-    void addViolation(SourceLocation startLocation,
-        SourceLocation endLocation, RuleBase *rule, const string& message = "")
-    {
-        SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
-        StringRef filename = sourceManager->getFilename(startLocation);
-        _carrier->addViolation(filename.str(),
-            sourceManager->getPresumedLineNumber(startLocation),
-            sourceManager->getPresumedColumnNumber(startLocation),
-            sourceManager->getPresumedLineNumber(endLocation),
-            sourceManager->getPresumedColumnNumber(endLocation),
-            rule,
-            message);
-    }
-
-    void addViolation(Decl *decl, RuleBase *rule, const string& message = "")
-    {
-        addViolation(decl->getLocStart(), decl->getLocEnd(), rule, message);
-    }
-
-    void addViolation(Stmt *stmt, RuleBase *rule, const string& message = "")
-    {
-        addViolation(stmt->getLocStart(), stmt->getLocEnd(), rule, message);
     }
 
 public:
