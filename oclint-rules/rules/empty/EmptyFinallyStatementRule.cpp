@@ -1,10 +1,9 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-#include "EmptyBlockStmtRule.h"
+#include "AbstractEmptyBlockStmtRule.h"
 
-class EmptyFinallyStatementRule :
-    public AbstractASTVisitorRule<EmptyFinallyStatementRule>, public EmptyBlockStmtRule
+class EmptyFinallyStatementRule : public AbstractEmptyBlockStmtRule<EmptyFinallyStatementRule>
 {
 private:
     static RuleSet rules;
@@ -22,14 +21,7 @@ public:
 
     bool VisitObjCAtFinallyStmt(ObjCAtFinallyStmt *finallyStmt)
     {
-        Stmt *finallyBody = finallyStmt->getFinallyBody();
-
-        if (finallyBody && isLexicalEmpty(finallyBody))
-        {
-            addViolation(finallyBody, this);
-        }
-
-        return true;
+        return checkLexicalEmptyStmt(finallyStmt->getFinallyBody(), this);
     }
 };
 

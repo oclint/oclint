@@ -1,10 +1,9 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-#include "EmptyBlockStmtRule.h"
+#include "AbstractEmptyBlockStmtRule.h"
 
-class EmptyCatchStatementRule :
-    public AbstractASTVisitorRule<EmptyCatchStatementRule>, public EmptyBlockStmtRule
+class EmptyCatchStatementRule : public AbstractEmptyBlockStmtRule<EmptyCatchStatementRule>
 {
 private:
     static RuleSet rules;
@@ -22,26 +21,12 @@ public:
 
     bool VisitCXXCatchStmt(CXXCatchStmt *catchStmt)
     {
-        Stmt *catchBlock = catchStmt->getHandlerBlock();
-
-        if (catchBlock && isLexicalEmpty(catchBlock))
-        {
-            addViolation(catchBlock, this);
-        }
-
-        return true;
+        return checkLexicalEmptyStmt(catchStmt->getHandlerBlock(), this);
     }
 
     bool VisitObjCAtCatchStmt(ObjCAtCatchStmt *catchStmt)
     {
-        Stmt *catchBody = catchStmt->getCatchBody();
-
-        if (catchBody && isLexicalEmpty(catchBody))
-        {
-            addViolation(catchBody, this);
-        }
-
-        return true;
+        return checkLexicalEmptyStmt(catchStmt->getCatchBody(), this);
     }
 };
 

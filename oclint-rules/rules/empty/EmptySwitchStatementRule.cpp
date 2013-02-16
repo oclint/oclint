@@ -1,10 +1,9 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-#include "EmptyBlockStmtRule.h"
+#include "AbstractEmptyBlockStmtRule.h"
 
-class EmptySwitchStatementRule :
-    public AbstractASTVisitorRule<EmptySwitchStatementRule>, public EmptyBlockStmtRule
+class EmptySwitchStatementRule : public AbstractEmptyBlockStmtRule<EmptySwitchStatementRule>
 {
 private:
     static RuleSet rules;
@@ -22,14 +21,7 @@ public:
 
     bool VisitSwitchStmt(SwitchStmt *switchStmt)
     {
-        Stmt *switchBody = switchStmt->getBody();
-
-        if (switchBody && isLexicalEmpty(switchBody))
-        {
-            addViolation(switchBody, this);
-        }
-
-        return true;
+        return checkLexicalEmptyStmt(switchStmt->getBody(), this);
     }
 };
 
