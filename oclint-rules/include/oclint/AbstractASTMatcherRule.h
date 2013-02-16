@@ -19,32 +19,8 @@ protected:
         callback(result);
     }
 
-    void addMatcher(const DeclarationMatcher &nodeMatch)
-    {
-        _finder.addMatcher(nodeMatch, this);
-    }
-
-    void addMatcher(const TypeMatcher &nodeMatch)
-    {
-        _finder.addMatcher(nodeMatch, this);
-    }
-
-    void addMatcher(const StatementMatcher &nodeMatch)
-    {
-        _finder.addMatcher(nodeMatch, this);
-    }
-
-    void addMatcher(const NestedNameSpecifierMatcher &nodeMatch)
-    {
-        _finder.addMatcher(nodeMatch, this);
-    }
-
-    void addMatcher(const NestedNameSpecifierLocMatcher &nodeMatch)
-    {
-        _finder.addMatcher(nodeMatch, this);
-    }
-
-    void addMatcher(const TypeLocMatcher &nodeMatch)
+    template<typename T>
+    void addMatcher(const T &nodeMatch)
     {
         _finder.addMatcher(nodeMatch, this);
     }
