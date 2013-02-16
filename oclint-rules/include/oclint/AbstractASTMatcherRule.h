@@ -3,33 +3,17 @@
 
 #include <clang/ASTMatchers/ASTMatchFinder.h>
 
-#include "oclint/AbstractASTRuleBase.h"
+#include "oclint/AbstractASTVisitorRule.h"
 
 using namespace clang::ast_matchers;
 
-class AbstractASTMatcherRule : public AbstractASTRuleBase, public MatchFinder::MatchCallback
+class AbstractASTMatcherRule :
+    public AbstractASTVisitorRule<AbstractASTMatcherRule>, public MatchFinder::MatchCallback
 {
 private:
     MatchFinder _finder;
 
 protected:
-    virtual void apply()
-    {
-        setUpMatcher();
-        SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
-        DeclContext *decl = _carrier->astContext()->getTranslationUnitDecl();
-        for (DeclContext::decl_iterator it = decl->decls_begin(), declEnd = decl->decls_end();
-            it != declEnd; ++it)
-        {
-            SourceLocation startLocation = (*it)->getLocStart();
-            if (startLocation.isValid() &&
-                sourceManager->getMainFileID() == sourceManager->getFileID(startLocation))
-            {
-                _finder.findAll(**it, *_carrier->astContext());
-            }
-        }
-    }
-
     virtual void run(const MatchFinder::MatchResult &result)
     {
         callback(result);
@@ -65,6 +49,23 @@ protected:
         _finder.addMatcher(nodeMatch, this);
     }
 
+public:
+    virtual void setUp()
+    {
+        setUpMatcher();
+    }
+
+    bool VisitDecl(Decl *decl)
+    {
+        _finder.match(*decl, *_carrier->astContext());
+        return true;
+    }
+
+    bool VisitStmt(Stmt *stmt)
+    {
+        _finder.match(*stmt, *_carrier->astContext());
+        return true;
+    }
 
 public:
     virtual ~AbstractASTMatcherRule() {}
