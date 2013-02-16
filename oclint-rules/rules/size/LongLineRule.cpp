@@ -19,7 +19,7 @@ public:
         return 3;
     }
 
-    virtual void eachLine(int lineNumber, string line, string filePath)
+    virtual void eachLine(int lineNumber, string line)
     {
         int threshold = RuleConfiguration::intForKey("LONG_LINE", 100);
         int currentLineSize = line.size();
