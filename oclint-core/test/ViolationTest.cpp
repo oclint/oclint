@@ -8,7 +8,7 @@
 
 using namespace ::testing;
 
-class ViolationTest_MockRuleBase : public RuleBase
+class MockRuleBase : public RuleBase
 {
 public:
     MOCK_METHOD0(apply, void());
@@ -18,7 +18,7 @@ public:
 
 TEST(ViolationTest, Constructor)
 {
-    RuleBase *rule = new ViolationTest_MockRuleBase();
+    RuleBase *rule = new MockRuleBase();
     Violation violation(rule, "test path", 1, 2, 3, 4, "test message");
     EXPECT_THAT(violation.path, StrEq("test path"));
     EXPECT_THAT(violation.message, StrEq("test message"));
