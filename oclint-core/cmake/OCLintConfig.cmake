@@ -32,6 +32,7 @@ SET(CLANG_LIBRARIES
     clangSema
     clangAnalysis
     clangEdit
+    clangASTMatchers
     clangAST
     clangLex
     clangBasic)

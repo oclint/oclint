@@ -6,7 +6,7 @@
 
 using namespace ::testing;
 
-class ViolationSetTest_MockRuleBase : public RuleBase
+class MockRuleBase : public RuleBase
 {
 public:
     MOCK_METHOD0(apply, void());
@@ -32,7 +32,7 @@ TEST_F(ViolationSetTest, EmptySet)
 
 TEST_F(ViolationSetTest, AddViolation)
 {
-    RuleBase *rule = new ViolationSetTest_MockRuleBase();
+    RuleBase *rule = new MockRuleBase();
     Violation violation(rule, "test path", 1, 2, 3, 4, "test message");
     ViolationSetTest_violationSet.addViolation(violation);
     EXPECT_THAT(ViolationSetTest_violationSet.numberOfViolations(), Eq(1));

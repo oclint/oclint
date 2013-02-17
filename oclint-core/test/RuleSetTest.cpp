@@ -8,7 +8,7 @@ using namespace ::testing;
 
 int RuleSetTest_applyCount;
 
-class RuleSetTest_MockRuleBase : public RuleBase
+class MockRuleBase : public RuleBase
 {
 public:
     MOCK_METHOD0(apply, void());
@@ -24,7 +24,7 @@ TEST(RuleSetTest, EmptyRuleSet)
 
 TEST(RuleSetTest, AddRuleToRuleSet)
 {
-    RuleBase *rule = new RuleSetTest_MockRuleBase();
+    RuleBase *rule = new MockRuleBase();
     RuleSet set(rule);
     EXPECT_THAT(RuleSet::numberOfRules(), Eq(1));
     EXPECT_THAT(RuleSet::getRuleAtIndex(0), Eq(rule));
@@ -33,7 +33,7 @@ TEST(RuleSetTest, AddRuleToRuleSet)
 
 TEST(RuleSetTest, StaticRuleVector)
 {
-    RuleBase *rule = new RuleSetTest_MockRuleBase();
+    RuleBase *rule = new MockRuleBase();
     RuleSet set(rule);
     EXPECT_THAT(RuleSet::numberOfRules(), Eq(2));
     EXPECT_THAT(RuleSet::getRuleAtIndex(0), NotNull());

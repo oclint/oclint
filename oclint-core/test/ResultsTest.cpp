@@ -7,7 +7,7 @@
 
 using namespace ::testing;
 
-class ResultsTest_MockRuleBase_One : public RuleBase
+class MockRuleBaseOne : public RuleBase
 {
 public:
     MOCK_METHOD0(apply, void());
@@ -19,7 +19,7 @@ public:
     }
 };
 
-class ResultsTest_MockRuleBase_Two : public RuleBase
+class MockRuleBaseTwo : public RuleBase
 {
 public:
     MOCK_METHOD0(apply, void());
@@ -63,15 +63,15 @@ TEST(ResultsTest, NumberOfFilesWithViolations)
 {
     Results *results = new ResultsTest_ResultsStub();
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
-    Violation violation1(new ResultsTest_MockRuleBase_One(), "", 1, 2, 3, 4);
+    Violation violation1(new MockRuleBaseOne(), "", 1, 2, 3, 4);
     violationSetWithOneViolation->addViolation(violation1);
     results->add(violationSetWithOneViolation);
     EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(1));
     results->add(new ViolationSet());
     EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(1));
     ViolationSet *violationSetWithTwoViolations = new ViolationSet();
-    Violation violation2(new ResultsTest_MockRuleBase_One(), "", 1, 2, 3, 4);
-    Violation violation3(new ResultsTest_MockRuleBase_Two(), "", 1, 2, 3, 4);
+    Violation violation2(new MockRuleBaseOne(), "", 1, 2, 3, 4);
+    Violation violation3(new MockRuleBaseTwo(), "", 1, 2, 3, 4);
     violationSetWithTwoViolations->addViolation(violation2);
     violationSetWithTwoViolations->addViolation(violation3);
     results->add(violationSetWithTwoViolations);
@@ -82,15 +82,15 @@ TEST(ResultsTest, NumberOfViolations)
 {
     Results *results = new ResultsTest_ResultsStub();
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
-    Violation violation1(new ResultsTest_MockRuleBase_One(), "", 1, 2, 3, 4);
+    Violation violation1(new MockRuleBaseOne(), "", 1, 2, 3, 4);
     violationSetWithOneViolation->addViolation(violation1);
     results->add(violationSetWithOneViolation);
     EXPECT_THAT(results->numberOfViolations(), Eq(1));
     results->add(new ViolationSet());
     EXPECT_THAT(results->numberOfViolations(), Eq(1));
     ViolationSet *violationSetWithTwoViolations = new ViolationSet();
-    Violation violation2(new ResultsTest_MockRuleBase_One(), "", 1, 2, 3, 4);
-    Violation violation3(new ResultsTest_MockRuleBase_Two(), "", 1, 2, 3, 4);
+    Violation violation2(new MockRuleBaseOne(), "", 1, 2, 3, 4);
+    Violation violation3(new MockRuleBaseTwo(), "", 1, 2, 3, 4);
     violationSetWithTwoViolations->addViolation(violation2);
     violationSetWithTwoViolations->addViolation(violation3);
     results->add(violationSetWithTwoViolations);
@@ -101,7 +101,7 @@ TEST(ResultsTest, NumberOfViolationsWithPrioerity)
 {
     Results *results = new ResultsTest_ResultsStub();
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
-    Violation violation1(new ResultsTest_MockRuleBase_One(), "", 1, 2, 3, 4);
+    Violation violation1(new MockRuleBaseOne(), "", 1, 2, 3, 4);
     violationSetWithOneViolation->addViolation(violation1);
     results->add(violationSetWithOneViolation);
     EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(1));
@@ -110,8 +110,8 @@ TEST(ResultsTest, NumberOfViolationsWithPrioerity)
     EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(1));
     EXPECT_THAT(results->numberOfViolationsWithPriority(2), Eq(0));
     ViolationSet *violationSetWithTwoViolations = new ViolationSet();
-    Violation violation2(new ResultsTest_MockRuleBase_One(), "", 1, 2, 3, 4);
-    Violation violation3(new ResultsTest_MockRuleBase_Two(), "", 1, 2, 3, 4);
+    Violation violation2(new MockRuleBaseOne(), "", 1, 2, 3, 4);
+    Violation violation3(new MockRuleBaseTwo(), "", 1, 2, 3, 4);
     violationSetWithTwoViolations->addViolation(violation2);
     violationSetWithTwoViolations->addViolation(violation3);
     results->add(violationSetWithTwoViolations);

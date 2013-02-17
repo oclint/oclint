@@ -23,6 +23,17 @@ if [ $# -eq 1 ] && [ "$1" = "update" ]; then
     exit 0
 fi
 
+if [ $# -eq 2 ] && [ "$1" = "update" ]; then
+    cd $PROJECT_ROOT/llvm
+    svn update -r $2
+    cd tools/clang
+    svn update -r $2
+    cd ../../projects/compiler-rt
+    svn update -r $2
+    cd $CWD
+    exit 0
+fi
+
 if [ $# -eq 1 ]; then
     BRANCH=$1
 fi
