@@ -24,14 +24,20 @@ protected:
             message);
     }
 
-    void addViolation(Decl *decl, RuleBase *rule, const string& message = "")
+    void addViolation(const Decl *decl, RuleBase *rule, const string& message = "")
     {
-        addViolation(decl->getLocStart(), decl->getLocEnd(), rule, message);
+        if (decl)
+        {
+            addViolation(decl->getLocStart(), decl->getLocEnd(), rule, message);
+        }
     }
 
-    void addViolation(Stmt *stmt, RuleBase *rule, const string& message = "")
+    void addViolation(const Stmt *stmt, RuleBase *rule, const string& message = "")
     {
-        addViolation(stmt->getLocStart(), stmt->getLocEnd(), rule, message);
+        if (stmt)
+        {
+            addViolation(stmt->getLocStart(), stmt->getLocEnd(), rule, message);
+        }
     }
 
 public:
