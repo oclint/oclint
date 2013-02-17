@@ -1,10 +1,9 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-#include "EmptyBlockStmtRule.h"
+#include "AbstractEmptyBlockStmtRule.h"
 
-class EmptyWhileStatementRule :
-    public AbstractASTVisitorRule<EmptyWhileStatementRule>, public EmptyBlockStmtRule
+class EmptyWhileStatementRule : public AbstractEmptyBlockStmtRule<EmptyWhileStatementRule>
 {
 private:
     static RuleSet rules;
@@ -22,14 +21,7 @@ public:
 
     bool VisitWhileStmt(WhileStmt *whileStmt)
     {
-        Stmt *whileBody = whileStmt->getBody();
-
-        if (whileBody && isLexicalEmpty(whileBody))
-        {
-            addViolation(whileBody, this);
-        }
-
-        return true;
+        return checkLexicalEmptyStmt(whileStmt->getBody(), this);
     }
 };
 

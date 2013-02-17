@@ -83,7 +83,7 @@ int dynamicLoadRules(string ruleDirPath)
                 continue;
             }
             string rulePath = ruleDirPath + "/" + string(dirp->d_name);
-            if (dlopen(rulePath.c_str(), RTLD_NOW) == NULL)
+            if (dlopen(rulePath.c_str(), RTLD_LAZY) == NULL)
             {
                 cerr << dlerror() << endl;
                 closedir(dp);
@@ -140,7 +140,7 @@ int loadReporter(const char* executablePath)
                 continue;
             }
             string rulePath = defaultReportersPath + "/" + string(dirp->d_name);
-            void *reporterHandle = dlopen(rulePath.c_str(), RTLD_NOW);
+            void *reporterHandle = dlopen(rulePath.c_str(), RTLD_LAZY);
             if (reporterHandle == NULL)
             {
                 cerr << dlerror() << endl;

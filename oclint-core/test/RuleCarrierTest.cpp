@@ -8,7 +8,7 @@
 
 using namespace ::testing;
 
-class RuleCarrierTest_MockRuleBase : public RuleBase
+class MockRuleBase : public RuleBase
 {
 public:
     MOCK_METHOD0(apply, void());
@@ -28,7 +28,7 @@ TEST(RuleCarrierTest, AddViolation)
 {
     ViolationSet *violationSet = new ViolationSet();
     RuleCarrier *carrier = new RuleCarrier(NULL, violationSet);
-    RuleBase *rule = new RuleCarrierTest_MockRuleBase();
+    RuleBase *rule = new MockRuleBase();
     carrier->addViolation("test path", 1, 2, 3, 4, rule, "test message");
     EXPECT_THAT(violationSet->numberOfViolations(), Eq(1));
     Violation compareViolation = violationSet->getViolations().at(0);
@@ -45,7 +45,7 @@ TEST(RuleCarrierTest, AddViolationWithEmptyFilePath)
 {
     ViolationSet *violationSet = new ViolationSet();
     RuleCarrier *carrier = new RuleCarrier(NULL, violationSet);
-    RuleBase *rule = new RuleCarrierTest_MockRuleBase();
+    RuleBase *rule = new MockRuleBase();
     carrier->addViolation("", 1, 2, 3, 4, rule, "test message");
     EXPECT_THAT(violationSet->numberOfViolations(), Eq(0));
 }

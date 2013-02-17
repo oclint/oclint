@@ -1,10 +1,9 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-#include "EmptyBlockStmtRule.h"
+#include "AbstractEmptyBlockStmtRule.h"
 
-class EmptyDoWhileStatementRule :
-    public AbstractASTVisitorRule<EmptyDoWhileStatementRule>, public EmptyBlockStmtRule
+class EmptyDoWhileStatementRule : public AbstractEmptyBlockStmtRule<EmptyDoWhileStatementRule>
 {
 private:
     static RuleSet rules;
@@ -22,14 +21,7 @@ public:
 
     bool VisitDoStmt(DoStmt *doStmt)
     {
-        Stmt *doBody = doStmt->getBody();
-
-        if (doBody && isLexicalEmpty(doBody))
-        {
-            addViolation(doBody, this);
-        }
-
-        return true;
+        return checkLexicalEmptyStmt(doStmt->getBody(), this);
     }
 };
 
