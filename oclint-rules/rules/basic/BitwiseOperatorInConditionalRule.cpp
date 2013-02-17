@@ -20,25 +20,28 @@ public:
 
     virtual void callback(const MatchFinder::MatchResult &result)
     {
-        if (const IfStmt *constIfStmt = result.Nodes.getNodeAs<IfStmt>("ifStmt"))
+        const IfStmt *ifStmt = result.Nodes.getNodeAs<IfStmt>("ifStmt");
+        if (ifStmt)
         {
-            IfStmt *ifStmt = (IfStmt *)constIfStmt;
             addViolation(ifStmt->getCond(), this);
         }
-        if (const WhileStmt *constWhileStmt = result.Nodes.getNodeAs<WhileStmt>("whileStmt"))
+
+        const WhileStmt *whileStmt = result.Nodes.getNodeAs<WhileStmt>("whileStmt");
+        if (whileStmt)
         {
-            WhileStmt *whileStmt = (WhileStmt *)constWhileStmt;
             addViolation(whileStmt->getCond(), this);
         }
-        if (const DoStmt *constDoStmt = result.Nodes.getNodeAs<DoStmt>("doStmt"))
+
+        const DoStmt *doStmt = result.Nodes.getNodeAs<DoStmt>("doStmt");
+        if (doStmt)
         {
-            DoStmt *doStmt = (DoStmt *)constDoStmt;
             addViolation(doStmt->getCond(), this);
         }
-        if (const ConditionalOperator *constCondOper =
-            result.Nodes.getNodeAs<ConditionalOperator>("conditionalOperator"))
+
+        const ConditionalOperator *conditionalOperator =
+            result.Nodes.getNodeAs<ConditionalOperator>("conditionalOperator");
+        if (conditionalOperator)
         {
-            ConditionalOperator *conditionalOperator = (ConditionalOperator *)constCondOper;
             addViolation(conditionalOperator->getCond(), this);
         }
     }

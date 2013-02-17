@@ -19,11 +19,7 @@ public:
 
     virtual void callback(const MatchFinder::MatchResult &result)
     {
-        if (const GotoStmt *constGotoStmt = result.Nodes.getNodeAs<GotoStmt>("gotoStmt"))
-        {
-            GotoStmt *gotoStmt = (GotoStmt *)constGotoStmt;
-            addViolation(gotoStmt, this);
-        }
+        addViolation(result.Nodes.getNodeAs<GotoStmt>("gotoStmt"), this);
     }
 
     virtual void setUpMatcher()
