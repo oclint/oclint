@@ -59,7 +59,7 @@ public:
 //         </violation>
 //     </file>
 //# </pmd>
-        out << "<file name=\">" << violation.path << "\">" << endl;	
+        out << "<file name=\"" << violation.path << "\">" << endl;	
         out << "<violation begincolumn=\"" << violation.startColumn << "\" beginline=\"" << violation.startLine << "\" ";
         const RuleBase *rule = violation.rule;
         out << "priority=\"" << rule->priority() + 1 << "\" rule=\"" << rule->name() << "\">" << endl;
