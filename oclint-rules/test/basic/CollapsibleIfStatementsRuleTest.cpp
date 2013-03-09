@@ -37,8 +37,8 @@ TEST(CollapsibleIfStatementsRuleTest, IfThenIsCompoundContainsOnlyIf)
  When we find collapsible if statements, we need to check the existence of their else branch
  OuterElse InnerElse Emit
      1         1       0
-     1         0       1
-     0         1       1
+     1         0       0
+     0         1       0
      0         0       1
 */
 
@@ -49,14 +49,12 @@ TEST(CollapsibleIfStatementsRuleTest, BothOuterAndInnerIfHasElseExistence)
 
 TEST(CollapsibleIfStatementsRuleTest, OuterIfHasElseInnerDoesNot)
 {
-    testRuleOnCode(new CollapsibleIfStatementsRule(), "void m() { if (1) { if (0) {} } else {} }",
-        0, 1, 12, 1, 39);
+    testRuleOnCode(new CollapsibleIfStatementsRule(), "void m() { if (1) { if (0) {} } else {} }");
 }
 
 TEST(CollapsibleIfStatementsRuleTest, OuterIfHasNoElseInnerDoes)
 {
-    testRuleOnCode(new CollapsibleIfStatementsRule(), "void m() { if (1) { if (0) {} else {} } }",
-        0, 1, 12, 1, 39);
+    testRuleOnCode(new CollapsibleIfStatementsRule(), "void m() { if (1) { if (0) {} else {} } }");
 }
 
 TEST(CollapsibleIfStatementsRuleTest, OuterIfHasElseIf)

@@ -30,7 +30,7 @@ private:
 
     bool checkElseBranch(IfStmt *outerIf, IfStmt *innerIf)
     {
-        return outerIf->getElse() && innerIf->getElse();
+        return outerIf->getElse() || innerIf->getElse();
     }
 
 public:
