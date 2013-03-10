@@ -10,5 +10,7 @@ MACRO(build_test name)
 ENDMACRO(build_test)
 
 BUILD_TEST(CanaryTest)
-BUILD_TEST(HTMLReporterTest)
 BUILD_TEST(TextReporterTest)
+BUILD_TEST(HTMLReporterTest)
+BUILD_TEST(XMLReporterTest)
+BUILD_TEST(JSONReporterTest)
