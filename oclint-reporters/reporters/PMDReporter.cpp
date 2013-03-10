@@ -16,7 +16,8 @@ public:
         writeHeader(out, Version::identifier());
 
         vector<Violation> violationSet = results->allViolations();
-        for (int index = 0, numberOfViolations = violationSet.size(); index < numberOfViolations; index++)
+        for (int index = 0, numberOfViolations = violationSet.size();
+            index < numberOfViolations; index++)
         {
             writeViolation(out, violationSet.at(index));
             out << endl;
@@ -27,7 +28,7 @@ public:
 
     void writeHeader(ostream &out, string version)
     {
-        out << "<pmd version=\"" << version << "\">";
+        out << "<pmd version=\"oclint-" << version << "\">";
     }
 
     void writeFooter(ostream &out)
@@ -42,7 +43,8 @@ public:
         out << "begincolumn=\"" << violation.startColumn << "\" ";
         out << "beginline=\"" << violation.startLine << "\" ";
         const RuleBase *rule = violation.rule;
-        out << "priority=\"" << 2 * rule->priority() - 1 << "\" rule=\"" << rule->name() << "\">" << endl;
+        out << "priority=\"" << 2 * rule->priority() - 1 << "\" ";
+        out << "rule=\"" << rule->name() << "\">" << endl;
         out << violation.message << endl;
         out << "</violation>" << endl;
         out << "</file>" << endl;
