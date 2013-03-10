@@ -42,7 +42,7 @@ public:
 		out << "begincolumn=\"" << violation.startColumn << "\" ";
 		out << "beginline=\"" << violation.startLine << "\" ";
 		const RuleBase *rule = violation.rule;
-		out << "priority=\"" << rule->priority() + 1 << "\" rule=\"" << rule->name() << "\">" << endl;
+		out << "priority=\"" << 2 * rule->priority() - 1 << "\" rule=\"" << rule->name() << "\">" << endl;
 		out << violation.message << endl;
 		out << "</violation>" << endl;
 		out << "</file>" << endl;
