@@ -11,7 +11,7 @@ private:
         for (CompoundStmt::body_iterator body = compoundStmt->body_begin(),
             bodyEnd = compoundStmt->body_end(); body != bodyEnd; body++)
         {
-            Stmt *bodyStmt = (Stmt *)*body;
+            Stmt *bodyStmt = dyn_cast<Stmt>(*body);
             if (areAllBranchesReturn(bodyStmt))
             {
                 return true;
