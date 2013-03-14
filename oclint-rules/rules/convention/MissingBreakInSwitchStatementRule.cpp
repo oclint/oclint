@@ -56,18 +56,48 @@ public:
         return 3;
     }
 
+    bool isSwitchCase(Stmt *stmt)
+    {
+        return stmt && isa<SwitchCase>(stmt);
+    }
+
+    bool isBreakingPoint(Stmt *stmt)
+    {
+        return stmt && (isa<BreakStmt>(stmt) ||
+                isa<ReturnStmt>(stmt) || isa<CXXThrowExpr>(stmt) || isa<ObjCAtThrowStmt>(stmt));
+    }
+
     bool VisitSwitchStmt(SwitchStmt *switchStmt)
     {
-        SwitchCase *currentSwitchCase = switchStmt->getSwitchCaseList();
-        while (currentSwitchCase)
+        CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(switchStmt->getBody());
+        if (compoundStmt)
         {
-            FindingBreak findingBreak;
-            if (!findingBreak.findBreak(currentSwitchCase))
+            bool breakFound = true;
+            for (CompoundStmt::body_iterator body = compoundStmt->body_begin(),
+                bodyEnd = compoundStmt->body_end(); body != bodyEnd; body++)
+            {
+                Stmt *bodyStmt = dyn_cast<Stmt>(*body);
+                if (isBreakingPoint(bodyStmt))
+                {
+                    breakFound = true;
+                    continue;
+                }
+                if (isSwitchCase(bodyStmt))
+                {
+                    if (!breakFound)
+                    {
+                        addViolation(switchStmt, this);
+                        break;
+                    }
+
+                    FindingBreak findingBreak;
+                    breakFound = findingBreak.findBreak(dyn_cast<SwitchCase>(bodyStmt));
+                }
+            }
+            if (!breakFound)
             {
                 addViolation(switchStmt, this);
-                break;
             }
-            currentSwitchCase = currentSwitchCase->getNextSwitchCase();
         }
 
         return true;
