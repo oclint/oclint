@@ -23,6 +23,16 @@ case 4:     \n\
 } }");
 }
 
+TEST(MissingBreakInSwitchStatementRuleTest, OneCaseWithBreak)
+{
+    testRuleOnCode(new MissingBreakInSwitchStatementRule(), "void m(); void aMethod(int a) { \n\
+switch(a){  \n\
+case 1:     \n\
+\tm();      \n\
+\tbreak;    \n\
+} }");
+}
+
 TEST(MissingBreakInSwitchStatementRuleTest, OneCaseHasNoBreak)
 {
     testRuleOnCode(new MissingBreakInSwitchStatementRule(), "void m(); void aMethod(int a) { switch(a){\n\
@@ -113,6 +123,22 @@ case 2:       \n\
 \treturn 2;   \n\
 default:      \n\
 \t@throw ex2; \n\
+} }");
+}
+
+/*
+ Tests for the false positive found by Stephan Esch
+ Details at https://github.com/oclint/oclint/issues/16
+*/
+
+TEST(MissingBreakInSwitchStatementRuleTest, CasesHaveAssignmentAndBreak)
+{
+    testRuleOnCode(new MissingBreakInSwitchStatementRule(), "void aMethod(int a) { \n\
+int i;      \n\
+switch(a){  \n\
+case 1:     \n\
+\ti = 1;    \n\
+\tbreak;    \n\
 } }");
 }
 
