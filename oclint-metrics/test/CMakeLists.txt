@@ -3,7 +3,7 @@ MACRO(build_test name)
     TARGET_LINK_LIBRARIES(${name}
         OCLintMetric
         gmock
-        profile_rt
+        ${PROFILE_RT_LIBS}
         ${CLANG_LIBRARIES}
         ${REQ_LLVM_LIBRARIES}
         ${CMAKE_DL_LIBS}

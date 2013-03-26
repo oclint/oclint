@@ -3,6 +3,7 @@ MACRO(build_test name)
     TARGET_LINK_LIBRARIES(${name}
         gmock
         profile_rt
+        ${PROFILE_RT_LIBS}
         OCLintCore
         )
 
