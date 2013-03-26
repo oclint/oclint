@@ -6,7 +6,7 @@ MACRO(build_test name)
         OCLintCore
         OCLintRuleSet
         gmock
-        profile_rt
+        ${PROFILE_RT_LIBS}
         ${CLANG_LIBRARIES}
         ${REQ_LLVM_LIBRARIES}
         )
