@@ -36,7 +36,7 @@ SET(CLANG_LIBRARIES
     clangAST
     clangLex
     clangBasic)
-    
+
 IF(TEST_BUILD)
     ENABLE_TESTING()
     ADD_DEFINITIONS(
@@ -47,4 +47,13 @@ IF(TEST_BUILD)
         ${GOOGLETEST_SRC}/gtest/include
         )
     LINK_DIRECTORIES(${GOOGLETEST_BUILD})
+
+    # Setup the path for profile_rt library
+    SET(COMPILER_RT_VERSION "${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}")
+    STRING(TOLOWER ${CMAKE_SYSTEM_NAME} COMPILER_RT_SYSTEM_NAME)
+    LINK_DIRECTORIES(${LLVM_LIBRARY_DIRS}/clang/${COMPILER_RT_VERSION}/lib/${COMPILER_RT_SYSTEM_NAME})
+    IF(APPLE)
+        SET(PROFILE_RT_LIBS clang_rt.profile_osx)
+    ELSE()
+    ENDIF()
 ENDIF()
