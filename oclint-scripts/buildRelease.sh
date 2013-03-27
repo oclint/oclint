@@ -4,9 +4,9 @@
 CWD=`pwd`
 PROJECT_ROOT="$CWD/.."
 LLVM_BUILD="$PROJECT_ROOT/build/llvm-install"
-OCLINT_CORE_BUILD="$PROJECT_ROOT/build/oclint-core"
 OCLINT_RULES_BUILD="$PROJECT_ROOT/build/oclint-rules"
 OCLINT_REPORTERS_BUILD="$PROJECT_ROOT/build/oclint-reporters"
+OCLINT_CLANG_TOOLING_BUILD="$PROJECT_ROOT/build/oclint-clang-tooling"
 OCLINT_RELEASE_BUILD="$PROJECT_ROOT/build/oclint-release"
 LLVM_SRC="$PROJECT_ROOT/llvm"
 OCLINT_CORE_SRC="$PROJECT_ROOT/oclint-core"
@@ -26,7 +26,7 @@ mkdir -p $OCLINT_RELEASE_BUILD/lib/oclint
 cd $OCLINT_RELEASE_BUILD
 
 # put exetuable in place
-cp $OCLINT_CORE_BUILD/bin/oclint* $OCLINT_RELEASE_BUILD/bin
+cp $OCLINT_CLANG_TOOLING_BUILD/bin/oclint* $OCLINT_RELEASE_BUILD/bin
 cd $OCLINT_RELEASE_BUILD/bin
 ln -s oclint* oclint
 

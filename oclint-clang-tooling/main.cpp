@@ -6,19 +6,22 @@
 #include <ctime>
 #include <string>
 
+#include <llvm/ADT/SmallString.h>
 #include <llvm/Support/raw_ostream.h>
+#include <llvm/Support/CommandLine.h>
+#include <llvm/Support/Path.h>
+#include <llvm/Support/Program.h>
+#include <llvm/Support/FileSystem.h>
 #include <clang/AST/AST.h>
 #include <clang/AST/ASTConsumer.h>
 #include <clang/AST/ASTContext.h>
 #include <clang/AST/PrettyPrinter.h>
 #include <clang/AST/RecordLayout.h>
+#include <clang/Driver/OptTable.h>
+#include <clang/Driver/Options.h>
+#include <clang/Tooling/CommonOptionsParser.h>
 #include <clang/Tooling/Tooling.h>
-#include <llvm/Support/Path.h>
-#include <llvm/ADT/SmallString.h>
-#include <llvm/Support/Program.h>
-#include <llvm/Support/FileSystem.h>
 
-#include "oclint/CommandLineOptions.h"
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 #include "oclint/Results.h"
@@ -26,12 +29,56 @@
 #include "oclint/Violation.h"
 #include "oclint/RuleBase.h"
 #include "oclint/Reporter.h"
-#include "oclint/Processor.h"
 
 using namespace std;
 using namespace llvm;
 using namespace llvm::sys;
 using namespace clang;
+using namespace clang::driver;
+using namespace clang::tooling;
+
+/* ----------------
+   input and output
+   ---------------- */
+
+cl::opt<string> argOutput("o", cl::desc("Write output to <path>"), cl::value_desc("path"), cl::init("-"));
+
+/* --------------------
+   oclint configuration
+   -------------------- */
+
+cl::opt<string> argReportType("report-type", cl::desc("Change output report type"), cl::value_desc("name"), cl::init("text"));
+cl::list<string> argRulesPath("R", cl::Prefix, cl::desc("Add directory to rule loading path"), cl::value_desc("directory"), cl::ZeroOrMore);
+cl::list<string> argRuleConfiguration("rc", cl::desc("Override the default behavior of rules"), cl::value_desc("parameter>=<value"), cl::ZeroOrMore);
+cl::opt<int> argMaxP1("max-priority-1", cl::desc("The max allowed number of priority 1 violations"), cl::value_desc("threshold"), cl::init(0));
+cl::opt<int> argMaxP2("max-priority-2", cl::desc("The max allowed number of priority 2 violations"), cl::value_desc("threshold"), cl::init(10));
+cl::opt<int> argMaxP3("max-priority-3", cl::desc("The max allowed number of priority 3 violations"), cl::value_desc("threshold"), cl::init(20));
+
+/* -------------
+   libTooling cl
+   ------------- */
+
+static cl::extrahelp CommonHelp(CommonOptionsParser::HelpMessage);
+static cl::extrahelp MoreHelp(
+    "For more information, please visit http://oclint.org\n"
+);
+static OwningPtr<OptTable> Options(createDriverOptTable());
+
+class Processor : public ASTConsumer
+{
+public:
+    virtual void HandleTranslationUnit(ASTContext &astContext)
+    {
+        ViolationSet *violationSet = new ViolationSet();
+        RuleCarrier *carrier = new RuleCarrier(&astContext, violationSet);
+        for (int index = 0, numRules = RuleSet::numberOfRules(); index < numRules; index++)
+        {
+            RuleSet::getRuleAtIndex(index)->takeoff(carrier);
+        }
+        Results *results = Results::getInstance();
+        results->add(violationSet);
+    }
+};
 
 class ProcessorActionFactory
 {
