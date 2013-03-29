@@ -14,6 +14,7 @@ public:
     virtual void report(Results *results, ostream &out)
     {
         writeHeader(out, Version::identifier());
+        writeDatetime(out);
         writeSummary(out, *results);
         out << "<violations>";
         vector<Violation> violationSet = results->allViolations();
@@ -31,6 +32,22 @@ public:
     {
         out << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
         out << "<oclint version=\"" << version << "\" url=\"http://oclint.org\">";
+    }
+
+    void writeDatetime(ostream &out)
+    {
+        time_t now = time(0);
+        struct tm *tmNow = gmtime(&now);
+        char charNow[20];
+        sprintf(charNow,
+            "%04i-%02i-%02iT%02i:%02i:%02iZ",
+            tmNow->tm_year + 1900,
+            tmNow->tm_mon,
+            tmNow->tm_mday,
+            tmNow->tm_hour,
+            tmNow->tm_min,
+            tmNow->tm_sec);
+        out << "<datetime>" << charNow << "</datetime>";
     }
 
     void writeFooter(ostream &out)

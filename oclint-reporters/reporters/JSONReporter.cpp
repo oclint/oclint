@@ -37,6 +37,8 @@ public:
     {
         writeKeyValue(out, "version", version);
         writeKeyValue(out, "url", "http://oclint.org");
+        time_t now = time(0);
+        writeKeyValue(out, "timestamp", now);
     }
 
     void writeKey(ostream &out, string key)

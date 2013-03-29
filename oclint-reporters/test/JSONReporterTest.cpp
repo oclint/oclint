@@ -36,7 +36,7 @@ TEST_F(JSONReporterTest, WriteHeader)
 {
     ostringstream oss;
     reporter.writeHeader(oss, "test");
-    EXPECT_THAT(oss.str(), StrEq("\"version\":\"test\",\"url\":\"http://oclint.org\","));
+    EXPECT_THAT(oss.str(), HasSubstr("\"version\":\"test\",\"url\":\"http://oclint.org\","));
 }
 
 TEST_F(JSONReporterTest, WriteKey)
