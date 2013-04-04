@@ -1,18 +1,15 @@
 #ifndef OCLINT_RULECONFIGURATION_H
 #define OCLINT_RULECONFIGURATION_H
 
-#include <vector>
-#include <utility>
 #include <string>
+#include <map>
 
 using namespace std;
 
 class RuleConfiguration
 {
 private:
-    static vector<pair<string, string> >* _configurations;
-    static int indexOfKey(string key);
-    static int numberOfConfigurations();
+    static map<string, string>* _configurations;
 
 public:
     static void addConfiguration(string key, string value);
