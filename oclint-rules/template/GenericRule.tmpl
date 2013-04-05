@@ -1,0 +1,30 @@
+#include <clang/AST/AST.h>
+
+#include "oclint/RuleBase.h"
+#include "oclint/RuleSet.h"
+
+using namespace clang;
+
+class {{RULE_CLASS_NAME}}Rule : public RuleBase
+{
+private:
+    static RuleSet rules;
+
+public:
+    virtual const string name() const
+    {
+        return "{{RULE_NAME}}";
+    }
+
+    virtual const int priority() const
+    {
+        return {{RULE_PRIORITY}};
+    }
+
+    virtual void apply()
+    {
+    }
+
+};
+
+RuleSet {{RULE_CLASS_NAME}}Rule::rules(new {{RULE_CLASS_NAME}}Rule());
