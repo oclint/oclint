@@ -1,3 +1,5 @@
+#include <cstdio>
+
 #include "oclint/Reporter.h"
 #include "oclint/RuleBase.h"
 #include "oclint/Version.h"
