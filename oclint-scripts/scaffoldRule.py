@@ -7,6 +7,7 @@ import argparse
 SCRIPT_WORKING_FOLDER = os.path.dirname(os.path.abspath(__file__))
 RULES_PROJECT_DIRECTORY = os.path.join(SCRIPT_WORKING_FOLDER, "../oclint-rules")
 RULES_SOURCE_ROOT_DIRECTORY = os.path.join(RULES_PROJECT_DIRECTORY, "rules")
+RULES_SOURCE_ROOT_CMAKELISTS = os.path.join(RULES_SOURCE_ROOT_DIRECTORY, "CMakeLists.txt")
 RULES_TEMPLATE_DIRECTORY = os.path.join(RULES_PROJECT_DIRECTORY, "template")
 CLANG_BASIC_DIRECTORY = os.path.join(SCRIPT_WORKING_FOLDER, "../llvm/tools/clang/include/clang/Basic")
 
@@ -23,6 +24,8 @@ def pre_check(folder_name):
     cmake_lists_path = custom_cmake_lists_path(folder_name)
     if not os.path.isfile(cmake_lists_path):
         open(cmake_lists_path, 'a').close()
+        with open(RULES_SOURCE_ROOT_CMAKELISTS, 'a') as rules_cmake_lists_file:
+            rules_cmake_lists_file.write('\nADD_RULE_CATEGORY_DIRECTORY(' + folder_name + ')\n')
 
 def generate_code_block(line, node_type = ""):
     line_re = re.search('def (.+) :', line)
