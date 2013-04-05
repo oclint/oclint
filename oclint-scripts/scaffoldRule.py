@@ -86,7 +86,7 @@ arg_parser.add_argument("class_name", help="class name of the rule")
 arg_parser.add_argument("-t", "--type", dest='rule_type', choices=['Generic', 'SourceCodeReader', 'ASTVisitor', 'ASTMatcher'], default="Generic")
 arg_parser.add_argument("-c", "--category", dest='rule_category', default="custom")
 arg_parser.add_argument("-n", "--name", dest='rule_name', default="")
-arg_parser.add_argument("-p", "--priority", type=int, dest='rule_priority', default=3)
+arg_parser.add_argument("-p", "--priority", type=int, dest='rule_priority', choices=[1, 2, 3], default=3)
 args = arg_parser.parse_args()
 
 rule_info_dict = {"RULE_CLASS_NAME" : args.class_name, "RULE_TYPE" : args.rule_type, "RULE_PRIORITY" : str(args.rule_priority), "RULE_NAME" : args.rule_name}
