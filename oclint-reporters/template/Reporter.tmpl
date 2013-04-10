@@ -1,0 +1,19 @@
+#include "oclint/Reporter.h"
+
+class {{REPORTER_CLASS_NAME}}Reporter : public Reporter
+{
+public:
+    virtual const string name() const
+    {
+        return "{{REPORTER_NAME}}";
+    }
+
+    virtual void report(Results *results, ostream &out)
+    {
+    }
+};
+
+extern "C" Reporter* create()
+{
+  return new {{REPORTER_CLASS_NAME}}Reporter();
+}
