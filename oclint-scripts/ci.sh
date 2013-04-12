@@ -9,7 +9,6 @@
 ./buildRules.sh clean
 ./buildReporters.sh clean
 ./buildClangTooling.sh clean
-./buildRelease.sh clean
 ./testCore.sh
 ./testMetrics.sh
 ./testRules.sh
