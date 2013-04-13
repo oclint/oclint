@@ -56,6 +56,32 @@ TEST(DeadCodeRuleTest, CodeAfterContinueInForObjCForEachLoop)
        0, 1, 65, 1, 70);
 }
 
+/*
+ Tests for the false positive about return followed by case label
+ Details at https://github.com/oclint/oclint/issues/24
+*/
+
+TEST(DeadCodeRuleTest, ReturnFollowedByCaseLabel)
+{
+    testRuleOnObjCCode(new DeadCodeRule(), "void a(int i) { int j; switch(i) { case 1: break; case 2: j = 1; return; case 3: return; default: return; }  }");
+}
+
+TEST(DeadCodeRuleTest, ReturnFollowedByDefault)
+{
+    testRuleOnObjCCode(new DeadCodeRule(), "void a(int i) { int j; switch(i) { case 1: break; case 2: return; case 3: j = 1; return; default: return; }  }");
+}
+
+TEST(DeadCodeRuleTest, BreakFollowedByCaseLabel)
+{
+    testRuleOnObjCCode(new DeadCodeRule(), "void a(int i) { int j; switch(i) { case 1: break; case 2: j = 1; break; case 3: return; default: return; }  }");
+}
+
+TEST(DeadCodeRuleTest, ReturnFollowedByStatementsInForStmt)
+{
+    testRuleOnCode(new DeadCodeRule(), "void a() { for (;;) { return; int b; } }",
+       0, 1, 31, 1, 36);
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);

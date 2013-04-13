@@ -30,12 +30,10 @@ private:
                 addViolation(bodyStmt, this);
                 break;
             }
-            else
+
+            if (isa<BreakStmt>(bodyStmt) || isa<ContinueStmt>(bodyStmt))
             {
-                if (isa<BreakStmt>(bodyStmt) || isa<ContinueStmt>(bodyStmt))
-                {
-                    hasBreakPoint = true;
-                }
+                hasBreakPoint = true;
             }
         }
     }
@@ -78,18 +76,16 @@ public:
             bodyEnd = compoundStmt->body_end(); body != bodyEnd; body++)
         {
             Stmt *bodyStmt = (Stmt *)*body;
-            if (hasBreakPoint)
+            if (hasBreakPoint && !isa<SwitchCase>(bodyStmt))
             {
                 addViolation(bodyStmt, this);
                 break;
             }
-            else
+
+            if (isa<ReturnStmt>(bodyStmt) ||
+                isa<CXXThrowExpr>(bodyStmt) || isa<ObjCAtThrowStmt>(bodyStmt))
             {
-                if (isa<ReturnStmt>(bodyStmt) ||
-                    isa<CXXThrowExpr>(bodyStmt) || isa<ObjCAtThrowStmt>(bodyStmt))
-                {
-                    hasBreakPoint = true;
-                }
+                hasBreakPoint = true;
             }
         }
 
