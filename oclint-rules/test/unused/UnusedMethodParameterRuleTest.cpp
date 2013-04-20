@@ -20,6 +20,16 @@ TEST(UnusedMethodParameterRuleTest, MethodWithUnusedParameter)
         0, 1, 14, 1, 18);
 }
 
+TEST(UnusedMethodParameterRuleTest, MethodWithUnusedParameterSuppressThisRule)
+{
+    testRuleOnCode(new UnusedMethodParameterRule(), "void aMethod(int a __attribute__((annotate(\"oclint:suppress[unused method parameter]\")))) { }");
+}
+
+TEST(UnusedMethodParameterRuleTest, MethodWithUnusedParameterSuppressAll)
+{
+    testRuleOnCode(new UnusedMethodParameterRule(), "void aMethod(int a __attribute__((annotate(\"oclint:suppress\")))) { }");
+}
+
 TEST(UnusedMethodParameterRuleTest, CppParameterHasNoNameShouldBeIgnored)
 {
     testRuleOnCXXCode(new UnusedMethodParameterRule(), "void aMethod(int) {}");
@@ -36,6 +46,67 @@ TEST(UnusedMethodParameterRuleTest, ObjCMethodWithUnusedParameter)
 - (void)aMethod:(int)a {}       \n\
 @end",
         0, 7, 18, 7, 22);
+}
+
+TEST(UnusedMethodParameterRuleTest, ObjCMethodWithUnusedParameterSuppressThisRule)
+{
+    testRuleOnObjCCode(new UnusedMethodParameterRule(), "@interface AnInterface\n\
+@end                            \n\
+@interface AClass : AnInterface \n\
+- (void)aMethod:(int)a;         \n\
+@end                            \n\
+@implementation AClass          \n\
+- (void)aMethod:(int) __attribute__((annotate(\"oclint:suppress[unused method parameter]\"))) a {}       \n\
+@end");
+}
+
+TEST(UnusedMethodParameterRuleTest, ObjCMethodWithUnusedParameterSuppressAll)
+{
+    testRuleOnObjCCode(new UnusedMethodParameterRule(), "@interface AnInterface\n\
+@end                            \n\
+@interface AClass : AnInterface \n\
+- (void)aMethod:(int)a;         \n\
+@end                            \n\
+@implementation AClass          \n\
+- (void)aMethod:(int) __attribute__((annotate(\"oclint:suppress\"))) a {}       \n\
+@end");
+}
+
+TEST(UnusedMethodParameterRuleTest, ObjCMethodWithUnusedParameterMultipleSuppress)
+{
+    testRuleOnObjCCode(new UnusedMethodParameterRule(), "@interface AnInterface\n\
+@end                            \n\
+@interface AClass : AnInterface \n\
+- (void)aMethod:(int)a;         \n\
+@end                            \n\
+@implementation AClass          \n\
+- (void)aMethod:(int) __attribute__((annotate(\"oclint:suppress[unused method parameter]\"), annotate(\"oclint:suppress[rule2]\"))) a {}       \n\
+@end");
+}
+
+TEST(UnusedMethodParameterRuleTest, ObjCMethodWithUnusedParameterMultipleSuppressReverse)
+{
+    testRuleOnObjCCode(new UnusedMethodParameterRule(), "@interface AnInterface\n\
+@end                            \n\
+@interface AClass : AnInterface \n\
+- (void)aMethod:(int)a;         \n\
+@end                            \n\
+@implementation AClass          \n\
+- (void)aMethod:(int) __attribute__((annotate(\"oclint:suppress[rule2]\"), annotate(\"oclint:suppress[unused method parameter]\"))) a {}       \n\
+@end");
+}
+
+TEST(UnusedMethodParameterRuleTest, ObjCMethodWithUnusedParameterSupressOther)
+{
+    testRuleOnObjCCode(new UnusedMethodParameterRule(), "@interface AnInterface\n\
+@end                            \n\
+@interface AClass : AnInterface \n\
+- (void)aMethod:(int)a;         \n\
+@end                            \n\
+@implementation AClass          \n\
+- (void)aMethod:(int) __attribute__((annotate(\"oclint:suppress[rule2]\"))) a {}       \n\
+@end",
+        0, 7, 18, 7, 75);
 }
 
 TEST(UnusedMethodParameterRuleTest, FunctionDeclarationWithoutDefincationShouldBeIgnored)

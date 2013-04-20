@@ -152,6 +152,11 @@ TEST_F(NcssMethodCountRuleTest, TwoCaseStatementsAndDefault)
         0, 1, 1, 1, 91, "Method of 10 non-commenting source statements exceeds limit of 0");
 }
 
+TEST_F(NcssMethodCountRuleTest, SupressHighNcssMethod)
+{
+    testRuleOnCode(new NcssMethodCountRule(), "void __attribute__((annotate(\"oclint:suppress[high ncss method]\"))) aMethod() { }");
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);
