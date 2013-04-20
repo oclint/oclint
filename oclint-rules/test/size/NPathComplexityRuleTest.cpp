@@ -201,6 +201,11 @@ TEST_F(NPathComplexityRuleTest, NastingConditionalOperator)
         0, 1, 1, 1, 53, "NPath Complexity Number 8 exceeds limit of 0");
 }
 
+TEST_F(NPathComplexityRuleTest, SuppressHighNPathComplexity)
+{
+    testRuleOnCode(new NPathComplexityRule(), "void __attribute__((annotate(\"oclint:suppress[high npath complexity]\"))) mthd() { }");
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);

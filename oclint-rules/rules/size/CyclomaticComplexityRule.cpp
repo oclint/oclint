@@ -2,6 +2,7 @@
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 #include "oclint/metric/CyclomaticComplexityMetric.h"
+#include "oclint/helper/SuppressHelper.h"
 #include "oclint/util/StdUtil.h"
 
 class CyclomaticComplexityRule : public AbstractASTVisitorRule<CyclomaticComplexityRule>
@@ -11,6 +12,11 @@ private:
 
     void applyDecl(Decl *decl)
     {
+        if (markedAsSuppress(decl, this))
+        {
+            return;
+        }
+
         int ccn = getCyclomaticComplexity(decl);
 
         // In McBABE, 1976, A Complexity Measure, he suggested a reasonable number of 10
