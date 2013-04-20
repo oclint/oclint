@@ -106,6 +106,11 @@ TEST_F(CyclomaticComplexityRuleTest, ABinaryOperatorButHasNoEffectOnCCNCouting)
         0, 1, 1, 1, 34, "Cyclomatic Complexity Number 1 exceeds limit of 0");
 }
 
+TEST_F(CyclomaticComplexityRuleTest, SuppressCyclomaticComplexity)
+{
+    testRuleOnCode(new CyclomaticComplexityRule(), "void __attribute__((annotate(\"oclint:suppress[high cyclomatic complexity]\"))) aMethod() { int b = 1 == 0; }");
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);
