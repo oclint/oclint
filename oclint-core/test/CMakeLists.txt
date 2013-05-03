@@ -4,10 +4,10 @@ MACRO(build_test name)
         OCLintRuleSet
         OCLintCore
         gmock
-        profile_rt
+        ${PROFILE_RT_LIBS}
         ${CLANG_LIBRARIES}
         ${REQ_LLVM_LIBRARIES}
-        ${CMAKE_DL_LIBS} 
+        ${CMAKE_DL_LIBS}
         )
 
     ADD_TEST(${name} ${EXECUTABLE_OUTPUT_PATH}/${name})

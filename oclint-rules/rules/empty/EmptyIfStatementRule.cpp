@@ -1,10 +1,9 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-#include "EmptyBlockStmtRule.h"
+#include "AbstractEmptyBlockStmtRule.h"
 
-class EmptyIfStatementRule :
-    public AbstractASTVisitorRule<EmptyIfStatementRule>, public EmptyBlockStmtRule
+class EmptyIfStatementRule : public AbstractEmptyBlockStmtRule<EmptyIfStatementRule>
 {
 private:
     static RuleSet rules;
@@ -22,14 +21,7 @@ public:
 
     bool VisitIfStmt(IfStmt *ifStmt)
     {
-        Stmt *thenStmt = ifStmt->getThen();
-
-        if (thenStmt && isLexicalEmpty(thenStmt))
-        {
-            addViolation(thenStmt, this);
-        }
-
-        return true;
+        return checkLexicalEmptyStmt(ifStmt->getThen(), this);
     }
 };
 

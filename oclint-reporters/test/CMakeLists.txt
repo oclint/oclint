@@ -3,6 +3,7 @@ MACRO(build_test name)
     TARGET_LINK_LIBRARIES(${name}
         gmock
         profile_rt
+        ${PROFILE_RT_LIBS}
         OCLintCore
         )
 
@@ -10,5 +11,8 @@ MACRO(build_test name)
 ENDMACRO(build_test)
 
 BUILD_TEST(CanaryTest)
-BUILD_TEST(HTMLReporterTest)
 BUILD_TEST(TextReporterTest)
+BUILD_TEST(HTMLReporterTest)
+BUILD_TEST(XMLReporterTest)
+BUILD_TEST(JSONReporterTest)
+BUILD_TEST(PMDReporterTest)

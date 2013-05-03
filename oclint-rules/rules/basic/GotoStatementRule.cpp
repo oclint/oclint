@@ -1,7 +1,7 @@
-#include "oclint/AbstractASTVisitorRule.h"
+#include "oclint/AbstractASTMatcherRule.h"
 #include "oclint/RuleSet.h"
 
-class GotoStatementRule : public AbstractASTVisitorRule<GotoStatementRule>
+class GotoStatementRule : public AbstractASTMatcherRule
 {
 private:
     static RuleSet rules;
@@ -17,11 +17,14 @@ public:
         return 3;
     }
 
-    bool VisitGotoStmt(GotoStmt *gotoStmt)
+    virtual void callback(const MatchFinder::MatchResult &result)
     {
-        addViolation(gotoStmt, this);
+        addViolation(result.Nodes.getNodeAs<GotoStmt>("gotoStmt"), this);
+    }
 
-        return true;
+    virtual void setUpMatcher()
+    {
+        addMatcher(gotoStmt().bind("gotoStmt"));
     }
 };
 

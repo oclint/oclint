@@ -54,7 +54,7 @@ public:
             << rule->priority() << "</td><td>" << violation.message << "</td></tr>";
     }
 
-    void writeSummaryTable(ostream &out, Results results)
+    void writeSummaryTable(ostream &out, Results &results)
     {
         out << "<table><thead><tr><th>Total Files</th><th>Files with Violations</th>"
             << "<th>Priority 1</th><th>Priority 2</th><th>Priority 3</th></tr></thead>";

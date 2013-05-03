@@ -6,22 +6,22 @@
 #include <ctime>
 #include <string>
 
-#include <libxml/parser.h>
-#include <libxml/xpath.h>
-
+#include <llvm/ADT/SmallString.h>
 #include <llvm/Support/raw_ostream.h>
+#include <llvm/Support/CommandLine.h>
+#include <llvm/Support/Path.h>
+#include <llvm/Support/Program.h>
+#include <llvm/Support/FileSystem.h>
 #include <clang/AST/AST.h>
 #include <clang/AST/ASTConsumer.h>
 #include <clang/AST/ASTContext.h>
 #include <clang/AST/PrettyPrinter.h>
 #include <clang/AST/RecordLayout.h>
+#include <clang/Driver/OptTable.h>
+#include <clang/Driver/Options.h>
+#include <clang/Tooling/CommonOptionsParser.h>
 #include <clang/Tooling/Tooling.h>
-#include <llvm/Support/Path.h>
-#include <llvm/ADT/SmallString.h>
-#include <llvm/Support/Program.h>
-#include <llvm/Support/FileSystem.h>
 
-#include "oclint/CommandLineOptions.h"
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 #include "oclint/Results.h"
@@ -29,12 +29,78 @@
 #include "oclint/Violation.h"
 #include "oclint/RuleBase.h"
 #include "oclint/Reporter.h"
-#include "oclint/Processor.h"
 
 using namespace std;
 using namespace llvm;
 using namespace llvm::sys;
 using namespace clang;
+using namespace clang::driver;
+using namespace clang::tooling;
+
+/* ----------------
+   input and output
+   ---------------- */
+
+cl::opt<string> argOutput("o",
+    cl::desc("Write output to <path>"),
+    cl::value_desc("path"),
+    cl::init("-"));
+
+/* --------------------
+   oclint configuration
+   -------------------- */
+
+cl::opt<string> argReportType("report-type",
+    cl::desc("Change output report type"),
+    cl::value_desc("name"),
+    cl::init("text"));
+cl::list<string> argRulesPath("R",
+    cl::Prefix,
+    cl::desc("Add directory to rule loading path"),
+    cl::value_desc("directory"),
+    cl::ZeroOrMore);
+cl::list<string> argRuleConfiguration("rc",
+    cl::desc("Override the default behavior of rules"),
+    cl::value_desc("parameter>=<value"),
+    cl::ZeroOrMore);
+cl::opt<int> argMaxP1("max-priority-1",
+    cl::desc("The max allowed number of priority 1 violations"),
+    cl::value_desc("threshold"),
+    cl::init(0));
+cl::opt<int> argMaxP2("max-priority-2",
+    cl::desc("The max allowed number of priority 2 violations"),
+    cl::value_desc("threshold"),
+    cl::init(10));
+cl::opt<int> argMaxP3("max-priority-3",
+    cl::desc("The max allowed number of priority 3 violations"),
+    cl::value_desc("threshold"),
+    cl::init(20));
+
+/* -------------
+   libTooling cl
+   ------------- */
+
+static cl::extrahelp CommonHelp(CommonOptionsParser::HelpMessage);
+static cl::extrahelp MoreHelp(
+    "For more information, please visit http://oclint.org\n"
+);
+static OwningPtr<OptTable> Options(createDriverOptTable());
+
+class Processor : public ASTConsumer
+{
+public:
+    virtual void HandleTranslationUnit(ASTContext &astContext)
+    {
+        ViolationSet *violationSet = new ViolationSet();
+        RuleCarrier *carrier = new RuleCarrier(&astContext, violationSet);
+        for (int index = 0, numRules = RuleSet::numberOfRules(); index < numRules; index++)
+        {
+            RuleSet::getRuleAtIndex(index)->takeoff(carrier);
+        }
+        Results *results = Results::getInstance();
+        results->add(violationSet);
+    }
+};
 
 class ProcessorActionFactory
 {
@@ -86,7 +152,7 @@ int dynamicLoadRules(string ruleDirPath)
                 continue;
             }
             string rulePath = ruleDirPath + "/" + string(dirp->d_name);
-            if (dlopen(rulePath.c_str(), RTLD_NOW) == NULL)
+            if (dlopen(rulePath.c_str(), RTLD_LAZY) == NULL)
             {
                 cerr << dlerror() << endl;
                 closedir(dp);
@@ -127,76 +193,6 @@ void consumeRuleConfigurations()
     }
 }
 
-void consumeRulesConfigurationFile()
-{
-    cout << argRulesConfigurationFile << endl;
-    string xmlFile = argRulesConfigurationFile;
-    if (!xmlFile.empty())
-    {
-        xmlDocPtr doc = xmlParseFile(xmlFile.c_str());
-        if (doc == NULL)
-        {
-        }
-        xmlNodePtr root = xmlDocGetRootElement(doc);
-
-        
-        xmlXPathInit();
-        xmlXPathContextPtr ctxt = xmlXPathNewContext(doc);
-        if (ctxt == NULL) {
-            cerr << "Error on XPath context" << endl;
-            exit(-1);
-        }
-        // Evaluation de l'expression XPath
-        xmlXPathObjectPtr xpathRes = xmlXPathEvalExpression(BAD_CAST "/rules/rule", ctxt);
-        if (xpathRes == NULL) {
-            cerr << "Error on XPath expression" << endl;
-            exit(-1);
-        }
-
-        if (xpathRes->type == XPATH_NODESET)
-        {
-            for (int i = 0; i < xpathRes->nodesetval->nodeNr; i++)
-                {
-                xmlNodePtr n = xpathRes->nodesetval->nodeTab[i];
-                cout << "Node rule found with name: " << n->name << endl;
-                
-                xmlNodePtr child = n->children;
-                string key;
-                string value;
-                for (; child != NULL; child = child->next)
-                {
-                    if (child->type == XML_ELEMENT_NODE)
-                    {
-                        static const string RULE_NODE_KEY = "name";
-                        static const string RULE_NODE_VALUE = "value";
-
-                        cout << "Node rule value: " << child->name << " / " << child->children->content << endl;
-                        string nodeName = reinterpret_cast<const char*>(child->name);
-                        if (nodeName == RULE_NODE_KEY)
-                        {
-                            key = reinterpret_cast<const char*>(child->children->content);
-                        }
-                        else if (nodeName == RULE_NODE_VALUE)
-                        {
-                            value = reinterpret_cast<const char*>(child->children->content);
-                        }
-                    }
-                }
-                
-                if ( !key.empty() && !value.empty() )
-                {
-                    cout << "Adding rule conf via xml file: " << key << " / " << value << endl;
-                    RuleConfiguration::addConfiguration(key, value);
-                }
-            }
-        }
-
-        xmlXPathFreeObject(xpathRes);
-        xmlXPathFreeContext(ctxt);
-        xmlFreeDoc(doc);    
-    }
-}
-
 int loadReporter(const char* executablePath)
 {
     selectedReporter = NULL;
@@ -213,7 +209,7 @@ int loadReporter(const char* executablePath)
                 continue;
             }
             string rulePath = defaultReportersPath + "/" + string(dirp->d_name);
-            void *reporterHandle = dlopen(rulePath.c_str(), RTLD_NOW);
+            void *reporterHandle = dlopen(rulePath.c_str(), RTLD_LAZY);
             if (reporterHandle == NULL)
             {
                 cerr << dlerror() << endl;
@@ -231,85 +227,6 @@ int loadReporter(const char* executablePath)
         closedir(dp);
     } // TODO: Remove the duplication pf loading rules and reporters
     return selectedReporter == NULL ? 1 : 0;
-}
-
-void readRuleFromXPath(xmlNodePtr node)
-{
-    string key;
-    string value;
-    
-    for (xmlNodePtr child; child != NULL; child = node->next)
-    {
-        if (child->type == XML_ELEMENT_NODE)
-        {
-            static const string RULE_NODE_KEY = "name";
-            static const string RULE_NODE_VALUE = "value";
-
-            cout << "Node rule value: " << child->name;
-            cout << " / " << child->children->content << endl;
-            string nodeName = reinterpret_cast<const char*>(child->name);
-            if (nodeName == RULE_NODE_KEY)
-            {
-                key = reinterpret_cast<const char*>(child->children->content);
-            }
-            else if (nodeName == RULE_NODE_VALUE)
-            {
-                value = reinterpret_cast<const char*>(child->children->content);
-            }
-        }
-    }
-    
-    if ( !key.empty() && !value.empty() )
-    {
-        cout << "Adding rule conf via xml file: " << key << " / " << value << endl;
-        RuleConfiguration::addConfiguration(key, value);
-    }
-}
-
-/**
- * Read and consume XML configuration file
- */
-void consumeRulesConfigurationFile()
-{
-    string xmlFile = argRulesConfigurationFile;
-    if (!xmlFile.empty())
-    {
-        xmlDocPtr doc = xmlParseFile(xmlFile.c_str());
-        
-        xmlXPathInit();
-        xmlXPathContextPtr ctxt = xmlXPathNewContext(doc);
-        if (ctxt == NULL)
-        {
-            cerr << "Error on XPath context" << endl;
-            exit(-1);
-        }
-        
-        // Evaluate XPath expression
-        static string const *XML_RULES_PATH = new string("rules/rule");
-        //xmlXPathObjectPtr xpathRes = xmlXPathEvalExpression(BAD_CAST "rules/rule", ctxt);
-        xmlXPathObjectPtr xpathRes = xmlXPathEvalExpression(BAD_CAST XML_RULES_PATH, ctxt);
-        if (xpathRes == NULL)
-        {
-            cerr << "Error on XPath expression" << endl;
-            exit(-1);
-        }
-
-        if (xpathRes->type == XPATH_NODESET)
-        {
-            for (int i = 0; i < xpathRes->nodesetval->nodeNr; i++)
-            {
-                xmlNodePtr n = xpathRes->nodesetval->nodeTab[i];
-                cout << "Node rule found with name: " << n->name << endl;
-                
-                xmlNodePtr child = n->children;
-                readRuleFromXPath(child);
-            }
-        }
-
-        xmlXPathFreeObject(xpathRes);
-        xmlXPathFreeContext(ctxt);
-        xmlFreeDoc(doc);    
-    }
 }
 
 bool numberOfViolationsExceedThreshold(Results *results)
@@ -370,7 +287,6 @@ int main(int argc, const char **argv)
         return REPORTER_NOT_FOUND;
     }
     consumeRuleConfigurations();
-    consumeRulesConfigurationFile();
     preserveWorkingPath();
 
     ClangTool clangTool(optionsParser.getCompilations(), optionsParser.getSourcePathList());

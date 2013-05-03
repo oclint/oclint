@@ -1,15 +1,12 @@
 #ifndef OCLINT_ABSTRACTASTVISITORRULE_H
 #define OCLINT_ABSTRACTASTVISITORRULE_H
 
-#include <clang/AST/AST.h>
 #include <clang/AST/RecursiveASTVisitor.h>
 
-#include "oclint/RuleBase.h"
-
-using namespace clang;
+#include "oclint/AbstractASTRuleBase.h"
 
 template<typename T>
-class AbstractASTVisitorRule : public RuleBase, public RecursiveASTVisitor<T>
+class AbstractASTVisitorRule : public AbstractASTRuleBase, public RecursiveASTVisitor<T>
 {
 protected:
     virtual void apply()

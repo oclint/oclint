@@ -1,10 +1,9 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-#include "EmptyBlockStmtRule.h"
+#include "AbstractEmptyBlockStmtRule.h"
 
-class EmptyTryStatementRule :
-    public AbstractASTVisitorRule<EmptyTryStatementRule>, public EmptyBlockStmtRule
+class EmptyTryStatementRule : public AbstractEmptyBlockStmtRule<EmptyTryStatementRule>
 {
 private:
     static RuleSet rules;
@@ -22,26 +21,12 @@ public:
 
     bool VisitCXXTryStmt(CXXTryStmt *tryStmt)
     {
-        Stmt *tryBlock = tryStmt->getTryBlock();
-
-        if (tryBlock && isLexicalEmpty(tryBlock))
-        {
-            addViolation(tryBlock, this);
-        }
-
-        return true;
+        return checkLexicalEmptyStmt(tryStmt->getTryBlock(), this);
     }
 
     bool VisitObjCAtTryStmt(ObjCAtTryStmt *tryStmt)
     {
-        Stmt *tryBody = tryStmt->getTryBody();
-
-        if (tryBody && isLexicalEmpty(tryBody))
-        {
-            addViolation(tryBody, this);
-        }
-
-        return true;
+        return checkLexicalEmptyStmt(tryStmt->getTryBody(), this);
     }
 };
 

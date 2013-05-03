@@ -10,7 +10,13 @@ MACRO(build_dynamic_rule name)
         )
 
     TARGET_LINK_LIBRARIES(${name}Rule
+        LLVMSupport
+        clangASTMatchers
+        ) # TODO: might be redundant
+
+    TARGET_LINK_LIBRARIES(${name}Rule
         OCLintMetric
+        OCLintHelper
         OCLintUtil
         OCLintCore
         )
@@ -30,9 +36,15 @@ MACRO(build_dynamic_rules rules)
     ENDFOREACH(it)
 ENDMACRO(build_dynamic_rules)
 
-ADD_SUBDIRECTORY(basic)
-ADD_SUBDIRECTORY(convention)
-ADD_SUBDIRECTORY(empty)
-ADD_SUBDIRECTORY(redundant)
-ADD_SUBDIRECTORY(size)
-ADD_SUBDIRECTORY(unused)
+MACRO(add_rule_category_directory category)
+    IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${category}/CMakeLists.txt)
+        ADD_SUBDIRECTORY(${category})
+    ENDIF()
+ENDMACRO(add_rule_category_directory)
+
+ADD_RULE_CATEGORY_DIRECTORY(basic)
+ADD_RULE_CATEGORY_DIRECTORY(convention)
+ADD_RULE_CATEGORY_DIRECTORY(empty)
+ADD_RULE_CATEGORY_DIRECTORY(redundant)
+ADD_RULE_CATEGORY_DIRECTORY(size)
+ADD_RULE_CATEGORY_DIRECTORY(unused)

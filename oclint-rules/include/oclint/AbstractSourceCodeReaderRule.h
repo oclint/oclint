@@ -13,19 +13,17 @@ protected:
     virtual void apply()
     {
         SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
+
         FileID mainFileID = sourceManager->getMainFileID();
-
-        SourceLocation startOfMainFile = sourceManager->getLocForStartOfFile(mainFileID);
-        StringRef filePath = sourceManager->getFilename(startOfMainFile);
-
         StringRef mainFileStringRef = sourceManager->getBufferData(mainFileID);
+
         StringRef remaining = mainFileStringRef;
         int currentLineNumber = 1;
         while (remaining.size() > 0)
         {
             pair<StringRef, StringRef> splitPair = remaining.split('\n');
             StringRef currentLine = splitPair.first;
-            eachLine(currentLineNumber++, currentLine.str(), filePath.str());
+            eachLine(currentLineNumber++, currentLine.str());
             remaining = splitPair.second;
         }
     }
@@ -34,10 +32,10 @@ protected:
         int endLine, int endColumn, RuleBase *rule, const string& message = "")
     {
         SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
-        FileID mainFileID = sourceManager->getMainFileID();
 
+        FileID mainFileID = sourceManager->getMainFileID();
         SourceLocation startOfMainFile = sourceManager->getLocForStartOfFile(mainFileID);
-        StringRef filePath = sourceManager->getFilename(startOfMainFile); // TODO: Duplicated code
+        StringRef filePath = sourceManager->getFilename(startOfMainFile);
 
         _carrier->addViolation(filePath.str(),
             startLine, startColumn, endLine, endColumn, rule, message);
@@ -46,7 +44,7 @@ protected:
 public:
     virtual ~AbstractSourceCodeReaderRule() {}
 
-    virtual void eachLine(int lineNumber, string line, string filePath) = 0;
+    virtual void eachLine(int lineNumber, string line) = 0;
 };
 
 #endif
