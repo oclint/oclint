@@ -117,6 +117,9 @@ public:
             {
                 addViolation(lastElseStmt, this);
             }
+
+            delete ifStmts;
+            ifStmts = NULL;
         }
 
         return true;
