@@ -6,38 +6,29 @@ class MissingBreakInSwitchStatementRule :
 {
     class FindingBreak : public RecursiveASTVisitor<FindingBreak>
     {
-    private:
-        bool _found;
-
     public:
         bool findBreak(SwitchCase *switchCaseStmt)
         {
-            _found = false;
-            TraverseStmt(switchCaseStmt);
-            return _found;
+            return !TraverseStmt(switchCaseStmt);
         }
 
         bool VisitBreakStmt(BreakStmt *)
         {
-            _found = true;
             return false;
         }
 
         bool VisitReturnStmt(ReturnStmt *)
         {
-            _found = true;
             return false;
         }
 
         bool VisitCXXThrowExpr(CXXThrowExpr *)
         {
-            _found = true;
             return false;
         }
 
         bool VisitObjCAtThrowStmt(ObjCAtThrowStmt *)
         {
-            _found = true;
             return false;
         }
     };
