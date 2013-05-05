@@ -116,10 +116,6 @@ int StmtDepthMetric::depth(ObjCAutoreleasePoolStmt *stmt)
 
 int getStmtDepth(Stmt *stmt)
 {
-    if (stmt)
-    {
-        StmtDepthMetric stmtDepthMetric;
-        return stmtDepthMetric.depth(stmt);
-    }
-    return 0;
+    StmtDepthMetric stmtDepthMetric;
+    return stmtDepthMetric.depth(stmt);
 }
