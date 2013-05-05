@@ -13,7 +13,7 @@ class ThrowExceptionFromFinallyBlockRule :
         void extract(ObjCAtFinallyStmt *finallyStmt, vector<ObjCAtThrowStmt*> *throws)
         {
             _throws = throws;
-            TraverseStmt(finallyStmt);
+            (void) /* explicitly ignore the return of this function */ TraverseStmt(finallyStmt);
         }
 
         bool VisitObjCAtThrowStmt(ObjCAtThrowStmt *throwStmt)
@@ -32,7 +32,7 @@ class ThrowExceptionFromFinallyBlockRule :
         void extract(ObjCAtFinallyStmt *finallyStmt, vector<ObjCMessageExpr*> *raisers)
         {
             _raisers = raisers;
-            TraverseStmt(finallyStmt);
+            (void) /* explicitly ignore the return of this function */ TraverseStmt(finallyStmt);
         }
 
         bool VisitObjCMessageExpr(ObjCMessageExpr *objCMsgExpr)

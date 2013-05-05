@@ -13,7 +13,7 @@ class NonCaseLabelInSwitchStatementRule :
         void extract(SwitchStmt *switchStmt, vector<LabelStmt*> *labels)
         {
             _labels = labels;
-            TraverseStmt(switchStmt);
+            (void) /* explicitly ignore the return of this function */ TraverseStmt(switchStmt);
         }
 
         bool VisitLabelStmt(LabelStmt *labelStmt)

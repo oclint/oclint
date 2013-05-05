@@ -14,7 +14,7 @@ class TooFewBranchesInSwitchStatementRule :
         int count(SwitchStmt *switchStmt)
         {
             _count = 0;
-            TraverseStmt(switchStmt);
+            (void) /* explicitly ignore the return of this function */ TraverseStmt(switchStmt);
             return _count;
         }
 
