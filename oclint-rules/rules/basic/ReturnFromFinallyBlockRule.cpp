@@ -31,7 +31,7 @@ public:
         return "return from finally block";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 2;
     }

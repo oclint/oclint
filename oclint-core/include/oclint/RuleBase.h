@@ -22,7 +22,7 @@ public:
     virtual ~RuleBase() {}
     virtual void apply() = 0;
     virtual const string name() const = 0;
-    virtual const int priority() const = 0;
+    virtual int priority() const = 0;
 };
 
 #endif

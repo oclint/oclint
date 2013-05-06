@@ -13,7 +13,7 @@ public:
     MOCK_METHOD0(apply, void());
     MOCK_CONST_METHOD0(name, const string());
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 1;
     }
@@ -25,7 +25,7 @@ public:
     MOCK_METHOD0(apply, void());
     MOCK_CONST_METHOD0(name, const string());
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 2;
     }

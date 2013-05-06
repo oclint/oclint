@@ -12,7 +12,7 @@ public:
         return "unused local variable";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 2;
     }

@@ -39,7 +39,7 @@ public:
         return "collapsible if statements";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 3;
     }

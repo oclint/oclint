@@ -15,7 +15,7 @@ public:
         return "deep nested block";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 3;
     }

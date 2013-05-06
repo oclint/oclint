@@ -20,7 +20,7 @@ public:
         return "useless parentheses";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 3;
     }

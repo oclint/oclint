@@ -40,7 +40,7 @@ public:
         return "long method";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 3;
     }

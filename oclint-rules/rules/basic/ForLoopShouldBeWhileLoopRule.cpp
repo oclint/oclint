@@ -12,7 +12,7 @@ public:
         return "for loop should be while loop";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 3;
     }

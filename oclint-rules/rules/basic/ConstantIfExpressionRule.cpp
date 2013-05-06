@@ -12,7 +12,7 @@ public:
         return "constant if expression";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 2;
     }
