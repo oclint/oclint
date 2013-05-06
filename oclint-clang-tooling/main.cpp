@@ -296,15 +296,15 @@ enum ExitCode
     RULE_NOT_FOUND,
     REPORTER_NOT_FOUND,
     ERROR_WHILE_PROCESSING,
+    ERROR_WHILE_REPORTING,
     VIOLATIONS_EXCEED_THRESHOLD
 };
 
-int main(int argc, const char **argv)
+int prepare(const char* executablePath)
 {
-    CommonOptionsParser optionsParser(argc, argv);
     try
     {
-        consumeArgRulesPath(argv[0]);
+        consumeArgRulesPath(executablePath);
     }
     catch (const exception& e)
     {
@@ -318,7 +318,7 @@ int main(int argc, const char **argv)
     }
     try
     {
-        loadReporter(argv[0]);
+        loadReporter(executablePath);
     }
     catch (const exception& e)
     {
@@ -327,6 +327,19 @@ int main(int argc, const char **argv)
     }
     consumeRuleConfigurations();
     preserveWorkingPath();
+
+    return SUCCESS;
+}
+
+int main(int argc, const char **argv)
+{
+    CommonOptionsParser optionsParser(argc, argv);
+
+    int prepareStatus = prepare(argv[0]);
+    if (prepareStatus)
+    {
+        return prepareStatus;
+    }
 
     ClangTool clangTool(optionsParser.getCompilations(), optionsParser.getSourcePathList());
     ProcessorActionFactory actionFactory;
@@ -345,7 +358,7 @@ int main(int argc, const char **argv)
     catch (const exception& e)
     {
         printErrorLine(e.what());
-        return ERROR_WHILE_PROCESSING;
+        return ERROR_WHILE_REPORTING;
     }
 
     if (numberOfViolationsExceedThreshold(results))
