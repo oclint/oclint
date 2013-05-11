@@ -18,7 +18,7 @@ public:
         return "multiple unary operator";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 2;
     }

@@ -79,7 +79,7 @@ public:
         return "unused method parameter";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 2;
     }

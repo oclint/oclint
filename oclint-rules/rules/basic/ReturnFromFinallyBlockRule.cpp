@@ -12,7 +12,7 @@ class ReturnFromFinallyBlockRule : public AbstractASTVisitorRule<ReturnFromFinal
         void extract(ObjCAtFinallyStmt *finallyStmt, vector<ReturnStmt*> *returns)
         {
             _returns = returns;
-            TraverseStmt(finallyStmt);
+            (void) /* explicitly ignore the return of this function */ TraverseStmt(finallyStmt);
         }
 
         bool VisitReturnStmt(ReturnStmt *returnStmt)
@@ -31,7 +31,7 @@ public:
         return "return from finally block";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 2;
     }

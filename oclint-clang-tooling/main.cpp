@@ -1,6 +1,7 @@
 #include <dlfcn.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <exception>
 #include <iostream>
 #include <fstream>
 #include <ctime>
@@ -111,6 +112,20 @@ public:
     }
 };
 
+class GenericExcpetion : public exception
+{
+private:
+    string description;
+
+public:
+    GenericExcpetion(const string& desc) : description(desc) {}
+    virtual ~GenericExcpetion() throw() {}
+    virtual const char *what() const throw()
+    {
+        return description.c_str();
+    }
+};
+
 static string absoluteWorkingPath("");
 static Reporter *selectedReporter = NULL;
 
@@ -139,7 +154,7 @@ string getExecutablePath(const char *argv)
     return string(installedPath.c_str());
 }
 
-int dynamicLoadRules(string ruleDirPath)
+void dynamicLoadRules(string ruleDirPath)
 {
     DIR *dp = opendir(ruleDirPath.c_str());
     if (dp != NULL)
@@ -156,28 +171,28 @@ int dynamicLoadRules(string ruleDirPath)
             {
                 cerr << dlerror() << endl;
                 closedir(dp);
-                return 3;
+                throw GenericExcpetion("cannot open dynamic library: " + rulePath);
             }
         }
         closedir(dp);
     }
-    return 0;
 }
 
-int consumeArgRulesPath(const char* executablePath)
+void consumeArgRulesPath(const char* executablePath)
 {
     if (argRulesPath.size() == 0)
     {
         string exeStrPath = getExecutablePath(executablePath);
         string defaultRulePath = exeStrPath + "/../lib/oclint/rules";
-        return dynamicLoadRules(defaultRulePath);
+        dynamicLoadRules(defaultRulePath);
     }
-    int returnFlag = 0;
-    for (unsigned i = 0; i < argRulesPath.size() && returnFlag == 0; ++i)
+    else
     {
-        returnFlag = dynamicLoadRules(argRulesPath[i]);
+        for (unsigned i = 0; i < argRulesPath.size(); ++i)
+        {
+            dynamicLoadRules(argRulesPath[i]);
+        }
     }
-    return returnFlag;
 }
 
 void consumeRuleConfigurations()
@@ -193,7 +208,7 @@ void consumeRuleConfigurations()
     }
 }
 
-int loadReporter(const char* executablePath)
+void loadReporter(const char* executablePath)
 {
     selectedReporter = NULL;
     string exeStrPath = getExecutablePath(executablePath);
@@ -208,12 +223,13 @@ int loadReporter(const char* executablePath)
             {
                 continue;
             }
-            string rulePath = defaultReportersPath + "/" + string(dirp->d_name);
-            void *reporterHandle = dlopen(rulePath.c_str(), RTLD_LAZY);
+            string reporterPath = defaultReportersPath + "/" + string(dirp->d_name);
+            void *reporterHandle = dlopen(reporterPath.c_str(), RTLD_LAZY);
             if (reporterHandle == NULL)
             {
                 cerr << dlerror() << endl;
                 closedir(dp);
+                throw GenericExcpetion("cannot open dynamic library: " + reporterPath);
             }
             Reporter* (*createMethodPointer)();
             createMethodPointer = (Reporter* (*)())dlsym(reporterHandle, "create");
@@ -225,8 +241,11 @@ int loadReporter(const char* executablePath)
             }
         }
         closedir(dp);
-    } // TODO: Remove the duplication pf loading rules and reporters
-    return selectedReporter == NULL ? 1 : 0;
+    }
+    if (selectedReporter == NULL)
+    {
+        throw GenericExcpetion("cannot find dynamic library for report type: " + argReportType);
+    }
 }
 
 bool numberOfViolationsExceedThreshold(Results *results)
@@ -247,7 +266,7 @@ ostream* outStream()
     ofstream *out = new ofstream(absoluteOutputPath.c_str());
     if (!out->is_open())
     {
-        throw string("Cannot open file " + argOutput);
+        throw GenericExcpetion("cannot open report output file " + argOutput);
     }
     return out;
 }
@@ -266,28 +285,61 @@ Reporter* reporter()
     return selectedReporter;
 }
 
+void printErrorLine(const char *errorMessage)
+{
+    cerr << "oclint: error: " << errorMessage << endl;
+}
+
 enum ExitCode
 {
     SUCCESS,
     RULE_NOT_FOUND,
     REPORTER_NOT_FOUND,
     ERROR_WHILE_PROCESSING,
+    ERROR_WHILE_REPORTING,
     VIOLATIONS_EXCEED_THRESHOLD
 };
 
-int main(int argc, const char **argv)
+int prepare(const char* executablePath)
 {
-    CommonOptionsParser optionsParser(argc, argv);
-    if (consumeArgRulesPath(argv[0]) || RuleSet::numberOfRules() <= 0)
+    try
     {
+        consumeArgRulesPath(executablePath);
+    }
+    catch (const exception& e)
+    {
+        printErrorLine(e.what());
         return RULE_NOT_FOUND;
     }
-    if (loadReporter(argv[0]))
+    if (RuleSet::numberOfRules() <= 0)
     {
+        printErrorLine("no rule loaded");
+        return RULE_NOT_FOUND;
+    }
+    try
+    {
+        loadReporter(executablePath);
+    }
+    catch (const exception& e)
+    {
+        printErrorLine(e.what());
         return REPORTER_NOT_FOUND;
     }
     consumeRuleConfigurations();
     preserveWorkingPath();
+
+    return SUCCESS;
+}
+
+int main(int argc, const char **argv)
+{
+    CommonOptionsParser optionsParser(argc, argv);
+
+    int prepareStatus = prepare(argv[0]);
+    if (prepareStatus)
+    {
+        return prepareStatus;
+    }
 
     ClangTool clangTool(optionsParser.getCompilations(), optionsParser.getSourcePathList());
     ProcessorActionFactory actionFactory;
@@ -295,10 +347,20 @@ int main(int argc, const char **argv)
     {
         return ERROR_WHILE_PROCESSING;
     }
-    ostream *out = outStream();
     Results *results = Results::getInstance();
-    reporter()->report(results, *out);
-    disposeOutStream(out);
+
+    try
+    {
+        ostream *out = outStream();
+        reporter()->report(results, *out);
+        disposeOutStream(out);
+    }
+    catch (const exception& e)
+    {
+        printErrorLine(e.what());
+        return ERROR_WHILE_REPORTING;
+    }
+
     if (numberOfViolationsExceedThreshold(results))
     {
         return VIOLATIONS_EXCEED_THRESHOLD;

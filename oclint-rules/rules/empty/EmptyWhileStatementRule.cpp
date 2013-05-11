@@ -14,7 +14,7 @@ public:
         return "empty while statement";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 2;
     }

@@ -13,7 +13,7 @@ class NonCaseLabelInSwitchStatementRule :
         void extract(SwitchStmt *switchStmt, vector<LabelStmt*> *labels)
         {
             _labels = labels;
-            TraverseStmt(switchStmt);
+            (void) /* explicitly ignore the return of this function */ TraverseStmt(switchStmt);
         }
 
         bool VisitLabelStmt(LabelStmt *labelStmt)
@@ -32,7 +32,7 @@ public:
         return "non case label in switch statement";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 3;
     }

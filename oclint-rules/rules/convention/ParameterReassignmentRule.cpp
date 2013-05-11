@@ -12,7 +12,7 @@ class ParameterReassignmentRule : public AbstractASTVisitorRule<ParameterReassig
         vector<string> find(Decl *decl)
         {
             _names.clear();
-            TraverseDecl(decl);
+            (void) /* explicitly ignore the return of this function */ TraverseDecl(decl);
             return _names;
         }
 
@@ -37,7 +37,7 @@ class ParameterReassignmentRule : public AbstractASTVisitorRule<ParameterReassig
         {
             _names = names;
             _binaryOperators.clear();
-            TraverseDecl(decl);
+            (void) /* explicitly ignore the return of this function */ TraverseDecl(decl);
             return _binaryOperators;
         }
 
@@ -84,7 +84,7 @@ public:
         return "parameter reassignment";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 3;
     }

@@ -14,7 +14,7 @@ class TooFewBranchesInSwitchStatementRule :
         int count(SwitchStmt *switchStmt)
         {
             _count = 0;
-            TraverseStmt(switchStmt);
+            (void) /* explicitly ignore the return of this function */ TraverseStmt(switchStmt);
             return _count;
         }
 
@@ -34,7 +34,7 @@ public:
         return "too few branches in switch statement";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 3;
     }

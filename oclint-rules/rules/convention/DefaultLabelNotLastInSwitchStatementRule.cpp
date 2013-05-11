@@ -13,7 +13,7 @@ public:
         return "default label not last in switch statement";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 3;
     }

@@ -13,7 +13,7 @@ public:
         return "bitwise operator in conditional";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 2;
     }

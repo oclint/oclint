@@ -27,7 +27,7 @@ public:
         return "long class";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 3;
     }

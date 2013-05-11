@@ -21,7 +21,8 @@ protected:
             if (startLocation.isValid() &&
                 sourceManager->getMainFileID() == sourceManager->getFileID(startLocation))
             {
-                RecursiveASTVisitor<T>::TraverseDecl(*it);
+                (void) /* explicitly ignore the return of this function */
+                    RecursiveASTVisitor<T>::TraverseDecl(*it);
             }
         }
         tearDown();

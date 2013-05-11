@@ -13,7 +13,7 @@ public:
         return "constant conditional operator";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 2;
     }
