@@ -19,6 +19,12 @@ Results::Results()
     _collection = new vector<ViolationSet*>();
 }
 
+Results::~Results()
+{
+    delete _collection;
+    _collection = NULL;
+}
+
 void Results::add(ViolationSet *violationSet)
 {
     _collection->push_back(violationSet);

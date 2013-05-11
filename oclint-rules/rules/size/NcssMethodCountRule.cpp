@@ -33,7 +33,7 @@ public:
         return "high ncss method";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 2;
     }

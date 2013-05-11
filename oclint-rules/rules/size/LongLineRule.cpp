@@ -14,7 +14,7 @@ public:
         return "long line";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 3;
     }

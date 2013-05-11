@@ -41,7 +41,7 @@ public:
         return "high npath complexity";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 2;
     }

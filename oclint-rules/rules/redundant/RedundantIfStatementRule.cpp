@@ -82,7 +82,7 @@ public:
         return "redundant if statement";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 3;
     }

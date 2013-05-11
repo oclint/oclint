@@ -3,7 +3,7 @@
 int CyclomaticComplexityMetric::calculate(Decl *decl)
 {
     _count = 0;
-    TraverseDecl(decl);
+    (void) /* explicitly ignore the return of this function */ TraverseDecl(decl);
     return _count + 1;
 }
 

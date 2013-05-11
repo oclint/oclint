@@ -13,6 +13,7 @@ class Results
 protected:
     static Results *_singleton;
     Results();
+    ~Results();
 
 public:
     static Results* getInstance();

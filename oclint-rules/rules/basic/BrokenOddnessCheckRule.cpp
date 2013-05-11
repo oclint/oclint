@@ -31,7 +31,7 @@ public:
         return "broken oddness check";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 2;
     }

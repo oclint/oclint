@@ -76,7 +76,7 @@ public:
         return "unnecessary else statement";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 3;
     }
@@ -117,6 +117,9 @@ public:
             {
                 addViolation(lastElseStmt, this);
             }
+
+            delete ifStmts;
+            ifStmts = NULL;
         }
 
         return true;

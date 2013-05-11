@@ -44,7 +44,7 @@ public:
         return "dead code";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 2;
     }

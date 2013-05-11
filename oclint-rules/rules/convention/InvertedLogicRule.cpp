@@ -20,7 +20,7 @@ public:
         return "inverted logic";
     }
 
-    virtual const int priority() const
+    virtual int priority() const
     {
         return 3;
     }
