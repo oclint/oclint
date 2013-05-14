@@ -1,5 +1,6 @@
 SET(LIST_OF_RULES
     BitwiseOperatorInConditional
+    BrokenNullCheck
     BrokenOddnessCheck
     CollapsibleIfStatements
     ConstantConditionalOperator

@@ -1,4 +1,5 @@
 BUILD_TEST(BitwiseOperatorInConditionalRuleTest)
+BUILD_TEST(BrokenNullCheckRuleTest)
 BUILD_TEST(BrokenOddnessCheckRuleTest)
 BUILD_TEST(CollapsibleIfStatementsRuleTest)
 BUILD_TEST(ConstantConditionalOperatorRuleTest)
