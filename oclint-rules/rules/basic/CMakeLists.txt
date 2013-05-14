@@ -8,6 +8,7 @@ SET(LIST_OF_RULES
     DoubleNegative
     ForLoopShouldBeWhileLoop
     GotoStatement
+    MisplacedNullCheck
     MultipleUnaryOperator
     ReturnFromFinallyBlock
     ThrowExceptionFromFinallyBlock
