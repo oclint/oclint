@@ -1,7 +1,7 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-#include "AbstractNullCheckRule.h"
+#include "../abstract/AbstractNullCheckRule.h"
 
 class BrokenNullCheckBaseRule : public AbstractNullCheckRule<BrokenNullCheckBaseRule>
 {
