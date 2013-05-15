@@ -5,7 +5,7 @@
 TEST(MissingBreakInSwitchStatementRuleTest, PropertyTest)
 {
     MissingBreakInSwitchStatementRule rule;
-    EXPECT_EQ(3, rule.priority());
+    EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("missing break in switch statement", rule.name());
 }
 

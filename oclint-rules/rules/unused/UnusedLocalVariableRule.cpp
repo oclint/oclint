@@ -14,7 +14,7 @@ public:
 
     virtual int priority() const
     {
-        return 2;
+        return 3;
     }
 
     bool VisitVarDecl(VarDecl *varDecl)

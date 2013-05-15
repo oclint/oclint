@@ -44,7 +44,7 @@ public:
 
     virtual int priority() const
     {
-        return 3;
+        return 2;
     }
 
     bool isSwitchCase(Stmt *stmt)
