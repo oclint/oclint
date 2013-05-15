@@ -3,11 +3,9 @@
 
 #include "AbstractNullCheckRule.h"
 
-class BrokenNullCheckRule : public AbstractNullCheckRule<BrokenNullCheckRule>
+class BrokenNullCheckBaseRule : public AbstractNullCheckRule<BrokenNullCheckBaseRule>
 {
 private:
-    static RuleSet rules;
-
     bool isEqNullCheckBroken(BinaryOperator *binaryOperator)
     {
         return binaryOperator->getOpcode() == BO_LOr && isNeNullCheck(binaryOperator->getLHS());
@@ -26,13 +24,35 @@ private:
     bool isSameVariableBroken(BinaryOperator *binaryOperator)
     {
         string variableOfInterest = extractIdentifierFromExpr(binaryOperator->getLHS());
-        if (variableOfInterest == "")
+        return variableOfInterest == "" ? false :
+            hasVariableInExpr(variableOfInterest, binaryOperator->getRHS());
+    }
+
+protected:
+    virtual bool hasVariableInExpr(string variableOfInterest, Expr *expr) = 0;
+
+public:
+    bool VisitBinaryOperator(BinaryOperator *binaryOperator)
+    {
+        if (isNullCheckBroken(binaryOperator) && isSameVariableBroken(binaryOperator))
         {
-            return false;
+            addViolation(binaryOperator, this);
         }
-        SeekingVariableOfInterest seekingVariableOfInterest;
-        return seekingVariableOfInterest.hasVariableInExpr(variableOfInterest,
-            binaryOperator->getRHS(), this);
+
+        return true;
+    }
+};
+
+class BrokenNullCheckRule : public BrokenNullCheckBaseRule
+{
+private:
+    static RuleSet rules;
+
+protected:
+    virtual bool hasVariableInExpr(string variableOfInterest, Expr *expr)
+    {
+        VariableOfInterestInMemberExpr seekingVariableOfInterest;
+        return seekingVariableOfInterest.hasVariableInExpr(variableOfInterest, expr, this);
     }
 
 public:
@@ -45,17 +65,31 @@ public:
     {
         return 1;
     }
+};
 
-    bool VisitBinaryOperator(BinaryOperator *binaryOperator)
+class BrokenNilCheckRule : public BrokenNullCheckBaseRule
+{
+private:
+    static RuleSet rules;
+
+protected:
+    virtual bool hasVariableInExpr(string variableOfInterest, Expr *expr)
     {
-        if (isNullCheckBroken(binaryOperator) && isSameVariableBroken(binaryOperator))
-        {
-            addViolation(binaryOperator, this);
-        }
-
-        return true;
+        VariableOfInterestInObjCMessageExpr seekingVariableOfInterest;
+        return seekingVariableOfInterest.hasVariableInExpr(variableOfInterest, expr, this);
     }
 
+public:
+    virtual const string name() const
+    {
+        return "broken nil check";
+    }
+
+    virtual int priority() const
+    {
+        return 2;
+    }
 };
 
 RuleSet BrokenNullCheckRule::rules(new BrokenNullCheckRule());
+RuleSet BrokenNilCheckRule::rules(new BrokenNilCheckRule());

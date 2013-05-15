@@ -29,9 +29,13 @@ typedef signed char    BOOL;                    \n\
 
 TEST(MisplacedNullCheckRuleTest, PropertyTest)
 {
-    MisplacedNullCheckRule rule;
-    EXPECT_EQ(1, rule.priority());
-    EXPECT_EQ("misplaced null check", rule.name());
+    MisplacedNullCheckRule nullRule;
+    EXPECT_EQ(1, nullRule.priority());
+    EXPECT_EQ("misplaced null check", nullRule.name());
+
+    MisplacedNilCheckRule nilRule;
+    EXPECT_EQ(3, nilRule.priority());
+    EXPECT_EQ("misplaced nil check", nilRule.name());
 }
 
 TEST(MisplacedNullCheckRuleTest, C_CorrectExplicitNullEqCheck)
@@ -140,7 +144,7 @@ TEST(MisplacedNullCheckRuleTest, Cpp_MisplacedEzNullNeCheck)
 
 TEST(MisplacedNullCheckRuleTest, ObjC_CorrectNullEqCheck)
 {
-    testRuleOnObjCCode(new MisplacedNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new MisplacedNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 { \n\
@@ -151,7 +155,7 @@ TEST(MisplacedNullCheckRuleTest, ObjC_CorrectNullEqCheck)
 
 TEST(MisplacedNullCheckRuleTest, ObjC_EzButRedundantNullEqCheck)
 {
-    testRuleOnObjCCode(new MisplacedNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new MisplacedNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -162,7 +166,7 @@ TEST(MisplacedNullCheckRuleTest, ObjC_EzButRedundantNullEqCheck)
 
 TEST(MisplacedNullCheckRuleTest, ObjC_ExplicitButRedundantNullEqCheck)
 {
-    testRuleOnObjCCode(new MisplacedNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new MisplacedNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -173,7 +177,7 @@ TEST(MisplacedNullCheckRuleTest, ObjC_ExplicitButRedundantNullEqCheck)
 
 TEST(MisplacedNullCheckRuleTest, ObjC_MisplacedEzButRedundantNullEqCheck)
 {
-    testRuleOnObjCCode(new MisplacedNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new MisplacedNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -184,7 +188,7 @@ TEST(MisplacedNullCheckRuleTest, ObjC_MisplacedEzButRedundantNullEqCheck)
 
 TEST(MisplacedNullCheckRuleTest, ObjC_MisplacedExplicitButRedundantNullEqCheck)
 {
-    testRuleOnObjCCode(new MisplacedNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new MisplacedNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -195,7 +199,7 @@ TEST(MisplacedNullCheckRuleTest, ObjC_MisplacedExplicitButRedundantNullEqCheck)
 
 TEST(MisplacedNullCheckRuleTest, ObjC_EzButRedundantNullNeCheck)
 {
-    testRuleOnObjCCode(new MisplacedNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new MisplacedNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -206,7 +210,7 @@ TEST(MisplacedNullCheckRuleTest, ObjC_EzButRedundantNullNeCheck)
 
 TEST(MisplacedNullCheckRuleTest, ObjC_ExplicitButRedundantNullNeCheck)
 {
-    testRuleOnObjCCode(new MisplacedNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new MisplacedNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -217,7 +221,7 @@ TEST(MisplacedNullCheckRuleTest, ObjC_ExplicitButRedundantNullNeCheck)
 
 TEST(MisplacedNullCheckRuleTest, ObjC_MisplacedEzButRedundantNullNeCheck)
 {
-    testRuleOnObjCCode(new MisplacedNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new MisplacedNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -228,7 +232,7 @@ TEST(MisplacedNullCheckRuleTest, ObjC_MisplacedEzButRedundantNullNeCheck)
 
 TEST(MisplacedNullCheckRuleTest, ObjC_MisplacedExplicitButRedundantNullNeCheck)
 {
-    testRuleOnObjCCode(new MisplacedNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new MisplacedNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -245,7 +249,7 @@ TEST(MisplacedNullCheckRuleTest, C_ShouldIgnoreDifferentIdentifers)
 
 TEST(MisplacedNullCheckRuleTest, ObjC_ShouldIgnoreDifferentIdentifers)
 {
-    testRuleOnObjCCode(new MisplacedNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new MisplacedNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -276,7 +280,7 @@ TEST(MisplacedNullCheckRuleTest, C_MultipleMemberExpr)
 
 TEST(MisplacedNullCheckRuleTest, ObjC_MultipleMessageExpr)
 {
-    testRuleOnObjCCode(new MisplacedNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new MisplacedNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -329,7 +333,7 @@ TEST(MisplacedNullCheckRuleTest, Cpp_NullIsNotNull)
 
 TEST(MisplacedNullCheckRuleTest, ObjC_NullUnderTheHook)
 {
-    testRuleOnObjCCode(new MisplacedNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new MisplacedNilCheckRule(), objcPrefix +
 "#define nill (id)0\n\
 @implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
@@ -341,7 +345,7 @@ TEST(MisplacedNullCheckRuleTest, ObjC_NullUnderTheHook)
 
 TEST(MisplacedNullCheckRuleTest, ObjC_ExplicitNull)
 {
-    testRuleOnObjCCode(new MisplacedNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new MisplacedNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -352,7 +356,7 @@ TEST(MisplacedNullCheckRuleTest, ObjC_ExplicitNull)
 
 TEST(MisplacedNullCheckRuleTest, ObjC_NullIsNotNull)
 {
-    testRuleOnObjCCode(new MisplacedNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new MisplacedNilCheckRule(), objcPrefix +
 "#define nil (id)2\n\
 @implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
@@ -364,6 +368,34 @@ TEST(MisplacedNullCheckRuleTest, ObjC_NullIsNotNull)
 
 // TODO: need to consider NSNULL and Nil in Objective-C
 // TODO: need to consider nullptr introduced in C++11
+
+/*
+ * Diplomatic tests
+ */
+
+TEST(MisplacedNullCheckRuleTest, C_MisplacedExplicitNullEqCheck_ShouldIgnoreByObjC)
+{
+    testRuleOnCode(new MisplacedNilCheckRule(), cPrefix +
+        "void m(struct A *a, struct B *b) { if (a->foo == 1 && a != NULL) { ; } }");
+}
+
+TEST(MisplacedNullCheckRuleTest, Cpp_MisplacedExplicitNullEqCheck_ShouldIgnoreByObjC)
+{
+    testRuleOnCXXCode(new MisplacedNilCheckRule(), cxxPrefix +
+        "void m(A *a, B *b) { if (a->bar(b) && a != NULL) { ; } }");
+}
+
+TEST(MisplacedNullCheckRuleTest, ObjC_MisplacedEzButRedundantNullEqCheck_ShouldIgnoreByC)
+{
+    testRuleOnObjCCode(new MisplacedNullCheckRule(), objcPrefix +
+"@implementation A\n\
+- (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
++ (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
+    if ([obj1 isEqualTo:obj2] && obj1) { ; }                    \n\
+}                                                               \n\
+@end");
+}
+
 
 int main(int argc, char **argv)
 {

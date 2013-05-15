@@ -119,7 +119,8 @@ protected:
         return "";
     }
 
-    class SeekingVariableOfInterest : public RecursiveASTVisitor<SeekingVariableOfInterest>
+    class VariableOfInterestInMemberExpr :
+        public RecursiveASTVisitor<VariableOfInterestInMemberExpr>
     {
     private:
         string _variableName;
@@ -130,7 +131,7 @@ protected:
         {
             _variableName = name;
             _rule = rule;
-            return !RecursiveASTVisitor<SeekingVariableOfInterest>::TraverseStmt(expr);
+            return !RecursiveASTVisitor<VariableOfInterestInMemberExpr>::TraverseStmt(expr);
         }
 
         bool VisitMemberExpr(MemberExpr *memberExpr)
@@ -142,6 +143,22 @@ protected:
                     dyn_cast<ImplicitCastExpr>(memberExpr->getBase()));
             }
             return true;
+        }
+    };
+
+    class VariableOfInterestInObjCMessageExpr :
+        public RecursiveASTVisitor<VariableOfInterestInObjCMessageExpr>
+    {
+    private:
+        string _variableName;
+        AbstractNullCheckRule *_rule;
+
+    public:
+        bool hasVariableInExpr(string name, Expr *expr, AbstractNullCheckRule *rule)
+        {
+            _variableName = name;
+            _rule = rule;
+            return !RecursiveASTVisitor<VariableOfInterestInObjCMessageExpr>::TraverseStmt(expr);
         }
 
         bool VisitObjCMessageExpr(ObjCMessageExpr *memberExpr)

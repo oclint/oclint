@@ -29,9 +29,13 @@ typedef signed char    BOOL;                    \n\
 
 TEST(BrokenNullCheckRuleTest, PropertyTest)
 {
-    BrokenNullCheckRule rule;
-    EXPECT_EQ(1, rule.priority());
-    EXPECT_EQ("broken null check", rule.name());
+    BrokenNullCheckRule nullRule;
+    EXPECT_EQ(1, nullRule.priority());
+    EXPECT_EQ("broken null check", nullRule.name());
+
+    BrokenNilCheckRule nilRule;
+    EXPECT_EQ(2, nilRule.priority());
+    EXPECT_EQ("broken nil check", nilRule.name());
 }
 
 TEST(BrokenNullCheckRuleTest, C_CorrectExplicitNullEqCheck)
@@ -140,7 +144,7 @@ TEST(BrokenNullCheckRuleTest, Cpp_BrokenEzNullNeCheck)
 
 TEST(BrokenNullCheckRuleTest, ObjC_CorrectNullEqCheck)
 {
-    testRuleOnObjCCode(new BrokenNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 { \n\
@@ -151,7 +155,7 @@ TEST(BrokenNullCheckRuleTest, ObjC_CorrectNullEqCheck)
 
 TEST(BrokenNullCheckRuleTest, ObjC_EzButRedundantNullEqCheck)
 {
-    testRuleOnObjCCode(new BrokenNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -162,7 +166,7 @@ TEST(BrokenNullCheckRuleTest, ObjC_EzButRedundantNullEqCheck)
 
 TEST(BrokenNullCheckRuleTest, ObjC_ExplicitButRedundantNullEqCheck)
 {
-    testRuleOnObjCCode(new BrokenNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -173,7 +177,7 @@ TEST(BrokenNullCheckRuleTest, ObjC_ExplicitButRedundantNullEqCheck)
 
 TEST(BrokenNullCheckRuleTest, ObjC_BrokenEzButRedundantNullEqCheck)
 {
-    testRuleOnObjCCode(new BrokenNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -189,7 +193,7 @@ TEST(BrokenNullCheckRuleTest, ObjC_BrokenEzButRedundantNullEqCheck)
 
 TEST(BrokenNullCheckRuleTest, ObjC_BrokenExplicitButRedundantNullEqCheck)
 {
-    testRuleOnObjCCode(new BrokenNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -200,7 +204,7 @@ TEST(BrokenNullCheckRuleTest, ObjC_BrokenExplicitButRedundantNullEqCheck)
 
 TEST(BrokenNullCheckRuleTest, ObjC_EzButRedundantNullNeCheck)
 {
-    testRuleOnObjCCode(new BrokenNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -211,7 +215,7 @@ TEST(BrokenNullCheckRuleTest, ObjC_EzButRedundantNullNeCheck)
 
 TEST(BrokenNullCheckRuleTest, ObjC_ExplicitButRedundantNullNeCheck)
 {
-    testRuleOnObjCCode(new BrokenNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -222,7 +226,7 @@ TEST(BrokenNullCheckRuleTest, ObjC_ExplicitButRedundantNullNeCheck)
 
 TEST(BrokenNullCheckRuleTest, ObjC_BrokenEzButRedundantNullNeCheck)
 {
-    testRuleOnObjCCode(new BrokenNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -233,7 +237,7 @@ TEST(BrokenNullCheckRuleTest, ObjC_BrokenEzButRedundantNullNeCheck)
 
 TEST(BrokenNullCheckRuleTest, ObjC_BrokenExplicitButRedundantNullNeCheck)
 {
-    testRuleOnObjCCode(new BrokenNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -250,7 +254,7 @@ TEST(BrokenNullCheckRuleTest, C_ShouldIgnoreDifferentIdentifers)
 
 TEST(BrokenNullCheckRuleTest, ObjC_ShouldIgnoreDifferentIdentifers)
 {
-    testRuleOnObjCCode(new BrokenNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -281,7 +285,7 @@ TEST(BrokenNullCheckRuleTest, C_MultipleMemberExpr)
 
 TEST(BrokenNullCheckRuleTest, ObjC_MultipleMessageExpr)
 {
-    testRuleOnObjCCode(new BrokenNullCheckRule(), objcPrefix +
+    testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
 "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
@@ -295,6 +299,34 @@ TEST(BrokenNullCheckRuleTest, ObjC_MultipleMessageExpr)
 
 // TODO: need to consider NSNULL and Nil in Objective-C
 // TODO: need to consider nullptr introduced in C++11
+
+/*
+ * Diplomatic tests
+ */
+
+TEST(BrokenNullCheckRuleTest, C_BrokenExplicitNullEqCheck_ShouldIgnoreByObjC)
+{
+    testRuleOnCode(new BrokenNilCheckRule(), cPrefix +
+        "void m(struct A *a, struct B *b) { if (a != NULL || a->foo == 1) { ; } }");
+}
+
+TEST(BrokenNullCheckRuleTest, Cpp_BrokenExplicitNullEqCheck_ShouldIgnoreByObjC)
+{
+    testRuleOnCXXCode(new BrokenNilCheckRule(), cxxPrefix +
+        "void m(A *a, B *b) { if (a != NULL || a->bar(b)) { ; } }");
+}
+
+TEST(BrokenNullCheckRuleTest, ObjC_BrokenEzButRedundantNullEqCheck_ShouldIgnoreByC)
+{
+    testRuleOnObjCCode(new BrokenNullCheckRule(), objcPrefix +
+"@implementation A\n\
+- (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
++ (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
+    if (obj1 || [obj1 isEqualTo:obj2]) { ; }                    \n\
+}                                                               \n\
+@end");
+}
+
 
 int main(int argc, char **argv)
 {
