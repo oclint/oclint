@@ -22,31 +22,116 @@ TEST_F(ShortVariableNameRuleTest, PropertyTest)
     EXPECT_EQ("short variable name", rule.name());
 }
 
-TEST_F(ShortVariableNameRuleTest, NoVar)
+TEST_F(ShortVariableNameRuleTest, C_NoVar)
 {
     testRuleOnCode(new ShortVariableNameRule(), "void aMethod() { }");
 }
 
-TEST_F(ShortVariableNameRuleTest, OneCharName)
+TEST_F(ShortVariableNameRuleTest, C_OneCharName)
 {
     testRuleOnCode(new ShortVariableNameRule(), "void aMethod(int i) {}",
         0, 1, 14, 1, 18);
 }
 
-TEST_F(ShortVariableNameRuleTest, TwoCharsName)
+TEST_F(ShortVariableNameRuleTest, C_TwoCharsName)
 {
     testRuleOnCode(new ShortVariableNameRule(), "void aMethod() { int ii; }",
         0, 1, 18, 1, 22);
 }
 
-TEST_F(ShortVariableNameRuleTest, ThreeCharsName)
+TEST_F(ShortVariableNameRuleTest, C_ThreeCharsName)
 {
     testRuleOnCode(new ShortVariableNameRule(), "void aMethod() { int iii; }");
 }
 
-TEST_F(ShortVariableNameRuleTest, FourCharsName)
+TEST_F(ShortVariableNameRuleTest, C_FourCharsName)
 {
     testRuleOnCode(new ShortVariableNameRule(), "void aMethod() { int iiii; }");
+}
+
+TEST_F(ShortVariableNameRuleTest, Cpp_NoVar)
+{
+    testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { }");
+}
+
+TEST_F(ShortVariableNameRuleTest, Cpp_OneCharName)
+{
+    testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod(int i) {}",
+        0, 1, 14, 1, 18);
+}
+
+TEST_F(ShortVariableNameRuleTest, Cpp_TwoCharsName)
+{
+    testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { int ii; }",
+        0, 1, 18, 1, 22);
+}
+
+TEST_F(ShortVariableNameRuleTest, Cpp_ThreeCharsName)
+{
+    testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { int iii; }");
+}
+
+TEST_F(ShortVariableNameRuleTest, Cpp_FourCharsName)
+{
+    testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { int iiii; }");
+}
+
+TEST_F(ShortVariableNameRuleTest, ObjC_NoVar)
+{
+    testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { }");
+}
+
+TEST_F(ShortVariableNameRuleTest, ObjC_OneCharName)
+{
+    testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod(id i) {}",
+        0, 1, 14, 1, 17);
+}
+
+TEST_F(ShortVariableNameRuleTest, ObjC_TwoCharsName)
+{
+    testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { id ii; }",
+        0, 1, 18, 1, 21);
+}
+
+TEST_F(ShortVariableNameRuleTest, ObjC_ThreeCharsName)
+{
+    testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { id iii; }");
+}
+
+TEST_F(ShortVariableNameRuleTest, ObjC_FourCharsName)
+{
+    testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { id iiii; }");
+}
+
+TEST_F(ShortVariableNameRuleTest, IgnoreVariableInCXXForInit)
+{
+    testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { for(int i = 0;;){} }");
+}
+
+TEST_F(ShortVariableNameRuleTest, IgnoreVariableInObjCForInit)
+{
+    testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { for(int i = 0;;){} }");
+}
+
+TEST_F(ShortVariableNameRuleTest, IgnoreVariableInCXXException)
+{
+    testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { try {;} catch (int ex) {;} }");
+}
+
+TEST_F(ShortVariableNameRuleTest, IgnoreVariableInObjCException)
+{
+    testRuleOnObjCCode(new ShortVariableNameRule(), "@class NSException; void aMethod() { @try {;} @catch (NSException *ex) {;} }");
+}
+
+TEST_F(ShortVariableNameRuleTest, IgnoreMultipleVariablesInObjCException)
+{
+    testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { @try {;} @catch (id ex) {;} @catch (id e) {;} }");
+}
+
+TEST_F(ShortVariableNameRuleTest, ShortVariableInsideCatchBlock)
+{
+    testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { @try {;} @catch (id ex) {;} @catch (id e) { id i; } }",
+        0, 1, 62, 1, 65);
 }
 
 int main(int argc, char **argv)

@@ -6,6 +6,7 @@ class ShortVariableNameRule : public AbstractASTVisitorRule<ShortVariableNameRul
 {
 private:
     static RuleSet rules;
+    VarDecl *_suppressVarDecl = NULL;
 
 public:
     virtual const string name() const
@@ -22,10 +23,29 @@ public:
     {
         int nameLength = varDecl->getNameAsString().size();
         int threshold = RuleConfiguration::intForKey("SHORT_VARIABLE_NAME", 3);
-        if (nameLength > 0 && nameLength < threshold)
+        if (nameLength > 0 && nameLength < threshold && varDecl != _suppressVarDecl)
         {
             addViolation(varDecl, this);
         }
+
+        _suppressVarDecl = NULL;
+
+        return true;
+    }
+
+    bool VisitForStmt(ForStmt *forStmt)
+    {
+        DeclStmt *declStmt = dyn_cast<DeclStmt>(forStmt->getInit());
+        if (declStmt && declStmt->isSingleDecl())
+        {
+            _suppressVarDecl = dyn_cast<VarDecl>(declStmt->getSingleDecl());
+        }
+        return true;
+    }
+
+    bool VisitCXXCatchStmt(CXXCatchStmt *catchStmt)
+    {
+        _suppressVarDecl = catchStmt->getExceptionDecl();
         return true;
     }
 };
