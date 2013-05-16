@@ -1,1 +1,2 @@
+BUILD_TEST(LongVariableNameRuleTest)
 BUILD_TEST(ShortVariableNameRuleTest)
