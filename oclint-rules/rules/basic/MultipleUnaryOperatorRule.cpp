@@ -6,10 +6,10 @@ class MultipleUnaryOperatorRule : public AbstractASTVisitorRule<MultipleUnaryOpe
 private:
     static RuleSet rules;
 
-    bool isTargetUnaryOperator(UnaryOperator *op)
+    bool isTargetUnaryOperator(UnaryOperator *unaryOperator)
     {
-        return op->getOpcode() == UO_LNot || op->getOpcode() == UO_Not ||
-            op->getOpcode() == UO_Plus || op->getOpcode() == UO_Minus;
+        return unaryOperator->getOpcode() == UO_LNot || unaryOperator->getOpcode() == UO_Not ||
+            unaryOperator->getOpcode() == UO_Plus || unaryOperator->getOpcode() == UO_Minus;
     }
 
 public:

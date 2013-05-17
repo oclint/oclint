@@ -15,8 +15,8 @@ private:
 
     bool hasVariableInExpr(string variableOfInterest, Expr *expr)
     {
-        VariableOfInterestInObjCMessageExpr seekingVariableOfInterest;
-        return seekingVariableOfInterest.hasVariableInExpr(variableOfInterest, expr, this);
+        VariableOfInterestInObjCMessageExpr seekingVariable;
+        return seekingVariable.hasVariableInExpr(variableOfInterest, expr, this);
     }
 
     bool isSameVariableBroken(BinaryOperator *binaryOperator)

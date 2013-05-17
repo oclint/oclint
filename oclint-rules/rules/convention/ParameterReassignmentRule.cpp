@@ -69,8 +69,8 @@ private:
         vector<string> names = parametersNameFinder.find(decl);
         if (names.size() > 0)
         {
-            BinaryOperatorAnalyzer binaryOperatorAnalyzer;
-            vector<BinaryOperator*> binaryOperators = binaryOperatorAnalyzer.analyze(decl, names);
+            BinaryOperatorAnalyzer biOpAnalyzer;
+            vector<BinaryOperator*> binaryOperators = biOpAnalyzer.analyze(decl, names);
             for (int index = 0; index < binaryOperators.size(); index++)
             {
                 addViolation(binaryOperators.at(index), this);

@@ -121,6 +121,6 @@ int NPathComplexityMetric::nPath(CastExpr *expr)
 
 int getNPathComplexity(Stmt *stmt)
 {
-    NPathComplexityMetric np;
-    return np.nPath(stmt);
+    NPathComplexityMetric npathMetric;
+    return npathMetric.nPath(stmt);
 }

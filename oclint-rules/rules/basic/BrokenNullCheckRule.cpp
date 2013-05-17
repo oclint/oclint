@@ -51,8 +51,8 @@ private:
 protected:
     virtual bool hasVariableInExpr(string variableOfInterest, Expr *expr)
     {
-        VariableOfInterestInMemberExpr seekingVariableOfInterest;
-        return seekingVariableOfInterest.hasVariableInExpr(variableOfInterest, expr, this);
+        VariableOfInterestInMemberExpr seekingVariable;
+        return seekingVariable.hasVariableInExpr(variableOfInterest, expr, this);
     }
 
 public:
@@ -75,8 +75,8 @@ private:
 protected:
     virtual bool hasVariableInExpr(string variableOfInterest, Expr *expr)
     {
-        VariableOfInterestInObjCMessageExpr seekingVariableOfInterest;
-        return seekingVariableOfInterest.hasVariableInExpr(variableOfInterest, expr, this);
+        VariableOfInterestInObjCMessageExpr seekingVariable;
+        return seekingVariable.hasVariableInExpr(variableOfInterest, expr, this);
     }
 
 public:
