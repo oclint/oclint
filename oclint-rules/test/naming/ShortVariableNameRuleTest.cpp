@@ -30,13 +30,13 @@ TEST_F(ShortVariableNameRuleTest, C_NoVar)
 TEST_F(ShortVariableNameRuleTest, C_OneCharName)
 {
     testRuleOnCode(new ShortVariableNameRule(), "void aMethod(int i) {}",
-        0, 1, 14, 1, 18);
+        0, 1, 14, 1, 18, "Variable name with 1 characters is shorter than the threshold of 3");
 }
 
 TEST_F(ShortVariableNameRuleTest, C_TwoCharsName)
 {
     testRuleOnCode(new ShortVariableNameRule(), "void aMethod() { int ii; }",
-        0, 1, 18, 1, 22);
+        0, 1, 18, 1, 22, "Variable name with 2 characters is shorter than the threshold of 3");
 }
 
 TEST_F(ShortVariableNameRuleTest, C_ThreeCharsName)
@@ -57,13 +57,13 @@ TEST_F(ShortVariableNameRuleTest, Cpp_NoVar)
 TEST_F(ShortVariableNameRuleTest, Cpp_OneCharName)
 {
     testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod(int i) {}",
-        0, 1, 14, 1, 18);
+        0, 1, 14, 1, 18, "Variable name with 1 characters is shorter than the threshold of 3");
 }
 
 TEST_F(ShortVariableNameRuleTest, Cpp_TwoCharsName)
 {
     testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { int ii; }",
-        0, 1, 18, 1, 22);
+        0, 1, 18, 1, 22, "Variable name with 2 characters is shorter than the threshold of 3");
 }
 
 TEST_F(ShortVariableNameRuleTest, Cpp_ThreeCharsName)
@@ -84,13 +84,13 @@ TEST_F(ShortVariableNameRuleTest, ObjC_NoVar)
 TEST_F(ShortVariableNameRuleTest, ObjC_OneCharName)
 {
     testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod(id i) {}",
-        0, 1, 14, 1, 17);
+        0, 1, 14, 1, 17, "Variable name with 1 characters is shorter than the threshold of 3");
 }
 
 TEST_F(ShortVariableNameRuleTest, ObjC_TwoCharsName)
 {
     testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { id ii; }",
-        0, 1, 18, 1, 21);
+        0, 1, 18, 1, 21, "Variable name with 2 characters is shorter than the threshold of 3");
 }
 
 TEST_F(ShortVariableNameRuleTest, ObjC_ThreeCharsName)
@@ -131,7 +131,7 @@ TEST_F(ShortVariableNameRuleTest, IgnoreMultipleVariablesInObjCException)
 TEST_F(ShortVariableNameRuleTest, ShortVariableInsideCatchBlock)
 {
     testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { @try {;} @catch (id ex) {;} @catch (id e) { id i; } }",
-        0, 1, 62, 1, 65);
+        0, 1, 62, 1, 65, "Variable name with 1 characters is shorter than the threshold of 3");
 }
 
 int main(int argc, char **argv)

@@ -1,6 +1,7 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
+#include "oclint/util/StdUtil.h"
 
 class LongVariableNameRule : public AbstractASTVisitorRule<LongVariableNameRule>
 {
@@ -24,7 +25,9 @@ public:
         int threshold = RuleConfiguration::intForKey("LONG_VARIABLE_NAME", 20);
         if (nameLength > threshold)
         {
-            addViolation(varDecl, this);
+            string description = "Variable name with " + intToString(nameLength) +
+                " characters is longer than the threshold of " + intToString(threshold);
+            addViolation(varDecl, this, description);
         }
 
         return true;

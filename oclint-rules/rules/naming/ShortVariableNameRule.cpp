@@ -1,6 +1,7 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
+#include "oclint/util/StdUtil.h"
 
 class ShortVariableNameRule : public AbstractASTVisitorRule<ShortVariableNameRule>
 {
@@ -25,7 +26,9 @@ public:
         int threshold = RuleConfiguration::intForKey("SHORT_VARIABLE_NAME", 3);
         if (nameLength > 0 && nameLength < threshold && varDecl != _suppressVarDecl)
         {
-            addViolation(varDecl, this);
+            string description = "Variable name with " + intToString(nameLength) +
+                " characters is shorter than the threshold of " + intToString(threshold);
+            addViolation(varDecl, this, description);
         }
 
         _suppressVarDecl = NULL;
