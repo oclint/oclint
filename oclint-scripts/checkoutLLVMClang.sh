@@ -7,6 +7,8 @@ BRANCH="trunk"
 
 if [ $# -eq 1 ] && [ "$1" = "branch" ]; then
     echo "trunk (default)"
+    echo "branches/release_33"
+    echo "tags/RELEASE_33/final"
     echo "branches/release_32"
     echo "tags/RELEASE_32/final"
     exit 0
