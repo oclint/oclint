@@ -9,6 +9,7 @@ SET(LIST_OF_RULES
     DoubleNegative
     ForLoopShouldBeWhileLoop
     GotoStatement
+    JumbledIncrementer
     MisplacedNullCheck
     MultipleUnaryOperator
     ReturnFromFinallyBlock
