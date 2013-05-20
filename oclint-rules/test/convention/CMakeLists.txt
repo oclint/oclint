@@ -1,3 +1,4 @@
+BUILD_TEST(AvoidBranchingStatementAsLastInLoopRuleTest)
 BUILD_TEST(DefaultLabelNotLastInSwitchStatementRuleTest)
 BUILD_TEST(InvertedLogicRuleTest)
 BUILD_TEST(MissingBreakInSwitchStatementRuleTest)
