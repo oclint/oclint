@@ -8,6 +8,7 @@ SET(LIST_OF_RULES
     NPathComplexity
     TooManyFields
     TooManyMethods
+    TooManyParameters
     )
 
 BUILD_DYNAMIC_RULES("${LIST_OF_RULES}")
