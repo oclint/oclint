@@ -43,6 +43,26 @@ private:
 
     bool isObjCBOOLNotEquals(Expr *trueExpr, Expr *falseExpr)
     {
+        ObjCBoolLiteralExpr *trueObjCBOOL =
+            extractFromImplicitCastExpr<ObjCBoolLiteralExpr>(trueExpr);
+        ObjCBoolLiteralExpr *falseObjCBOOL =
+            extractFromImplicitCastExpr<ObjCBoolLiteralExpr>(falseExpr);
+        return trueObjCBOOL && falseObjCBOOL &&
+                trueObjCBOOL->getValue() != falseObjCBOOL->getValue();
+    }
+
+    bool isObjCBOOLEquals(Expr *trueExpr, Expr *falseExpr)
+    {
+        ObjCBoolLiteralExpr *trueObjCBOOL =
+            extractFromImplicitCastExpr<ObjCBoolLiteralExpr>(trueExpr);
+        ObjCBoolLiteralExpr *falseObjCBOOL =
+            extractFromImplicitCastExpr<ObjCBoolLiteralExpr>(falseExpr);
+        return trueObjCBOOL && falseObjCBOOL &&
+                trueObjCBOOL->getValue() == falseObjCBOOL->getValue();
+    }
+
+    bool isObjCIntegerLiteralBOOLNotEquals(Expr *trueExpr, Expr *falseExpr)
+    {
         CStyleCastExpr *trueObjCBOOL = extractFromImplicitCastExpr<CStyleCastExpr>(trueExpr);
         CStyleCastExpr *falseObjCBOOL = extractFromImplicitCastExpr<CStyleCastExpr>(falseExpr);
         if (trueObjCBOOL && falseObjCBOOL)
@@ -55,7 +75,7 @@ private:
         return false;
     }
 
-    bool isObjCBOOLEquals(Expr *trueExpr, Expr *falseExpr)
+    bool isObjCIntegerLiteralBOOLEquals(Expr *trueExpr, Expr *falseExpr)
     {
         CStyleCastExpr *trueObjCBOOL = extractFromImplicitCastExpr<CStyleCastExpr>(trueExpr);
         CStyleCastExpr *falseObjCBOOL = extractFromImplicitCastExpr<CStyleCastExpr>(falseExpr);
@@ -118,13 +138,16 @@ private:
 
     bool isNotEquals(Expr *trueExpr, Expr *falseExpr)
     {
-        return isCXXBoolNotEquals(trueExpr, falseExpr) || isObjCBOOLNotEquals(trueExpr, falseExpr);
+        return isCXXBoolNotEquals(trueExpr, falseExpr) ||
+            isObjCBOOLNotEquals(trueExpr, falseExpr) ||
+            isObjCIntegerLiteralBOOLNotEquals(trueExpr, falseExpr);
     }
 
     bool isSameConstant(Expr *trueExpr, Expr *falseExpr)
     {
         return isCXXBoolEquals(trueExpr, falseExpr) ||
             isObjCBOOLEquals(trueExpr, falseExpr) ||
+            isObjCIntegerLiteralBOOLEquals(trueExpr, falseExpr) ||
             isIntegerLiteralEquals(trueExpr, falseExpr) ||
             isFloatingLiteralEquals(trueExpr, falseExpr) ||
             isCharacterLiteralEquals(trueExpr, falseExpr) ||

@@ -51,6 +51,17 @@ private:
     {
         if (thenExpr && elseExpr)
         {
+            ObjCBoolLiteralExpr *thenObjCBOOL = dyn_cast<ObjCBoolLiteralExpr>(thenExpr);
+            ObjCBoolLiteralExpr *elseObjCBOOL = dyn_cast<ObjCBoolLiteralExpr>(elseExpr);
+            return thenObjCBOOL && elseObjCBOOL && thenObjCBOOL->getValue() != elseObjCBOOL->getValue();
+        }
+        return false;
+    }
+
+    bool isObjCIntergerLiteralBOOLViolated(Expr *thenExpr, Expr *elseExpr)
+    {
+        if (thenExpr && elseExpr)
+        {
             CStyleCastExpr *thenObjCBOOL = dyn_cast<CStyleCastExpr>(thenExpr);
             CStyleCastExpr *elseObjCBOOL = dyn_cast<CStyleCastExpr>(elseExpr);
             return thenObjCBOOL && elseObjCBOOL &&
@@ -63,7 +74,8 @@ private:
     bool isNotEquals(Expr *firstExpr, Expr *secondExpr)
     {
         return isCXXBoolViolated(firstExpr, secondExpr) ||
-            isObjCBOOLViolated(firstExpr, secondExpr);
+            isObjCBOOLViolated(firstExpr, secondExpr) ||
+            isObjCIntergerLiteralBOOLViolated(firstExpr, secondExpr);
     }
 
     bool doesReturnStatementsViolateRule(ReturnStmt *first, ReturnStmt *second)
