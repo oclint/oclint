@@ -50,7 +50,7 @@ public:
     int nPath(CastExpr *expr);
 };
 
-int getNPathComplexity(Stmt *stmt);
+extern "C" int getNPathComplexity(Stmt *stmt);
 
 #undef DISPATH
 

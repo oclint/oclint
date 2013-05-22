@@ -70,7 +70,7 @@ bool CyclomaticComplexityMetric::VisitBinaryOperator(BinaryOperator *binaryOpera
     return true;
 }
 
-int getCyclomaticComplexity(Decl *decl)
+extern "C" int getCyclomaticComplexity(Decl *decl)
 {
     CyclomaticComplexityMetric ccnMetric;
     return ccnMetric.calculate(decl);

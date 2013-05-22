@@ -26,6 +26,6 @@ public:
     bool VisitBinaryOperator(BinaryOperator *op);
 };
 
-int getCyclomaticComplexity(Decl *decl);
+extern "C" int getCyclomaticComplexity(Decl *decl);
 
 #endif
