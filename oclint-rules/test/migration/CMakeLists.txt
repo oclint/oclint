@@ -1,0 +1,4 @@
+BUILD_TEST(ObjCBoxedExpressionsRuleTest)
+BUILD_TEST(ObjCContainerLiteralsRuleTest)
+BUILD_TEST(ObjCNSNumberLiteralsRuleTest)
+BUILD_TEST(ObjCObjectSubscriptingRuleTest)
