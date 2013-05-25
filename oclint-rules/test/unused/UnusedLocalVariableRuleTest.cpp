@@ -36,6 +36,15 @@ TEST(UnusedLocalVariableRuleTest, UnusedMethodParameterShouldBeIgnoredInThisRule
     testRuleOnCode(new UnusedLocalVariableRule(), "int aMethod(int a) { return 0; }");
 }
 
+/*
+ * because template function won't be compiled until it's actually being used
+ * so we will discard variables inside a template function
+ */
+TEST(UnusedLocalVariableRuleTest, IgnoreUnusedLocalVariableInTemplateFunction)
+{
+    testRuleOnCXXCode(new UnusedLocalVariableRule(), "template <typename T> int m() { int i = 1; return i; }");
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);
