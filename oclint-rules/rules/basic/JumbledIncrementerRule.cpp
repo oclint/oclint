@@ -6,6 +6,24 @@ class JumbledIncrementerRule : public AbstractASTVisitorRule<JumbledIncrementerR
 private:
     static RuleSet rules;
 
+    bool isInnerIncMatchingOuterInit(Expr *incExpr, Stmt *initStmt)
+    {
+        if (initStmt && incExpr)
+        {
+            DeclStmt *declStmt = dyn_cast<DeclStmt>(initStmt);
+            UnaryOperator *unaryOperator = dyn_cast<UnaryOperator>(incExpr);
+            if (declStmt && unaryOperator &&
+                declStmt->isSingleDecl() && isa<DeclRefExpr>(unaryOperator->getSubExpr()))
+            {
+                VarDecl *varDecl = dyn_cast<VarDecl>(declStmt->getSingleDecl());
+                DeclRefExpr *declRefExpr = dyn_cast<DeclRefExpr>(unaryOperator->getSubExpr());
+                ValueDecl *valueDecl = declRefExpr->getDecl();
+                return varDecl && valueDecl && varDecl == valueDecl;
+            }
+        }
+        return false;
+    }
+
 public:
     virtual const string name() const
     {
@@ -30,21 +48,9 @@ public:
         {
             Stmt *initStmt = parentStmt->getInit();
             Expr *incExpr = forStmt->getInc();
-            if (initStmt && incExpr)
+            if (isInnerIncMatchingOuterInit(incExpr, initStmt))
             {
-                DeclStmt *declStmt = dyn_cast<DeclStmt>(initStmt);
-                UnaryOperator *unaryOperator = dyn_cast<UnaryOperator>(incExpr);
-                if (declStmt && unaryOperator &&
-                    declStmt->isSingleDecl() && isa<DeclRefExpr>(unaryOperator->getSubExpr()))
-                {
-                    VarDecl *varDecl = dyn_cast<VarDecl>(declStmt->getSingleDecl());
-                    DeclRefExpr *declRefExpr = dyn_cast<DeclRefExpr>(unaryOperator->getSubExpr());
-                    ValueDecl *valueDecl = declRefExpr->getDecl();
-                    if (varDecl && valueDecl && varDecl == valueDecl)
-                    {
-                        addViolation(incExpr, this);
-                    }
-                }
+                addViolation(incExpr, this);
             }
         }
         return true;

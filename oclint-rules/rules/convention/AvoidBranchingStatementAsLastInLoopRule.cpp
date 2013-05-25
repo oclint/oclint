@@ -65,4 +65,5 @@ public:
     }
 };
 
-RuleSet AvoidBranchingStatementAsLastInLoopRule::rules(new AvoidBranchingStatementAsLastInLoopRule());
+RuleSet AvoidBranchingStatementAsLastInLoopRule::rules(
+    new AvoidBranchingStatementAsLastInLoopRule());

@@ -53,7 +53,8 @@ private:
         {
             ObjCBoolLiteralExpr *thenObjCBOOL = dyn_cast<ObjCBoolLiteralExpr>(thenExpr);
             ObjCBoolLiteralExpr *elseObjCBOOL = dyn_cast<ObjCBoolLiteralExpr>(elseExpr);
-            return thenObjCBOOL && elseObjCBOOL && thenObjCBOOL->getValue() != elseObjCBOOL->getValue();
+            return thenObjCBOOL &&
+                elseObjCBOOL && thenObjCBOOL->getValue() != elseObjCBOOL->getValue();
         }
         return false;
     }
