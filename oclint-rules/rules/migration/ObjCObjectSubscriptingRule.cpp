@@ -33,22 +33,22 @@ private:
 
     bool isDictionaryGetSelector(Expr *expr, string &selectorString)
     {
-        vector<string> dictionaryGetSelectors;
-        dictionaryGetSelectors.push_back("objectForKey:");
-        dictionaryGetSelectors.push_back("objectForKeyedSubscript:");
+        vector<string> dictGetSelectors;
+        dictGetSelectors.push_back("objectForKey:");
+        dictGetSelectors.push_back("objectForKeyedSubscript:");
 
         return expr->getType().getAsString() == "NSDictionary *" &&
-            containsInVector(selectorString, dictionaryGetSelectors);
+            containsInVector(selectorString, dictGetSelectors);
     }
 
     bool isDictionarySetSelector(Expr *expr, string &selectorString)
     {
-        vector<string> dictionarySetSelectors;
-        dictionarySetSelectors.push_back("setObject:forKey:");
-        dictionarySetSelectors.push_back("setObject:forKeyedSubscript:");
+        vector<string> dictSetSelectors;
+        dictSetSelectors.push_back("setObject:forKey:");
+        dictSetSelectors.push_back("setObject:forKeyedSubscript:");
 
         return expr->getType().getAsString() == "NSMutableDictionary *" &&
-            containsInVector(selectorString, dictionarySetSelectors);
+            containsInVector(selectorString, dictSetSelectors);
     }
 
 public:
