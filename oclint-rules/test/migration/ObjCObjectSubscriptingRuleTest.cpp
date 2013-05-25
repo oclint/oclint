@@ -53,11 +53,13 @@ TEST(ObjCObjectSubscriptingRuleTest, PropertyTest)
     EXPECT_EQ("replace with object subscripting", rule.name());
 }
 
+#if defined(__APPLE__) || defined(__MACH__)
 TEST(ObjCObjectSubscriptingRuleTest, ArrayObjectAtSubscripting)
 {
     testRuleOnObjCCode(new ObjCObjectSubscriptingRule(), objCNSArrayPrefix +
         "void m(NSArray *a) { id item = a[0]; }");
 }
+#endif
 
 TEST(ObjCObjectSubscriptingRuleTest, ArrayObjectAtIndex)
 {
@@ -73,11 +75,13 @@ TEST(ObjCObjectSubscriptingRuleTest, ArrayObjectAtIndexedSubscript)
         0, 21, 32, 21, 61);
 }
 
+#if defined(__APPLE__) || defined(__MACH__)
 TEST(ObjCObjectSubscriptingRuleTest, ArraySetObjectSubscripting)
 {
     testRuleOnObjCCode(new ObjCObjectSubscriptingRule(), objCNSArrayPrefix +
         "void m(NSMutableArray *a, id item) { a[0] = item; }");
 }
+#endif
 
 TEST(ObjCObjectSubscriptingRuleTest, ArrayReplaceObjectAtIndexWithObject)
 {
@@ -93,11 +97,13 @@ TEST(ObjCObjectSubscriptingRuleTest, ArraySetObjectAtIndexesSubscript)
         0, 21, 38, 21, 76);
 }
 
+#if defined(__APPLE__) || defined(__MACH__)
 TEST(ObjCObjectSubscriptingRuleTest, DictionaryObjectForKeySubscripting)
 {
     testRuleOnObjCCode(new ObjCObjectSubscriptingRule(), objCNSDictionaryPrefix +
         "void m(NSDictionary *d) { id item = d[@1]; }");
 }
+#endif
 
 TEST(ObjCObjectSubscriptingRuleTest, DictionaryObjectForKey)
 {
@@ -113,11 +119,13 @@ TEST(ObjCObjectSubscriptingRuleTest, DictionaryObjectForKeyedSubscript)
         0, 25, 37, 25, 66);
 }
 
+#if defined(__APPLE__) || defined(__MACH__)
 TEST(ObjCObjectSubscriptingRuleTest, DictionarySetObjectForKeySubscripting)
 {
     testRuleOnObjCCode(new ObjCObjectSubscriptingRule(), objCNSDictionaryPrefix +
         "void m(NSMutableDictionary *d, id item) { d[@1] = item; }");
 }
+#endif
 
 TEST(ObjCObjectSubscriptingRuleTest, DictionarySetObjectForKey)
 {
