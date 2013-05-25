@@ -1,6 +1,12 @@
 #include "oclint/AbstractASTMatcherRule.h"
 #include "oclint/RuleSet.h"
 
+/*
+ * References:
+ * - Edsger Dijkstra (March 1968). “Go To Statement Considered Harmful”.
+ *   Communications of the ACM (PDF) 11 (3): 147–148. doi:10.1145/362929.362947.
+ */
+
 class GotoStatementRule : public AbstractASTMatcherRule
 {
 private:

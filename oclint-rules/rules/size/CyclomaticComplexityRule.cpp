@@ -5,6 +5,12 @@
 #include "oclint/helper/SuppressHelper.h"
 #include "oclint/util/StdUtil.h"
 
+/*
+ * References:
+ * - McCabe (December 1976). “A Complexity Measure”.
+ *   IEEE Transactions on Software Engineering: 308–320
+ */
+
 class CyclomaticComplexityRule : public AbstractASTVisitorRule<CyclomaticComplexityRule>
 {
 private:

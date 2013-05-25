@@ -7,6 +7,12 @@
 
 using namespace clang;
 
+/*
+ * References:
+ * - Brian A. Nejmeh (1988). “NPATH: a measure of execution path complexity and
+ *   its applications”. Communications of the ACM 31 (2) p. 188-200
+ */
+
 class NPathComplexityMetric
 {
 public:
