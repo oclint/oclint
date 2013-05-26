@@ -13,3 +13,7 @@ MACRO(build_test name)
 ENDMACRO(build_test)
 
 BUILD_TEST(CanaryTest)
+BUILD_TEST(CyclomaticComplexityMetricTest)
+BUILD_TEST(NPathComplexityMetricTest)
+BUILD_TEST(NcssMetricTest)
+BUILD_TEST(StmtDepthMetricTest)
