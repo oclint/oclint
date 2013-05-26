@@ -12,7 +12,7 @@ class AbstractSourceCodeReaderRule : public RuleBase
 protected:
     virtual void apply()
     {
-        SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
+        SourceManager *sourceManager = &_carrier->getSourceManager();
 
         FileID mainFileID = sourceManager->getMainFileID();
         StringRef mainFileStringRef = sourceManager->getBufferData(mainFileID);
@@ -31,7 +31,7 @@ protected:
     void addViolation(int startLine, int startColumn,
         int endLine, int endColumn, RuleBase *rule, const string& message = "")
     {
-        SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
+        SourceManager *sourceManager = &_carrier->getSourceManager();
 
         FileID mainFileID = sourceManager->getMainFileID();
         SourceLocation startOfMainFile = sourceManager->getLocForStartOfFile(mainFileID);

@@ -33,13 +33,13 @@ public:
 
     bool VisitDecl(Decl *decl)
     {
-        _finder.match(*decl, *_carrier->astContext());
+        _finder.match(*decl, *_carrier->getASTContext());
         return true;
     }
 
     bool VisitStmt(Stmt *stmt)
     {
-        _finder.match(*stmt, *_carrier->astContext());
+        _finder.match(*stmt, *_carrier->getASTContext());
         return true;
     }
 

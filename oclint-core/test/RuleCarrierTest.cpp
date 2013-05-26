@@ -20,7 +20,7 @@ TEST(RuleCarrierTest, Initializationasdf)
 {
     ViolationSet *violationSet = new ViolationSet();
     RuleCarrier *carrier = new RuleCarrier(NULL, violationSet);
-    EXPECT_THAT(carrier->astContext(), IsNull());
+    EXPECT_THAT(carrier->getASTContext(), IsNull());
     EXPECT_THAT(violationSet->numberOfViolations(), Eq(0));
 }
 

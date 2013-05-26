@@ -23,7 +23,7 @@ public:
         Expr *conditionExpr = conditionalOperator->getCond();
 
         bool evaluatedResult;
-        if (conditionExpr->EvaluateAsBooleanCondition(evaluatedResult, *_carrier->astContext()))
+        if (conditionExpr->EvaluateAsBooleanCondition(evaluatedResult, *_carrier->getASTContext()))
         {
             addViolation(conditionExpr, this);
         }

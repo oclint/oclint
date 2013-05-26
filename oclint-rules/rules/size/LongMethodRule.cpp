@@ -13,8 +13,7 @@ private:
     {
         SourceLocation startLocation = compoundStmt->getLocStart();
         SourceLocation endLocation = compoundStmt->getLocEnd();
-        SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
-        // TODO: LOD violation
+        SourceManager *sourceManager = &_carrier->getSourceManager();
 
         unsigned startLineNumber = sourceManager->getPresumedLineNumber(startLocation);
         unsigned endLineNumber = sourceManager->getPresumedLineNumber(endLocation);

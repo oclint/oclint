@@ -6,6 +6,8 @@
 namespace clang
 {
     class ASTContext;
+    class SourceManager;
+    class TranslationUnitDecl;
 }
 
 #include "oclint/ViolationSet.h"
@@ -21,7 +23,9 @@ private:
 
 public:
     RuleCarrier(ASTContext *astContext, ViolationSet *violationSet);
-    ASTContext* astContext(); // TODO: This should be const, so that nobody else can change it
+    ASTContext* getASTContext();
+    SourceManager& getSourceManager();
+    TranslationUnitDecl* getTranslationUnitDecl();
 
     void addViolation(string filePath, int startLine, int startColumn,
         int endLine, int endColumn, RuleBase *rule, const string& message = "");

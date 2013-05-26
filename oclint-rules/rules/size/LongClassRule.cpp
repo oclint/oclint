@@ -14,7 +14,7 @@ private:
     {
         SourceLocation startLocation = sourceRange.getBegin();
         SourceLocation endLocation = sourceRange.getEnd();
-        SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
+        SourceManager *sourceManager = &_carrier->getSourceManager();
 
         unsigned startLineNumber = sourceManager->getPresumedLineNumber(startLocation);
         unsigned endLineNumber = sourceManager->getPresumedLineNumber(endLocation);
