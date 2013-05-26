@@ -1,18 +1,6 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-#define GET_COMPOUNDSTMT_AND_APPLY                                      \
-    Stmt *bodyStmt = stmt->getBody();                                   \
-    if (bodyStmt)                                                       \
-    {                                                                   \
-        CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(bodyStmt);  \
-        if (compoundStmt)                                               \
-        {                                                               \
-            applyLoopCompoundStmt(compoundStmt);                        \
-        }                                                               \
-    }                                                                   \
-    return true;
-
 class AvoidBranchingStatementAsLastInLoopRule :
     public AbstractASTVisitorRule<AvoidBranchingStatementAsLastInLoopRule>
 {
@@ -33,6 +21,20 @@ private:
         }
     }
 
+    template <typename T>
+    void applyStmt(T *stmt)
+    {
+        Stmt *bodyStmt = stmt->getBody();
+        if (bodyStmt)
+        {
+            CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(bodyStmt);
+            if (compoundStmt)
+            {
+                applyLoopCompoundStmt(compoundStmt);
+            }
+        }
+    }
+
 public:
     virtual const string name() const
     {
@@ -46,22 +48,30 @@ public:
 
     bool VisitForStmt(ForStmt *stmt)
     {
-        GET_COMPOUNDSTMT_AND_APPLY
+        applyStmt<ForStmt>(stmt);
+
+        return true;
     }
 
     bool VisitObjCForCollectionStmt(ObjCForCollectionStmt *stmt)
     {
-        GET_COMPOUNDSTMT_AND_APPLY
+        applyStmt<ObjCForCollectionStmt>(stmt);
+
+        return true;
     }
 
     bool VisitDoStmt(DoStmt* stmt)
     {
-        GET_COMPOUNDSTMT_AND_APPLY
+        applyStmt<DoStmt>(stmt);
+
+        return true;
     }
 
     bool VisitWhileStmt(WhileStmt* stmt)
     {
-        GET_COMPOUNDSTMT_AND_APPLY
+        applyStmt<WhileStmt>(stmt);
+
+        return true;
     }
 };
 
