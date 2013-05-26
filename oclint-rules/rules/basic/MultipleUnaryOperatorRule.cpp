@@ -8,8 +8,10 @@ private:
 
     bool isTargetUnaryOperator(UnaryOperator *unaryOperator)
     {
-        return unaryOperator->getOpcode() == UO_LNot || unaryOperator->getOpcode() == UO_Not ||
-            unaryOperator->getOpcode() == UO_Plus || unaryOperator->getOpcode() == UO_Minus;
+        return unaryOperator->getOpcode() == UO_LNot ||
+            unaryOperator->getOpcode() == UO_Not ||
+            unaryOperator->getOpcode() == UO_Plus ||
+            unaryOperator->getOpcode() == UO_Minus;
     }
 
 public:

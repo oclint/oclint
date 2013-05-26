@@ -41,6 +41,8 @@ private:
         return false;
     }
 
+    // TODO: we need to leverage C++11 lambda expressions to reduce number of methods here
+
     bool isObjCBOOLNotEquals(Expr *trueExpr, Expr *falseExpr)
     {
         ObjCBoolLiteralExpr *trueObjCBOOL =
@@ -187,9 +189,9 @@ public:
 
         Expr *trueExpression = conditionalOperator->getTrueExpr();
         Expr *falseExpression = conditionalOperator->getFalseExpr();
-        if (isNotEquals(trueExpression, falseExpression)
-            || isSameConstant(trueExpression, falseExpression)
-            || isSameVariable(trueExpression, falseExpression))
+        if (isNotEquals(trueExpression, falseExpression) ||
+            isSameConstant(trueExpression, falseExpression) ||
+            isSameVariable(trueExpression, falseExpression))
         {
             addViolation(conditionalOperator, this);
         }
