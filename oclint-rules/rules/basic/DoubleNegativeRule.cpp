@@ -6,6 +6,16 @@ class DoubleNegativeRule : public AbstractASTVisitorRule<DoubleNegativeRule>
 private:
     static RuleSet rules;
 
+    bool bothUOLNot(UnaryOperator *outerOp, UnaryOperator *innerOp)
+    {
+        return outerOp->getOpcode() == UO_LNot && innerOp->getOpcode() == UO_LNot;
+    }
+
+    bool bothUONot(UnaryOperator *outerOp, UnaryOperator *innerOp)
+    {
+        return outerOp->getOpcode() == UO_Not && innerOp->getOpcode() == UO_Not;
+    }
+
 public:
     virtual const string name() const
     {
@@ -28,9 +38,8 @@ public:
         if (isa<UnaryOperator>(subExpr))
         {
             UnaryOperator *subUnaryOperator = dyn_cast<UnaryOperator>(subExpr);
-            if ((unaryOperator->getOpcode() == UO_LNot &&
-                subUnaryOperator->getOpcode() == UO_LNot) ||
-                (unaryOperator->getOpcode() == UO_Not && subUnaryOperator->getOpcode() == UO_Not))
+            if (bothUOLNot(unaryOperator, subUnaryOperator) ||
+                bothUONot(unaryOperator, subUnaryOperator))
             {
                 addViolation(unaryOperator, this);
             }
