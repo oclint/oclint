@@ -1,15 +1,11 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
+#include "oclint/util/StdUtil.h"
 
 class ObjCObjectSubscriptingRule : public AbstractASTVisitorRule<ObjCObjectSubscriptingRule>
 {
 private:
     static RuleSet rules;
-
-    bool containsInVector(string selectorName, vector<string> &selectors)
-    {
-        return find(selectors.begin(), selectors.end(), selectorName) != selectors.end();
-    }
 
     bool isArrayGetSelector(Expr *expr, string &selectorString)
     {
@@ -18,7 +14,7 @@ private:
         arrayGetSelectors.push_back("objectAtIndexedSubscript:");
 
         return expr->getType().getAsString() == "NSArray *" &&
-            containsInVector(selectorString, arrayGetSelectors);
+            vectorContains<string>(selectorString, arrayGetSelectors);
     }
 
     bool isArraySetSelector(Expr *expr, string &selectorString)
@@ -28,7 +24,7 @@ private:
         arraySetSelectors.push_back("setObject:atIndexedSubscript:");
 
         return expr->getType().getAsString() == "NSMutableArray *" &&
-            containsInVector(selectorString, arraySetSelectors);
+            vectorContains<string>(selectorString, arraySetSelectors);
     }
 
     bool isDictionaryGetSelector(Expr *expr, string &selectorString)
@@ -38,7 +34,7 @@ private:
         dictGetSelectors.push_back("objectForKeyedSubscript:");
 
         return expr->getType().getAsString() == "NSDictionary *" &&
-            containsInVector(selectorString, dictGetSelectors);
+            vectorContains<string>(selectorString, dictGetSelectors);
     }
 
     bool isDictionarySetSelector(Expr *expr, string &selectorString)
@@ -48,7 +44,7 @@ private:
         dictSetSelectors.push_back("setObject:forKeyedSubscript:");
 
         return expr->getType().getAsString() == "NSMutableDictionary *" &&
-            containsInVector(selectorString, dictSetSelectors);
+            vectorContains<string>(selectorString, dictSetSelectors);
     }
 
 public:

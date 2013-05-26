@@ -30,7 +30,7 @@ private:
         if (ccn > threshold)
         {
             string description = "Cyclomatic Complexity Number " +
-                intToString(ccn) + " exceeds limit of " + intToString(threshold);
+                toString<int>(ccn) + " exceeds limit of " + toString<int>(threshold);
             addViolation(decl, this, description);
         }
     }

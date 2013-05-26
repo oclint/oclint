@@ -26,8 +26,8 @@ public:
         int threshold = RuleConfiguration::intForKey("NESTED_BLOCK_DEPTH", 5);
         if (depth > threshold)
         {
-            string description = "Block depth of " + intToString(depth) +
-                " exceeds limit of " + intToString(threshold);
+            string description = "Block depth of " + toString<int>(depth) +
+                " exceeds limit of " + toString<int>(threshold);
             addViolation(compoundStmt, this, description);
         }
 

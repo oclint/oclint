@@ -25,8 +25,8 @@ public:
         int threshold = RuleConfiguration::intForKey("LONG_VARIABLE_NAME", 20);
         if (nameLength > threshold)
         {
-            string description = "Variable name with " + intToString(nameLength) +
-                " characters is longer than the threshold of " + intToString(threshold);
+            string description = "Variable name with " + toString<int>(nameLength) +
+                " characters is longer than the threshold of " + toString<int>(threshold);
             addViolation(varDecl, this, description);
         }
 

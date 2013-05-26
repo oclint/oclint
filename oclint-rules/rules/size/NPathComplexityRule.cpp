@@ -34,7 +34,7 @@ private:
                 if (npath > threshold)
                 {
                     string description = "NPath Complexity Number " +
-                        intToString(npath) + " exceeds limit of " + intToString(threshold);
+                        toString<int>(npath) + " exceeds limit of " + toString<int>(threshold);
                     addViolation(decl, this, description);
                 }
             }

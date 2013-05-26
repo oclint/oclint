@@ -1,15 +1,11 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
+#include "oclint/util/StdUtil.h"
 
 class ObjCContainerLiteralsRule : public AbstractASTVisitorRule<ObjCContainerLiteralsRule>
 {
 private:
     static RuleSet rules;
-
-    bool containsInVector(string selectorName, vector<string> &selectors)
-    {
-        return find(selectors.begin(), selectors.end(), selectorName) != selectors.end();
-    }
 
 public:
     virtual const string name() const
@@ -42,9 +38,9 @@ public:
 
         if (objCInterfaceDecl &&
             ((objCInterfaceDecl->getNameAsString() == "NSArray" &&
-                containsInVector(selectorString, arraySelectors)) ||
+                vectorContains<string>(selectorString, arraySelectors)) ||
             (objCInterfaceDecl->getNameAsString() == "NSDictionary" &&
-                containsInVector(selectorString, dictionarySelectors))))
+                vectorContains<string>(selectorString, dictionarySelectors))))
         {
             addViolation(objCMsgExpr, this);
         }

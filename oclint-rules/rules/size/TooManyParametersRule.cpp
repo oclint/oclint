@@ -4,23 +4,25 @@
 #include "oclint/helper/SuppressHelper.h"
 #include "oclint/util/StdUtil.h"
 
-#define APPLY_DECL                                                              \
-    unsigned numOfParams = decl->param_size();                                  \
-    if (!markedAsSuppress(decl, this) && decl->hasBody()                        \
-        && numOfParams > _threshold)                                            \
-    {                                                                           \
-        string description = "Method with " + intToString(numOfParams) +        \
-            " parameters exceeds limit of " + intToString(_threshold);          \
-        addViolation(decl, this, description);                                  \
-    }                                                                           \
-    return true;
-
 class TooManyParametersRule : public AbstractASTVisitorRule<TooManyParametersRule>
 {
 private:
     static RuleSet rules;
 
     int _threshold;
+
+    template <typename T>
+    void applyDecl(T *decl)
+    {
+        unsigned numOfParams = decl->param_size();
+        if (!markedAsSuppress(decl, this) && decl->hasBody()
+            && numOfParams > _threshold)
+        {
+            string description = "Method with " + toString<int>(numOfParams) +
+                " parameters exceeds limit of " + toString<int>(_threshold);
+            addViolation(decl, this, description);
+        }
+    }
 
 public:
     virtual const string name() const
@@ -40,12 +42,16 @@ public:
 
     bool VisitObjCMethodDecl(ObjCMethodDecl *decl)
     {
-        APPLY_DECL
+        applyDecl(decl);
+
+        return true;
     }
 
     bool VisitFunctionDecl(FunctionDecl *decl)
     {
-        APPLY_DECL
+        applyDecl(decl);
+
+        return true;
     }
 };
 

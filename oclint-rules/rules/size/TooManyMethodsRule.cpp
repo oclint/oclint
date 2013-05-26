@@ -31,8 +31,8 @@ public:
         int methodCount = distance(decl->meth_begin(), decl->meth_end());
         if (methodCount > _threshold)
         {
-            string description = "Objective-C implementation with " +
-                intToString(methodCount) + " methods exceeds limit of " + intToString(_threshold);
+            string description = "Objective-C implementation with " + toString<int>(methodCount) +
+                " methods exceeds limit of " + toString<int>(_threshold);
             addViolation(decl, this, description);
         }
         return true;
@@ -43,8 +43,8 @@ public:
         int methodCount = distance(decl->method_begin(), decl->method_end());
         if (methodCount > _threshold)
         {
-            string description = "C++ class with " +
-                intToString(methodCount) + " methods exceeds limit of " + intToString(_threshold);
+            string description = "C++ class with " + toString<int>(methodCount) +
+                " methods exceeds limit of " + toString<int>(_threshold);
             addViolation(decl, this, description);
         }
         return true;

@@ -21,6 +21,17 @@ private:
         return endLineNumber - startLineNumber + 1;
     }
 
+    void applyDecl(Decl *decl, string descriptionPrefix)
+    {
+        int length = getNumberOfLines(decl->getSourceRange());
+        if (length > _threshold)
+        {
+            string description = descriptionPrefix + " with " +
+                toString<int>(length) + " lines exceeds limit of " + toString<int>(_threshold);
+            addViolation(decl, this, description);
+        }
+    }
+
 public:
     virtual const string name() const
     {
@@ -39,61 +50,36 @@ public:
 
     bool VisitObjCInterfaceDecl(ObjCInterfaceDecl *decl)
     {
-        int length = getNumberOfLines(decl->getSourceRange());
-        if (length > _threshold)
-        {
-            string description = "Objective-C interface with " +
-                intToString(length) + " lines exceeds limit of " + intToString(_threshold);
-            addViolation(decl, this, description);
-        }
+        applyDecl(decl, "Objective-C interface");
+
         return true;
     }
 
     bool VisitObjCCategoryDecl(ObjCCategoryDecl *decl)
     {
-        int length = getNumberOfLines(decl->getSourceRange());
-        if (length > _threshold)
-        {
-            string description = "Objective-C category with " +
-                intToString(length) + " lines exceeds limit of " + intToString(_threshold);
-            addViolation(decl, this, description);
-        }
+        applyDecl(decl, "Objective-C category");
+
         return true;
     }
 
     bool VisitObjCProtocolDecl(ObjCProtocolDecl *decl)
     {
-        int length = getNumberOfLines(decl->getSourceRange());
-        if (length > _threshold)
-        {
-            string description = "Objective-C protocol with " +
-                intToString(length) + " lines exceeds limit of " + intToString(_threshold);
-            addViolation(decl, this, description);
-        }
+        applyDecl(decl, "Objective-C protocol");
+
         return true;
     }
 
     bool VisitObjCImplDecl(ObjCImplDecl *decl)
     {
-        int length = getNumberOfLines(decl->getSourceRange());
-        if (length > _threshold)
-        {
-            string description = "Objective-C implementation with " +
-                intToString(length) + " lines exceeds limit of " + intToString(_threshold);
-            addViolation(decl, this, description);
-        }
+        applyDecl(decl, "Objective-C implementation");
+
         return true;
     }
 
     bool VisitCXXRecordDecl(CXXRecordDecl *decl)
     {
-        int length = getNumberOfLines(decl->getSourceRange());
-        if (length > _threshold)
-        {
-            string description = "C++ class with " +
-                intToString(length) + " lines exceeds limit of " + intToString(_threshold);
-            addViolation(decl, this, description);
-        }
+        applyDecl(decl, "C++ class");
+
         return true;
     }
 };

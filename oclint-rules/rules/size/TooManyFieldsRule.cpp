@@ -32,7 +32,7 @@ public:
         if (fieldCount > _threshold)
         {
             string description = "Objective-C interface with " +
-                intToString(fieldCount) + " fields exceeds limit of " + intToString(_threshold);
+                toString<int>(fieldCount) + " fields exceeds limit of " + toString<int>(_threshold);
             addViolation(decl, this, description);
         }
         return true;
@@ -44,7 +44,7 @@ public:
         if (fieldCount > _threshold)
         {
             string description = "C++ class with " +
-                intToString(fieldCount) + " fields exceeds limit of " + intToString(_threshold);
+                toString<int>(fieldCount) + " fields exceeds limit of " + toString<int>(_threshold);
             addViolation(decl, this, description);
         }
         return true;

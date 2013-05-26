@@ -1,5 +1,6 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
+#include "oclint/util/StdUtil.h"
 
 class ThrowExceptionFromFinallyBlockRule :
     public AbstractASTVisitorRule<ThrowExceptionFromFinallyBlockRule>
@@ -38,8 +39,11 @@ class ThrowExceptionFromFinallyBlockRule :
         bool VisitObjCMessageExpr(ObjCMessageExpr *objCMsgExpr)
         {
             string selectorString = objCMsgExpr->getSelector().getAsString();
-            bool isRaiseMethod = selectorString == "raise" || selectorString == "raise:format:" ||
-                selectorString == "raise:format:arguments:";
+            vector<string> selectorStrings;
+            selectorStrings.push_back("raise");
+            selectorStrings.push_back("raise:format:");
+            selectorStrings.push_back("raise:format:arguments:");
+            bool isRaiseMethod = vectorContains<string>(selectorString, selectorStrings);
 
             ObjCInterfaceDecl *objCInterfaceDecl = objCMsgExpr->getReceiverInterface();
             bool isNSExceptionClass = objCInterfaceDecl &&
