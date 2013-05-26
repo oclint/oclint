@@ -5,21 +5,18 @@ private:
     ViolationSet *_violationSet;
 
 public:
-    TestProcessor(RuleBase *rule, ViolationSet *violationSet);
-    virtual void HandleTranslationUnit(ASTContext &astContext);
+    TestProcessor(RuleBase *rule, ViolationSet *violationSet)
+    {
+        _rule = rule;
+        _violationSet = violationSet;
+    }
+
+    virtual void HandleTranslationUnit(ASTContext &astContext)
+    {
+        RuleCarrier *carrier = new RuleCarrier(&astContext, _violationSet);
+        _rule->takeoff(carrier);
+    }
 };
-
-TestProcessor::TestProcessor(RuleBase *rule, ViolationSet *violationSet)
-{
-    _rule = rule;
-    _violationSet = violationSet;
-}
-
-void TestProcessor::HandleTranslationUnit(ASTContext &astContext)
-{
-    RuleCarrier *carrier = new RuleCarrier(&astContext, _violationSet);
-    _rule->takeoff(carrier);
-}
 
 class TestFrontendAction : public clang::ASTFrontendAction
 {
