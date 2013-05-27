@@ -7,7 +7,7 @@ using namespace ::testing;
 
 TEST(VersionTest, VersionString)
 {
-    EXPECT_THAT(Version::identifier(), StrEq("0.7dev"));
+    EXPECT_THAT(Version::identifier(), StrEq("0.7rc"));
 }
 
 int main(int argc, char **argv)
