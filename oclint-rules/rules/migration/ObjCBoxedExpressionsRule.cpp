@@ -1,0 +1,101 @@
+#include "oclint/AbstractASTVisitorRule.h"
+#include "oclint/RuleSet.h"
+
+class ObjCBoxedExpressionsRule : public AbstractASTVisitorRule<ObjCBoxedExpressionsRule>
+{
+private:
+    static RuleSet rules;
+
+    bool isParenExprBox(Expr *expr,
+        string &selectorString, map<string, string> &methodArgTypeMap)
+    {
+        map<string, string>::iterator selectedSelector = methodArgTypeMap.find(selectorString);
+        return isa<ParenExpr>(expr) &&
+            selectedSelector != methodArgTypeMap.end() &&
+            selectedSelector->second == dyn_cast<ParenExpr>(expr)->getType().getAsString();
+    }
+
+    bool isObjCBoolBox(Expr *expr, string &selectorString)
+    {
+        if (selectorString == "numberWithBool:" && isa<ImplicitCastExpr>(expr))
+        {
+            ImplicitCastExpr *implicitCastExpr = dyn_cast<ImplicitCastExpr>(expr);
+            return implicitCastExpr->getType().getAsString() == "BOOL" &&
+                isa<ParenExpr>(implicitCastExpr->getSubExpr());
+        }
+        return false;
+    }
+
+    bool isEnumConstantBox(Expr *expr, string &selectorString)
+    {
+        if (selectorString == "numberWithInt:" && isa<DeclRefExpr>(expr))
+        {
+            DeclRefExpr *declRefExpr = dyn_cast<DeclRefExpr>(expr);
+            return declRefExpr->getType().getAsString() == "int" &&
+                isa<EnumConstantDecl>(declRefExpr->getDecl());
+        }
+        return false;
+    }
+
+    bool isNSNumberBox(ObjCMessageExpr *objCMsgExpr)
+    {
+        Expr *expr = objCMsgExpr->getArg(0);
+        string selectorString = objCMsgExpr->getSelector().getAsString();
+
+        map<string, string> methodArgTypeMap;
+        methodArgTypeMap["numberWithChar:"] = "char";
+        methodArgTypeMap["numberWithInt:"] = "int";
+        methodArgTypeMap["numberWithUnsignedInt:"] = "unsigned int";
+        methodArgTypeMap["numberWithLong:"] = "long";
+        methodArgTypeMap["numberWithUnsignedLong:"] = "unsigned long";
+        methodArgTypeMap["numberWithLongLong:"] = "long long";
+        methodArgTypeMap["numberWithUnsignedLongLong:"] = "unsigned long long";
+        methodArgTypeMap["numberWithFloat:"] = "float";
+        methodArgTypeMap["numberWithDouble:"] = "double";
+
+        return isParenExprBox(expr, selectorString, methodArgTypeMap)||
+            isObjCBoolBox(expr, selectorString) ||
+            isEnumConstantBox(expr, selectorString);
+    }
+
+    bool isNSStringBox(ObjCMessageExpr *objCMsgExpr)
+    {
+        ImplicitCastExpr *implicitCastExpr = dyn_cast<ImplicitCastExpr>(objCMsgExpr->getArg(0));
+        string selectorString = objCMsgExpr->getSelector().getAsString();
+        if (implicitCastExpr && selectorString == "stringWithUTF8String:")
+        {
+            Expr *subExpr = implicitCastExpr->getSubExpr();
+            return implicitCastExpr->getType().getAsString() == "const char *" &&
+                subExpr->getType().getAsString() == "char *" &&
+                (isa<CallExpr>(subExpr) || isa<ParenExpr>(subExpr));
+        }
+        return false;
+    }
+
+public:
+    virtual const string name() const
+    {
+        return "replace with boxed expression";
+    }
+
+    virtual int priority() const
+    {
+        return 3;
+    }
+
+    bool VisitObjCMessageExpr(ObjCMessageExpr *objCMsgExpr)
+    {
+        ObjCInterfaceDecl *objCInterfaceDecl = objCMsgExpr->getReceiverInterface();
+        if (objCInterfaceDecl && objCMsgExpr->getNumArgs() == 1 &&
+            ((objCInterfaceDecl->getNameAsString() == "NSNumber" && isNSNumberBox(objCMsgExpr)) ||
+            (objCInterfaceDecl->getNameAsString() == "NSString" && isNSStringBox(objCMsgExpr))))
+        {
+            addViolation(objCMsgExpr, this);
+        }
+
+        return true;
+    }
+
+};
+
+RuleSet ObjCBoxedExpressionsRule::rules(new ObjCBoxedExpressionsRule());

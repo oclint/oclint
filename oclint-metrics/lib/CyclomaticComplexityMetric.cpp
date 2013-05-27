@@ -61,17 +61,17 @@ bool CyclomaticComplexityMetric::VisitConditionalOperator(ConditionalOperator *)
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitBinaryOperator(BinaryOperator *op)
+bool CyclomaticComplexityMetric::VisitBinaryOperator(BinaryOperator *binaryOperator)
 {
-    if (op->getOpcode() == BO_LAnd || op->getOpcode() == BO_LOr)
+    if (binaryOperator->getOpcode() == BO_LAnd || binaryOperator->getOpcode() == BO_LOr)
     {
         _count++;
     }
     return true;
 }
 
-int getCyclomaticComplexity(Decl *decl)
+extern "C" int getCyclomaticComplexity(Decl *decl)
 {
-    CyclomaticComplexityMetric cyclomaticComplexityMetric;
-    return cyclomaticComplexityMetric.calculate(decl);
+    CyclomaticComplexityMetric ccnMetric;
+    return ccnMetric.calculate(decl);
 }

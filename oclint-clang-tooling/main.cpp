@@ -156,11 +156,11 @@ string getExecutablePath(const char *argv)
 
 void dynamicLoadRules(string ruleDirPath)
 {
-    DIR *dp = opendir(ruleDirPath.c_str());
-    if (dp != NULL)
+    DIR *pDir = opendir(ruleDirPath.c_str());
+    if (pDir != NULL)
     {
         struct dirent *dirp;
-        while ((dirp = readdir(dp)))
+        while ((dirp = readdir(pDir)))
         {
             if (dirp->d_name[0] == '.')
             {
@@ -170,11 +170,11 @@ void dynamicLoadRules(string ruleDirPath)
             if (dlopen(rulePath.c_str(), RTLD_LAZY) == NULL)
             {
                 cerr << dlerror() << endl;
-                closedir(dp);
+                closedir(pDir);
                 throw GenericExcpetion("cannot open dynamic library: " + rulePath);
             }
         }
-        closedir(dp);
+        closedir(pDir);
     }
 }
 
@@ -213,11 +213,11 @@ void loadReporter(const char* executablePath)
     selectedReporter = NULL;
     string exeStrPath = getExecutablePath(executablePath);
     string defaultReportersPath = exeStrPath + "/../lib/oclint/reporters";
-    DIR *dp = opendir(defaultReportersPath.c_str());
-    if (dp != NULL)
+    DIR *pDir = opendir(defaultReportersPath.c_str());
+    if (pDir != NULL)
     {
         struct dirent *dirp;
-        while ((dirp = readdir(dp)))
+        while ((dirp = readdir(pDir)))
         {
             if (dirp->d_name[0] == '.')
             {
@@ -228,7 +228,7 @@ void loadReporter(const char* executablePath)
             if (reporterHandle == NULL)
             {
                 cerr << dlerror() << endl;
-                closedir(dp);
+                closedir(pDir);
                 throw GenericExcpetion("cannot open dynamic library: " + reporterPath);
             }
             Reporter* (*createMethodPointer)();
@@ -240,7 +240,7 @@ void loadReporter(const char* executablePath)
                 break;
             }
         }
-        closedir(dp);
+        closedir(pDir);
     }
     if (selectedReporter == NULL)
     {

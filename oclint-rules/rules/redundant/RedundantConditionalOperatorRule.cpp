@@ -41,7 +41,29 @@ private:
         return false;
     }
 
+    // TODO: we need to leverage C++11 lambda expressions to reduce number of methods here
+
     bool isObjCBOOLNotEquals(Expr *trueExpr, Expr *falseExpr)
+    {
+        ObjCBoolLiteralExpr *trueObjCBOOL =
+            extractFromImplicitCastExpr<ObjCBoolLiteralExpr>(trueExpr);
+        ObjCBoolLiteralExpr *falseObjCBOOL =
+            extractFromImplicitCastExpr<ObjCBoolLiteralExpr>(falseExpr);
+        return trueObjCBOOL && falseObjCBOOL &&
+                trueObjCBOOL->getValue() != falseObjCBOOL->getValue();
+    }
+
+    bool isObjCBOOLEquals(Expr *trueExpr, Expr *falseExpr)
+    {
+        ObjCBoolLiteralExpr *trueObjCBOOL =
+            extractFromImplicitCastExpr<ObjCBoolLiteralExpr>(trueExpr);
+        ObjCBoolLiteralExpr *falseObjCBOOL =
+            extractFromImplicitCastExpr<ObjCBoolLiteralExpr>(falseExpr);
+        return trueObjCBOOL && falseObjCBOOL &&
+                trueObjCBOOL->getValue() == falseObjCBOOL->getValue();
+    }
+
+    bool isObjCIntegerLiteralBOOLNotEquals(Expr *trueExpr, Expr *falseExpr)
     {
         CStyleCastExpr *trueObjCBOOL = extractFromImplicitCastExpr<CStyleCastExpr>(trueExpr);
         CStyleCastExpr *falseObjCBOOL = extractFromImplicitCastExpr<CStyleCastExpr>(falseExpr);
@@ -55,7 +77,7 @@ private:
         return false;
     }
 
-    bool isObjCBOOLEquals(Expr *trueExpr, Expr *falseExpr)
+    bool isObjCIntegerLiteralBOOLEquals(Expr *trueExpr, Expr *falseExpr)
     {
         CStyleCastExpr *trueObjCBOOL = extractFromImplicitCastExpr<CStyleCastExpr>(trueExpr);
         CStyleCastExpr *falseObjCBOOL = extractFromImplicitCastExpr<CStyleCastExpr>(falseExpr);
@@ -118,13 +140,16 @@ private:
 
     bool isNotEquals(Expr *trueExpr, Expr *falseExpr)
     {
-        return isCXXBoolNotEquals(trueExpr, falseExpr) || isObjCBOOLNotEquals(trueExpr, falseExpr);
+        return isCXXBoolNotEquals(trueExpr, falseExpr) ||
+            isObjCBOOLNotEquals(trueExpr, falseExpr) ||
+            isObjCIntegerLiteralBOOLNotEquals(trueExpr, falseExpr);
     }
 
     bool isSameConstant(Expr *trueExpr, Expr *falseExpr)
     {
         return isCXXBoolEquals(trueExpr, falseExpr) ||
             isObjCBOOLEquals(trueExpr, falseExpr) ||
+            isObjCIntegerLiteralBOOLEquals(trueExpr, falseExpr) ||
             isIntegerLiteralEquals(trueExpr, falseExpr) ||
             isFloatingLiteralEquals(trueExpr, falseExpr) ||
             isCharacterLiteralEquals(trueExpr, falseExpr) ||
@@ -155,27 +180,18 @@ public:
 
     bool VisitConditionalOperator(ConditionalOperator *conditionalOperator)
     {
-        // TODO: There are three types of violations: 1. true expression and false expression
-        // are returnning true/false or false/true respectively; 2. true expression and false
+        // There are three types of violations: 1. true expression and false expression
+        // are returning true/false or false/true respectively; 2. true expression and false
         // expression are the same constant; 3. true expression and false expression are the
-        // same variable expression. We are planning to introduce refactoring suggestions in
-        // OCLint v0.8, and we will provide different suggestions to these three cases, then.
-        // e.g., the first case can be replaced by a simple boolean expression, and the
+        // same variable expression.
+        // The first case can be replaced by a simple boolean expression, and the
         // second/third cases can be replaced by constant or variable expression.
 
         Expr *trueExpression = conditionalOperator->getTrueExpr();
         Expr *falseExpression = conditionalOperator->getFalseExpr();
-        if (isNotEquals(trueExpression, falseExpression))
-        {
-            addViolation(conditionalOperator, this);
-        }
-
-        if (isSameConstant(trueExpression, falseExpression))
-        {
-            addViolation(conditionalOperator, this);
-        }
-
-        if (isSameVariable(trueExpression, falseExpression))
+        if (isNotEquals(trueExpression, falseExpression) ||
+            isSameConstant(trueExpression, falseExpression) ||
+            isSameVariable(trueExpression, falseExpression))
         {
             addViolation(conditionalOperator, this);
         }

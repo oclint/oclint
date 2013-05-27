@@ -1,5 +1,6 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
+#include "oclint/util/StdUtil.h"
 
 class ThrowExceptionFromFinallyBlockRule :
     public AbstractASTVisitorRule<ThrowExceptionFromFinallyBlockRule>
@@ -38,8 +39,11 @@ class ThrowExceptionFromFinallyBlockRule :
         bool VisitObjCMessageExpr(ObjCMessageExpr *objCMsgExpr)
         {
             string selectorString = objCMsgExpr->getSelector().getAsString();
-            bool isRaiseMethod = selectorString == "raise" || selectorString == "raise:format:" ||
-                selectorString == "raise:format:arguments:";
+            vector<string> selectorStrings;
+            selectorStrings.push_back("raise");
+            selectorStrings.push_back("raise:format:");
+            selectorStrings.push_back("raise:format:arguments:");
+            bool isRaiseMethod = vectorContains<string>(selectorString, selectorStrings);
 
             ObjCInterfaceDecl *objCInterfaceDecl = objCMsgExpr->getReceiverInterface();
             bool isNSExceptionClass = objCInterfaceDecl &&
@@ -71,8 +75,8 @@ public:
     bool VisitObjCAtFinallyStmt(ObjCAtFinallyStmt *finallyStmt)
     {
         vector<ObjCAtThrowStmt*> *throws = new vector<ObjCAtThrowStmt*>();
-        ExtractObjCAtThrowStmts extractObjCAtThrowStmts;
-        extractObjCAtThrowStmts.extract(finallyStmt, throws);
+        ExtractObjCAtThrowStmts extractThrowStmts;
+        extractThrowStmts.extract(finallyStmt, throws);
         for (int index = 0; index < throws->size(); index++)
         {
             ObjCAtThrowStmt *throwStmt = throws->at(index);
@@ -80,8 +84,8 @@ public:
         }
 
         vector<ObjCMessageExpr*> *exceptionRaisers = new vector<ObjCMessageExpr*>();
-        ExtractNSExceptionRaiser extractExceptionRaiser;
-        extractExceptionRaiser.extract(finallyStmt, exceptionRaisers);
+        ExtractNSExceptionRaiser extractExceptions;
+        extractExceptions.extract(finallyStmt, exceptionRaisers);
         for (int index = 0; index < exceptionRaisers->size(); index++)
         {
             ObjCMessageExpr *raiseExpr = exceptionRaisers->at(index);

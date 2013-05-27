@@ -2,6 +2,7 @@ SET(LIST_OF_RULES
     RedundantConditionalOperator
     RedundantIfStatement
     RedundantLocalVariable
+    RedundantNilCheck
     UnnecessaryElseStatement
     UselessParentheses
     )

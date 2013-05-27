@@ -13,19 +13,14 @@ OCLINT_CORE_SRC="$PROJECT_ROOT/oclint-core"
 OCLINT_JSON_CD_FOLDER="$PROJECT_ROOT/oclint-json-compilation-database"
 OCLINT_XCODBUILD_FOLDER="$PROJECT_ROOT/oclint-xcodebuild"
 
-# clean test directory
-if [ $# -eq 1 ] && [ "$1" = "clean" ]; then
-    rm -rf $OCLINT_RELEASE_BUILD
-    exit 0
-fi
-
-# create directory and prepare for build
+# (re)create directory and prepare for build
+rm -rf $OCLINT_RELEASE_BUILD
 mkdir -p $OCLINT_RELEASE_BUILD
 mkdir -p $OCLINT_RELEASE_BUILD/bin
 mkdir -p $OCLINT_RELEASE_BUILD/lib/oclint
 cd $OCLINT_RELEASE_BUILD
 
-# put exetuable in place
+# put executable in place
 cp $OCLINT_CLANG_TOOLING_BUILD/bin/oclint* $OCLINT_RELEASE_BUILD/bin
 cd $OCLINT_RELEASE_BUILD/bin
 ln -s oclint* oclint

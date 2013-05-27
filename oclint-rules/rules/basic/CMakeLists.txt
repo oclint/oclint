@@ -1,5 +1,6 @@
 SET(LIST_OF_RULES
     BitwiseOperatorInConditional
+    BrokenNullCheck
     BrokenOddnessCheck
     CollapsibleIfStatements
     ConstantConditionalOperator
@@ -8,6 +9,8 @@ SET(LIST_OF_RULES
     DoubleNegative
     ForLoopShouldBeWhileLoop
     GotoStatement
+    JumbledIncrementer
+    MisplacedNullCheck
     MultipleUnaryOperator
     ReturnFromFinallyBlock
     ThrowExceptionFromFinallyBlock

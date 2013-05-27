@@ -6,6 +6,16 @@ class UnusedLocalVariableRule : public AbstractASTVisitorRule<UnusedLocalVariabl
 private:
     static RuleSet rules;
 
+    bool isInNonTemplateFunction(Decl *varDecl)
+    {
+        FunctionDecl *decl = dyn_cast<FunctionDecl>(varDecl->getLexicalDeclContext());
+        if (decl)
+        {
+            return decl->getTemplatedKind() == FunctionDecl::TK_NonTemplate;
+        }
+        return true;
+    }
+
 public:
     virtual const string name() const
     {
@@ -14,13 +24,15 @@ public:
 
     virtual int priority() const
     {
-        return 2;
+        return 3;
     }
 
     bool VisitVarDecl(VarDecl *varDecl)
     {
         if (varDecl && !varDecl->isUsed() &&
-            varDecl->isLocalVarDecl() && !varDecl->isStaticDataMember())
+            varDecl->isLocalVarDecl() &&
+            !varDecl->isStaticDataMember() &&
+            isInNonTemplateFunction(varDecl))
         {
             addViolation(varDecl, this);
         }

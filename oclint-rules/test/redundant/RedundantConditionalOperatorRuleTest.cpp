@@ -46,6 +46,26 @@ void m(int a, int b) { BOOL c = a > b ? NO : YES; }",
     0, 5, 33, 5, 46);
 }
 
+TEST(RedundantConditionalOperatorRuleTest, ObjCTrueExprIsYesAndFalseExprIsNo_HasFeatureObjCBOOL)
+{
+    testRuleOnObjCCode(new RedundantConditionalOperatorRule(), "\n\
+typedef signed char    BOOL;    \n\
+#define YES             __objc_yes \n\
+#define NO              __objc_no \n\
+void m(int a, int b) { BOOL c = a > b ? YES : NO; }",
+    0, 5, 33, 5, 47);
+}
+
+TEST(RedundantConditionalOperatorRuleTest, ObjCTrueExprIsNoAndFalseExprIsYes_HasFeatureObjCBOOL)
+{
+    testRuleOnObjCCode(new RedundantConditionalOperatorRule(), "\n\
+typedef signed char    BOOL;    \n\
+#define YES             __objc_yes \n\
+#define NO              __objc_no \n\
+void m(int a, int b) { BOOL c = a > b ? NO : YES; }",
+    0, 5, 33, 5, 46);
+}
+
 TEST(RedundantConditionalOperatorRuleTest, SameIntegerLiteral)
 {
     testRuleOnCode(new RedundantConditionalOperatorRule(), "void m(int a, int b) { int c = a > b ? 1 : 1; }",

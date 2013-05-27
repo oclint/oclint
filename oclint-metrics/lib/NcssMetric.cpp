@@ -106,7 +106,7 @@ int NcssMetric::ncss(ObjCAutoreleasePoolStmt *stmt)
     return 1 + ncss(stmt->getSubStmt());
 }
 
-int getNcssCount(Decl *decl)
+extern "C" int getNcssCount(Decl *decl)
 {
     if (decl->hasBody())
     {

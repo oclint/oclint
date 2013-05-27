@@ -59,6 +59,33 @@ typedef signed char    BOOL;    \n\
 void aMethod() { BOOL b; if (1) { b = YES; } else b = NO; }", 0, 5, 26, 5, 55);
 }
 
+TEST(RedundantIfStatementRuleTest, ObjCYesThenAndNoElse_HasFeatureObjCBOOL)
+{
+    testRuleOnObjCCode(new RedundantIfStatementRule(), "\n\
+typedef signed char    BOOL;    \n\
+#define YES             __objc_yes \n\
+#define NO              __objc_no \n\
+BOOL aMethod() { if (1) { return YES; } else return NO; }", 0, 5, 18, 5, 53);
+}
+
+TEST(RedundantIfStatementRuleTest, ObjCNoThenAndYesElse_HasFeatureObjCBOOL)
+{
+    testRuleOnObjCCode(new RedundantIfStatementRule(), "\n\
+typedef signed char    BOOL;    \n\
+#define YES             __objc_yes \n\
+#define NO              __objc_no \n\
+BOOL aMethod() { if (1) return NO; else { return YES; } }", 0, 5, 18, 5, 55);
+}
+
+TEST(RedundantIfStatementRuleTest, ObjCBOOLDeclaration_HasFeatureObjCBOOL)
+{
+    testRuleOnObjCCode(new RedundantIfStatementRule(), "\n\
+typedef signed char    BOOL;    \n\
+#define YES             __objc_yes \n\
+#define NO              __objc_no \n\
+void aMethod() { BOOL b; if (1) { b = YES; } else b = NO; }", 0, 5, 26, 5, 55);
+}
+
 TEST(RedundantIfStatementRuleTest, SameBooleanReturn)
 {
     testRuleOnObjCCode(new RedundantIfStatementRule(), "\n\

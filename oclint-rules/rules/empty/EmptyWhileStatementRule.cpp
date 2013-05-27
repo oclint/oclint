@@ -1,7 +1,7 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-#include "AbstractEmptyBlockStmtRule.h"
+#include "../abstract/AbstractEmptyBlockStmtRule.h"
 
 class EmptyWhileStatementRule : public AbstractEmptyBlockStmtRule<EmptyWhileStatementRule>
 {

@@ -3,29 +3,6 @@
 
 class ParameterReassignmentRule : public AbstractASTVisitorRule<ParameterReassignmentRule>
 {
-    class ParametersNameFinder : public RecursiveASTVisitor<ParametersNameFinder>
-    {
-    private:
-        vector<string> _names;
-
-    public:
-        vector<string> find(Decl *decl)
-        {
-            _names.clear();
-            (void) /* explicitly ignore the return of this function */ TraverseDecl(decl);
-            return _names;
-        }
-
-        bool VisitParmVarDecl(ParmVarDecl *parmVarDecl)
-        {
-            if (parmVarDecl->getNameAsString() != "")
-            {
-                _names.push_back(parmVarDecl->getNameAsString());
-            }
-            return true;
-        }
-    };
-
     class BinaryOperatorAnalyzer : public RecursiveASTVisitor<BinaryOperatorAnalyzer>
     {
     private:
@@ -63,14 +40,12 @@ class ParameterReassignmentRule : public AbstractASTVisitorRule<ParameterReassig
 private:
     static RuleSet rules;
 
-    void applyDecl(Decl *decl)
+    void locateParamNames(Decl *decl, vector<string> &names)
     {
-        ParametersNameFinder parametersNameFinder;
-        vector<string> names = parametersNameFinder.find(decl);
         if (names.size() > 0)
         {
-            BinaryOperatorAnalyzer binaryOperatorAnalyzer;
-            vector<BinaryOperator*> binaryOperators = binaryOperatorAnalyzer.analyze(decl, names);
+            BinaryOperatorAnalyzer biOpAnalyzer;
+            vector<BinaryOperator*> binaryOperators = biOpAnalyzer.analyze(decl, names);
             for (int index = 0; index < binaryOperators.size(); index++)
             {
                 addViolation(binaryOperators.at(index), this);
@@ -91,13 +66,34 @@ public:
 
     bool VisitFunctionDecl(FunctionDecl *decl)
     {
-        applyDecl(decl);
+        vector<string> names;
+        for (int i = 0; i < decl->getNumParams(); i++)
+        {
+            ParmVarDecl *parmVarDecl = decl->getParamDecl(i);
+            if (parmVarDecl->getNameAsString() != "")
+            {
+                names.push_back(parmVarDecl->getNameAsString());
+            }
+        }
+        locateParamNames(decl, names);
+        
         return true;
     }
 
     bool VisitObjCMethodDecl(ObjCMethodDecl *decl)
     {
-        applyDecl(decl);
+        vector<string> names;
+        for (ObjCMethodDecl::param_iterator param = decl->param_begin(),
+            paramEnd = decl->param_end(); param != paramEnd; param++)
+        {
+            ParmVarDecl *parmVarDecl = *param;
+            if (parmVarDecl->getNameAsString() != "")
+            {
+                names.push_back(parmVarDecl->getNameAsString());
+            }
+        }
+        locateParamNames(decl, names);
+
         return true;
     }
 };
