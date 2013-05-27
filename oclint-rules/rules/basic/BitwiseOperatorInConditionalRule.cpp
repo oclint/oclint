@@ -48,28 +48,28 @@ public:
 
     virtual void setUpMatcher()
     {
-        StatementMatcher binaryOperatorMatcher = binaryOperator(
+        StatementMatcher biOpMatcher = binaryOperator(
             anyOf(hasOperatorName("&"), hasOperatorName("|"), hasOperatorName("^")));
 
         addMatcher(
             ifStmt(anyOf(
-                hasCondition(binaryOperatorMatcher),
-                hasCondition(expr(hasDescendant(binaryOperatorMatcher)))))
+                hasCondition(biOpMatcher),
+                hasCondition(expr(hasDescendant(biOpMatcher)))))
             .bind("ifStmt"));
         addMatcher(
             whileStmt(anyOf(
-                hasCondition(binaryOperatorMatcher),
-                hasCondition(expr(hasDescendant(binaryOperatorMatcher)))))
+                hasCondition(biOpMatcher),
+                hasCondition(expr(hasDescendant(biOpMatcher)))))
             .bind("whileStmt"));
         addMatcher(
             doStmt(anyOf(
-                hasCondition(binaryOperatorMatcher),
-                hasCondition(expr(hasDescendant(binaryOperatorMatcher)))))
+                hasCondition(biOpMatcher),
+                hasCondition(expr(hasDescendant(biOpMatcher)))))
             .bind("doStmt"));
         addMatcher(
             conditionalOperator(anyOf(
-                hasCondition(binaryOperatorMatcher),
-                hasCondition(expr(hasDescendant(binaryOperatorMatcher)))))
+                hasCondition(biOpMatcher),
+                hasCondition(expr(hasDescendant(biOpMatcher)))))
             .bind("conditionalOperator"));
     }
 

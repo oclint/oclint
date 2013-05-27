@@ -114,7 +114,7 @@ int StmtDepthMetric::depth(ObjCAutoreleasePoolStmt *stmt)
     return depth(stmt->getSubStmt());
 }
 
-int getStmtDepth(Stmt *stmt)
+extern "C" int getStmtDepth(Stmt *stmt)
 {
     StmtDepthMetric stmtDepthMetric;
     return stmtDepthMetric.depth(stmt);

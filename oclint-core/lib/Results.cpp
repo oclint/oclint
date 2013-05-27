@@ -53,7 +53,7 @@ int Results::numberOfViolations()
 
 int Results::numberOfViolationsWithPriority(int priority)
 {
-    int numberOfViolationsWithPriority = 0;
+    int numViolations = 0;
     vector<Violation> violationSet = allViolations();
     for (int index = 0, numberOfViolations = violationSet.size();
         index < numberOfViolations; index++)
@@ -62,10 +62,10 @@ int Results::numberOfViolationsWithPriority(int priority)
         const RuleBase *rule = violation.rule;
         if (rule->priority() == priority)
         {
-            numberOfViolationsWithPriority++;
+            numViolations++;
         }
     }
-    return numberOfViolationsWithPriority;
+    return numViolations;
 }
 
 int Results::numberOfFiles()
@@ -75,15 +75,15 @@ int Results::numberOfFiles()
 
 int Results::numberOfFilesWithViolations()
 {
-    int numberOfFilesWithViolations = 0;
+    int numFiles = 0;
     for (int setIndex = 0, numberOfSets = numberOfFiles(); setIndex < numberOfSets; setIndex++)
     {
         ViolationSet *violationSet = _collection->at(setIndex);
         if (violationSet->numberOfViolations() > 0)
         {
-            numberOfFilesWithViolations++;
+            numFiles++;
         }
     }
-    return numberOfFilesWithViolations;
+    return numFiles;
 }
 

@@ -5,6 +5,12 @@
 #include "oclint/helper/SuppressHelper.h"
 #include "oclint/util/StdUtil.h"
 
+/*
+ * References:
+ * - Brian A. Nejmeh (1988). “NPATH: a measure of execution path complexity and
+ *   its applications”. Communications of the ACM 31 (2) p. 188-200
+ */
+
 class NPathComplexityRule : public AbstractASTVisitorRule<NPathComplexityRule>
 {
 private:
@@ -28,7 +34,7 @@ private:
                 if (npath > threshold)
                 {
                     string description = "NPath Complexity Number " +
-                        intToString(npath) + " exceeds limit of " + intToString(threshold);
+                        toString<int>(npath) + " exceeds limit of " + toString<int>(threshold);
                     addViolation(decl, this, description);
                 }
             }

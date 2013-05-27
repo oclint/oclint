@@ -22,7 +22,7 @@ public:
         Expr *conditionExpr = ifStmt->getCond();
 
         bool evaluatedResult;
-        if (conditionExpr->EvaluateAsBooleanCondition(evaluatedResult, *_carrier->astContext()))
+        if (conditionExpr->EvaluateAsBooleanCondition(evaluatedResult, *_carrier->getASTContext()))
         {
             addViolation(conditionExpr, this);
         }

@@ -50,7 +50,7 @@ public:
     int depth(ObjCAutoreleasePoolStmt *stmt);
 };
 
-int getStmtDepth(Stmt *stmt);
+extern "C" int getStmtDepth(Stmt *stmt);
 
 #undef DISPATH
 

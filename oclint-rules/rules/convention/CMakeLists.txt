@@ -1,4 +1,5 @@
 SET(LIST_OF_RULES
+    AvoidBranchingStatementAsLastInLoop
     DefaultLabelNotLastInSwitchStatement
     InvertedLogic
     MissingBreakInSwitchStatement

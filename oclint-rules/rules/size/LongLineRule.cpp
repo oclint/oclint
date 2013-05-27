@@ -25,8 +25,8 @@ public:
         int currentLineSize = line.size();
         if (currentLineSize > threshold)
         {
-            string description = "Line with " + intToString(currentLineSize) +
-                " characters exceeds limit of " + intToString(threshold);
+            string description = "Line with " + toString<int>(currentLineSize) +
+                " characters exceeds limit of " + toString<int>(threshold);
             addViolation(lineNumber, 1, lineNumber, currentLineSize, this, description);
         }
     }

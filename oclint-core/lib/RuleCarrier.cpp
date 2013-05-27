@@ -8,9 +8,19 @@ RuleCarrier::RuleCarrier(ASTContext *astContext, ViolationSet *violationSet)
     _astContext = astContext;
 }
 
-ASTContext* RuleCarrier::astContext()
+ASTContext* RuleCarrier::getASTContext()
 {
     return _astContext;
+}
+
+SourceManager& RuleCarrier::getSourceManager()
+{
+    return getASTContext()->getSourceManager();
+}
+
+TranslationUnitDecl* RuleCarrier::getTranslationUnitDecl()
+{
+    return getASTContext()->getTranslationUnitDecl();
 }
 
 void RuleCarrier::addViolation(string filePath, int startLine, int startColumn,

@@ -6,6 +6,12 @@
 
 using namespace clang;
 
+/*
+ * References:
+ * - McCabe (December 1976). “A Complexity Measure”.
+ *   IEEE Transactions on Software Engineering: 308–320
+ */
+
 class CyclomaticComplexityMetric : public RecursiveASTVisitor<CyclomaticComplexityMetric>
 {
 private:
@@ -26,6 +32,6 @@ public:
     bool VisitBinaryOperator(BinaryOperator *op);
 };
 
-int getCyclomaticComplexity(Decl *decl);
+extern "C" int getCyclomaticComplexity(Decl *decl);
 
 #endif

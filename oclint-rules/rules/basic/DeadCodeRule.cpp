@@ -1,18 +1,6 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-#define DEADCODERULE_GET_COMPOUNDSTMT_AND_APPLY                         \
-    Stmt *bodyStmt = stmt->getBody();                                   \
-    if (bodyStmt)                                                       \
-    {                                                                   \
-        CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(bodyStmt);  \
-        if (compoundStmt)                                               \
-        {                                                               \
-            applyLoopCompoundStmt(compoundStmt);                        \
-        }                                                               \
-    }                                                                   \
-    return true;
-
 class DeadCodeRule : public AbstractASTVisitorRule<DeadCodeRule>
 {
 private:
@@ -38,6 +26,20 @@ private:
         }
     }
 
+    template <typename T>
+    void applyStmt(T *stmt)
+    {
+        Stmt *bodyStmt = stmt->getBody();
+        if (bodyStmt)
+        {
+            CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(bodyStmt);
+            if (compoundStmt)
+            {
+                applyLoopCompoundStmt(compoundStmt);
+            }
+        }
+    }
+
 public:
     virtual const string name() const
     {
@@ -51,22 +53,30 @@ public:
 
     bool VisitForStmt(ForStmt *stmt)
     {
-        DEADCODERULE_GET_COMPOUNDSTMT_AND_APPLY
+        applyStmt<ForStmt>(stmt);
+
+        return true;
     }
 
     bool VisitObjCForCollectionStmt(ObjCForCollectionStmt *stmt)
     {
-        DEADCODERULE_GET_COMPOUNDSTMT_AND_APPLY
+        applyStmt<ObjCForCollectionStmt>(stmt);
+
+        return true;
     }
 
     bool VisitDoStmt(DoStmt* stmt)
     {
-        DEADCODERULE_GET_COMPOUNDSTMT_AND_APPLY
+        applyStmt<DoStmt>(stmt);
+
+        return true;
     }
 
     bool VisitWhileStmt(WhileStmt* stmt)
     {
-        DEADCODERULE_GET_COMPOUNDSTMT_AND_APPLY
+        applyStmt<WhileStmt>(stmt);
+
+        return true;
     }
 
     bool VisitCompoundStmt(CompoundStmt *compoundStmt)

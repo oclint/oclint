@@ -13,7 +13,7 @@ protected:
     void addViolation(SourceLocation startLocation,
         SourceLocation endLocation, RuleBase *rule, const string& message = "")
     {
-        SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
+        SourceManager *sourceManager = &_carrier->getSourceManager();
         StringRef filename = sourceManager->getFilename(startLocation);
         _carrier->addViolation(filename.str(),
             sourceManager->getPresumedLineNumber(startLocation),

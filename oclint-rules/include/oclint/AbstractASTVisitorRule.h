@@ -12,8 +12,8 @@ protected:
     virtual void apply()
     {
         setUp();
-        SourceManager *sourceManager = &_carrier->astContext()->getSourceManager();
-        DeclContext *decl = _carrier->astContext()->getTranslationUnitDecl();
+        SourceManager *sourceManager = &_carrier->getSourceManager();
+        DeclContext *decl = _carrier->getTranslationUnitDecl();
         for (DeclContext::decl_iterator it = decl->decls_begin(), declEnd = decl->decls_end();
             it != declEnd; ++it)
         {

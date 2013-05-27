@@ -21,8 +21,8 @@ private:
         int threshold = RuleConfiguration::intForKey("NCSS_METHOD", 30);
         if (ncss > threshold)
         {
-            string description = "Method of " + intToString(ncss) +
-                " non-commenting source statements exceeds limit of " + intToString(threshold);
+            string description = "Method of " + toString<int>(ncss) +
+                " non-commenting source statements exceeds limit of " + toString<int>(threshold);
             addViolation(decl, this, description);
         }
     }

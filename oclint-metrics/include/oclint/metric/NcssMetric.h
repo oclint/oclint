@@ -53,7 +53,7 @@ public:
     int ncss(ObjCAutoreleasePoolStmt *stmt);
 };
 
-int getNcssCount(Decl *decl);
+extern "C" int getNcssCount(Decl *decl);
 
 #undef DISPATH
 
