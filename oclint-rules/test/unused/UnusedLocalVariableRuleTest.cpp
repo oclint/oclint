@@ -45,6 +45,15 @@ TEST(UnusedLocalVariableRuleTest, IgnoreUnusedLocalVariableInTemplateFunction)
     testRuleOnCXXCode(new UnusedLocalVariableRule(), "template <typename T> int m() { int i = 1; return i; }");
 }
 
+/*
+ Tests for the false positive found by Reece Dunn
+ Details at https://github.com/oclint/oclint/issues/34
+*/
+TEST(UnusedLocalVariableRuleTest, IgnoreVariablesWithoutAName)
+{
+    testRuleOnCXXCode(new UnusedLocalVariableRule(), "void f(); bool g() { try { f(); } catch (int &) { return false; } return true; }");
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);
