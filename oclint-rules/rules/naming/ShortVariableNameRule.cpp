@@ -38,11 +38,16 @@ public:
 
     bool VisitForStmt(ForStmt *forStmt)
     {
-        DeclStmt *declStmt = dyn_cast<DeclStmt>(forStmt->getInit());
-        if (declStmt && declStmt->isSingleDecl())
+        Stmt *initStmt = forStmt->getInit();
+        if (initStmt)
         {
-            _suppressVarDecl = dyn_cast<VarDecl>(declStmt->getSingleDecl());
+            DeclStmt *declStmt = dyn_cast<DeclStmt>(initStmt);
+            if (declStmt && declStmt->isSingleDecl())
+            {
+                _suppressVarDecl = dyn_cast<VarDecl>(declStmt->getSingleDecl());
+            }
         }
+
         return true;
     }
 
