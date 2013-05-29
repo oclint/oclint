@@ -30,6 +30,7 @@ public:
     bool VisitVarDecl(VarDecl *varDecl)
     {
         if (varDecl && !varDecl->isUsed() &&
+            varDecl->getNameAsString() != "" &&
             varDecl->isLocalVarDecl() &&
             !varDecl->isStaticDataMember() &&
             isInNonTemplateFunction(varDecl))
