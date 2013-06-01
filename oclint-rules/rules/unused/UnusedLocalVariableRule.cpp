@@ -1,5 +1,6 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
+#include "oclint/helper/SuppressHelper.h"
 
 class UnusedLocalVariableRule : public AbstractASTVisitorRule<UnusedLocalVariableRule>
 {
@@ -16,6 +17,35 @@ private:
         return true;
     }
 
+    bool isLocalVariable(VarDecl *varDecl)
+    {
+        return varDecl->isLocalVarDecl();
+    }
+
+    bool isUnused(VarDecl *varDecl)
+    {
+        return !varDecl->isUsed();
+    }
+
+    bool hasName(VarDecl *varDecl)
+    {
+        return varDecl->getNameAsString() != "";
+    }
+
+    bool isNonStaticVariable(VarDecl *varDecl)
+    {
+        return !varDecl->isStaticDataMember();
+    }
+
+    bool isUnusedLocalVariable(VarDecl *varDecl)
+    {
+        return isUnused(varDecl) &&
+            isLocalVariable(varDecl) &&
+            hasName(varDecl) &&
+            isNonStaticVariable(varDecl) &&
+            isInNonTemplateFunction(varDecl);
+    }
+
 public:
     virtual const string name() const
     {
@@ -29,11 +59,7 @@ public:
 
     bool VisitVarDecl(VarDecl *varDecl)
     {
-        if (varDecl && !varDecl->isUsed() &&
-            varDecl->getNameAsString() != "" &&
-            varDecl->isLocalVarDecl() &&
-            !varDecl->isStaticDataMember() &&
-            isInNonTemplateFunction(varDecl))
+        if (!markedAsSuppress(varDecl, this) && isUnusedLocalVariable(varDecl))
         {
             addViolation(varDecl, this);
         }
