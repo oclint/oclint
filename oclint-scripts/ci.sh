@@ -8,7 +8,7 @@
 ./buildMetrics.sh clean
 ./buildRules.sh clean
 ./buildReporters.sh clean
-./buildClangTooling.sh clean
+./buildDriver.sh clean
 ./testAll.sh
 ./buildAll.sh
 ./dogFooding.sh

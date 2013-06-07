@@ -1,35 +1,31 @@
 #include <dlfcn.h>
 #include <dirent.h>
 #include <unistd.h>
-#include <exception>
 #include <iostream>
 #include <fstream>
 #include <ctime>
 #include <string>
 
 #include <llvm/ADT/SmallString.h>
-#include <llvm/Support/raw_ostream.h>
-#include <llvm/Support/CommandLine.h>
 #include <llvm/Support/Path.h>
 #include <llvm/Support/Program.h>
 #include <llvm/Support/FileSystem.h>
-#include <clang/AST/AST.h>
-#include <clang/AST/ASTConsumer.h>
-#include <clang/AST/ASTContext.h>
-#include <clang/AST/PrettyPrinter.h>
-#include <clang/AST/RecordLayout.h>
 #include <clang/Driver/OptTable.h>
 #include <clang/Driver/Options.h>
 #include <clang/Tooling/CommonOptionsParser.h>
-#include <clang/Tooling/Tooling.h>
 
+#include "oclint/Analyzer.h"
+#include "oclint/CompilerInstance.h"
+#include "oclint/Driver.h"
+#include "oclint/GenericException.h"
+#include "oclint/Reporter.h"
+#include "oclint/Results.h"
+#include "oclint/RuleBase.h"
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
-#include "oclint/Results.h"
+#include "oclint/RulesetBasedAnalyzer.h"
 #include "oclint/ViolationSet.h"
 #include "oclint/Violation.h"
-#include "oclint/RuleBase.h"
-#include "oclint/Reporter.h"
 
 using namespace std;
 using namespace llvm;
@@ -87,44 +83,6 @@ static cl::extrahelp MoreHelp(
 );
 static OwningPtr<OptTable> Options(createDriverOptTable());
 
-class Processor : public ASTConsumer
-{
-public:
-    virtual void HandleTranslationUnit(ASTContext &astContext)
-    {
-        ViolationSet *violationSet = new ViolationSet();
-        RuleCarrier *carrier = new RuleCarrier(&astContext, violationSet);
-        for (int index = 0, numRules = RuleSet::numberOfRules(); index < numRules; index++)
-        {
-            RuleSet::getRuleAtIndex(index)->takeoff(carrier);
-        }
-        Results *results = Results::getInstance();
-        results->add(violationSet);
-    }
-};
-
-class ProcessorActionFactory
-{
-public:
-    ASTConsumer *newASTConsumer()
-    {
-      return new Processor();
-    }
-};
-
-class GenericExcpetion : public exception
-{
-private:
-    string description;
-
-public:
-    GenericExcpetion(const string& desc) : description(desc) {}
-    virtual ~GenericExcpetion() throw() {}
-    virtual const char *what() const throw()
-    {
-        return description.c_str();
-    }
-};
 
 static string absoluteWorkingPath("");
 static Reporter *selectedReporter = NULL;
@@ -171,7 +129,7 @@ void dynamicLoadRules(string ruleDirPath)
             {
                 cerr << dlerror() << endl;
                 closedir(pDir);
-                throw GenericExcpetion("cannot open dynamic library: " + rulePath);
+                throw oclint::GenericException("cannot open dynamic library: " + rulePath);
             }
         }
         closedir(pDir);
@@ -229,7 +187,7 @@ void loadReporter(const char* executablePath)
             {
                 cerr << dlerror() << endl;
                 closedir(pDir);
-                throw GenericExcpetion("cannot open dynamic library: " + reporterPath);
+                throw oclint::GenericException("cannot open dynamic library: " + reporterPath);
             }
             Reporter* (*createMethodPointer)();
             createMethodPointer = (Reporter* (*)())dlsym(reporterHandle, "create");
@@ -244,7 +202,8 @@ void loadReporter(const char* executablePath)
     }
     if (selectedReporter == NULL)
     {
-        throw GenericExcpetion("cannot find dynamic library for report type: " + argReportType);
+        throw oclint::GenericException(
+            "cannot find dynamic library for report type: " + argReportType);
     }
 }
 
@@ -266,7 +225,7 @@ ostream* outStream()
     ofstream *out = new ofstream(absoluteOutputPath.c_str());
     if (!out->is_open())
     {
-        throw GenericExcpetion("cannot open report output file " + argOutput);
+        throw oclint::GenericException("cannot open report output file " + argOutput);
     }
     return out;
 }
@@ -341,9 +300,9 @@ int main(int argc, const char **argv)
         return prepareStatus;
     }
 
-    ClangTool clangTool(optionsParser.getCompilations(), optionsParser.getSourcePathList());
-    ProcessorActionFactory actionFactory;
-    if (clangTool.run(newFrontendActionFactory(&actionFactory)))
+    oclint::RulesetBasedAnalyzer analyzer;
+    oclint::Driver driver;
+    if (driver.run(optionsParser.getCompilations(), optionsParser.getSourcePathList(), analyzer))
     {
         return ERROR_WHILE_PROCESSING;
     }
