@@ -45,6 +45,8 @@
  * SOFTWARE.
  */
 
+#include <unistd.h>
+
 #include <llvm/ADT/IntrusiveRefCntPtr.h>
 #include <llvm/ADT/StringRef.h>
 #include <llvm/Support/Debug.h>
