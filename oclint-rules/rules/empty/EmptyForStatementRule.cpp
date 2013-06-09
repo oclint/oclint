@@ -3,6 +3,10 @@
 
 #include "../abstract/AbstractEmptyBlockStmtRule.h"
 
+using namespace std;
+using namespace clang;
+using namespace oclint;
+
 class EmptyForStatementRule : public AbstractEmptyBlockStmtRule<EmptyForStatementRule>
 {
 private:

@@ -6,12 +6,13 @@
 #include "oclint/Violation.h"
 
 using namespace ::testing;
+using namespace oclint;
 
 class MockRuleBaseOne : public RuleBase
 {
 public:
     MOCK_METHOD0(apply, void());
-    MOCK_CONST_METHOD0(name, const string());
+    MOCK_CONST_METHOD0(name, const std::string());
 
     virtual int priority() const
     {
@@ -23,7 +24,7 @@ class MockRuleBaseTwo : public RuleBase
 {
 public:
     MOCK_METHOD0(apply, void());
-    MOCK_CONST_METHOD0(name, const string());
+    MOCK_CONST_METHOD0(name, const std::string());
 
     virtual int priority() const
     {

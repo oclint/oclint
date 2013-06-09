@@ -1,9 +1,11 @@
 #include "oclint/metric/NPathComplexityMetric.h"
 
-int NPathComplexityMetric::nPath(CompoundStmt *stmt)
+using namespace oclint;
+
+int NPathComplexityMetric::nPath(clang::CompoundStmt *stmt)
 {
     int npath = 1;
-    for (CompoundStmt::body_iterator body = stmt->body_begin(), bodyEnd = stmt->body_end();
+    for (clang::CompoundStmt::body_iterator body = stmt->body_begin(), bodyEnd = stmt->body_end();
         body != bodyEnd; body++)
     {
         npath *= nPath(*body);
@@ -11,10 +13,10 @@ int NPathComplexityMetric::nPath(CompoundStmt *stmt)
     return npath;
 }
 
-int NPathComplexityMetric::nPath(IfStmt *stmt)
+int NPathComplexityMetric::nPath(clang::IfStmt *stmt)
 {
     int nPathElseStmt = 1;
-    Stmt *elseStmt = stmt->getElse();
+    clang::Stmt *elseStmt = stmt->getElse();
     if (elseStmt)
     {
         nPathElseStmt = nPath(elseStmt);
@@ -22,17 +24,17 @@ int NPathComplexityMetric::nPath(IfStmt *stmt)
     return nPath(stmt->getCond()) + nPath(stmt->getThen()) + nPathElseStmt;
 }
 
-int NPathComplexityMetric::nPath(WhileStmt *stmt)
+int NPathComplexityMetric::nPath(clang::WhileStmt *stmt)
 {
     return nPath(stmt->getCond()) + nPath(stmt->getBody()) + 1;
 }
 
-int NPathComplexityMetric::nPath(DoStmt *stmt)
+int NPathComplexityMetric::nPath(clang::DoStmt *stmt)
 {
     return nPath(stmt->getCond()) + nPath(stmt->getBody()) + 1;
 }
 
-int NPathComplexityMetric::nPath(ForStmt *stmt)
+int NPathComplexityMetric::nPath(clang::ForStmt *stmt)
 {
     // TODO:
     // Base on Nejmeh's NPATH, the first expression is used to initialize a loop control variable,
@@ -61,7 +63,7 @@ int NPathComplexityMetric::nPath(ForStmt *stmt)
         + nPath(stmt->getBody()) + 1;
 }
 
-int NPathComplexityMetric::nPath(ObjCForCollectionStmt *stmt)
+int NPathComplexityMetric::nPath(clang::ObjCForCollectionStmt *stmt)
 {
     // If we convert a foreach loop to a simple for loop, it will looks like
     // for (int i = 0; i < [anArray count]; i++) {
@@ -74,16 +76,16 @@ int NPathComplexityMetric::nPath(ObjCForCollectionStmt *stmt)
     return nPath(stmt->getBody()) + 2;
 }
 
-int NPathComplexityMetric::nPath(SwitchStmt *stmt)
+int NPathComplexityMetric::nPath(clang::SwitchStmt *stmt)
 {
     int internalNPath = 0, nPathSwitchStmt = nPath(stmt->getCond());
-    CompoundStmt *body = (CompoundStmt *)stmt->getBody();
-    for (CompoundStmt::body_iterator bodyStmt = body->body_begin(), bodyStmtEnd = body->body_end();
-        bodyStmt != bodyStmtEnd; bodyStmt++)
+    clang::CompoundStmt *body = (clang::CompoundStmt *)stmt->getBody();
+    for (clang::CompoundStmt::body_iterator bodyStmt = body->body_begin(),
+        bodyStmtEnd = body->body_end(); bodyStmt != bodyStmtEnd; bodyStmt++)
     {
-        if (isa<SwitchCase>(*bodyStmt))
+        if (clang::isa<clang::SwitchCase>(*bodyStmt))
         {
-            SwitchCase *switchCase = dyn_cast<SwitchCase>(*bodyStmt);
+            clang::SwitchCase *switchCase = clang::dyn_cast<clang::SwitchCase>(*bodyStmt);
             nPathSwitchStmt += internalNPath;
             internalNPath = nPath(switchCase->getSubStmt());
         }
@@ -95,31 +97,31 @@ int NPathComplexityMetric::nPath(SwitchStmt *stmt)
     return nPathSwitchStmt + internalNPath;
 }
 
-int NPathComplexityMetric::nPath(ConditionalOperator *expr)
+int NPathComplexityMetric::nPath(clang::ConditionalOperator *expr)
 {
     return nPath(expr->getCond()) + nPath(expr->getTrueExpr()) + nPath(expr->getFalseExpr()) + 2;
 }
 
-int NPathComplexityMetric::nPath(BinaryOperator *expr)
+int NPathComplexityMetric::nPath(clang::BinaryOperator *expr)
 {
-    if (expr->getOpcode() == BO_LAnd || expr->getOpcode() == BO_LOr)
+    if (expr->getOpcode() == clang::BO_LAnd || expr->getOpcode() == clang::BO_LOr)
     {
         return 1 + nPath(expr->getLHS()) + nPath(expr->getRHS());
     }
     return 0;
 }
 
-int NPathComplexityMetric::nPath(ParenExpr *expr)
+int NPathComplexityMetric::nPath(clang::ParenExpr *expr)
 {
     return nPath(expr->getSubExpr());
 }
 
-int NPathComplexityMetric::nPath(CastExpr *expr)
+int NPathComplexityMetric::nPath(clang::CastExpr *expr)
 {
     return nPath(expr->getSubExpr());
 }
 
-extern "C" int getNPathComplexity(Stmt *stmt)
+extern "C" int getNPathComplexity(clang::Stmt *stmt)
 {
     NPathComplexityMetric npathMetric;
     return npathMetric.nPath(stmt);

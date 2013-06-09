@@ -3,6 +3,10 @@
 #include "oclint/helper/SuppressHelper.h"
 #include "oclint/util/ASTUtil.h"
 
+using namespace std;
+using namespace clang;
+using namespace oclint;
+
 class UnusedMethodParameterRule : public AbstractASTVisitorRule<UnusedMethodParameterRule>
 {
 private:

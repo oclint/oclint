@@ -2,20 +2,20 @@
 #define OCLINT_ABSTRACTEMPTYBLOCKSTMTRULE_H
 
 template <typename T>
-class AbstractEmptyBlockStmtRule : public AbstractASTVisitorRule<T>
+class AbstractEmptyBlockStmtRule : public oclint::AbstractASTVisitorRule<T>
 {
 protected:
-    bool isLexicalEmpty(Stmt *stmt)
+    bool isLexicalEmpty(clang::Stmt *stmt)
     {
-        CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(stmt);
-        return isa<NullStmt>(stmt) || (compoundStmt && compoundStmt->body_empty());
+        clang::CompoundStmt *compoundStmt = clang::dyn_cast<clang::CompoundStmt>(stmt);
+        return clang::isa<clang::NullStmt>(stmt) || (compoundStmt && compoundStmt->body_empty());
     }
 
-    bool checkLexicalEmptyStmt(Stmt *stmt, RuleBase *rule)
+    bool checkLexicalEmptyStmt(clang::Stmt *stmt, oclint::RuleBase *rule)
     {
         if (stmt && isLexicalEmpty(stmt))
         {
-            AbstractASTVisitorRule<T>::addViolation(stmt, rule);
+            oclint::AbstractASTVisitorRule<T>::addViolation(stmt, rule);
         }
 
         return true;

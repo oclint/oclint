@@ -1,6 +1,10 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
+using namespace std;
+using namespace clang;
+using namespace oclint;
+
 class ParameterReassignmentRule : public AbstractASTVisitorRule<ParameterReassignmentRule>
 {
     class BinaryOperatorAnalyzer : public RecursiveASTVisitor<BinaryOperatorAnalyzer>
@@ -76,7 +80,7 @@ public:
             }
         }
         locateParamNames(decl, names);
-        
+
         return true;
     }
 

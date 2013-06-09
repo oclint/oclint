@@ -5,37 +5,38 @@
 
 #include "oclint/RuleBase.h"
 
-using namespace clang;
+namespace oclint
+{
 
 class AbstractSourceCodeReaderRule : public RuleBase
 {
 protected:
     virtual void apply()
     {
-        SourceManager *sourceManager = &_carrier->getSourceManager();
+        clang::SourceManager *sourceManager = &_carrier->getSourceManager();
 
-        FileID mainFileID = sourceManager->getMainFileID();
-        StringRef mainFileStringRef = sourceManager->getBufferData(mainFileID);
+        clang::FileID mainFileID = sourceManager->getMainFileID();
+        llvm::StringRef mainFileStringRef = sourceManager->getBufferData(mainFileID);
 
-        StringRef remaining = mainFileStringRef;
+        llvm::StringRef remaining = mainFileStringRef;
         int currentLineNumber = 1;
         while (remaining.size() > 0)
         {
-            pair<StringRef, StringRef> splitPair = remaining.split('\n');
-            StringRef currentLine = splitPair.first;
+            std::pair<llvm::StringRef, llvm::StringRef> splitPair = remaining.split('\n');
+            llvm::StringRef currentLine = splitPair.first;
             eachLine(currentLineNumber++, currentLine.str());
             remaining = splitPair.second;
         }
     }
 
     void addViolation(int startLine, int startColumn,
-        int endLine, int endColumn, RuleBase *rule, const string& message = "")
+        int endLine, int endColumn, RuleBase *rule, const std::string& message = "")
     {
-        SourceManager *sourceManager = &_carrier->getSourceManager();
+        clang::SourceManager *sourceManager = &_carrier->getSourceManager();
 
-        FileID mainFileID = sourceManager->getMainFileID();
-        SourceLocation startOfMainFile = sourceManager->getLocForStartOfFile(mainFileID);
-        StringRef filePath = sourceManager->getFilename(startOfMainFile);
+        clang::FileID mainFileID = sourceManager->getMainFileID();
+        clang::SourceLocation startOfMainFile = sourceManager->getLocForStartOfFile(mainFileID);
+        llvm::StringRef filePath = sourceManager->getFilename(startOfMainFile);
 
         _carrier->addViolation(filePath.str(),
             startLine, startColumn, endLine, endColumn, rule, message);
@@ -44,7 +45,9 @@ protected:
 public:
     virtual ~AbstractSourceCodeReaderRule() {}
 
-    virtual void eachLine(int lineNumber, string line) = 0;
+    virtual void eachLine(int lineNumber, std::string line) = 0;
 };
+
+} // end namespace oclint
 
 #endif

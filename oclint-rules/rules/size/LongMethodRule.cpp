@@ -4,6 +4,10 @@
 #include "oclint/util/ASTUtil.h"
 #include "oclint/util/StdUtil.h"
 
+using namespace std;
+using namespace clang;
+using namespace oclint;
+
 class LongMethodRule : public AbstractASTVisitorRule<LongMethodRule>
 {
 private:

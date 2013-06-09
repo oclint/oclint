@@ -3,6 +3,8 @@
 #include "oclint/Violation.h"
 #include "oclint/ViolationSet.h"
 
+using namespace oclint;
+
 Results* Results::_singleton = NULL;
 
 Results* Results::getInstance()
@@ -16,7 +18,7 @@ Results* Results::getInstance()
 
 Results::Results()
 {
-    _collection = new vector<ViolationSet*>();
+    _collection = new std::vector<ViolationSet*>();
 }
 
 Results::~Results()
@@ -30,9 +32,9 @@ void Results::add(ViolationSet *violationSet)
     _collection->push_back(violationSet);
 }
 
-vector<Violation> Results::allViolations()
+std::vector<Violation> Results::allViolations()
 {
-    vector<Violation> violations;
+    std::vector<Violation> violations;
     for (int setIndex = 0, numberOfSets = numberOfFiles(); setIndex < numberOfSets; setIndex++)
     {
         ViolationSet *violationSet = _collection->at(setIndex);
@@ -54,7 +56,7 @@ int Results::numberOfViolations()
 int Results::numberOfViolationsWithPriority(int priority)
 {
     int numViolations = 0;
-    vector<Violation> violationSet = allViolations();
+    std::vector<Violation> violationSet = allViolations();
     for (int index = 0, numberOfViolations = violationSet.size();
         index < numberOfViolations; index++)
     {

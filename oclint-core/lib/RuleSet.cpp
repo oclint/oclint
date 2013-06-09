@@ -1,13 +1,15 @@
 #include "oclint/RuleBase.h"
 #include "oclint/RuleSet.h"
 
-vector<RuleBase*>* RuleSet::_rules = NULL;
+using namespace oclint;
+
+std::vector<RuleBase*>* RuleSet::_rules = NULL;
 
 RuleSet::RuleSet(RuleBase* rule)
 {
     if (_rules == NULL)
     {
-        _rules = new vector<RuleBase*>();
+        _rules = new std::vector<RuleBase*>();
     }
     _rules->push_back(rule);
 }

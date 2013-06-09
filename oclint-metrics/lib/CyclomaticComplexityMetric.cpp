@@ -1,76 +1,79 @@
 #include "oclint/metric/CyclomaticComplexityMetric.h"
 
-int CyclomaticComplexityMetric::calculate(Decl *decl)
+using namespace oclint;
+
+int CyclomaticComplexityMetric::calculate(clang::Decl *decl)
 {
     _count = 0;
     (void) /* explicitly ignore the return of this function */ TraverseDecl(decl);
     return _count + 1;
 }
 
-bool CyclomaticComplexityMetric::VisitIfStmt(IfStmt *)
+bool CyclomaticComplexityMetric::VisitIfStmt(clang::IfStmt *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitForStmt(ForStmt *)
+bool CyclomaticComplexityMetric::VisitForStmt(clang::ForStmt *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitObjCForCollectionStmt(ObjCForCollectionStmt *)
+bool CyclomaticComplexityMetric::VisitObjCForCollectionStmt(clang::ObjCForCollectionStmt *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitWhileStmt(WhileStmt *)
+bool CyclomaticComplexityMetric::VisitWhileStmt(clang::WhileStmt *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitDoStmt(DoStmt *)
+bool CyclomaticComplexityMetric::VisitDoStmt(clang::DoStmt *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitCaseStmt(CaseStmt *)
+bool CyclomaticComplexityMetric::VisitCaseStmt(clang::CaseStmt *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitObjCAtCatchStmt(ObjCAtCatchStmt *)
+bool CyclomaticComplexityMetric::VisitObjCAtCatchStmt(clang::ObjCAtCatchStmt *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitCXXCatchStmt(CXXCatchStmt *)
+bool CyclomaticComplexityMetric::VisitCXXCatchStmt(clang::CXXCatchStmt *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitConditionalOperator(ConditionalOperator *)
+bool CyclomaticComplexityMetric::VisitConditionalOperator(clang::ConditionalOperator *)
 {
     _count++;
     return true;
 }
 
-bool CyclomaticComplexityMetric::VisitBinaryOperator(BinaryOperator *binaryOperator)
+bool CyclomaticComplexityMetric::VisitBinaryOperator(clang::BinaryOperator *binaryOperator)
 {
-    if (binaryOperator->getOpcode() == BO_LAnd || binaryOperator->getOpcode() == BO_LOr)
+    if (binaryOperator->getOpcode() == clang::BO_LAnd ||
+        binaryOperator->getOpcode() == clang::BO_LOr)
     {
         _count++;
     }
     return true;
 }
 
-extern "C" int getCyclomaticComplexity(Decl *decl)
+extern "C" int getCyclomaticComplexity(clang::Decl *decl)
 {
     CyclomaticComplexityMetric ccnMetric;
     return ccnMetric.calculate(decl);

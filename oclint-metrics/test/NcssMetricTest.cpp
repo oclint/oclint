@@ -2,6 +2,8 @@
 
 #include "oclint/metric/NcssMetric.h"
 
+using namespace oclint;
+
 DeclarationMatcher functionDeclMatcher = functionDecl(hasName("m")).bind("functionDecl");
 
 class NCSSCallback : public MatchFinder::MatchCallback

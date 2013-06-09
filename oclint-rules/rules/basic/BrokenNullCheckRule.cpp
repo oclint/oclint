@@ -3,6 +3,10 @@
 
 #include "../abstract/AbstractNullCheckRule.h"
 
+using namespace std;
+using namespace clang;
+using namespace oclint;
+
 class BrokenNullCheckBaseRule : public AbstractNullCheckRule<BrokenNullCheckBaseRule>
 {
 private:

@@ -1,14 +1,16 @@
 #include "oclint/Reporter.h"
 
+using namespace oclint;
+
 class {{REPORTER_CLASS_NAME}}Reporter : public Reporter
 {
 public:
-    virtual const string name() const
+    virtual const std::string name() const
     {
         return "{{REPORTER_NAME}}";
     }
 
-    virtual void report(Results *results, ostream &out)
+    virtual void report(Results *results, std::ostream &out)
     {
     }
 };

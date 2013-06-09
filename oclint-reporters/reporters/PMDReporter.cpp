@@ -3,51 +3,53 @@
 #include "oclint/Version.h"
 #include "oclint/ViolationSet.h"
 
+using namespace oclint;
+
 class PMDReporter : public Reporter
 {
 public:
-    virtual const string name() const
+    virtual const std::string name() const
     {
         return "pmd";
     }
 
-    virtual void report(Results *results, ostream &out)
+    virtual void report(Results *results, std::ostream &out)
     {
         writeHeader(out, Version::identifier());
 
-        vector<Violation> violationSet = results->allViolations();
+        std::vector<Violation> violationSet = results->allViolations();
         for (int index = 0, numberOfViolations = violationSet.size();
             index < numberOfViolations; index++)
         {
             writeViolation(out, violationSet.at(index));
-            out << endl;
+            out << std::endl;
         }
 
         writeFooter(out);
     }
 
-    void writeHeader(ostream &out, string version)
+    void writeHeader(std::ostream &out, std::string version)
     {
         out << "<pmd version=\"oclint-" << version << "\">";
     }
 
-    void writeFooter(ostream &out)
+    void writeFooter(std::ostream &out)
     {
         out << "</pmd>";
     }
 
-    void writeViolation(ostream &out, Violation &violation)
+    void writeViolation(std::ostream &out, Violation &violation)
     {
-        out << "<file name=\"" << violation.path << "\">" << endl;
+        out << "<file name=\"" << violation.path << "\">" << std::endl;
         out << "<violation ";
         out << "begincolumn=\"" << violation.startColumn << "\" ";
         out << "beginline=\"" << violation.startLine << "\" ";
         const RuleBase *rule = violation.rule;
         out << "priority=\"" << 2 * rule->priority() - 1 << "\" ";
-        out << "rule=\"" << rule->name() << "\">" << endl;
-        out << violation.message << endl;
-        out << "</violation>" << endl;
-        out << "</file>" << endl;
+        out << "rule=\"" << rule->name() << "\">" << std::endl;
+        out << violation.message << std::endl;
+        out << "</violation>" << std::endl;
+        out << "</file>" << std::endl;
     }
 };
 

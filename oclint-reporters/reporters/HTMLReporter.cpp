@@ -3,15 +3,17 @@
 #include "oclint/Version.h"
 #include "oclint/ViolationSet.h"
 
+using namespace oclint;
+
 class HTMLReporter : public Reporter
 {
 public:
-    virtual const string name() const
+    virtual const std::string name() const
     {
         return "html";
     }
 
-    virtual void report(Results *results, ostream &out)
+    virtual void report(Results *results, std::ostream &out)
     {
         out << "<!DOCTYPE html>";
         out << "<html>";
@@ -24,7 +26,7 @@ public:
         out << "<hr />";
         out << "<table><thead><tr><th>File</th><th>Location</th><th>Rule Name</th>"
             << "<th>Priority</th><th>Message</th></tr></thead><tbody>";
-        vector<Violation> violationSet = results->allViolations();
+        std::vector<Violation> violationSet = results->allViolations();
         for (int index = 0, numberOfViolations = violationSet.size();
             index < numberOfViolations; index++)
         {
@@ -35,17 +37,17 @@ public:
         writeFooter(out, Version::identifier());
         out << "</body>";
         out << "</html>";
-        out << endl;
+        out << std::endl;
     }
 
-    void writeFooter(ostream &out, string version)
+    void writeFooter(std::ostream &out, std::string version)
     {
         time_t now = time(0);
         out << "<p>" << ctime(&now)
             << "| Generated with <a href='http://oclint.org'>OCLint v" << version << "</a>.</p>";
     }
 
-    void writeViolation(ostream &out, Violation &violation)
+    void writeViolation(std::ostream &out, Violation &violation)
     {
         out << "<tr><td>" << violation.path << "</td><td>" << violation.startLine
             << ":" << violation.startColumn << "</td>";
@@ -54,7 +56,7 @@ public:
             << rule->priority() << "</td><td>" << violation.message << "</td></tr>";
     }
 
-    void writeSummaryTable(ostream &out, Results &results)
+    void writeSummaryTable(std::ostream &out, Results &results)
     {
         out << "<table><thead><tr><th>Total Files</th><th>Files with Violations</th>"
             << "<th>Priority 1</th><th>Priority 2</th><th>Priority 3</th></tr></thead>";
@@ -65,7 +67,7 @@ public:
             << results.numberOfViolationsWithPriority(3) << "</td></tr></tbody></table>";
     }
 
-    void writeHead(ostream &out)
+    void writeHead(std::ostream &out)
     {
         out << "<head>";
         out << "<title>OCLint Report</title>";

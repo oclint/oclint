@@ -1,14 +1,16 @@
 #include "oclint/metric/NcssMetric.h"
 
-int NcssMetric::ncss(NullStmt *)
+using namespace oclint;
+
+int NcssMetric::ncss(clang::NullStmt *)
 {
     return 0;
 }
 
-int NcssMetric::ncss(CompoundStmt *stmt)
+int NcssMetric::ncss(clang::CompoundStmt *stmt)
 {
     int sumOfNcss = 0;
-    for (CompoundStmt::body_iterator body = stmt->body_begin(), bodyEnd = stmt->body_end();
+    for (clang::CompoundStmt::body_iterator body = stmt->body_begin(), bodyEnd = stmt->body_end();
         body != bodyEnd; body++)
     {
         sumOfNcss += ncss(*body);
@@ -16,10 +18,10 @@ int NcssMetric::ncss(CompoundStmt *stmt)
     return sumOfNcss;
 }
 
-int NcssMetric::ncss(IfStmt *stmt)
+int NcssMetric::ncss(clang::IfStmt *stmt)
 {
     int ncssElse = 0;
-    Stmt *elseStmt = stmt->getElse();
+    clang::Stmt *elseStmt = stmt->getElse();
     if (elseStmt)
     {
         ncssElse = ncss(elseStmt) + 1;
@@ -27,37 +29,37 @@ int NcssMetric::ncss(IfStmt *stmt)
     return 1 + ncss(stmt->getThen()) + ncssElse;
 }
 
-int NcssMetric::ncss(WhileStmt *stmt)
+int NcssMetric::ncss(clang::WhileStmt *stmt)
 {
     return 1 + ncss(stmt->getBody());
 }
 
-int NcssMetric::ncss(DoStmt *stmt)
+int NcssMetric::ncss(clang::DoStmt *stmt)
 {
     return 2 + ncss(stmt->getBody());
 }
 
-int NcssMetric::ncss(ForStmt *stmt)
+int NcssMetric::ncss(clang::ForStmt *stmt)
 {
     return 1 + ncss(stmt->getBody());
 }
 
-int NcssMetric::ncss(ObjCForCollectionStmt *stmt)
+int NcssMetric::ncss(clang::ObjCForCollectionStmt *stmt)
 {
     return 1 + ncss(stmt->getBody());
 }
 
-int NcssMetric::ncss(SwitchStmt *stmt)
+int NcssMetric::ncss(clang::SwitchStmt *stmt)
 {
     return 1 + ncss(stmt->getBody());
 }
 
-int NcssMetric::ncss(SwitchCase *stmt)
+int NcssMetric::ncss(clang::SwitchCase *stmt)
 {
     return 1 + ncss(stmt->getSubStmt());
 }
 
-int NcssMetric::ncss(CXXTryStmt *stmt)
+int NcssMetric::ncss(clang::CXXTryStmt *stmt)
 {
     int ncssCatches = 0;
     for (int catchIndex = 0; catchIndex < stmt->getNumHandlers(); catchIndex++)
@@ -67,12 +69,12 @@ int NcssMetric::ncss(CXXTryStmt *stmt)
     return 1 + ncss(stmt->getTryBlock()) + ncssCatches;
 }
 
-int NcssMetric::ncss(CXXCatchStmt *stmt)
+int NcssMetric::ncss(clang::CXXCatchStmt *stmt)
 {
     return 1 + ncss(stmt->getHandlerBlock());
 }
 
-int NcssMetric::ncss(ObjCAtTryStmt *stmt)
+int NcssMetric::ncss(clang::ObjCAtTryStmt *stmt)
 {
     int ncssCatches = 0;
     for (int catchIndex = 0; catchIndex < stmt->getNumCatchStmts(); catchIndex++)
@@ -80,33 +82,33 @@ int NcssMetric::ncss(ObjCAtTryStmt *stmt)
         ncssCatches += ncss(stmt->getCatchStmt(catchIndex));
     }
 
-    ObjCAtFinallyStmt *finallyStmt = stmt->getFinallyStmt();
+    clang::ObjCAtFinallyStmt *finallyStmt = stmt->getFinallyStmt();
     int ncssFinally = finallyStmt ? ncss(finallyStmt) : 0;
 
     return 1 + ncss(stmt->getTryBody()) + ncssCatches + ncssFinally;
 }
 
-int NcssMetric::ncss(ObjCAtCatchStmt *stmt)
+int NcssMetric::ncss(clang::ObjCAtCatchStmt *stmt)
 {
     return 1 + ncss(stmt->getCatchBody());
 }
 
-int NcssMetric::ncss(ObjCAtFinallyStmt *stmt)
+int NcssMetric::ncss(clang::ObjCAtFinallyStmt *stmt)
 {
     return 1 + ncss(stmt->getFinallyBody());
 }
 
-int NcssMetric::ncss(ObjCAtSynchronizedStmt *stmt)
+int NcssMetric::ncss(clang::ObjCAtSynchronizedStmt *stmt)
 {
     return 1 + ncss(stmt->getSynchBody());
 }
 
-int NcssMetric::ncss(ObjCAutoreleasePoolStmt *stmt)
+int NcssMetric::ncss(clang::ObjCAutoreleasePoolStmt *stmt)
 {
     return 1 + ncss(stmt->getSubStmt());
 }
 
-extern "C" int getNcssCount(Decl *decl)
+extern "C" int getNcssCount(clang::Decl *decl)
 {
     if (decl->hasBody())
     {

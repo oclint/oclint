@@ -5,6 +5,10 @@
 #include "oclint/helper/SuppressHelper.h"
 #include "oclint/util/StdUtil.h"
 
+using namespace std;
+using namespace clang;
+using namespace oclint;
+
 /*
  * References:
  * - Brian A. Nejmeh (1988). “NPATH: a measure of execution path complexity and

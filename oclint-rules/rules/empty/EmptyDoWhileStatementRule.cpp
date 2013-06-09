@@ -3,6 +3,10 @@
 
 #include "../abstract/AbstractEmptyBlockStmtRule.h"
 
+using namespace std;
+using namespace clang;
+using namespace oclint;
+
 class EmptyDoWhileStatementRule : public AbstractEmptyBlockStmtRule<EmptyDoWhileStatementRule>
 {
 private:

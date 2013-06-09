@@ -1,9 +1,11 @@
 #include "oclint/metric/StmtDepthMetric.h"
 
-int StmtDepthMetric::depth(CompoundStmt *stmt)
+using namespace oclint;
+
+int StmtDepthMetric::depth(clang::CompoundStmt *stmt)
 {
     int maxDepth = 0;
-    for (CompoundStmt::body_iterator body = stmt->body_begin(), bodyEnd = stmt->body_end();
+    for (clang::CompoundStmt::body_iterator body = stmt->body_begin(), bodyEnd = stmt->body_end();
         body != bodyEnd; body++)
     {
         int depthOfSubStmt = depth(*body);
@@ -15,11 +17,11 @@ int StmtDepthMetric::depth(CompoundStmt *stmt)
     return 1 + maxDepth;
 }
 
-int StmtDepthMetric::depth(IfStmt *stmt)
+int StmtDepthMetric::depth(clang::IfStmt *stmt)
 {
     int depthThen = depth(stmt->getThen());
     int depthElse = 0;
-    Stmt *elseStmt = stmt->getElse();
+    clang::Stmt *elseStmt = stmt->getElse();
     if (elseStmt)
     {
         depthElse = depth(elseStmt);
@@ -27,37 +29,37 @@ int StmtDepthMetric::depth(IfStmt *stmt)
     return depthThen > depthElse ? depthThen : depthElse;
 }
 
-int StmtDepthMetric::depth(WhileStmt *stmt)
+int StmtDepthMetric::depth(clang::WhileStmt *stmt)
 {
     return depth(stmt->getBody());
 }
 
-int StmtDepthMetric::depth(DoStmt *stmt)
+int StmtDepthMetric::depth(clang::DoStmt *stmt)
 {
     return depth(stmt->getBody());
 }
 
-int StmtDepthMetric::depth(ForStmt *stmt)
+int StmtDepthMetric::depth(clang::ForStmt *stmt)
 {
     return depth(stmt->getBody());
 }
 
-int StmtDepthMetric::depth(ObjCForCollectionStmt *stmt)
+int StmtDepthMetric::depth(clang::ObjCForCollectionStmt *stmt)
 {
     return depth(stmt->getBody());
 }
 
-int StmtDepthMetric::depth(SwitchStmt *stmt)
+int StmtDepthMetric::depth(clang::SwitchStmt *stmt)
 {
     return depth(stmt->getBody());
 }
 
-int StmtDepthMetric::depth(SwitchCase *stmt)
+int StmtDepthMetric::depth(clang::SwitchCase *stmt)
 {
     return depth(stmt->getSubStmt());
 }
 
-int StmtDepthMetric::depth(CXXTryStmt *stmt)
+int StmtDepthMetric::depth(clang::CXXTryStmt *stmt)
 {
     int maxDepth = depth(stmt->getTryBlock());
     for (int catchIndex = 0; catchIndex < stmt->getNumHandlers(); catchIndex++)
@@ -71,12 +73,12 @@ int StmtDepthMetric::depth(CXXTryStmt *stmt)
     return maxDepth;
 }
 
-int StmtDepthMetric::depth(CXXCatchStmt *stmt)
+int StmtDepthMetric::depth(clang::CXXCatchStmt *stmt)
 {
     return depth(stmt->getHandlerBlock());
 }
 
-int StmtDepthMetric::depth(ObjCAtTryStmt *stmt)
+int StmtDepthMetric::depth(clang::ObjCAtTryStmt *stmt)
 {
     int maxDepth = depth(stmt->getTryBody());
     for (int catchIndex = 0; catchIndex < stmt->getNumCatchStmts(); catchIndex++)
@@ -88,33 +90,33 @@ int StmtDepthMetric::depth(ObjCAtTryStmt *stmt)
         }
     }
 
-    ObjCAtFinallyStmt *finallyStmt = stmt->getFinallyStmt();
+    clang::ObjCAtFinallyStmt *finallyStmt = stmt->getFinallyStmt();
     int depthFinally = finallyStmt ? depth(finallyStmt) : 0;
 
     return maxDepth > depthFinally ? maxDepth : depthFinally;
 }
 
-int StmtDepthMetric::depth(ObjCAtCatchStmt *stmt)
+int StmtDepthMetric::depth(clang::ObjCAtCatchStmt *stmt)
 {
     return depth(stmt->getCatchBody());
 }
 
-int StmtDepthMetric::depth(ObjCAtFinallyStmt *stmt)
+int StmtDepthMetric::depth(clang::ObjCAtFinallyStmt *stmt)
 {
     return depth(stmt->getFinallyBody());
 }
 
-int StmtDepthMetric::depth(ObjCAtSynchronizedStmt *stmt)
+int StmtDepthMetric::depth(clang::ObjCAtSynchronizedStmt *stmt)
 {
     return depth(stmt->getSynchBody());
 }
 
-int StmtDepthMetric::depth(ObjCAutoreleasePoolStmt *stmt)
+int StmtDepthMetric::depth(clang::ObjCAutoreleasePoolStmt *stmt)
 {
     return depth(stmt->getSubStmt());
 }
 
-extern "C" int getStmtDepth(Stmt *stmt)
+extern "C" int getStmtDepth(clang::Stmt *stmt)
 {
     StmtDepthMetric stmtDepthMetric;
     return stmtDepthMetric.depth(stmt);

@@ -4,6 +4,10 @@
 #include "oclint/metric/StmtDepthMetric.h"
 #include "oclint/util/StdUtil.h"
 
+using namespace std;
+using namespace clang;
+using namespace oclint;
+
 class NestedBlockDepthRule : public AbstractASTVisitorRule<NestedBlockDepthRule>
 {
 private:

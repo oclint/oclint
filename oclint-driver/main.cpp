@@ -85,7 +85,7 @@ static OwningPtr<OptTable> Options(createDriverOptTable());
 
 
 static string absoluteWorkingPath("");
-static Reporter *selectedReporter = NULL;
+static oclint::Reporter *selectedReporter = NULL;
 
 void preserveWorkingPath()
 {
@@ -162,7 +162,7 @@ void consumeRuleConfigurations()
         string key = configuration.substr(0, indexOfSeparator);
         string value = configuration.substr(indexOfSeparator + 1,
             configuration.size() - indexOfSeparator - 1);
-        RuleConfiguration::addConfiguration(key, value);
+        oclint::RuleConfiguration::addConfiguration(key, value);
     }
 }
 
@@ -189,9 +189,9 @@ void loadReporter(const char* executablePath)
                 closedir(pDir);
                 throw oclint::GenericException("cannot open dynamic library: " + reporterPath);
             }
-            Reporter* (*createMethodPointer)();
-            createMethodPointer = (Reporter* (*)())dlsym(reporterHandle, "create");
-            Reporter* reporter = (Reporter*)createMethodPointer();
+            oclint::Reporter* (*createMethodPointer)();
+            createMethodPointer = (oclint::Reporter* (*)())dlsym(reporterHandle, "create");
+            oclint::Reporter* reporter = (oclint::Reporter*)createMethodPointer();
             if (reporter->name() == argReportType)
             {
                 selectedReporter = reporter;
@@ -207,7 +207,7 @@ void loadReporter(const char* executablePath)
     }
 }
 
-bool numberOfViolationsExceedThreshold(Results *results)
+bool numberOfViolationsExceedThreshold(oclint::Results *results)
 {
     return results->numberOfViolationsWithPriority(1) > argMaxP1 ||
         results->numberOfViolationsWithPriority(2) > argMaxP2 ||
@@ -239,12 +239,12 @@ void disposeOutStream(ostream* out)
     }
 }
 
-Reporter* reporter()
+oclint::Reporter* reporter()
 {
     return selectedReporter;
 }
 
-void printCompilerDiagnostics(ostream &out, ViolationSet &violationSet, string headerText)
+void printCompilerDiagnostics(ostream &out, oclint::ViolationSet &violationSet, string headerText)
 {
     if (violationSet.numberOfViolations() > 0)
     {
@@ -252,7 +252,7 @@ void printCompilerDiagnostics(ostream &out, ViolationSet &violationSet, string h
         for (int index = 0, numberOfViolations = violationSet.numberOfViolations();
             index < numberOfViolations; index++)
         {
-            Violation violation = violationSet.getViolations().at(index);
+            oclint::Violation violation = violationSet.getViolations().at(index);
             out << violation.path << ":" << violation.startLine << ":" << violation.startColumn;
             out << ": " << violation.message << endl;
         }
@@ -286,7 +286,7 @@ int prepare(const char* executablePath)
         printErrorLine(e.what());
         return RULE_NOT_FOUND;
     }
-    if (RuleSet::numberOfRules() <= 0)
+    if (oclint::RuleSet::numberOfRules() <= 0)
     {
         printErrorLine("no rule loaded");
         return RULE_NOT_FOUND;
@@ -316,8 +316,8 @@ int main(int argc, const char **argv)
         return prepareStatus;
     }
 
-    ViolationSet errorSet;
-    ViolationSet warningSet;
+    oclint::ViolationSet errorSet;
+    oclint::ViolationSet warningSet;
     oclint::RulesetBasedAnalyzer analyzer;
     oclint::Driver driver;
     try
@@ -330,7 +330,7 @@ int main(int argc, const char **argv)
         printErrorLine(e.what());
         return ERROR_WHILE_PROCESSING;
     }
-    Results *results = Results::getInstance();
+    oclint::Results *results = oclint::Results::getInstance();
 
     try
     {

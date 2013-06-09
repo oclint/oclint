@@ -12,23 +12,25 @@ namespace clang
 
 #include "oclint/ViolationSet.h"
 
-using namespace std;
-using namespace clang;
+namespace oclint
+{
 
 class RuleCarrier
 {
 private:
     ViolationSet *_violationSet;
-    ASTContext *_astContext;
+    clang::ASTContext *_astContext;
 
 public:
-    RuleCarrier(ASTContext *astContext, ViolationSet *violationSet);
-    ASTContext* getASTContext();
-    SourceManager& getSourceManager();
-    TranslationUnitDecl* getTranslationUnitDecl();
+    RuleCarrier(clang::ASTContext *astContext, ViolationSet *violationSet);
+    clang::ASTContext* getASTContext();
+    clang::SourceManager& getSourceManager();
+    clang::TranslationUnitDecl* getTranslationUnitDecl();
 
-    void addViolation(string filePath, int startLine, int startColumn,
-        int endLine, int endColumn, RuleBase *rule, const string& message = "");
+    void addViolation(std::string filePath, int startLine, int startColumn,
+        int endLine, int endColumn, RuleBase *rule, const std::string& message = "");
 };
+
+} // end namespace oclint
 
 #endif

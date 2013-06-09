@@ -2,6 +2,8 @@
 
 #include "oclint/metric/StmtDepthMetric.h"
 
+using namespace oclint;
+
 DeclarationMatcher functionDeclMatcher = functionDecl(hasName("m")).bind("functionDecl");
 
 class StmtDepthCallback : public MatchFinder::MatchCallback

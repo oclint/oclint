@@ -2,6 +2,10 @@
 #include "oclint/RuleSet.h"
 #include "oclint/util/StdUtil.h"
 
+using namespace std;
+using namespace clang;
+using namespace oclint;
+
 class ThrowExceptionFromFinallyBlockRule :
     public AbstractASTVisitorRule<ThrowExceptionFromFinallyBlockRule>
 {

@@ -2,6 +2,10 @@
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 
+using namespace std;
+using namespace clang;
+using namespace oclint;
+
 class TooFewBranchesInSwitchStatementRule :
     public AbstractASTVisitorRule<TooFewBranchesInSwitchStatementRule>
 {

@@ -1,6 +1,10 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
+using namespace std;
+using namespace clang;
+using namespace oclint;
+
 class MissingBreakInSwitchStatementRule :
     public AbstractASTVisitorRule<MissingBreakInSwitchStatementRule>
 {

@@ -3,10 +3,11 @@
 
 #include <vector>
 
+namespace oclint
+{
+
 class Violation;
 class ViolationSet;
-
-using namespace std;
 
 class Results
 {
@@ -19,17 +20,19 @@ public:
     static Results* getInstance();
 
 protected:
-    vector<ViolationSet*>* _collection;
+    std::vector<ViolationSet*>* _collection;
 
 public:
     void add(ViolationSet *violationSet);
 
-    vector<Violation> allViolations();
+    std::vector<Violation> allViolations();
 
     int numberOfViolations();
     int numberOfViolationsWithPriority(int priority);
     int numberOfFiles();
     int numberOfFilesWithViolations();
 };
+
+} // end namespace oclint
 
 #endif

@@ -1,6 +1,8 @@
 #include "oclint/Version.h"
 
-string Version::identifier()
+using namespace oclint;
+
+std::string Version::identifier()
 {
     return "0.8dev";
 }

@@ -2,6 +2,8 @@
 
 #include "oclint/metric/CyclomaticComplexityMetric.h"
 
+using namespace oclint;
+
 DeclarationMatcher functionDeclMatcher = functionDecl().bind("functionDecl");
 
 class CyclomaticCallback : public MatchFinder::MatchCallback

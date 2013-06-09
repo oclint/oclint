@@ -5,16 +5,19 @@
 
 #include "oclint/AbstractASTVisitorRule.h"
 
-using namespace clang::ast_matchers;
+namespace oclint
+{
+
 
 class AbstractASTMatcherRule :
-    public AbstractASTVisitorRule<AbstractASTMatcherRule>, public MatchFinder::MatchCallback
+    public AbstractASTVisitorRule<AbstractASTMatcherRule>,
+    public clang::ast_matchers::MatchFinder::MatchCallback
 {
 private:
-    MatchFinder _finder;
+    clang::ast_matchers::MatchFinder _finder;
 
 protected:
-    virtual void run(const MatchFinder::MatchResult &result)
+    virtual void run(const clang::ast_matchers::MatchFinder::MatchResult &result)
     {
         callback(result);
     }
@@ -31,13 +34,13 @@ public:
         setUpMatcher();
     }
 
-    bool VisitDecl(Decl *decl)
+    bool VisitDecl(clang::Decl *decl)
     {
         _finder.match(*decl, *_carrier->getASTContext());
         return true;
     }
 
-    bool VisitStmt(Stmt *stmt)
+    bool VisitStmt(clang::Stmt *stmt)
     {
         _finder.match(*stmt, *_carrier->getASTContext());
         return true;
@@ -47,7 +50,9 @@ public:
     virtual ~AbstractASTMatcherRule() {}
 
     virtual void setUpMatcher() = 0;
-    virtual void callback(const MatchFinder::MatchResult &result) = 0;
+    virtual void callback(const clang::ast_matchers::MatchFinder::MatchResult &result) = 0;
 };
+
+} // end namespace oclint
 
 #endif

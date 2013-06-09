@@ -1,11 +1,10 @@
 #ifndef OCLINT_METRIC_NPATHCOMPLEXITYMETRIC_H
 #define OCLINT_METRIC_NPATHCOMPLEXITYMETRIC_H
 
-#define DISPATH(STMT_TYPE) if (isa<STMT_TYPE>(node)) return nPath(dyn_cast<STMT_TYPE>(node))
+#define DISPATH(STMT_TYPE) if (clang::isa<STMT_TYPE>(node)) \
+return nPath(clang::dyn_cast<STMT_TYPE>(node))
 
 #include <clang/AST/AST.h>
-
-using namespace clang;
 
 /*
  * References:
@@ -13,50 +12,55 @@ using namespace clang;
  *   its applications”. Communications of the ACM 31 (2) p. 188-200
  */
 
+namespace oclint
+{
+
 class NPathComplexityMetric
 {
 public:
-    int nPath(Stmt *node)
+    int nPath(clang::Stmt *node)
     {
         if (node)
         {
-            DISPATH(CompoundStmt);
-            DISPATH(IfStmt);
-            DISPATH(WhileStmt);
-            DISPATH(DoStmt);
-            DISPATH(ForStmt);
-            DISPATH(SwitchStmt);
-            DISPATH(ObjCForCollectionStmt);
+            DISPATH(clang::CompoundStmt);
+            DISPATH(clang::IfStmt);
+            DISPATH(clang::WhileStmt);
+            DISPATH(clang::DoStmt);
+            DISPATH(clang::ForStmt);
+            DISPATH(clang::SwitchStmt);
+            DISPATH(clang::ObjCForCollectionStmt);
         }
         return 1;
     }
 
-    int nPath(Expr *node)
+    int nPath(clang::Expr *node)
     {
         if (node)
         {
-            DISPATH(ConditionalOperator);
-            DISPATH(BinaryOperator);
-            DISPATH(ParenExpr);
-            DISPATH(CastExpr);
+            DISPATH(clang::ConditionalOperator);
+            DISPATH(clang::BinaryOperator);
+            DISPATH(clang::ParenExpr);
+            DISPATH(clang::CastExpr);
         }
         return 0;
     }
 
-    int nPath(CompoundStmt *stmt);
-    int nPath(IfStmt *stmt);
-    int nPath(WhileStmt *stmt);
-    int nPath(DoStmt *stmt);
-    int nPath(ForStmt *stmt);
-    int nPath(ObjCForCollectionStmt *stmt);
-    int nPath(SwitchStmt *stmt);
-    int nPath(ConditionalOperator *expr);
-    int nPath(BinaryOperator *expr);
-    int nPath(ParenExpr *expr);
-    int nPath(CastExpr *expr);
+    int nPath(clang::CompoundStmt *stmt);
+    int nPath(clang::IfStmt *stmt);
+    int nPath(clang::WhileStmt *stmt);
+    int nPath(clang::DoStmt *stmt);
+    int nPath(clang::ForStmt *stmt);
+    int nPath(clang::ObjCForCollectionStmt *stmt);
+    int nPath(clang::SwitchStmt *stmt);
+    int nPath(clang::ConditionalOperator *expr);
+    int nPath(clang::BinaryOperator *expr);
+    int nPath(clang::ParenExpr *expr);
+    int nPath(clang::CastExpr *expr);
 };
 
-extern "C" int getNPathComplexity(Stmt *stmt);
+} // end namespace oclint
+
+extern "C" int getNPathComplexity(clang::Stmt *stmt);
 
 #undef DISPATH
 

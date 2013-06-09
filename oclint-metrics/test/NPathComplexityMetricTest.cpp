@@ -2,6 +2,8 @@
 
 #include "oclint/metric/NPathComplexityMetric.h"
 
+using namespace oclint;
+
 DeclarationMatcher functionDeclMatcher = functionDecl().bind("functionDecl");
 
 class NPathCallback : public MatchFinder::MatchCallback

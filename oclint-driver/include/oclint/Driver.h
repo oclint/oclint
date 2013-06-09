@@ -16,12 +16,12 @@ namespace tooling
 }
 }
 
-class ViolationSet;
-
 #include "oclint/Analyzer.h"
 
 namespace oclint
 {
+
+class ViolationSet;
 
 class Driver
 {

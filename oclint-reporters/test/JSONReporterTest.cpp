@@ -5,14 +5,14 @@
 
 #include "JSONReporter.cpp"
 
-using namespace std;
 using namespace ::testing;
+using namespace oclint;
 
 class MockRuleBase : public RuleBase
 {
 public:
     MOCK_METHOD0(apply, void());
-    MOCK_CONST_METHOD0(name, const string());
+    MOCK_CONST_METHOD0(name, const std::string());
     MOCK_CONST_METHOD0(priority, int());
 };
 
@@ -34,56 +34,56 @@ TEST_F(JSONReporterTest, PropertyTest)
 
 TEST_F(JSONReporterTest, WriteHeader)
 {
-    ostringstream oss;
+    std::ostringstream oss;
     reporter.writeHeader(oss, "test");
     EXPECT_THAT(oss.str(), HasSubstr("\"version\":\"test\",\"url\":\"http://oclint.org\","));
 }
 
 TEST_F(JSONReporterTest, WriteKey)
 {
-    ostringstream oss;
+    std::ostringstream oss;
     reporter.writeKey(oss, "key");
     EXPECT_THAT(oss.str(), StrEq("\"key\":"));
 }
 
 TEST_F(JSONReporterTest, WriteComma)
 {
-    ostringstream oss;
+    std::ostringstream oss;
     reporter.writeComma(oss, false);
     EXPECT_THAT(oss.str(), StrEq(","));
 }
 
 TEST_F(JSONReporterTest, WriteCommaFalse)
 {
-    ostringstream oss;
+    std::ostringstream oss;
     reporter.writeComma(oss, true);
     EXPECT_THAT(oss.str(), StrEq(""));
 }
 
 TEST_F(JSONReporterTest, writeKeyIntValue)
 {
-    ostringstream oss;
+    std::ostringstream oss;
     reporter.writeKeyValue(oss, "key", 1);
     EXPECT_THAT(oss.str(), StrEq("\"key\":1,"));
 }
 
 TEST_F(JSONReporterTest, writeTailKeyIntValue)
 {
-    ostringstream oss;
+    std::ostringstream oss;
     reporter.writeKeyValue(oss, "key", 1, true);
     EXPECT_THAT(oss.str(), StrEq("\"key\":1"));
 }
 
 TEST_F(JSONReporterTest, writeKeyStringValue)
 {
-    ostringstream oss;
+    std::ostringstream oss;
     reporter.writeKeyValue(oss, "key", "value");
     EXPECT_THAT(oss.str(), StrEq("\"key\":\"value\","));
 }
 
 TEST_F(JSONReporterTest, writeTailKeyStringValue)
 {
-    ostringstream oss;
+    std::ostringstream oss;
     reporter.writeKeyValue(oss, "key", "value", true);
     EXPECT_THAT(oss.str(), StrEq("\"key\":\"value\""));
 }
@@ -91,7 +91,7 @@ TEST_F(JSONReporterTest, writeTailKeyStringValue)
 TEST_F(JSONReporterTest, WriteSummary)
 {
     Results *restults = Results::getInstance();
-    ostringstream oss;
+    std::ostringstream oss;
     reporter.writeSummary(oss, *restults);
     EXPECT_THAT(oss.str(), StartsWith("\"summary\":"));
     EXPECT_THAT(oss.str(), HasSubstr("\"numberOfFiles\":0"));
@@ -106,7 +106,7 @@ TEST_F(JSONReporterTest, WriteViolation)
 {
     RuleBase *rule = new MockRuleBase();
     Violation violation(rule, "test path", 1, 2, 3, 4, "test message");
-    ostringstream oss;
+    std::ostringstream oss;
     reporter.writeViolation(oss, violation);
     EXPECT_THAT(oss.str(), HasSubstr("\"path\":\"test path\""));
     EXPECT_THAT(oss.str(), HasSubstr("\"startLine\":1"));
