@@ -16,6 +16,8 @@ namespace tooling
 }
 }
 
+class ViolationSet;
+
 #include "oclint/Analyzer.h"
 
 namespace oclint
@@ -24,8 +26,11 @@ namespace oclint
 class Driver
 {
 public:
-    int run(const clang::tooling::CompilationDatabase &compilationDatabase,
-        llvm::ArrayRef<std::string> sourcePaths, oclint::Analyzer &analyzer);
+    void run(const clang::tooling::CompilationDatabase &compilationDatabase,
+        llvm::ArrayRef<std::string> sourcePaths,
+        oclint::Analyzer &analyzer,
+        ViolationSet &errorSet,
+        ViolationSet &warningSet);
 };
 
 } // end namespace oclint

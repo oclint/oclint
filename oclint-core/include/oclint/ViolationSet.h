@@ -17,6 +17,8 @@ public:
     void addViolation(Violation& violation);
     int numberOfViolations() const;
     const vector<Violation> getViolations() const;
+
+    // TODO: getViolation(int index)
 };
 
 #endif

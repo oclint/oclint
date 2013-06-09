@@ -47,24 +47,29 @@
 
 #include <unistd.h>
 
+#include <sstream>
+
 #include <llvm/ADT/IntrusiveRefCntPtr.h>
 #include <llvm/ADT/StringRef.h>
 #include <llvm/Support/Debug.h>
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/Host.h>
 #include <llvm/Support/raw_ostream.h>
+#include <clang/Basic/Diagnostic.h>
 #include <clang/Driver/Compilation.h>
 #include <clang/Driver/Driver.h>
+#include <clang/Driver/Job.h>
 #include <clang/Driver/Tool.h>
 #include <clang/Frontend/CompilerInstance.h>
 #include <clang/Frontend/FrontendDiagnostic.h>
-#include <clang/Frontend/TextDiagnosticPrinter.h>
 #include <clang/Tooling/ArgumentsAdjusters.h>
 #include <clang/Tooling/CompilationDatabase.h>
 #include <clang/Tooling/Tooling.h>
 
-#include "oclint/Driver.h"
 #include "oclint/CompilerInstance.h"
+#include "oclint/Driver.h"
+#include "oclint/GenericException.h"
+#include "oclint/ViolationSet.h"
 
 using namespace oclint;
 
@@ -78,25 +83,53 @@ static clang::driver::Driver *newDriver(clang::DiagnosticsEngine *diagnostics,
     return driver;
 }
 
-static const clang::driver::ArgStringList *getCC1Arguments(
-    clang::DiagnosticsEngine *diagnostics,
-    clang::driver::Compilation *compilation)
+
+static std::string compilationJobsToString(const clang::driver::Job &job)
+{
+    std::stringstream buffer;
+    if (const clang::driver::Command *cmd = clang::dyn_cast<clang::driver::Command>(&job))
+    {
+        buffer << cmd->getExecutable();
+        for (clang::driver::ArgStringList::const_iterator argIdx = cmd->getArguments().begin(),
+            argEnd = cmd->getArguments().end(); argIdx != argEnd; ++argIdx)
+        {
+            buffer << " ";
+            for (const char *s = *argIdx; *s; ++s)
+            {
+                if (*s == '"' || *s == '\\' || *s == '$')
+                {
+                    buffer << '\\';
+                }
+                buffer << *s;
+            }
+        }
+        buffer << "\n";
+    }
+    else
+    {
+        const clang::driver::JobList *jobs = clang::cast<clang::driver::JobList>(&job);
+        for (clang::driver::JobList::const_iterator jobIdx = jobs->begin(), jobEnd = jobs->end();
+            jobIdx != jobEnd; ++jobIdx)
+        {
+            buffer << compilationJobsToString(**jobIdx);
+        }
+    }
+    return buffer.str();
+}
+
+static const clang::driver::ArgStringList *getCC1Arguments(clang::driver::Compilation *compilation)
 {
     const clang::driver::JobList &jobList = compilation->getJobs();
     if (jobList.size() != 1 || !clang::isa<clang::driver::Command>(*jobList.begin()))
     {
-        llvm::SmallString<256> errorMsg;
-        llvm::raw_svector_ostream errorStream(errorMsg);
-        compilation->PrintJob(errorStream, compilation->getJobs(), "; ", true);
-        diagnostics->Report(clang::diag::err_fe_expected_compiler_job) << errorStream.str();
-        return NULL;
+        throw oclint::GenericException("one compiler command contains multiple jobs:\n" +
+            compilationJobsToString(compilation->getJobs()) + "\n");
     }
 
     const clang::driver::Command *cmd = clang::cast<clang::driver::Command>(*jobList.begin());
     if (llvm::StringRef(cmd->getCreator().getName()) != "clang")
     {
-        diagnostics->Report(clang::diag::err_fe_expected_clang_command);
-        return NULL;
+        throw oclint::GenericException("expected a clang compiler command");
     }
 
     return &cmd->getArguments();
@@ -146,10 +179,54 @@ static void constructCompileCommands(
     }
 }
 
-int __attribute__((annotate("oclint:suppress")))
+class CarrierDiagnosticConsumer : public clang::DiagnosticConsumer
+{
+private:
+    ViolationSet *_errorSet;
+    ViolationSet *_warningSet;
+
+public:
+    CarrierDiagnosticConsumer(ViolationSet *errorSet, ViolationSet *warningSet)
+    {
+        _errorSet = errorSet;
+        _warningSet = warningSet;
+    }
+
+    void HandleDiagnostic(clang::DiagnosticsEngine::Level diagnosticLevel,
+        const clang::Diagnostic &diagnosticInfo)
+    {
+        clang::DiagnosticConsumer::HandleDiagnostic(diagnosticLevel, diagnosticInfo);
+
+        clang::SourceLocation location = diagnosticInfo.getLocation();
+        clang::SourceManager *sourceManager = &diagnosticInfo.getSourceManager();
+        llvm::StringRef filename = sourceManager->getFilename(location);
+        int line = sourceManager->getPresumedLineNumber(location);
+        int column = sourceManager->getPresumedColumnNumber(location);
+
+        clang::SmallString<100> diagnosticMessage;
+        diagnosticInfo.FormatDiagnostic(diagnosticMessage);
+
+        Violation violation(0, filename.str(), line, column, 0, 0, diagnosticMessage.str().str());
+
+        if (diagnosticLevel == clang::DiagnosticsEngine::Warning)
+        {
+            _warningSet->addViolation(violation);
+        }
+        if (diagnosticLevel == clang::DiagnosticsEngine::Error ||
+            diagnosticLevel == clang::DiagnosticsEngine::Fatal)
+        {
+            _errorSet->addViolation(violation);
+        }
+    }
+};
+
+void __attribute__((annotate("oclint:suppress")))
     /* this method breaks every law as it could, high refactoring is necessary */
     Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
-    llvm::ArrayRef<std::string> sourcePaths, oclint::Analyzer &analyzer)
+        llvm::ArrayRef<std::string> sourcePaths,
+        oclint::Analyzer &analyzer,
+        ViolationSet &errorSet,
+        ViolationSet &warningSet)
 {
     std::vector<std::pair<std::string, clang::tooling::CompileCommand> > compileCommands;
     constructCompileCommands(compileCommands, compilationDatabase, sourcePaths);
@@ -160,24 +237,19 @@ int __attribute__((annotate("oclint:suppress")))
     static int staticSymbol;
     std::string mainExecutable = llvm::sys::Path::GetMainExecutable("oclint", &staticSymbol).str();
 
-    bool processingFailed = false;
-
     // compiling process
     DEBUG({
-        llvm::dbgs() << "\nStart compilation:\n";
+        llvm::dbgs() << "\nStart compiling:\n";
     });
     for (unsigned compileCmdIdx = 0, numCmds = compileCommands.size();
         compileCmdIdx < numCmds; compileCmdIdx++)
     {
-        DEBUG({
-            llvm::dbgs() << ".";
-        });
-
         // Prepare for command lines, and convert to old-school argv
         if (chdir(compileCommands[compileCmdIdx].second.Directory.c_str()))
         {
-            llvm::report_fatal_error("Cannot chdir into \"" +
-                compileCommands[compileCmdIdx].second.Directory + "\n!");
+            throw oclint::GenericException("Cannot change dictionary into \"" +
+                compileCommands[compileCmdIdx].second.Directory + "\", "
+                "please make sure the directory exists and you have permission to access!");
         }
         llvm::OwningPtr<clang::tooling::ArgumentsAdjuster> argumentsAdjusterPtr(
             new clang::tooling::ClangSyntaxOnlyAdjuster());
@@ -196,9 +268,11 @@ int __attribute__((annotate("oclint:suppress")))
         // create diagnostic engine
         llvm::IntrusiveRefCntPtr<clang::DiagnosticOptions> diagOpts =
             new clang::DiagnosticOptions();
-        clang::TextDiagnosticPrinter diagnosticPrinter(llvm::errs(), &*diagOpts);
-        clang::DiagnosticsEngine diagnosticsEngine(llvm::IntrusiveRefCntPtr<clang::DiagnosticIDs>(
-            new clang::DiagnosticIDs()), &*diagOpts, &diagnosticPrinter, false);
+        clang::DiagnosticsEngine diagnosticsEngine(
+            llvm::IntrusiveRefCntPtr<clang::DiagnosticIDs>(new clang::DiagnosticIDs()),
+            &*diagOpts,
+            new clang::DiagnosticConsumer(),
+            false);
 
         // create driver
         const char *const mainBinaryPath = argv[0];
@@ -209,12 +283,7 @@ int __attribute__((annotate("oclint:suppress")))
         // create compilation invocation
         const llvm::OwningPtr<clang::driver::Compilation> compilation(
             driver->BuildCompilation(llvm::makeArrayRef(argv)));
-        const clang::driver::ArgStringList *const cc1Args = getCC1Arguments(
-            &diagnosticsEngine, compilation.get());
-        if (cc1Args == NULL)
-        {
-            processingFailed = true;
-        }
+        const clang::driver::ArgStringList *const cc1Args = getCC1Arguments(compilation.get());
         clang::CompilerInvocation *compilerInvocation = newInvocation(&diagnosticsEngine, *cc1Args);
 
         // create file manager
@@ -225,21 +294,33 @@ int __attribute__((annotate("oclint:suppress")))
         oclint::CompilerInstance *compiler = new oclint::CompilerInstance();
         compiler->setInvocation(compilerInvocation);
         compiler->setFileManager(fileManager);
-        compiler->createDiagnostics(); // Create the compilers actual diagnostics engine.
+        compiler->createDiagnostics(new CarrierDiagnosticConsumer(&errorSet, &warningSet));
         if (!compiler->hasDiagnostics())
         {
-            processingFailed = true;
+            throw oclint::GenericException("cannot create compiler diagnostics");
         }
         compiler->createSourceManager(*fileManager);
 
         // start compilation to get the abstract syntax tree (AST) for all source code
         compiler->start();
-        if (compiler->hasASTContext())
+        if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
         {
+            DEBUG({
+                llvm::dbgs() << ".";
+            });
             compilers.push_back(compiler);
             fileManagers.push_back(fileManager);
         }
+        else
+        {
+            DEBUG({
+                llvm::dbgs() << "X";
+            });
+        }
     }
+    DEBUG({
+        llvm::dbgs() << "\n";
+    });
 
     // collect a collection of AST contexts
     std::vector<clang::ASTContext *> localContexts;
@@ -249,21 +330,9 @@ int __attribute__((annotate("oclint:suppress")))
     }
 
     // use the analyzer to do the actual analysis
-    DEBUG({
-        llvm::dbgs() << "\nStart pre-processing:\n";
-    });
     analyzer.preprocess(localContexts);
-    DEBUG({
-        llvm::dbgs() << "\nStart analyzing:\n";
-    });
     analyzer.analyze(localContexts);
-    DEBUG({
-        llvm::dbgs() << "\nStart post-processing:\n";
-    });
     analyzer.postprocess(localContexts);
-    DEBUG({
-        llvm::dbgs() << "\n";
-    });
 
     // send out the signals to release or simply leak resources
     for (int compilerIndex = 0; compilerIndex < compilers.size(); compilerIndex++)
@@ -271,8 +340,5 @@ int __attribute__((annotate("oclint:suppress")))
         compilers.at(compilerIndex)->end();
         compilers.at(compilerIndex)->resetAndLeakFileManager();
         fileManagers.at(compilerIndex)->clearStatCaches();
-        processingFailed = false;
     }
-
-    return processingFailed ? 1 : 0;
 }

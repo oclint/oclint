@@ -12,16 +12,25 @@ using namespace oclint;
 
 void RulesetBasedAnalyzer::preprocess(std::vector<clang::ASTContext *> &contexts)
 {
+    DEBUG({
+        llvm::dbgs() << "Start pre-processing:\n";
+    });
     for (int cntxtIdx = 0, numCntxt = contexts.size(); cntxtIdx < numCntxt; cntxtIdx++)
     {
         DEBUG({
             llvm::dbgs() << ".";
         });
     }
+    DEBUG({
+        llvm::dbgs() << "\n";
+    });
 }
 
 void RulesetBasedAnalyzer::analyze(std::vector<clang::ASTContext *> &contexts)
 {
+    DEBUG({
+        llvm::dbgs() << "Start analyzing:\n";
+    });
     for (int cntxtIdx = 0, numCntxt = contexts.size(); cntxtIdx < numCntxt; cntxtIdx++)
     {
         DEBUG({
@@ -36,14 +45,23 @@ void RulesetBasedAnalyzer::analyze(std::vector<clang::ASTContext *> &contexts)
         Results *results = Results::getInstance();
         results->add(violationSet);
     }
+    DEBUG({
+        llvm::dbgs() << "\n";
+    });
 }
 
 void RulesetBasedAnalyzer::postprocess(std::vector<clang::ASTContext *> &contexts)
 {
+    DEBUG({
+        llvm::dbgs() << "Start post-processing:\n";
+    });
     for (int cntxtIdx = 0, numCntxt = contexts.size(); cntxtIdx < numCntxt; cntxtIdx++)
     {
         DEBUG({
             llvm::dbgs() << ".";
         });
     }
+    DEBUG({
+        llvm::dbgs() << "\n";
+    });
 }
