@@ -52,6 +52,28 @@ TEST(RedundantNilCheckRuleTest, ObjC_ExplicitButRedundantNullEqCheck)
 @end", 0, 14, 9, 14, 44);
 }
 
+TEST(RedundantNilCheckRuleTest, ObjC_EzNullNeCheck)
+{
+    testRuleOnObjCCode(new RedundantNilCheckRule(), objcPrefix +
+"@implementation A\n\
+- (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
++ (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
+    if (obj1 && ![obj1 isEqualTo:obj2]) { ; }                   \n\
+}                                                               \n\
+@end");
+}
+
+TEST(RedundantNilCheckRuleTest, ObjC_ExplicitNullNeCheck)
+{
+    testRuleOnObjCCode(new RedundantNilCheckRule(), objcPrefix +
+"@implementation A\n\
+- (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
++ (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
+    if (obj1 != nil && ![obj1 isEqualTo:obj2]) { ; }            \n\
+}                                                               \n\
+@end");
+}
+
 TEST(RedundantNilCheckRuleTest, ObjC_LogicOrEzNullEqCheck)
 {
     testRuleOnObjCCode(new RedundantNilCheckRule(), objcPrefix +
