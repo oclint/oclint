@@ -10,7 +10,16 @@ private:
 
     bool isRedundantNilCheck(BinaryOperator *binaryOperator)
     {
-        return binaryOperator->getOpcode() == BO_LAnd && isNeNullCheck(binaryOperator->getLHS());
+        if(binaryOperator->getOpcode() == BO_LAnd && isNeNullCheck(binaryOperator->getLHS()))
+        {
+            UnaryOperator *unaryOperator = dyn_cast<UnaryOperator>(binaryOperator->getRHS());
+            if (unaryOperator)
+            {
+                return unaryOperator->getOpcode() != UO_LNot;
+            }
+            return true;
+        }
+        return false;
     }
 
     bool hasVariableInExpr(string variableOfInterest, Expr *expr)
