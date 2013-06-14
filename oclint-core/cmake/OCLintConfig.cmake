@@ -21,7 +21,7 @@ INCLUDE_DIRECTORIES( ${LLVM_INCLUDE_DIRS} )
 LINK_DIRECTORIES( ${LLVM_LIBRARY_DIRS} )
 ADD_DEFINITIONS( ${LLVM_DEFINITIONS} )
 
-LLVM_MAP_COMPONENTS_TO_LIBRARIES(REQ_LLVM_LIBRARIES arminfo cppbackendinfo debuginfo hexagoninfo mblazeinfo mipsinfo msp430info nvptxinfo powerpcinfo sparcinfo x86info xcoreinfo armdesc hexagondesc mblazedesc mipsdesc msp430desc nvptxdesc powerpcdesc sparcdesc x86desc xcoredesc armasmparser asmparser bitreader mblazeasmparser mcparser mipsasmparser x86asmparser)
+LLVM_MAP_COMPONENTS_TO_LIBRARIES(REQ_LLVM_LIBRARIES arminfo cppbackendinfo debuginfo hexagoninfo mblazeinfo mipsinfo msp430info nvptxinfo powerpcinfo sparcinfo x86info xcoreinfo armdesc hexagondesc mblazedesc mipsdesc msp430desc nvptxdesc powerpcdesc sparcdesc x86desc xcoredesc armasmparser asmparser bitreader mblazeasmparser mcparser mipsasmparser x86asmparser option)
 
 SET(CLANG_LIBRARIES
     clangTooling

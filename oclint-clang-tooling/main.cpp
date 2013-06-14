@@ -8,6 +8,8 @@
 #include <string>
 
 #include <llvm/ADT/SmallString.h>
+#include <llvm/Option/OptTable.h>
+#include <llvm/Option/Option.h>
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/Support/CommandLine.h>
 #include <llvm/Support/Path.h>
@@ -18,7 +20,6 @@
 #include <clang/AST/ASTContext.h>
 #include <clang/AST/PrettyPrinter.h>
 #include <clang/AST/RecordLayout.h>
-#include <clang/Driver/OptTable.h>
 #include <clang/Driver/Options.h>
 #include <clang/Tooling/CommonOptionsParser.h>
 #include <clang/Tooling/Tooling.h>
@@ -85,7 +86,7 @@ static cl::extrahelp CommonHelp(CommonOptionsParser::HelpMessage);
 static cl::extrahelp MoreHelp(
     "For more information, please visit http://oclint.org\n"
 );
-static OwningPtr<OptTable> Options(createDriverOptTable());
+static OwningPtr<llvm::opt::OptTable> Options(createDriverOptTable());
 
 class Processor : public ASTConsumer
 {
