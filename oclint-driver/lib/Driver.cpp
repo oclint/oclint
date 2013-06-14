@@ -300,6 +300,10 @@ void __attribute__((annotate("oclint:suppress")))
             throw oclint::GenericException("cannot create compiler diagnostics");
         }
         compiler->createSourceManager(*fileManager);
+        if (!compiler->hasSourceManager())
+        {
+            throw oclint::GenericException("cannot create compiler source manager");
+        }
 
         // start compilation to get the abstract syntax tree (AST) for all source code
         compiler->start();
