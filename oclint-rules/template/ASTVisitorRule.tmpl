@@ -17,6 +17,9 @@ public:
         return {{RULE_PRIORITY}};
     }
 
+    virtual void setUp() {}
+    virtual void tearDown() {}
+
     {{VISIT_AST_NODE_BLOCK}}
 };
 
