@@ -51,6 +51,7 @@
 
 #include <llvm/ADT/IntrusiveRefCntPtr.h>
 #include <llvm/ADT/StringRef.h>
+#include <llvm/Option/ArgList.h>
 #include <llvm/Support/Debug.h>
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/Host.h>
@@ -90,7 +91,7 @@ static std::string compilationJobsToString(const clang::driver::Job &job)
     if (const clang::driver::Command *cmd = clang::dyn_cast<clang::driver::Command>(&job))
     {
         buffer << cmd->getExecutable();
-        for (clang::driver::ArgStringList::const_iterator argIdx = cmd->getArguments().begin(),
+        for (llvm::opt::ArgStringList::const_iterator argIdx = cmd->getArguments().begin(),
             argEnd = cmd->getArguments().end(); argIdx != argEnd; ++argIdx)
         {
             buffer << " ";
@@ -117,7 +118,7 @@ static std::string compilationJobsToString(const clang::driver::Job &job)
     return buffer.str();
 }
 
-static const clang::driver::ArgStringList *getCC1Arguments(clang::driver::Compilation *compilation)
+static const llvm::opt::ArgStringList *getCC1Arguments(clang::driver::Compilation *compilation)
 {
     const clang::driver::JobList &jobList = compilation->getJobs();
     if (jobList.size() != 1 || !clang::isa<clang::driver::Command>(*jobList.begin()))
@@ -137,7 +138,7 @@ static const clang::driver::ArgStringList *getCC1Arguments(clang::driver::Compil
 
 static clang::CompilerInvocation *newInvocation(
     clang::DiagnosticsEngine *diagnostics,
-    const clang::driver::ArgStringList &argStringList)
+    const llvm::opt::ArgStringList &argStringList)
 {
     assert(!argStringList.empty() && "Must at least contain the program name!");
     clang::CompilerInvocation *invocation = new clang::CompilerInvocation;
@@ -283,7 +284,7 @@ void __attribute__((annotate("oclint:suppress")))
         // create compilation invocation
         const llvm::OwningPtr<clang::driver::Compilation> compilation(
             driver->BuildCompilation(llvm::makeArrayRef(argv)));
-        const clang::driver::ArgStringList *const cc1Args = getCC1Arguments(compilation.get());
+        const llvm::opt::ArgStringList *const cc1Args = getCC1Arguments(compilation.get());
         clang::CompilerInvocation *compilerInvocation = newInvocation(&diagnosticsEngine, *cc1Args);
 
         // create file manager
