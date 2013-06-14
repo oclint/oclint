@@ -143,10 +143,11 @@ string getExecutablePath(const char *argv)
     llvm::SmallString<128> installedPath(argv);
     if (path::filename(installedPath) == installedPath)
     {
-        Path intermediatePath = llvm::sys::FindProgramByName(path::filename(installedPath.str()));
+        std::string intermediatePath = llvm::sys::FindProgramByName(
+            path::filename(installedPath.str()));
         if (!intermediatePath.empty())
         {
-            installedPath = intermediatePath.str();
+            installedPath = intermediatePath;
         }
     }
     fs::make_absolute(installedPath);
