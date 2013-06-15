@@ -59,6 +59,24 @@ TEST_F(TextReporterTest, WriteSummary)
     EXPECT_THAT(oss.str(), HasSubstr("P3=0"));
 }
 
+TEST_F(TextReporterTest, WriteViolations)
+{
+    RuleBase *rule = new MockRuleBase();
+    Violation violation1(rule, "test1 path", 1, 2, 3, 4, "test1 message");
+    Violation violation2(rule, "test2 path", 5, 6, 7, 8, "test2 message");
+    std::vector<Violation> violations;
+    violations.push_back(violation1);
+    violations.push_back(violation2);
+    std::ostringstream oss;
+    reporter.writeViolations(oss, violations);
+    EXPECT_THAT(oss.str(), HasSubstr("test1 path"));
+    EXPECT_THAT(oss.str(), HasSubstr("1:2"));
+    EXPECT_THAT(oss.str(), HasSubstr("test1 message"));
+    EXPECT_THAT(oss.str(), HasSubstr("test2 path"));
+    EXPECT_THAT(oss.str(), HasSubstr("5:6"));
+    EXPECT_THAT(oss.str(), HasSubstr("test2 message"));
+}
+
 TEST_F(TextReporterTest, WriteViolation)
 {
     RuleBase *rule = new MockRuleBase();
@@ -68,6 +86,34 @@ TEST_F(TextReporterTest, WriteViolation)
     EXPECT_THAT(oss.str(), HasSubstr("test path"));
     EXPECT_THAT(oss.str(), HasSubstr("1:2"));
     EXPECT_THAT(oss.str(), HasSubstr("test message"));
+}
+
+TEST_F(TextReporterTest, WriteCompilerErrorOrWarning)
+{
+    Violation violation(0, "test path", 1, 2, 3, 4, "test message");
+    std::ostringstream oss;
+    reporter.writeCompilerErrorOrWarning(oss, violation);
+    EXPECT_THAT(oss.str(), HasSubstr("test path"));
+    EXPECT_THAT(oss.str(), HasSubstr("1:2"));
+    EXPECT_THAT(oss.str(), HasSubstr("test message"));
+}
+
+TEST_F(TextReporterTest, WriteCompilerDiagnostics)
+{
+    Violation violation1(0, "test1 path", 1, 2, 3, 4, "test1 message");
+    Violation violation2(0, "test2 path", 5, 6, 7, 8, "test2 message");
+    std::vector<Violation> violations;
+    violations.push_back(violation1);
+    violations.push_back(violation2);
+    std::ostringstream oss;
+    reporter.writeCompilerDiagnostics(oss, violations, "test header text");
+    EXPECT_THAT(oss.str(), HasSubstr("test header text"));
+    EXPECT_THAT(oss.str(), HasSubstr("test1 path"));
+    EXPECT_THAT(oss.str(), HasSubstr("1:2"));
+    EXPECT_THAT(oss.str(), HasSubstr("test1 message"));
+    EXPECT_THAT(oss.str(), HasSubstr("test2 path"));
+    EXPECT_THAT(oss.str(), HasSubstr("5:6"));
+    EXPECT_THAT(oss.str(), HasSubstr("test2 message"));
 }
 
 int main(int argc, char **argv)

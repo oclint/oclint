@@ -15,17 +15,21 @@ public:
 
     virtual void report(Results *results, std::ostream &out)
     {
+        if (results->hasErrors())
+        {
+            writeCompilerDiagnostics(out, results->allErrors(),
+                "Compiler Errors:\n(please aware that these errors "
+                "will prevent OCLint from analyzing those source code)");
+        }
+        if (results->hasWarnings())
+        {
+            writeCompilerDiagnostics(out, results->allWarnings(), "Compiler Warnings:");
+        }
         writeHeader(out);
         out << std::endl << std::endl;
         writeSummary(out, *results);
         out << std::endl << std::endl;
-        std::vector<Violation> violationSet = results->allViolations();
-        for (int index = 0, numberOfViolations = violationSet.size();
-            index < numberOfViolations; index++)
-        {
-            writeViolation(out, violationSet.at(index));
-            out << std::endl;
-        }
+        writeViolations(out, results->allViolations());
         out << std::endl;
         writeFooter(out, Version::identifier());
         out << std::endl;
@@ -55,6 +59,35 @@ public:
         out << violation.path << ":" << violation.startLine << ":" << violation.startColumn;
         const RuleBase *rule = violation.rule;
         out << ": " << rule->name() << " P" << rule->priority() << " " << violation.message;
+    }
+
+    void writeViolations(std::ostream &out, std::vector<Violation> violations)
+    {
+        for (int index = 0, numberOfViolations = violations.size();
+            index < numberOfViolations; index++)
+        {
+            writeViolation(out, violations.at(index));
+            out << std::endl;
+        }
+    }
+
+    void writeCompilerErrorOrWarning(std::ostream &out, Violation &violation)
+    {
+        out << violation.path << ":" << violation.startLine << ":" << violation.startColumn;
+        out << ": " << violation.message;
+    }
+
+    void writeCompilerDiagnostics(std::ostream &out, std::vector<Violation> violations,
+        std::string headerText)
+    {
+        out << std::endl << headerText << std::endl << std::endl;
+        for (int index = 0, numberOfViolations = violations.size();
+            index < numberOfViolations; index++)
+        {
+            writeCompilerErrorOrWarning(out, violations.at(index));
+            out << std::endl;
+        }
+        out << std::endl;
     }
 };
 
