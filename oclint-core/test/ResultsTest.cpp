@@ -48,6 +48,10 @@ TEST(ResultsTest, EmptyResults)
     EXPECT_THAT(results->numberOfViolationsWithPriority(3), Eq(0));
     EXPECT_THAT(results->numberOfFiles(), Eq(0));
     EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(0));
+    EXPECT_THAT(results->numberOfErrors(), Eq(0));
+    EXPECT_THAT(results->numberOfWarnings(), Eq(0));
+    EXPECT_FALSE(results->hasErrors());
+    EXPECT_FALSE(results->hasWarnings());
 }
 
 TEST(ResultsTest, NumberOfFiles)
@@ -118,6 +122,60 @@ TEST(ResultsTest, NumberOfViolationsWithPrioerity)
     results->add(violationSetWithTwoViolations);
     EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(2));
     EXPECT_THAT(results->numberOfViolationsWithPriority(2), Eq(1));
+}
+
+TEST(ResultsTest, CompilerErrors)
+{
+    Results *results = new ResultsTest_ResultsStub();
+    Violation violation(0, "test error path", 1, 2, 0, 0, "test error message");
+    results->addError(violation);
+    EXPECT_TRUE(results->hasErrors());
+    EXPECT_THAT(results->numberOfErrors(), Eq(1));
+    Violation compareViolation = results->allErrors().at(0);
+    EXPECT_THAT(compareViolation.path, StrEq("test error path"));
+    EXPECT_THAT(compareViolation.message, StrEq("test error message"));
+    EXPECT_THAT(compareViolation.rule, IsNull());
+    EXPECT_THAT(compareViolation.startLine, Eq(1));
+    EXPECT_THAT(compareViolation.startColumn, Eq(2));
+    EXPECT_THAT(compareViolation.endLine, Eq(0));
+    EXPECT_THAT(compareViolation.endColumn, Eq(0));
+
+    EXPECT_THAT(results->numberOfViolations(), Eq(0));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(0), Eq(0));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(0));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(2), Eq(0));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(3), Eq(0));
+    EXPECT_THAT(results->numberOfFiles(), Eq(0));
+    EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(0));
+    EXPECT_THAT(results->numberOfWarnings(), Eq(0));
+    EXPECT_FALSE(results->hasWarnings());
+}
+
+TEST(ResultsTest, CompilerWarnings)
+{
+    Results *results = new ResultsTest_ResultsStub();
+    Violation violation(0, "test warning path", 1, 2, 0, 0, "test warning message");
+    results->addWarning(violation);
+    EXPECT_TRUE(results->hasWarnings());
+    EXPECT_THAT(results->numberOfWarnings(), Eq(1));
+    Violation compareViolation = results->allWarnings().at(0);
+    EXPECT_THAT(compareViolation.path, StrEq("test warning path"));
+    EXPECT_THAT(compareViolation.message, StrEq("test warning message"));
+    EXPECT_THAT(compareViolation.rule, IsNull());
+    EXPECT_THAT(compareViolation.startLine, Eq(1));
+    EXPECT_THAT(compareViolation.startColumn, Eq(2));
+    EXPECT_THAT(compareViolation.endLine, Eq(0));
+    EXPECT_THAT(compareViolation.endColumn, Eq(0));
+
+    EXPECT_THAT(results->numberOfViolations(), Eq(0));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(0), Eq(0));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(0));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(2), Eq(0));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(3), Eq(0));
+    EXPECT_THAT(results->numberOfFiles(), Eq(0));
+    EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(0));
+    EXPECT_THAT(results->numberOfErrors(), Eq(0));
+    EXPECT_FALSE(results->hasErrors());
 }
 
 int main(int argc, char **argv)

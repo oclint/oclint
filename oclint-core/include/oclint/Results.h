@@ -21,6 +21,8 @@ public:
 
 protected:
     std::vector<ViolationSet*>* _collection;
+    ViolationSet *_compilerErrorSet;
+    ViolationSet *_compilerWarningSet;
 
 public:
     void add(ViolationSet *violationSet);
@@ -31,6 +33,16 @@ public:
     int numberOfViolationsWithPriority(int priority);
     int numberOfFiles();
     int numberOfFilesWithViolations();
+
+    void addError(Violation& violation);
+    int numberOfErrors();
+    bool hasErrors();
+    std::vector<Violation> allErrors();
+
+    void addWarning(Violation& violation);
+    int numberOfWarnings();
+    bool hasWarnings();
+    std::vector<Violation> allWarnings();
 };
 
 } // end namespace oclint

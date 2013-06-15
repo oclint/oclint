@@ -19,12 +19,18 @@ Results* Results::getInstance()
 Results::Results()
 {
     _collection = new std::vector<ViolationSet*>();
+    _compilerErrorSet = new ViolationSet();
+    _compilerWarningSet = new ViolationSet();
 }
 
 Results::~Results()
 {
     delete _collection;
     _collection = NULL;
+    delete _compilerErrorSet;
+    _compilerErrorSet = NULL;
+    delete _compilerWarningSet;
+    _compilerWarningSet = NULL;
 }
 
 void Results::add(ViolationSet *violationSet)
@@ -89,3 +95,42 @@ int Results::numberOfFilesWithViolations()
     return numFiles;
 }
 
+void Results::addError(Violation& violation)
+{
+    _compilerErrorSet->addViolation(violation);
+}
+
+int Results::numberOfErrors()
+{
+    return _compilerErrorSet->numberOfViolations();
+}
+
+bool Results::hasErrors()
+{
+    return numberOfErrors() > 0;
+}
+
+std::vector<Violation> Results::allErrors()
+{
+    return _compilerErrorSet->getViolations();
+}
+
+void Results::addWarning(Violation& violation)
+{
+    _compilerWarningSet->addViolation(violation);
+}
+
+int Results::numberOfWarnings()
+{
+    return _compilerWarningSet->numberOfViolations();
+}
+
+bool Results::hasWarnings()
+{
+    return numberOfWarnings() > 0;
+}
+
+std::vector<Violation> Results::allWarnings()
+{
+    return _compilerWarningSet->getViolations();
+}
