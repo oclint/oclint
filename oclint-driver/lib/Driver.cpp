@@ -67,6 +67,7 @@
 #include <clang/Tooling/CompilationDatabase.h>
 #include <clang/Tooling/Tooling.h>
 
+#include "oclint/CarrierDiagnosticConsumer.h"
 #include "oclint/CompilerInstance.h"
 #include "oclint/Driver.h"
 #include "oclint/GenericException.h"
@@ -180,54 +181,10 @@ static void constructCompileCommands(
     }
 }
 
-class CarrierDiagnosticConsumer : public clang::DiagnosticConsumer
-{
-private:
-    ViolationSet *_errorSet;
-    ViolationSet *_warningSet;
-
-public:
-    CarrierDiagnosticConsumer(ViolationSet *errorSet, ViolationSet *warningSet)
-    {
-        _errorSet = errorSet;
-        _warningSet = warningSet;
-    }
-
-    void HandleDiagnostic(clang::DiagnosticsEngine::Level diagnosticLevel,
-        const clang::Diagnostic &diagnosticInfo)
-    {
-        clang::DiagnosticConsumer::HandleDiagnostic(diagnosticLevel, diagnosticInfo);
-
-        clang::SourceLocation location = diagnosticInfo.getLocation();
-        clang::SourceManager *sourceManager = &diagnosticInfo.getSourceManager();
-        llvm::StringRef filename = sourceManager->getFilename(location);
-        int line = sourceManager->getPresumedLineNumber(location);
-        int column = sourceManager->getPresumedColumnNumber(location);
-
-        clang::SmallString<100> diagnosticMessage;
-        diagnosticInfo.FormatDiagnostic(diagnosticMessage);
-
-        Violation violation(0, filename.str(), line, column, 0, 0, diagnosticMessage.str().str());
-
-        if (diagnosticLevel == clang::DiagnosticsEngine::Warning)
-        {
-            _warningSet->addViolation(violation);
-        }
-        if (diagnosticLevel == clang::DiagnosticsEngine::Error ||
-            diagnosticLevel == clang::DiagnosticsEngine::Fatal)
-        {
-            _errorSet->addViolation(violation);
-        }
-    }
-};
-
 void __attribute__((annotate("oclint:suppress")))
     /* this method breaks every law as it could, high refactoring is necessary */
     Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
-        llvm::ArrayRef<std::string> sourcePaths,
-        oclint::Analyzer &analyzer,
-        ViolationSet &errorSet,
-        ViolationSet &warningSet)
+        llvm::ArrayRef<std::string> sourcePaths, oclint::Analyzer &analyzer)
 {
     std::vector<std::pair<std::string, clang::tooling::CompileCommand> > compileCommands;
     constructCompileCommands(compileCommands, compilationDatabase, sourcePaths);
@@ -295,7 +252,7 @@ void __attribute__((annotate("oclint:suppress")))
         oclint::CompilerInstance *compiler = new oclint::CompilerInstance();
         compiler->setInvocation(compilerInvocation);
         compiler->setFileManager(fileManager);
-        compiler->createDiagnostics(new CarrierDiagnosticConsumer(&errorSet, &warningSet));
+        compiler->createDiagnostics(new CarrierDiagnosticConsumer());
         if (!compiler->hasDiagnostics())
         {
             throw oclint::GenericException("cannot create compiler diagnostics");

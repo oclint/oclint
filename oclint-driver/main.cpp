@@ -245,22 +245,6 @@ oclint::Reporter* reporter()
     return selectedReporter;
 }
 
-void printCompilerDiagnostics(ostream &out, oclint::ViolationSet &violationSet, string headerText)
-{
-    if (violationSet.numberOfViolations() > 0)
-    {
-        out << endl << headerText << endl << endl;
-        for (int index = 0, numberOfViolations = violationSet.numberOfViolations();
-            index < numberOfViolations; index++)
-        {
-            oclint::Violation violation = violationSet.getViolations().at(index);
-            out << violation.path << ":" << violation.startLine << ":" << violation.startColumn;
-            out << ": " << violation.message << endl;
-        }
-        out << endl;
-    }
-}
-
 void printErrorLine(const char *errorMessage)
 {
     cerr << endl << "oclint: error: " << errorMessage << endl;
@@ -317,14 +301,11 @@ int main(int argc, const char **argv)
         return prepareStatus;
     }
 
-    oclint::ViolationSet errorSet;
-    oclint::ViolationSet warningSet;
     oclint::RulesetBasedAnalyzer analyzer;
     oclint::Driver driver;
     try
     {
-        driver.run(optionsParser.getCompilations(), optionsParser.getSourcePathList(),
-            analyzer, errorSet, warningSet);
+        driver.run(optionsParser.getCompilations(), optionsParser.getSourcePathList(), analyzer);
     }
     catch (const exception& e)
     {
@@ -336,12 +317,6 @@ int main(int argc, const char **argv)
     try
     {
         ostream *out = outStream();
-
-        // deal with compiler errors/warnings if any
-        printCompilerDiagnostics(*out, errorSet, "Compiler Errors:\n(please aware that these errors"
-            " will precent OCLint from analyzing those source code)");
-        printCompilerDiagnostics(*out, warningSet, "Compiler Warnings:");
-
         reporter()->report(results, *out);
         disposeOutStream(out);
     }
