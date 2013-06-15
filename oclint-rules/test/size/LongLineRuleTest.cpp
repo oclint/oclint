@@ -38,16 +38,6 @@ TEST_F(LongLineRuleTest, GetNumberOfCharactersForThreeLines)
         2, 3, 1, 3, 1, "Line with 1 characters exceeds limit of 0");
 }
 
-#if defined(__APPLE__) || defined(__MACH__)
-TEST_F(LongLineRuleTest, HeaderFileInObjC)
-{
-    testRuleOnCXXCode(new LongLineRule(), "#import <objc/objc.h>\nvoid m() {}",
-        0, 1, 1, 1, 21, "Line with 21 characters exceeds limit of 0");
-    testRuleOnCXXCode(new LongLineRule(), "#import <objc/objc.h>\nvoid m() {}",
-        1, 2, 1, 2, 11, "Line with 11 characters exceeds limit of 0");
-}
-#endif
-
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);
