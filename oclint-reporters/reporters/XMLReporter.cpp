@@ -5,21 +5,23 @@
 #include "oclint/Version.h"
 #include "oclint/ViolationSet.h"
 
+using namespace oclint;
+
 class XMLReporter : public Reporter
 {
 public:
-    virtual const string name() const
+    virtual const std::string name() const
     {
         return "xml";
     }
 
-    virtual void report(Results *results, ostream &out)
+    virtual void report(Results *results, std::ostream &out)
     {
         writeHeader(out, Version::identifier());
         writeDatetime(out);
         writeSummary(out, *results);
         out << "<violations>";
-        vector<Violation> violationSet = results->allViolations();
+        std::vector<Violation> violationSet = results->allViolations();
         for (int index = 0, numberOfViolations = violationSet.size();
             index < numberOfViolations; index++)
         {
@@ -27,16 +29,16 @@ public:
         }
         out << "</violations>";
         writeFooter(out);
-        out << endl;
+        out << std::endl;
     }
 
-    void writeHeader(ostream &out, string version)
+    void writeHeader(std::ostream &out, std::string version)
     {
         out << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
         out << "<oclint version=\"" << version << "\" url=\"http://oclint.org\">";
     }
 
-    void writeDatetime(ostream &out)
+    void writeDatetime(std::ostream &out)
     {
         time_t now = time(0);
         struct tm *tmNow = gmtime(&now);
@@ -52,12 +54,12 @@ public:
         out << "<datetime>" << charNow << "</datetime>";
     }
 
-    void writeFooter(ostream &out)
+    void writeFooter(std::ostream &out)
     {
         out << "</oclint>";
     }
 
-    void writeViolation(ostream &out, Violation &violation)
+    void writeViolation(std::ostream &out, Violation &violation)
     {
         out << "<violation";
         writeViolationAttribute(out, "path", violation.path);
@@ -73,12 +75,12 @@ public:
     }
 
     template <typename T>
-    void writeViolationAttribute(ostream &out, string key, T value)
+    void writeViolationAttribute(std::ostream &out, std::string key, T value)
     {
         out << " " << key << "=\"" << value << "\"";
     }
 
-    void writeSummary(ostream &out, Results &results)
+    void writeSummary(std::ostream &out, Results &results)
     {
         out << "<summary>";
         writeSummaryProperty(out, "number of files", results.numberOfFiles());
@@ -93,7 +95,7 @@ public:
     }
 
     template <typename T>
-    void writeSummaryProperty(ostream &out, string key, T value)
+    void writeSummaryProperty(std::ostream &out, std::string key, T value)
     {
         out << "<property name=\"" << key << "\">" << value << "</property>";
     }

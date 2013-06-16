@@ -3,19 +3,22 @@
 
 #include <vector>
 
-class RuleBase;
+namespace oclint
+{
 
-using namespace std;
+class RuleBase;
 
 class RuleSet
 {
 private:
-    static vector<RuleBase*>* _rules;
+    static std::vector<RuleBase*>* _rules;
 
 public:
     RuleSet(RuleBase* rule);
     static int numberOfRules();
     static RuleBase* getRuleAtIndex(int index);
 };
+
+} // end namespace oclint
 
 #endif

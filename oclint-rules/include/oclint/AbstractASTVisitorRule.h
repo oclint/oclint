@@ -5,24 +5,27 @@
 
 #include "oclint/AbstractASTRuleBase.h"
 
+namespace oclint
+{
+
 template<typename T>
-class AbstractASTVisitorRule : public AbstractASTRuleBase, public RecursiveASTVisitor<T>
+class AbstractASTVisitorRule : public AbstractASTRuleBase, public clang::RecursiveASTVisitor<T>
 {
 protected:
     virtual void apply()
     {
         setUp();
-        SourceManager *sourceManager = &_carrier->getSourceManager();
-        DeclContext *decl = _carrier->getTranslationUnitDecl();
-        for (DeclContext::decl_iterator it = decl->decls_begin(), declEnd = decl->decls_end();
+        clang::SourceManager *sourceManager = &_carrier->getSourceManager();
+        clang::DeclContext *decl = _carrier->getTranslationUnitDecl();
+        for (clang::DeclContext::decl_iterator it = decl->decls_begin(), declEnd = decl->decls_end();
             it != declEnd; ++it)
         {
-            SourceLocation startLocation = (*it)->getLocStart();
+            clang::SourceLocation startLocation = (*it)->getLocStart();
             if (startLocation.isValid() &&
                 sourceManager->getMainFileID() == sourceManager->getFileID(startLocation))
             {
                 (void) /* explicitly ignore the return of this function */
-                    RecursiveASTVisitor<T>::TraverseDecl(*it);
+                    clang::RecursiveASTVisitor<T>::TraverseDecl(*it);
             }
         }
         tearDown();
@@ -34,5 +37,7 @@ public:
     virtual void setUp() {}
     virtual void tearDown() {}
 };
+
+} // end namespace oclint
 
 #endif

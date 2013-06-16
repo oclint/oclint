@@ -19,5 +19,7 @@ using namespace clang::tooling;
 #include "oclint/RuleCarrier.h"
 #include "oclint/RuleBase.h"
 
+using namespace oclint;
+
 #include "TestEngine.h"
 #include "TestRuleOnCode.h"

@@ -2,17 +2,20 @@
 
 #include "oclint/helper/SuppressHelper.h"
 
-bool markedAsSuppress(Decl *decl, RuleBase *rule)
+bool markedAsSuppress(clang::Decl *decl, oclint::RuleBase *rule)
 {
     if (!decl)
     {
         return false;
     }
 
-    for (specific_attr_iterator<AnnotateAttr> attr = decl->specific_attr_begin<AnnotateAttr>(),
-        attrEnd = decl->specific_attr_end<AnnotateAttr>(); attr != attrEnd; attr++)
+    for (clang::specific_attr_iterator<clang::AnnotateAttr> attr =
+        decl->specific_attr_begin<clang::AnnotateAttr>(),
+        attrEnd = decl->specific_attr_end<clang::AnnotateAttr>();
+        attr != attrEnd;
+        attr++)
     {
-        AnnotateAttr *annotate = dyn_cast<AnnotateAttr>(*attr);
+        clang::AnnotateAttr *annotate = clang::dyn_cast<clang::AnnotateAttr>(*attr);
         if (annotate && (annotate->getAnnotation() == "oclint:suppress" ||
             annotate->getAnnotation() == "oclint:suppress[" + rule->name() + "]"))
         {

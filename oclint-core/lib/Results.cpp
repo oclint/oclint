@@ -3,6 +3,8 @@
 #include "oclint/Violation.h"
 #include "oclint/ViolationSet.h"
 
+using namespace oclint;
+
 Results* Results::_singleton = NULL;
 
 Results* Results::getInstance()
@@ -16,13 +18,19 @@ Results* Results::getInstance()
 
 Results::Results()
 {
-    _collection = new vector<ViolationSet*>();
+    _collection = new std::vector<ViolationSet*>();
+    _compilerErrorSet = new ViolationSet();
+    _compilerWarningSet = new ViolationSet();
 }
 
 Results::~Results()
 {
     delete _collection;
     _collection = NULL;
+    delete _compilerErrorSet;
+    _compilerErrorSet = NULL;
+    delete _compilerWarningSet;
+    _compilerWarningSet = NULL;
 }
 
 void Results::add(ViolationSet *violationSet)
@@ -30,9 +38,9 @@ void Results::add(ViolationSet *violationSet)
     _collection->push_back(violationSet);
 }
 
-vector<Violation> Results::allViolations()
+std::vector<Violation> Results::allViolations()
 {
-    vector<Violation> violations;
+    std::vector<Violation> violations;
     for (int setIndex = 0, numberOfSets = numberOfFiles(); setIndex < numberOfSets; setIndex++)
     {
         ViolationSet *violationSet = _collection->at(setIndex);
@@ -54,7 +62,7 @@ int Results::numberOfViolations()
 int Results::numberOfViolationsWithPriority(int priority)
 {
     int numViolations = 0;
-    vector<Violation> violationSet = allViolations();
+    std::vector<Violation> violationSet = allViolations();
     for (int index = 0, numberOfViolations = violationSet.size();
         index < numberOfViolations; index++)
     {
@@ -87,3 +95,42 @@ int Results::numberOfFilesWithViolations()
     return numFiles;
 }
 
+void Results::addError(Violation& violation)
+{
+    _compilerErrorSet->addViolation(violation);
+}
+
+int Results::numberOfErrors()
+{
+    return _compilerErrorSet->numberOfViolations();
+}
+
+bool Results::hasErrors()
+{
+    return numberOfErrors() > 0;
+}
+
+std::vector<Violation> Results::allErrors()
+{
+    return _compilerErrorSet->getViolations();
+}
+
+void Results::addWarning(Violation& violation)
+{
+    _compilerWarningSet->addViolation(violation);
+}
+
+int Results::numberOfWarnings()
+{
+    return _compilerWarningSet->numberOfViolations();
+}
+
+bool Results::hasWarnings()
+{
+    return numberOfWarnings() > 0;
+}
+
+std::vector<Violation> Results::allWarnings()
+{
+    return _compilerWarningSet->getViolations();
+}

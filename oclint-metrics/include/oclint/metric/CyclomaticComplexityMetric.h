@@ -4,34 +4,37 @@
 #include <clang/AST/AST.h>
 #include <clang/AST/RecursiveASTVisitor.h>
 
-using namespace clang;
-
 /*
  * References:
  * - McCabe (December 1976). “A Complexity Measure”.
  *   IEEE Transactions on Software Engineering: 308–320
  */
 
-class CyclomaticComplexityMetric : public RecursiveASTVisitor<CyclomaticComplexityMetric>
+namespace oclint
+{
+
+class CyclomaticComplexityMetric : public clang::RecursiveASTVisitor<CyclomaticComplexityMetric>
 {
 private:
     int _count;
 
 public:
-    int calculate(Decl *decl);
+    int calculate(clang::Decl *decl);
 
-    bool VisitIfStmt(IfStmt *stmt);
-    bool VisitForStmt(ForStmt *stmt);
-    bool VisitObjCForCollectionStmt(ObjCForCollectionStmt *stmt);
-    bool VisitWhileStmt(WhileStmt *stmt);
-    bool VisitDoStmt(DoStmt *stmt);
-    bool VisitCaseStmt(CaseStmt *stmt);
-    bool VisitObjCAtCatchStmt(ObjCAtCatchStmt *stmt);
-    bool VisitCXXCatchStmt(CXXCatchStmt *stmt);
-    bool VisitConditionalOperator(ConditionalOperator *op);
-    bool VisitBinaryOperator(BinaryOperator *op);
+    bool VisitIfStmt(clang::IfStmt *stmt);
+    bool VisitForStmt(clang::ForStmt *stmt);
+    bool VisitObjCForCollectionStmt(clang::ObjCForCollectionStmt *stmt);
+    bool VisitWhileStmt(clang::WhileStmt *stmt);
+    bool VisitDoStmt(clang::DoStmt *stmt);
+    bool VisitCaseStmt(clang::CaseStmt *stmt);
+    bool VisitObjCAtCatchStmt(clang::ObjCAtCatchStmt *stmt);
+    bool VisitCXXCatchStmt(clang::CXXCatchStmt *stmt);
+    bool VisitConditionalOperator(clang::ConditionalOperator *op);
+    bool VisitBinaryOperator(clang::BinaryOperator *op);
 };
 
-extern "C" int getCyclomaticComplexity(Decl *decl);
+} // end namespace oclint
+
+extern "C" int getCyclomaticComplexity(clang::Decl *decl);
 
 #endif

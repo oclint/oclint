@@ -3,22 +3,24 @@
 #include "oclint/Version.h"
 #include "oclint/ViolationSet.h"
 
+using namespace oclint;
+
 class JSONReporter : public Reporter
 {
 public:
-    virtual const string name() const
+    virtual const std::string name() const
     {
         return "json";
     }
 
-    virtual void report(Results *results, ostream &out)
+    virtual void report(Results *results, std::ostream &out)
     {
         out << "{";
         writeHeader(out, Version::identifier());
         writeSummary(out, *results);
         writeKey(out, "violation");
         out << "[";
-        vector<Violation> violationSet = results->allViolations();
+        std::vector<Violation> violationSet = results->allViolations();
         for (int index = 0, numberOfViolations = violationSet.size();
             index < numberOfViolations; index++)
         {
@@ -30,10 +32,10 @@ public:
         }
         out << "]";
         out << "}";
-        out << endl;
+        out << std::endl;
     }
 
-    void writeHeader(ostream &out, string version)
+    void writeHeader(std::ostream &out, std::string version)
     {
         writeKeyValue(out, "version", version);
         writeKeyValue(out, "url", "http://oclint.org");
@@ -41,12 +43,12 @@ public:
         writeKeyValue(out, "timestamp", now);
     }
 
-    void writeKey(ostream &out, string key)
+    void writeKey(std::ostream &out, std::string key)
     {
         out << "\"" << key << "\":";
     }
 
-    void writeComma(ostream &out, bool isLast)
+    void writeComma(std::ostream &out, bool isLast)
     {
         if (!isLast)
         {
@@ -54,21 +56,21 @@ public:
         }
     }
 
-    void writeKeyValue(ostream &out, string key, string value, bool last = false)
+    void writeKeyValue(std::ostream &out, std::string key, std::string value, bool last = false)
     {
         writeKey(out, key);
         out << "\"" << value << "\"";
         writeComma(out, last);
     }
 
-    void writeKeyValue(ostream &out, string key, int value, bool last = false)
+    void writeKeyValue(std::ostream &out, std::string key, int value, bool last = false)
     {
         writeKey(out, key);
         out << value;
         writeComma(out, last);
     }
 
-    void writeViolation(ostream &out, Violation &violation)
+    void writeViolation(std::ostream &out, Violation &violation)
     {
         out << "{";
         writeKeyValue(out, "path", violation.path);
@@ -83,7 +85,7 @@ public:
         out << "}";
     }
 
-    void writePriority(ostream &out, Results &results, int priority)
+    void writePriority(std::ostream &out, Results &results, int priority)
     {
         out << "{";
         writeKeyValue(out, "priority", priority);
@@ -91,7 +93,7 @@ public:
         out << "}";
     }
 
-    void writeSummary(ostream &out, Results &results)
+    void writeSummary(std::ostream &out, Results &results)
     {
         writeKey(out, "summary");
         out << "{";

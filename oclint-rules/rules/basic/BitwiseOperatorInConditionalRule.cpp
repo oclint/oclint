@@ -1,6 +1,11 @@
 #include "oclint/AbstractASTMatcherRule.h"
 #include "oclint/RuleSet.h"
 
+using namespace std;
+using namespace clang;
+using namespace clang::ast_matchers;
+using namespace oclint;
+
 class BitwiseOperatorInConditionalRule : public AbstractASTMatcherRule
 {
 

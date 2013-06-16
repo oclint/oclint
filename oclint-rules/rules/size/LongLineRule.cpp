@@ -3,6 +3,9 @@
 #include "oclint/RuleSet.h"
 #include "oclint/util/StdUtil.h"
 
+using namespace std;
+using namespace oclint;
+
 class LongLineRule : public AbstractSourceCodeReaderRule
 {
 private:

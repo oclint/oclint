@@ -1,32 +1,32 @@
 #include "oclint/util/ASTUtil.h"
 
-bool isObjCMethodDeclaredInSuperClass(ObjCMethodDecl *decl)
+bool isObjCMethodDeclaredInSuperClass(clang::ObjCMethodDecl *decl)
 {
     if (decl && !isObjCMethodDeclLocatedInInterfaceContainer(decl))
     {
-        Selector selector = decl->getSelector();
-        ObjCInterfaceDecl *interfaceDecl = decl->getClassInterface();
+        clang::Selector selector = decl->getSelector();
+        clang::ObjCInterfaceDecl *interfaceDecl = decl->getClassInterface();
         if (interfaceDecl)
         {
-            ObjCInterfaceDecl *superInterface = interfaceDecl->getSuperClass();
+            clang::ObjCInterfaceDecl *superInterface = interfaceDecl->getSuperClass();
             return superInterface && superInterface->lookupInstanceMethod(selector);
         }
     }
     return false;
 }
 
-bool isObjCMethodDeclaredInProtocol(ObjCMethodDecl *decl)
+bool isObjCMethodDeclaredInProtocol(clang::ObjCMethodDecl *decl)
 {
     if (decl && !isObjCMethodDeclLocatedInInterfaceContainer(decl))
     {
-        Selector selector = decl->getSelector();
-        ObjCInterfaceDecl *interfaceDecl = decl->getClassInterface();
+        clang::Selector selector = decl->getSelector();
+        clang::ObjCInterfaceDecl *interfaceDecl = decl->getClassInterface();
         if (interfaceDecl)
         {
-            for (ObjCProtocolList::iterator protocol = interfaceDecl->protocol_begin(), 
+            for (clang::ObjCProtocolList::iterator protocol = interfaceDecl->protocol_begin(),
                 protocolEnd = interfaceDecl->protocol_end(); protocol != protocolEnd; protocol++)
             {
-                ObjCProtocolDecl *protocolDecl = (ObjCProtocolDecl *)*protocol;
+                clang::ObjCProtocolDecl *protocolDecl = (clang::ObjCProtocolDecl *)*protocol;
                 if (protocolDecl->lookupInstanceMethod(selector))
                 {
                     return true;
@@ -37,18 +37,20 @@ bool isObjCMethodDeclaredInProtocol(ObjCMethodDecl *decl)
     return false;
 }
 
-bool isObjCMethodDeclLocatedInInterfaceContainer(ObjCMethodDecl *decl)
+bool isObjCMethodDeclLocatedInInterfaceContainer(clang::ObjCMethodDecl *decl)
 {
     if (decl)
     {
-        DeclContext *context = decl->getDeclContext();
-        return isa<ObjCInterfaceDecl>(context) || isa<ObjCProtocolDecl>(context) || 
-            isa<ObjCCategoryDecl>(context);
+        clang::DeclContext *context = decl->getDeclContext();
+        return clang::isa<clang::ObjCInterfaceDecl>(context) ||
+            clang::isa<clang::ObjCProtocolDecl>(context) ||
+            clang::isa<clang::ObjCCategoryDecl>(context);
     }
     return false;
 }
 
-bool isCppMethodDeclLocatedInCppRecordDecl(CXXMethodDecl *decl)
+bool isCppMethodDeclLocatedInCppRecordDecl(clang::CXXMethodDecl *decl)
 {
-  return decl && (!decl->hasBody() || isa<CXXRecordDecl>(decl->getLexicalDeclContext()));
+  return decl && (!decl->hasBody() ||
+    clang::isa<clang::CXXRecordDecl>(decl->getLexicalDeclContext()));
 }

@@ -1,59 +1,63 @@
 #ifndef OCLINT_METRIC_NCSSMETRIC_H
 #define OCLINT_METRIC_NCSSMETRIC_H
 
-#define DISPATH(STMT_TYPE) if (isa<STMT_TYPE>(node)) return ncss(dyn_cast<STMT_TYPE>(node))
+#define DISPATH(STMT_TYPE) if (clang::isa<STMT_TYPE>(node)) \
+return ncss(clang::dyn_cast<STMT_TYPE>(node))
 
 #include <clang/AST/AST.h>
 
-using namespace clang;
+namespace oclint
+{
 
 class NcssMetric
 {
 public:
-    int ncss(Stmt *node)
+    int ncss(clang::Stmt *node)
     {
         if (node)
         {
-            DISPATH(NullStmt);
-            DISPATH(CompoundStmt);
-            DISPATH(IfStmt);
-            DISPATH(WhileStmt);
-            DISPATH(DoStmt);
-            DISPATH(ForStmt);
-            DISPATH(ObjCForCollectionStmt);
-            DISPATH(SwitchStmt);
-            DISPATH(SwitchCase);
-            DISPATH(CXXTryStmt);
-            DISPATH(CXXCatchStmt);
-            DISPATH(ObjCAtTryStmt);
-            DISPATH(ObjCAtCatchStmt);
-            DISPATH(ObjCAtFinallyStmt);
-            DISPATH(ObjCAtSynchronizedStmt);
-            DISPATH(ObjCAutoreleasePoolStmt);
+            DISPATH(clang::NullStmt);
+            DISPATH(clang::CompoundStmt);
+            DISPATH(clang::IfStmt);
+            DISPATH(clang::WhileStmt);
+            DISPATH(clang::DoStmt);
+            DISPATH(clang::ForStmt);
+            DISPATH(clang::ObjCForCollectionStmt);
+            DISPATH(clang::SwitchStmt);
+            DISPATH(clang::SwitchCase);
+            DISPATH(clang::CXXTryStmt);
+            DISPATH(clang::CXXCatchStmt);
+            DISPATH(clang::ObjCAtTryStmt);
+            DISPATH(clang::ObjCAtCatchStmt);
+            DISPATH(clang::ObjCAtFinallyStmt);
+            DISPATH(clang::ObjCAtSynchronizedStmt);
+            DISPATH(clang::ObjCAutoreleasePoolStmt);
             return 1;
         }
         return 0;
     }
 
-    int ncss(NullStmt *stmt);
-    int ncss(CompoundStmt *stmt);
-    int ncss(IfStmt *stmt);
-    int ncss(WhileStmt *stmt);
-    int ncss(DoStmt *stmt);
-    int ncss(ForStmt *stmt);
-    int ncss(ObjCForCollectionStmt *stmt);
-    int ncss(SwitchStmt *stmt);
-    int ncss(SwitchCase *stmt);
-    int ncss(CXXTryStmt *stmt);
-    int ncss(CXXCatchStmt *stmt);
-    int ncss(ObjCAtTryStmt *stmt);
-    int ncss(ObjCAtCatchStmt *stmt);
-    int ncss(ObjCAtFinallyStmt *stmt);
-    int ncss(ObjCAtSynchronizedStmt *stmt);
-    int ncss(ObjCAutoreleasePoolStmt *stmt);
+    int ncss(clang::NullStmt *stmt);
+    int ncss(clang::CompoundStmt *stmt);
+    int ncss(clang::IfStmt *stmt);
+    int ncss(clang::WhileStmt *stmt);
+    int ncss(clang::DoStmt *stmt);
+    int ncss(clang::ForStmt *stmt);
+    int ncss(clang::ObjCForCollectionStmt *stmt);
+    int ncss(clang::SwitchStmt *stmt);
+    int ncss(clang::SwitchCase *stmt);
+    int ncss(clang::CXXTryStmt *stmt);
+    int ncss(clang::CXXCatchStmt *stmt);
+    int ncss(clang::ObjCAtTryStmt *stmt);
+    int ncss(clang::ObjCAtCatchStmt *stmt);
+    int ncss(clang::ObjCAtFinallyStmt *stmt);
+    int ncss(clang::ObjCAtSynchronizedStmt *stmt);
+    int ncss(clang::ObjCAutoreleasePoolStmt *stmt);
 };
 
-extern "C" int getNcssCount(Decl *decl);
+} // end namespace oclint
+
+extern "C" int getNcssCount(clang::Decl *decl);
 
 #undef DISPATH
 

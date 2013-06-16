@@ -3,11 +3,9 @@
 
 #include <clang/AST/AST.h>
 
-using namespace clang;
-
-bool isObjCMethodDeclaredInSuperClass(ObjCMethodDecl *decl);
-bool isObjCMethodDeclaredInProtocol(ObjCMethodDecl *decl);
-bool isObjCMethodDeclLocatedInInterfaceContainer(ObjCMethodDecl *decl);
-bool isCppMethodDeclLocatedInCppRecordDecl(CXXMethodDecl *decl);
+bool isObjCMethodDeclaredInSuperClass(clang::ObjCMethodDecl *decl);
+bool isObjCMethodDeclaredInProtocol(clang::ObjCMethodDecl *decl);
+bool isObjCMethodDeclLocatedInInterfaceContainer(clang::ObjCMethodDecl *decl);
+bool isCppMethodDeclLocatedInCppRecordDecl(clang::CXXMethodDecl *decl);
 
 #endif

@@ -5,6 +5,7 @@
 #include "oclint/RuleSet.h"
 
 using namespace ::testing;
+using namespace oclint;
 
 int RuleSetTest_applyCount;
 
@@ -12,7 +13,7 @@ class MockRuleBase : public RuleBase
 {
 public:
     MOCK_METHOD0(apply, void());
-    MOCK_CONST_METHOD0(name, const string());
+    MOCK_CONST_METHOD0(name, const std::string());
     MOCK_CONST_METHOD0(priority, int());
 };
 

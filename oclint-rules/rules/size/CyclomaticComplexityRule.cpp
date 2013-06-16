@@ -5,6 +5,10 @@
 #include "oclint/helper/SuppressHelper.h"
 #include "oclint/util/StdUtil.h"
 
+using namespace std;
+using namespace clang;
+using namespace oclint;
+
 /*
  * References:
  * - McCabe (December 1976). “A Complexity Measure”.

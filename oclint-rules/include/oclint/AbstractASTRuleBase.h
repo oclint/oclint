@@ -5,16 +5,17 @@
 
 #include "oclint/RuleBase.h"
 
-using namespace clang;
+namespace oclint
+{
 
 class AbstractASTRuleBase : public RuleBase
 {
 protected:
-    void addViolation(SourceLocation startLocation,
-        SourceLocation endLocation, RuleBase *rule, const string& message = "")
+    void addViolation(clang::SourceLocation startLocation,
+        clang::SourceLocation endLocation, RuleBase *rule, const std::string& message = "")
     {
-        SourceManager *sourceManager = &_carrier->getSourceManager();
-        StringRef filename = sourceManager->getFilename(startLocation);
+        clang::SourceManager *sourceManager = &_carrier->getSourceManager();
+        llvm::StringRef filename = sourceManager->getFilename(startLocation);
         _carrier->addViolation(filename.str(),
             sourceManager->getPresumedLineNumber(startLocation),
             sourceManager->getPresumedColumnNumber(startLocation),
@@ -24,7 +25,7 @@ protected:
             message);
     }
 
-    void addViolation(const Decl *decl, RuleBase *rule, const string& message = "")
+    void addViolation(const clang::Decl *decl, RuleBase *rule, const std::string& message = "")
     {
         if (decl)
         {
@@ -32,7 +33,7 @@ protected:
         }
     }
 
-    void addViolation(const Stmt *stmt, RuleBase *rule, const string& message = "")
+    void addViolation(const clang::Stmt *stmt, RuleBase *rule, const std::string& message = "")
     {
         if (stmt)
         {
@@ -43,5 +44,7 @@ protected:
 public:
     virtual ~AbstractASTRuleBase() {}
 };
+
+} // end namespace oclint
 
 #endif

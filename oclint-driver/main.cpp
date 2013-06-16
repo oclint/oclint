@@ -1,7 +1,6 @@
 #include <dlfcn.h>
 #include <dirent.h>
 #include <unistd.h>
-#include <exception>
 #include <iostream>
 #include <fstream>
 #include <ctime>
@@ -10,27 +9,24 @@
 #include <llvm/ADT/SmallString.h>
 #include <llvm/Option/OptTable.h>
 #include <llvm/Option/Option.h>
-#include <llvm/Support/raw_ostream.h>
-#include <llvm/Support/CommandLine.h>
 #include <llvm/Support/Path.h>
 #include <llvm/Support/Program.h>
 #include <llvm/Support/FileSystem.h>
-#include <clang/AST/AST.h>
-#include <clang/AST/ASTConsumer.h>
-#include <clang/AST/ASTContext.h>
-#include <clang/AST/PrettyPrinter.h>
-#include <clang/AST/RecordLayout.h>
 #include <clang/Driver/Options.h>
 #include <clang/Tooling/CommonOptionsParser.h>
-#include <clang/Tooling/Tooling.h>
 
+#include "oclint/Analyzer.h"
+#include "oclint/CompilerInstance.h"
+#include "oclint/Driver.h"
+#include "oclint/GenericException.h"
+#include "oclint/Reporter.h"
+#include "oclint/Results.h"
+#include "oclint/RuleBase.h"
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
-#include "oclint/Results.h"
+#include "oclint/RulesetBasedAnalyzer.h"
 #include "oclint/ViolationSet.h"
 #include "oclint/Violation.h"
-#include "oclint/RuleBase.h"
-#include "oclint/Reporter.h"
 
 using namespace std;
 using namespace llvm;
@@ -88,47 +84,9 @@ static cl::extrahelp MoreHelp(
 );
 static OwningPtr<llvm::opt::OptTable> Options(createDriverOptTable());
 
-class Processor : public ASTConsumer
-{
-public:
-    virtual void HandleTranslationUnit(ASTContext &astContext)
-    {
-        ViolationSet *violationSet = new ViolationSet();
-        RuleCarrier *carrier = new RuleCarrier(&astContext, violationSet);
-        for (int index = 0, numRules = RuleSet::numberOfRules(); index < numRules; index++)
-        {
-            RuleSet::getRuleAtIndex(index)->takeoff(carrier);
-        }
-        Results *results = Results::getInstance();
-        results->add(violationSet);
-    }
-};
-
-class ProcessorActionFactory
-{
-public:
-    ASTConsumer *newASTConsumer()
-    {
-      return new Processor();
-    }
-};
-
-class GenericExcpetion : public exception
-{
-private:
-    string description;
-
-public:
-    GenericExcpetion(const string& desc) : description(desc) {}
-    virtual ~GenericExcpetion() throw() {}
-    virtual const char *what() const throw()
-    {
-        return description.c_str();
-    }
-};
 
 static string absoluteWorkingPath("");
-static Reporter *selectedReporter = NULL;
+static oclint::Reporter *selectedReporter = NULL;
 
 void preserveWorkingPath()
 {
@@ -144,8 +102,7 @@ string getExecutablePath(const char *argv)
     llvm::SmallString<128> installedPath(argv);
     if (path::filename(installedPath) == installedPath)
     {
-        std::string intermediatePath = llvm::sys::FindProgramByName(
-            path::filename(installedPath.str()));
+        std::string intermediatePath = FindProgramByName(path::filename(installedPath.str()));
         if (!intermediatePath.empty())
         {
             installedPath = intermediatePath;
@@ -173,7 +130,7 @@ void dynamicLoadRules(string ruleDirPath)
             {
                 cerr << dlerror() << endl;
                 closedir(pDir);
-                throw GenericExcpetion("cannot open dynamic library: " + rulePath);
+                throw oclint::GenericException("cannot open dynamic library: " + rulePath);
             }
         }
         closedir(pDir);
@@ -206,7 +163,7 @@ void consumeRuleConfigurations()
         string key = configuration.substr(0, indexOfSeparator);
         string value = configuration.substr(indexOfSeparator + 1,
             configuration.size() - indexOfSeparator - 1);
-        RuleConfiguration::addConfiguration(key, value);
+        oclint::RuleConfiguration::addConfiguration(key, value);
     }
 }
 
@@ -231,11 +188,11 @@ void loadReporter(const char* executablePath)
             {
                 cerr << dlerror() << endl;
                 closedir(pDir);
-                throw GenericExcpetion("cannot open dynamic library: " + reporterPath);
+                throw oclint::GenericException("cannot open dynamic library: " + reporterPath);
             }
-            Reporter* (*createMethodPointer)();
-            createMethodPointer = (Reporter* (*)())dlsym(reporterHandle, "create");
-            Reporter* reporter = (Reporter*)createMethodPointer();
+            oclint::Reporter* (*createMethodPointer)();
+            createMethodPointer = (oclint::Reporter* (*)())dlsym(reporterHandle, "create");
+            oclint::Reporter* reporter = (oclint::Reporter*)createMethodPointer();
             if (reporter->name() == argReportType)
             {
                 selectedReporter = reporter;
@@ -246,11 +203,12 @@ void loadReporter(const char* executablePath)
     }
     if (selectedReporter == NULL)
     {
-        throw GenericExcpetion("cannot find dynamic library for report type: " + argReportType);
+        throw oclint::GenericException(
+            "cannot find dynamic library for report type: " + argReportType);
     }
 }
 
-bool numberOfViolationsExceedThreshold(Results *results)
+bool numberOfViolationsExceedThreshold(oclint::Results *results)
 {
     return results->numberOfViolationsWithPriority(1) > argMaxP1 ||
         results->numberOfViolationsWithPriority(2) > argMaxP2 ||
@@ -268,7 +226,7 @@ ostream* outStream()
     ofstream *out = new ofstream(absoluteOutputPath.c_str());
     if (!out->is_open())
     {
-        throw GenericExcpetion("cannot open report output file " + argOutput);
+        throw oclint::GenericException("cannot open report output file " + argOutput);
     }
     return out;
 }
@@ -282,14 +240,14 @@ void disposeOutStream(ostream* out)
     }
 }
 
-Reporter* reporter()
+oclint::Reporter* reporter()
 {
     return selectedReporter;
 }
 
 void printErrorLine(const char *errorMessage)
 {
-    cerr << "oclint: error: " << errorMessage << endl;
+    cerr << endl << "oclint: error: " << errorMessage << endl;
 }
 
 enum ExitCode
@@ -313,7 +271,7 @@ int prepare(const char* executablePath)
         printErrorLine(e.what());
         return RULE_NOT_FOUND;
     }
-    if (RuleSet::numberOfRules() <= 0)
+    if (oclint::RuleSet::numberOfRules() <= 0)
     {
         printErrorLine("no rule loaded");
         return RULE_NOT_FOUND;
@@ -343,13 +301,18 @@ int main(int argc, const char **argv)
         return prepareStatus;
     }
 
-    ClangTool clangTool(optionsParser.getCompilations(), optionsParser.getSourcePathList());
-    ProcessorActionFactory actionFactory;
-    if (clangTool.run(newFrontendActionFactory(&actionFactory)))
+    oclint::RulesetBasedAnalyzer analyzer;
+    oclint::Driver driver;
+    try
     {
+        driver.run(optionsParser.getCompilations(), optionsParser.getSourcePathList(), analyzer);
+    }
+    catch (const exception& e)
+    {
+        printErrorLine(e.what());
         return ERROR_WHILE_PROCESSING;
     }
-    Results *results = Results::getInstance();
+    oclint::Results *results = oclint::Results::getInstance();
 
     try
     {

@@ -4,6 +4,7 @@
 #include "oclint/RuleConfiguration.h"
 
 using namespace ::testing;
+using namespace oclint;
 
 TEST(RuleConfigurationTest, AddConfiguration)
 {

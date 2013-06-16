@@ -4,20 +4,18 @@
 #include <sstream>
 #include <string>
 
-using namespace std;
-
 template <typename T>
-string toString(T item)
+std::string toString(T item)
 {
-    stringstream buffer;
+    std::stringstream buffer;
     buffer << item;
     return buffer.str();
 }
 
 template <typename T>
-bool vectorContains(T item, vector<T> &collection)
+bool vectorContains(T item, std::vector<T> &collection)
 {
-    return find(collection.begin(), collection.end(), item) != collection.end();
+    return std::find(collection.begin(), collection.end(), item) != collection.end();
 }
 
 #endif

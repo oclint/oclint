@@ -4,5 +4,5 @@
 ./buildMetrics.sh
 ./buildRules.sh
 ./buildReporters.sh
-./buildClangTooling.sh
+./buildDriver.sh
 ./buildRelease.sh

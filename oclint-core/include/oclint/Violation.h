@@ -3,28 +3,31 @@
 
 #include <string>
 
-class RuleBase;
+namespace oclint
+{
 
-using namespace std;
+class RuleBase;
 
 class Violation
 {
 public:
     const RuleBase *rule;
-    string path;
+    std::string path;
     int startLine;
     int startColumn;
     int endLine;
     int endColumn;
-    string message;
+    std::string message;
 
     Violation(RuleBase *violatedRule,
-        const string& violationFilePath,
+        const std::string& violationFilePath,
         int violationStartLine,
         int violationStartColumn,
         int violationEndLine,
         int violationEndColumn,
-        const string& violationMessage = "");
+        const std::string& violationMessage = "");
 };
+
+} // end namespace oclint
 
 #endif

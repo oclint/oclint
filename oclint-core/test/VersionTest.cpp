@@ -4,6 +4,7 @@
 #include "oclint/Version.h"
 
 using namespace ::testing;
+using namespace oclint;
 
 TEST(VersionTest, VersionString)
 {

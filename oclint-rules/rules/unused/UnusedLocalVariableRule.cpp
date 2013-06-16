@@ -2,6 +2,10 @@
 #include "oclint/RuleSet.h"
 #include "oclint/helper/SuppressHelper.h"
 
+using namespace std;
+using namespace clang;
+using namespace oclint;
+
 class UnusedLocalVariableRule : public AbstractASTVisitorRule<UnusedLocalVariableRule>
 {
 private:

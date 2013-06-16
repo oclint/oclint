@@ -1,56 +1,60 @@
 #ifndef OCLINT_METRIC_STMTDEPTHMETRIC_H
 #define OCLINT_METRIC_STMTDEPTHMETRIC_H
 
-#define DISPATH(STMT_TYPE) if (isa<STMT_TYPE>(node)) return depth(dyn_cast<STMT_TYPE>(node))
+#define DISPATH(STMT_TYPE) if (clang::isa<STMT_TYPE>(node)) \
+return depth(clang::dyn_cast<STMT_TYPE>(node))
 
 #include <clang/AST/AST.h>
 
-using namespace clang;
+namespace oclint
+{
 
 class StmtDepthMetric
 {
 public:
-    int depth(Stmt *node)
+    int depth(clang::Stmt *node)
     {
         if (node)
         {
-            DISPATH(CompoundStmt);
-            DISPATH(IfStmt);
-            DISPATH(WhileStmt);
-            DISPATH(DoStmt);
-            DISPATH(ForStmt);
-            DISPATH(ObjCForCollectionStmt);
-            DISPATH(SwitchStmt);
-            DISPATH(SwitchCase);
-            DISPATH(CXXTryStmt);
-            DISPATH(CXXCatchStmt);
-            DISPATH(ObjCAtTryStmt);
-            DISPATH(ObjCAtCatchStmt);
-            DISPATH(ObjCAtFinallyStmt);
-            DISPATH(ObjCAtSynchronizedStmt);
-            DISPATH(ObjCAutoreleasePoolStmt);
+            DISPATH(clang::CompoundStmt);
+            DISPATH(clang::IfStmt);
+            DISPATH(clang::WhileStmt);
+            DISPATH(clang::DoStmt);
+            DISPATH(clang::ForStmt);
+            DISPATH(clang::ObjCForCollectionStmt);
+            DISPATH(clang::SwitchStmt);
+            DISPATH(clang::SwitchCase);
+            DISPATH(clang::CXXTryStmt);
+            DISPATH(clang::CXXCatchStmt);
+            DISPATH(clang::ObjCAtTryStmt);
+            DISPATH(clang::ObjCAtCatchStmt);
+            DISPATH(clang::ObjCAtFinallyStmt);
+            DISPATH(clang::ObjCAtSynchronizedStmt);
+            DISPATH(clang::ObjCAutoreleasePoolStmt);
         }
         return 0;
     }
 
-    int depth(CompoundStmt *stmt);
-    int depth(IfStmt *stmt);
-    int depth(WhileStmt *stmt);
-    int depth(DoStmt *stmt);
-    int depth(ForStmt *stmt);
-    int depth(ObjCForCollectionStmt *stmt);
-    int depth(SwitchStmt *stmt);
-    int depth(SwitchCase *stmt);
-    int depth(CXXTryStmt *stmt);
-    int depth(CXXCatchStmt *stmt);
-    int depth(ObjCAtTryStmt *stmt);
-    int depth(ObjCAtCatchStmt *stmt);
-    int depth(ObjCAtFinallyStmt *stmt);
-    int depth(ObjCAtSynchronizedStmt *stmt);
-    int depth(ObjCAutoreleasePoolStmt *stmt);
+    int depth(clang::CompoundStmt *stmt);
+    int depth(clang::IfStmt *stmt);
+    int depth(clang::WhileStmt *stmt);
+    int depth(clang::DoStmt *stmt);
+    int depth(clang::ForStmt *stmt);
+    int depth(clang::ObjCForCollectionStmt *stmt);
+    int depth(clang::SwitchStmt *stmt);
+    int depth(clang::SwitchCase *stmt);
+    int depth(clang::CXXTryStmt *stmt);
+    int depth(clang::CXXCatchStmt *stmt);
+    int depth(clang::ObjCAtTryStmt *stmt);
+    int depth(clang::ObjCAtCatchStmt *stmt);
+    int depth(clang::ObjCAtFinallyStmt *stmt);
+    int depth(clang::ObjCAtSynchronizedStmt *stmt);
+    int depth(clang::ObjCAutoreleasePoolStmt *stmt);
 };
 
-extern "C" int getStmtDepth(Stmt *stmt);
+} // end namespace oclint
+
+extern "C" int getStmtDepth(clang::Stmt *stmt);
 
 #undef DISPATH
 

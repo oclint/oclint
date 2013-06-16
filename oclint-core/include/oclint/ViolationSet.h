@@ -6,17 +6,22 @@
 
 #include "oclint/Violation.h"
 
-using namespace std;
+namespace oclint
+{
 
 class ViolationSet
 {
 private:
-    vector<Violation> _violations;
+    std::vector<Violation> _violations;
 
 public:
     void addViolation(Violation& violation);
     int numberOfViolations() const;
-    const vector<Violation> getViolations() const;
+    const std::vector<Violation> getViolations() const;
+
+    // TODO: getViolation(int index)
 };
+
+} // end namespace oclint
 
 #endif

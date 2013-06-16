@@ -1,6 +1,11 @@
 #include "oclint/AbstractASTMatcherRule.h"
 #include "oclint/RuleSet.h"
 
+using namespace std;
+using namespace clang;
+using namespace clang::ast_matchers;
+using namespace oclint;
+
 /*
  * References:
  * - Edsger Dijkstra (March 1968). “Go To Statement Considered Harmful”.
