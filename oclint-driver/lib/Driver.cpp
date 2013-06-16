@@ -85,7 +85,6 @@ static clang::driver::Driver *newDriver(clang::DiagnosticsEngine *diagnostics,
     return driver;
 }
 
-
 static std::string compilationJobsToString(const clang::driver::Job &job)
 {
     std::stringstream buffer;
@@ -137,8 +136,7 @@ static const llvm::opt::ArgStringList *getCC1Arguments(clang::driver::Compilatio
     return &cmd->getArguments();
 }
 
-static clang::CompilerInvocation *newInvocation(
-    clang::DiagnosticsEngine *diagnostics,
+static clang::CompilerInvocation *newInvocation(clang::DiagnosticsEngine *diagnostics,
     const llvm::opt::ArgStringList &argStringList)
 {
     assert(!argStringList.empty() && "Must at least contain the program name!");
@@ -181,87 +179,90 @@ static void constructCompileCommands(
     }
 }
 
-void __attribute__((annotate("oclint:suppress")))
-    /* this method breaks every law as it could, high refactoring is necessary */
-    Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
-        llvm::ArrayRef<std::string> sourcePaths, oclint::Analyzer &analyzer)
+static clang::CompilerInvocation *newCompilerInvocation(std::string &mainExecutable,
+    std::vector<std::string> &unadjustedCmdLine)
 {
-    std::vector<std::pair<std::string, clang::tooling::CompileCommand> > compileCommands;
-    constructCompileCommands(compileCommands, compilationDatabase, sourcePaths);
+    // Prepare for command lines, and convert to old-school argv
+    llvm::OwningPtr<clang::tooling::ArgumentsAdjuster> argumentsAdjusterPtr(
+        new clang::tooling::ClangSyntaxOnlyAdjuster());
+    std::vector<std::string> commandLine = argumentsAdjusterPtr->Adjust(unadjustedCmdLine);
+    assert(!commandLine.empty());
+    commandLine[0] = mainExecutable;
 
-    std::vector<oclint::CompilerInstance *> compilers;
-    std::vector<clang::FileManager *> fileManagers;
+    std::vector<const char*> argv;
+    for (int commandLineIndex = 0, commandLineEnd = commandLine.size();
+        commandLineIndex != commandLineEnd; commandLineIndex++)
+    {
+        argv.push_back(commandLine[commandLineIndex].c_str());
+    }
 
-    static int staticSymbol;
-    std::string mainExecutable = llvm::sys::Path::GetMainExecutable("oclint", &staticSymbol).str();
+    // create diagnostic engine
+    llvm::IntrusiveRefCntPtr<clang::DiagnosticOptions> diagOpts =
+        new clang::DiagnosticOptions();
+    clang::DiagnosticsEngine diagnosticsEngine(
+        llvm::IntrusiveRefCntPtr<clang::DiagnosticIDs>(new clang::DiagnosticIDs()),
+        &*diagOpts,
+        new clang::DiagnosticConsumer(),
+        false);
 
-    // compiling process
+    // create driver
+    const char *const mainBinaryPath = argv[0];
+    const llvm::OwningPtr<clang::driver::Driver> driver(
+        newDriver(&diagnosticsEngine, mainBinaryPath));
+    driver->setCheckInputsExist(false);
+
+    // create compilation invocation
+    const llvm::OwningPtr<clang::driver::Compilation> compilation(
+        driver->BuildCompilation(llvm::makeArrayRef(argv)));
+    const llvm::opt::ArgStringList *const cc1Args = getCC1Arguments(compilation.get());
+    return newInvocation(&diagnosticsEngine, *cc1Args);
+}
+
+static clang::FileManager *newFileManager()
+{
+    clang::FileSystemOptions fileSystemOptions;
+    return new clang::FileManager(fileSystemOptions);
+}
+
+static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *compilerInvocation,
+    clang::FileManager *fileManager)
+{
+    oclint::CompilerInstance *compilerInstance = new oclint::CompilerInstance();
+    compilerInstance->setInvocation(compilerInvocation);
+    compilerInstance->setFileManager(fileManager);
+    compilerInstance->createDiagnostics(new CarrierDiagnosticConsumer());
+    if (!compilerInstance->hasDiagnostics())
+    {
+        throw oclint::GenericException("cannot create compiler diagnostics");
+    }
+    compilerInstance->createSourceManager(*fileManager);
+    if (!compilerInstance->hasSourceManager())
+    {
+        throw oclint::GenericException("cannot create compiler source manager");
+    }
+    return compilerInstance;
+}
+
+static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstance *> &compilers,
+    std::vector<clang::FileManager *> &fileManagers,
+    std::vector<std::pair<std::string, clang::tooling::CompileCommand> > &compileCommands,
+    std::string &mainExecutable)
+{
     debug::emit("\nStart compiling:\n");
     for (unsigned compileCmdIdx = 0, numCmds = compileCommands.size();
         compileCmdIdx < numCmds; compileCmdIdx++)
     {
-        // Prepare for command lines, and convert to old-school argv
         if (chdir(compileCommands[compileCmdIdx].second.Directory.c_str()))
         {
             throw oclint::GenericException("Cannot change dictionary into \"" +
                 compileCommands[compileCmdIdx].second.Directory + "\", "
                 "please make sure the directory exists and you have permission to access!");
         }
-        llvm::OwningPtr<clang::tooling::ArgumentsAdjuster> argumentsAdjusterPtr(
-            new clang::tooling::ClangSyntaxOnlyAdjuster());
-        std::vector<std::string> commandLine = argumentsAdjusterPtr->Adjust(
+        clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(mainExecutable,
             compileCommands[compileCmdIdx].second.CommandLine);
-        assert(!commandLine.empty());
-        commandLine[0] = mainExecutable;
+        clang::FileManager *fileManager = newFileManager();
+        oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation, fileManager);
 
-        std::vector<const char*> argv;
-        for (int commandLineIndex = 0, commandLineEnd = commandLine.size();
-            commandLineIndex != commandLineEnd; commandLineIndex++)
-        {
-            argv.push_back(commandLine[commandLineIndex].c_str());
-        }
-
-        // create diagnostic engine
-        llvm::IntrusiveRefCntPtr<clang::DiagnosticOptions> diagOpts =
-            new clang::DiagnosticOptions();
-        clang::DiagnosticsEngine diagnosticsEngine(
-            llvm::IntrusiveRefCntPtr<clang::DiagnosticIDs>(new clang::DiagnosticIDs()),
-            &*diagOpts,
-            new clang::DiagnosticConsumer(),
-            false);
-
-        // create driver
-        const char *const mainBinaryPath = argv[0];
-        const llvm::OwningPtr<clang::driver::Driver> driver(
-            newDriver(&diagnosticsEngine, mainBinaryPath));
-        driver->setCheckInputsExist(false);
-
-        // create compilation invocation
-        const llvm::OwningPtr<clang::driver::Compilation> compilation(
-            driver->BuildCompilation(llvm::makeArrayRef(argv)));
-        const llvm::opt::ArgStringList *const cc1Args = getCC1Arguments(compilation.get());
-        clang::CompilerInvocation *compilerInvocation = newInvocation(&diagnosticsEngine, *cc1Args);
-
-        // create file manager
-        clang::FileSystemOptions fileSystemOptions;
-        clang::FileManager *fileManager = new clang::FileManager(fileSystemOptions);
-
-        // finally, create a compiler instance to handle the actual compilation work
-        oclint::CompilerInstance *compiler = new oclint::CompilerInstance();
-        compiler->setInvocation(compilerInvocation);
-        compiler->setFileManager(fileManager);
-        compiler->createDiagnostics(new CarrierDiagnosticConsumer());
-        if (!compiler->hasDiagnostics())
-        {
-            throw oclint::GenericException("cannot create compiler diagnostics");
-        }
-        compiler->createSourceManager(*fileManager);
-        if (!compiler->hasSourceManager())
-        {
-            throw oclint::GenericException("cannot create compiler source manager");
-        }
-
-        // start compilation to get the abstract syntax tree (AST) for all source code
         compiler->start();
         if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
         {
@@ -275,6 +276,20 @@ void __attribute__((annotate("oclint:suppress")))
         }
     }
     debug::emit("\n");
+}
+
+void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
+    llvm::ArrayRef<std::string> sourcePaths, oclint::Analyzer &analyzer)
+{
+    std::vector<std::pair<std::string, clang::tooling::CompileCommand> > compileCommands;
+    constructCompileCommands(compileCommands, compilationDatabase, sourcePaths);
+
+    static int staticSymbol;
+    std::string mainExecutable = llvm::sys::Path::GetMainExecutable("oclint", &staticSymbol).str();
+
+    std::vector<oclint::CompilerInstance *> compilers;
+    std::vector<clang::FileManager *> fileManagers;
+    constructCompilersAndFileManagers(compilers, fileManagers, compileCommands, mainExecutable);
 
     // collect a collection of AST contexts
     std::vector<clang::ASTContext *> localContexts;
