@@ -52,7 +52,6 @@
 #include <llvm/ADT/IntrusiveRefCntPtr.h>
 #include <llvm/ADT/StringRef.h>
 #include <llvm/Option/ArgList.h>
-#include <llvm/Support/Debug.h>
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/Host.h>
 #include <llvm/Support/raw_ostream.h>
@@ -69,6 +68,7 @@
 
 #include "oclint/CarrierDiagnosticConsumer.h"
 #include "oclint/CompilerInstance.h"
+#include "oclint/Debug.h"
 #include "oclint/Driver.h"
 #include "oclint/GenericException.h"
 #include "oclint/ViolationSet.h"
@@ -196,9 +196,7 @@ void __attribute__((annotate("oclint:suppress")))
     std::string mainExecutable = llvm::sys::Path::GetMainExecutable("oclint", &staticSymbol).str();
 
     // compiling process
-    DEBUG({
-        llvm::dbgs() << "\nStart compiling:\n";
-    });
+    debug::emit("\nStart compiling:\n");
     for (unsigned compileCmdIdx = 0, numCmds = compileCommands.size();
         compileCmdIdx < numCmds; compileCmdIdx++)
     {
@@ -267,22 +265,16 @@ void __attribute__((annotate("oclint:suppress")))
         compiler->start();
         if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
         {
-            DEBUG({
-                llvm::dbgs() << ".";
-            });
+            debug::emit(".");
             compilers.push_back(compiler);
             fileManagers.push_back(fileManager);
         }
         else
         {
-            DEBUG({
-                llvm::dbgs() << "X";
-            });
+            debug::emit("X");
         }
     }
-    DEBUG({
-        llvm::dbgs() << "\n";
-    });
+    debug::emit("\n");
 
     // collect a collection of AST contexts
     std::vector<clang::ASTContext *> localContexts;
