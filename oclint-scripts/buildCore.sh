@@ -14,12 +14,18 @@ if [ $# -eq 1 ] && [ "$1" = "clean" ]; then
     exit 0
 fi
 
+# configure for release build
+RELEASE_CONFIG=""
+if [ $# -eq 1 ] && [ "$1" = "release" ]; then
+    RELEASE_CONFIG="-D OCLINT_BUILD_TYPE=Release"
+fi
+
 # create directory and prepare for build
 mkdir -p $OCLINT_CORE_BUILD
 cd $OCLINT_CORE_BUILD
 
 # configure and build
-cmake -D CMAKE_CXX_COMPILER=$LLVM_BUILD/bin/clang++ -D CMAKE_C_COMPILER=$LLVM_BUILD/bin/clang -D LLVM_ROOT=$LLVM_BUILD $OCLINT_CORE_SRC
+cmake $RELEASE_CONFIG -D CMAKE_CXX_COMPILER=$LLVM_BUILD/bin/clang++ -D CMAKE_C_COMPILER=$LLVM_BUILD/bin/clang -D LLVM_ROOT=$LLVM_BUILD $OCLINT_CORE_SRC
 make
 
 # back to the current folder
