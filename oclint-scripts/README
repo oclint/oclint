@@ -3,8 +3,8 @@ Quick Start
 
 ./checkoutLLVMClang.sh - Checkout LLVM/Clang
 ./buildClang.sh release - Build LLVM/Clang
-./buildAll.sh - Build OCLint, and then please find generated
-                binary and libraries at ../build/oclint-release
+./buildAll.sh release - Build OCLint, and then please find generated
+                        binary and libraries at ../build/oclint-release
 
 Detail description can be found at
     http://docs.oclint.org/en/dev/intro/build.html
