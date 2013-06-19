@@ -16,15 +16,11 @@ public:
     virtual void report(Results *results, std::ostream &out)
     {
         writeHeader(out, Version::identifier());
-
-        std::vector<Violation> violationSet = results->allViolations();
-        for (int index = 0, numberOfViolations = violationSet.size();
-            index < numberOfViolations; index++)
+        for (auto violation : results->allViolations())
         {
-            writeViolation(out, violationSet.at(index));
+            writeViolation(out, violation);
             out << std::endl;
         }
-
         writeFooter(out);
     }
 

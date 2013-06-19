@@ -78,21 +78,19 @@ public:
 
     bool VisitObjCAtFinallyStmt(ObjCAtFinallyStmt *finallyStmt)
     {
-        vector<ObjCAtThrowStmt*> *throws = new vector<ObjCAtThrowStmt*>();
+        vector<ObjCAtThrowStmt*> throws;
         ExtractObjCAtThrowStmts extractThrowStmts;
-        extractThrowStmts.extract(finallyStmt, throws);
-        for (int index = 0; index < throws->size(); index++)
+        extractThrowStmts.extract(finallyStmt, &throws);
+        for (auto throwStmt : throws)
         {
-            ObjCAtThrowStmt *throwStmt = throws->at(index);
             addViolation(throwStmt, this);
         }
 
-        vector<ObjCMessageExpr*> *exceptionRaisers = new vector<ObjCMessageExpr*>();
+        vector<ObjCMessageExpr*> exceptionRaisers;
         ExtractNSExceptionRaiser extractExceptions;
-        extractExceptions.extract(finallyStmt, exceptionRaisers);
-        for (int index = 0; index < exceptionRaisers->size(); index++)
+        extractExceptions.extract(finallyStmt, &exceptionRaisers);
+        for (auto raiseExpr : exceptionRaisers)
         {
-            ObjCMessageExpr *raiseExpr = exceptionRaisers->at(index);
             addViolation(raiseExpr, this);
         }
 

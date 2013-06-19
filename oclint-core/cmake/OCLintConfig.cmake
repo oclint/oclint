@@ -4,9 +4,11 @@ SET(CMAKE_BUILD_TYPE None)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -fno-rtti -fcolor-diagnostics -Wno-c++11-extensions -fPIC")
 SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -fno-rtti")
 
-IF(APPLE AND "${DARWIN_MAJOR_VERSION}" STREQUAL "13")
+IF(APPLE)
     SET(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
     INCLUDE_DIRECTORIES(${OSX_DEVELOPER_ROOT}/Toolchains/XcodeDefault.xctoolchain/usr/lib/c++/v1)
+ELSE()
+    SET(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libstdc++ ${CMAKE_CXX_FLAGS}")
 ENDIF()
 
 IF(OCLINT_BUILD_TYPE STREQUAL "Release")

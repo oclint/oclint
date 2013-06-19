@@ -21,11 +21,9 @@ public:
         writeDatetime(out);
         writeSummary(out, *results);
         out << "<violations>";
-        std::vector<Violation> violationSet = results->allViolations();
-        for (int index = 0, numberOfViolations = violationSet.size();
-            index < numberOfViolations; index++)
+        for (auto violation : results->allViolations())
         {
-            writeViolation(out, violationSet.at(index));
+            writeViolation(out, violation);
         }
         out << "</violations>";
         writeFooter(out);

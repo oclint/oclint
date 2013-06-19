@@ -66,16 +66,15 @@ void CompilerInstance::start()
 
     getTarget().setForcedLangOptions(getLangOpts());
 
-    for (unsigned inputIdx = 0, numInputs = getFrontendOpts().Inputs.size();
-        inputIdx != numInputs; ++inputIdx)
+    for (auto input : getFrontendOpts().Inputs)
     {
         if (hasSourceManager())
         {
             getSourceManager().clearIDTables();
         }
 
-        clang::SyntaxOnlyAction *syntaxOnlyAction = new clang::SyntaxOnlyAction();
-        syntaxOnlyAction->BeginSourceFile(*this, getFrontendOpts().Inputs[inputIdx]);
+        clang::FrontendAction *syntaxOnlyAction = new clang::SyntaxOnlyAction();
+        syntaxOnlyAction->BeginSourceFile(*this, input);
         syntaxOnlyAction->Execute();
         _actions.push_back(syntaxOnlyAction);
     }
@@ -83,9 +82,9 @@ void CompilerInstance::start()
 
 void CompilerInstance::end()
 {
-    for (unsigned actionIdx = 0, numActions = _actions.size(); actionIdx != numActions; ++actionIdx)
+    for (auto action : _actions)
     {
-        _actions.at(actionIdx)->EndSourceFile();
+        action->EndSourceFile();
     }
 
     getDiagnostics().getClient()->finish();

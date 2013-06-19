@@ -26,11 +26,9 @@ public:
         out << "<hr />";
         out << "<table><thead><tr><th>File</th><th>Location</th><th>Rule Name</th>"
             << "<th>Priority</th><th>Message</th></tr></thead><tbody>";
-        std::vector<Violation> violationSet = results->allViolations();
-        for (int index = 0, numberOfViolations = violationSet.size();
-            index < numberOfViolations; index++)
+        for (auto violation : results->allViolations())
         {
-            writeViolation(out, violationSet.at(index));
+            writeViolation(out, violation);
         }
         if (results->hasErrors())
         {
@@ -75,9 +73,9 @@ public:
     void writeCompilerDiagnostics(std::ostream &out, std::vector<Violation> violations,
         std::string level)
     {
-        for (int index = 0, total = violations.size(); index < total; index++)
+        for (auto violation : violations)
         {
-            writeCompilerErrorOrWarning(out, violations.at(index), level);
+            writeCompilerErrorOrWarning(out, violation, level);
         }
     }
 

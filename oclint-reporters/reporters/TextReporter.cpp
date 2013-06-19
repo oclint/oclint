@@ -63,10 +63,9 @@ public:
 
     void writeViolations(std::ostream &out, std::vector<Violation> violations)
     {
-        for (int index = 0, numberOfViolations = violations.size();
-            index < numberOfViolations; index++)
+        for (auto violation : violations)
         {
-            writeViolation(out, violations.at(index));
+            writeViolation(out, violation);
             out << std::endl;
         }
     }
@@ -81,10 +80,9 @@ public:
         std::string headerText)
     {
         out << std::endl << headerText << std::endl << std::endl;
-        for (int index = 0, numberOfViolations = violations.size();
-            index < numberOfViolations; index++)
+        for (auto violation : violations)
         {
-            writeCompilerErrorOrWarning(out, violations.at(index));
+            writeCompilerErrorOrWarning(out, violation);
             out << std::endl;
         }
         out << std::endl;
