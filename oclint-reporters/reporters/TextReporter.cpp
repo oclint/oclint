@@ -25,6 +25,10 @@ public:
         {
             writeCompilerDiagnostics(out, results->allWarnings(), "Compiler Warnings:");
         }
+        if (results->hasCheckerBugs())
+        {
+            writeCompilerDiagnostics(out, results->allCheckerBugs(), "Clang Static Analyzer Results:");
+        }
         writeHeader(out);
         out << std::endl << std::endl;
         writeSummary(out, *results);
