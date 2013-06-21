@@ -9,6 +9,11 @@
 
 using namespace oclint;
 
+CarrierDiagnosticConsumer::CarrierDiagnosticConsumer(bool runClangStaticAnalyzer)
+{
+    _isClangStaticAnalyzerCustomer = runClangStaticAnalyzer;
+}
+
 void CarrierDiagnosticConsumer::HandleDiagnostic(clang::DiagnosticsEngine::Level diagnosticLevel,
     const clang::Diagnostic &diagnosticInfo)
 {
@@ -26,13 +31,20 @@ void CarrierDiagnosticConsumer::HandleDiagnostic(clang::DiagnosticsEngine::Level
     Violation violation(0, filename.str(), line, column, 0, 0, diagnosticMessage.str().str());
 
     Results *results = Results::getInstance();
-    if (diagnosticLevel == clang::DiagnosticsEngine::Warning)
+    if (_isClangStaticAnalyzerCustomer)
     {
-        results->addWarning(violation);
+        results->addCheckerBug(violation);
     }
-    if (diagnosticLevel == clang::DiagnosticsEngine::Error ||
-        diagnosticLevel == clang::DiagnosticsEngine::Fatal)
+    else
     {
-        results->addError(violation);
+        if (diagnosticLevel == clang::DiagnosticsEngine::Warning)
+        {
+            results->addWarning(violation);
+        }
+        if (diagnosticLevel == clang::DiagnosticsEngine::Error ||
+            diagnosticLevel == clang::DiagnosticsEngine::Fatal)
+        {
+            results->addError(violation);
+        }
     }
 }

@@ -74,6 +74,10 @@ cl::opt<int> argMaxP3("max-priority-3",
     cl::value_desc("threshold"),
     cl::init(20));
 
+cl::opt<bool> clangStaticAnalyzerIntegration("enable-clang-static-analyzer",
+    cl::desc("Enable Clang Static Analyzer, and integrate results into OCLint report"),
+    cl::init(false));
+
 /* -------------
    libTooling cl
    ------------- */
@@ -305,7 +309,8 @@ int main(int argc, const char **argv)
     oclint::Driver driver;
     try
     {
-        driver.run(optionsParser.getCompilations(), optionsParser.getSourcePathList(), analyzer);
+        driver.run(optionsParser.getCompilations(),
+            optionsParser.getSourcePathList(), analyzer, clangStaticAnalyzerIntegration);
     }
     catch (const exception& e)
     {

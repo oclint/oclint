@@ -8,7 +8,11 @@ namespace oclint
 
 class CarrierDiagnosticConsumer : public clang::DiagnosticConsumer
 {
+private:
+    bool _isClangStaticAnalyzerCustomer;
+
 public:
+    CarrierDiagnosticConsumer(bool runClangStaticAnalyzer);
     void HandleDiagnostic(clang::DiagnosticsEngine::Level diagnosticLevel,
         const clang::Diagnostic &diagnosticInfo);
 };
