@@ -12,7 +12,7 @@ private:
     bool _isCheckerCustomer;
 
 public:
-    DiagnosticDispatcher(bool runClangStaticAnalyzer);
+    DiagnosticDispatcher(bool runClangChecker);
     void HandleDiagnostic(clang::DiagnosticsEngine::Level diagnosticLevel,
         const clang::Diagnostic &diagnosticInfo);
 };

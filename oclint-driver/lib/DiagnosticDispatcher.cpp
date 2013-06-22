@@ -10,9 +10,9 @@
 
 using namespace oclint;
 
-DiagnosticDispatcher::DiagnosticDispatcher(bool runClangStaticAnalyzer)
+DiagnosticDispatcher::DiagnosticDispatcher(bool runClangChecker)
 {
-    _isCheckerCustomer = runClangStaticAnalyzer;
+    _isCheckerCustomer = runClangChecker;
 }
 
 void DiagnosticDispatcher::HandleDiagnostic(clang::DiagnosticsEngine::Level diagnosticLevel,
