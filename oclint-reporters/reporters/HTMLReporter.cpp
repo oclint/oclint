@@ -125,18 +125,18 @@ public:
     text-align: center;                      \
 }                                            \
 .priority1, .priority2, .priority3 {         \
-    color: #B40527;                          \
+    color: #BF0A30;                          \
 }                                            \
 .priority1 { background-color: #FFC200; }    \
 .priority2 { background-color: #FFD3A6; }    \
 .priority3 { background-color: #FFEEB5; }    \
 .cmplr-error, .cmplr-warning {               \
-    background-color: #B40527;               \
+    background-color: #BF0A30;               \
 }                                            \
 .cmplr-error { color: #FFC200; }             \
 .cmplr-warning { color: #FFD3A6; }           \
 .checker-bug {                               \
-    background-color: #00C;                  \
+    background-color: #002868;               \
     color: white;                            \
 }                                            \
 table {                                      \
