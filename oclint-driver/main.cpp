@@ -29,7 +29,6 @@ using namespace std;
 using namespace llvm;
 using namespace llvm::sys;
 using namespace clang;
-using namespace clang::driver;
 using namespace clang::tooling;
 
 static string absoluteWorkingPath("");

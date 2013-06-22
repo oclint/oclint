@@ -286,7 +286,7 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
     }
     debug::emit("\n");
 
-    if (oclint::option::enableClangChecker())
+    if (option::enableClangChecker())
     {
         debug::emit("Start code analysis by Clang Static Analyzer:\n");
         for (unsigned compileCmdIdx = 0, numCmds = compileCommands.size();
