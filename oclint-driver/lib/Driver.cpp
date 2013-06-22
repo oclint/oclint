@@ -285,39 +285,41 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
         }
     }
     debug::emit("\n");
+}
 
-    if (option::enableClangChecker())
+static void invokeClangStaticAnalyzer(
+    std::vector<std::pair<std::string, clang::tooling::CompileCommand> > &compileCommands,
+    std::string &mainExecutable)
+{
+    debug::emit("Start code analysis by Clang Static Analyzer:\n");
+    for (unsigned compileCmdIdx = 0, numCmds = compileCommands.size();
+        compileCmdIdx < numCmds; compileCmdIdx++)
     {
-        debug::emit("Start code analysis by Clang Static Analyzer:\n");
-        for (unsigned compileCmdIdx = 0, numCmds = compileCommands.size();
-            compileCmdIdx < numCmds; compileCmdIdx++)
+        if (chdir(compileCommands[compileCmdIdx].second.Directory.c_str()))
         {
-            if (chdir(compileCommands[compileCmdIdx].second.Directory.c_str()))
-            {
-                throw oclint::GenericException("Cannot change dictionary into \"" +
-                    compileCommands[compileCmdIdx].second.Directory + "\", "
-                    "please make sure the directory exists and you have permission to access!");
-            }
-            clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(mainExecutable,
-                compileCommands[compileCmdIdx].second.CommandLine, true);
-            clang::FileManager *fileManager = newFileManager();
-            oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation, fileManager, true);
-
-            compiler->start();
-            if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
-            {
-                debug::emit(".");
-            }
-            else
-            {
-                debug::emit("X");
-            }
-            compiler->end();
-            compiler->resetAndLeakFileManager();
-            fileManager->clearStatCaches();
+            throw oclint::GenericException("Cannot change dictionary into \"" +
+                compileCommands[compileCmdIdx].second.Directory + "\", "
+                "please make sure the directory exists and you have permission to access!");
         }
-        debug::emit("\n");
+        clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(mainExecutable,
+            compileCommands[compileCmdIdx].second.CommandLine, true);
+        clang::FileManager *fileManager = newFileManager();
+        oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation, fileManager, true);
+
+        compiler->start();
+        if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
+        {
+            debug::emit(".");
+        }
+        else
+        {
+            debug::emit("X");
+        }
+        compiler->end();
+        compiler->resetAndLeakFileManager();
+        fileManager->clearStatCaches();
     }
+    debug::emit("\n");
 }
 
 void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
@@ -352,5 +354,10 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
         compilers.at(compilerIndex)->end();
         compilers.at(compilerIndex)->resetAndLeakFileManager();
         fileManagers.at(compilerIndex)->clearStatCaches();
+    }
+
+    if (option::enableClangChecker())
+    {
+        invokeClangStaticAnalyzer(compileCommands, mainExecutable);
     }
 }
