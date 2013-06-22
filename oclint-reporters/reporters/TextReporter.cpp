@@ -27,7 +27,8 @@ public:
         }
         if (results->hasCheckerBugs())
         {
-            writeCompilerDiagnostics(out, results->allCheckerBugs(), "Clang Static Analyzer Results:");
+            writeCompilerDiagnostics(out,
+                results->allCheckerBugs(), "Clang Static Analyzer Results:");
         }
         out << std::endl << std::endl;
         writeHeader(out);

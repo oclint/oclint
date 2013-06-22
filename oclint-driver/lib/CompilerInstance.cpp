@@ -55,6 +55,15 @@
 
 using namespace oclint;
 
+static clang::FrontendAction *getFrontendAction()
+{
+    if (option::enableClangChecker())
+    {
+        return new clang::ento::AnalysisAction();
+    }
+    return new clang::SyntaxOnlyAction();
+}
+
 void CompilerInstance::start()
 {
     assert(hasDiagnostics() && "Diagnostics engine is not initialized!");
@@ -77,11 +86,7 @@ void CompilerInstance::start()
             getSourceManager().clearIDTables();
         }
 
-        clang::FrontendAction *frontendAction = new clang::SyntaxOnlyAction();
-        if (option::enableClangChecker())
-        {
-            frontendAction = new clang::ento::AnalysisAction();
-        }
+        clang::FrontendAction *frontendAction = getFrontendAction();
         frontendAction->BeginSourceFile(*this, getFrontendOpts().Inputs[inputIdx]);
         frontendAction->Execute();
         _actions.push_back(frontendAction);

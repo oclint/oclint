@@ -182,7 +182,7 @@ static void constructCompileCommands(
 }
 
 static clang::CompilerInvocation *newCompilerInvocation(std::string &mainExecutable,
-    std::vector<std::string> &unadjustedCmdLine, bool runClangStaticAnalyzer = false)
+    std::vector<std::string> &unadjustedCmdLine, bool runClangChecker = false)
 {
     // Prepare for command lines, and convert to old-school argv
     llvm::OwningPtr<clang::tooling::ArgumentsAdjuster> argumentsAdjusterPtr(
@@ -193,7 +193,7 @@ static clang::CompilerInvocation *newCompilerInvocation(std::string &mainExecuta
 
     std::vector<const char*> argv;
     int start = 0, end = commandLine.size();
-    if (runClangStaticAnalyzer)
+    if (runClangChecker)
     {
         argv.push_back(commandLine[0].c_str());
         argv.push_back("--analyze");
@@ -234,12 +234,12 @@ static clang::FileManager *newFileManager()
 }
 
 static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *compilerInvocation,
-    clang::FileManager *fileManager, bool runClangStaticAnalyzer = false)
+    clang::FileManager *fileManager, bool runClangChecker = false)
 {
     oclint::CompilerInstance *compilerInstance = new oclint::CompilerInstance();
     compilerInstance->setInvocation(compilerInvocation);
     compilerInstance->setFileManager(fileManager);
-    compilerInstance->createDiagnostics(new DiagnosticDispatcher(runClangStaticAnalyzer));
+    compilerInstance->createDiagnostics(new DiagnosticDispatcher(runClangChecker));
     if (!compilerInstance->hasDiagnostics())
     {
         throw oclint::GenericException("cannot create compiler diagnostics");
@@ -304,7 +304,8 @@ static void invokeClangStaticAnalyzer(
         clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(mainExecutable,
             compileCommands[compileCmdIdx].second.CommandLine, true);
         clang::FileManager *fileManager = newFileManager();
-        oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation, fileManager, true);
+        oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation,
+            fileManager, true);
 
         compiler->start();
         if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
