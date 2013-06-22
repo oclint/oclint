@@ -27,9 +27,7 @@ class Driver
 {
 public:
     void run(const clang::tooling::CompilationDatabase &compilationDatabase,
-        llvm::ArrayRef<std::string> sourcePaths,
-        oclint::Analyzer &analyzer,
-        bool runClangStaticAnalyzer);
+        llvm::ArrayRef<std::string> sourcePaths, oclint::Analyzer &analyzer);
 };
 
 } // end namespace oclint

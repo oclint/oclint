@@ -72,6 +72,7 @@
 #include "oclint/Debug.h"
 #include "oclint/Driver.h"
 #include "oclint/GenericException.h"
+#include "oclint/Options.h"
 #include "oclint/ViolationSet.h"
 
 using namespace oclint;
@@ -254,8 +255,7 @@ static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *
 static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstance *> &compilers,
     std::vector<clang::FileManager *> &fileManagers,
     std::vector<std::pair<std::string, clang::tooling::CompileCommand> > &compileCommands,
-    std::string &mainExecutable,
-    bool runClangStaticAnalyzer)
+    std::string &mainExecutable)
 {
     debug::emit("\nStart compiling:\n");
     for (unsigned compileCmdIdx = 0, numCmds = compileCommands.size();
@@ -286,7 +286,7 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
     }
     debug::emit("\n");
 
-    if (runClangStaticAnalyzer)
+    if (oclint::option::enableClangChecker())
     {
         debug::emit("Start code analysis by Clang Static Analyzer:\n");
         for (unsigned compileCmdIdx = 0, numCmds = compileCommands.size();
@@ -322,8 +322,7 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
 
 void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
     llvm::ArrayRef<std::string> sourcePaths,
-    oclint::Analyzer &analyzer,
-    bool runClangStaticAnalyzer)
+    oclint::Analyzer &analyzer)
 {
     std::vector<std::pair<std::string, clang::tooling::CompileCommand> > compileCommands;
     constructCompileCommands(compileCommands, compilationDatabase, sourcePaths);
@@ -333,8 +332,7 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
 
     std::vector<oclint::CompilerInstance *> compilers;
     std::vector<clang::FileManager *> fileManagers;
-    constructCompilersAndFileManagers(compilers,
-        fileManagers, compileCommands, mainExecutable, runClangStaticAnalyzer);
+    constructCompilersAndFileManagers(compilers, fileManagers, compileCommands, mainExecutable);
 
     // collect a collection of AST contexts
     std::vector<clang::ASTContext *> localContexts;

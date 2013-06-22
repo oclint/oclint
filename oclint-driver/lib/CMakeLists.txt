@@ -4,5 +4,6 @@ ADD_LIBRARY(OCLintDriver
     Debug.cpp
     Driver.cpp
     GenericException.cpp
+    Options.cpp
     RulesetBasedAnalyzer.cpp
     )
