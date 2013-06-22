@@ -1,7 +1,7 @@
 ADD_LIBRARY(OCLintDriver
-    CarrierDiagnosticConsumer.cpp
     CompilerInstance.cpp
     Debug.cpp
+    DiagnosticDispatcher.cpp
     Driver.cpp
     GenericException.cpp
     Options.cpp

@@ -67,7 +67,7 @@
 #include <clang/Tooling/CompilationDatabase.h>
 #include <clang/Tooling/Tooling.h>
 
-#include "oclint/CarrierDiagnosticConsumer.h"
+#include "oclint/DiagnosticDispatcher.h"
 #include "oclint/CompilerInstance.h"
 #include "oclint/Debug.h"
 #include "oclint/Driver.h"
@@ -239,7 +239,7 @@ static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *
     oclint::CompilerInstance *compilerInstance = new oclint::CompilerInstance();
     compilerInstance->setInvocation(compilerInvocation);
     compilerInstance->setFileManager(fileManager);
-    compilerInstance->createDiagnostics(new CarrierDiagnosticConsumer(runClangStaticAnalyzer));
+    compilerInstance->createDiagnostics(new DiagnosticDispatcher(runClangStaticAnalyzer));
     if (!compilerInstance->hasDiagnostics())
     {
         throw oclint::GenericException("cannot create compiler diagnostics");

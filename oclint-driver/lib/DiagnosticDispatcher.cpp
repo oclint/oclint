@@ -1,20 +1,21 @@
+
 #include <llvm/ADT/SmallString.h>
 #include <llvm/ADT/StringRef.h>
 #include <clang/Basic/SourceLocation.h>
 #include <clang/Basic/SourceManager.h>
 
-#include "oclint/CarrierDiagnosticConsumer.h"
+#include "oclint/DiagnosticDispatcher.h"
 #include "oclint/Results.h"
 #include "oclint/Violation.h"
 
 using namespace oclint;
 
-CarrierDiagnosticConsumer::CarrierDiagnosticConsumer(bool runClangStaticAnalyzer)
+DiagnosticDispatcher::DiagnosticDispatcher(bool runClangStaticAnalyzer)
 {
-    _isClangStaticAnalyzerCustomer = runClangStaticAnalyzer;
+    _isCheckerCustomer = runClangStaticAnalyzer;
 }
 
-void CarrierDiagnosticConsumer::HandleDiagnostic(clang::DiagnosticsEngine::Level diagnosticLevel,
+void DiagnosticDispatcher::HandleDiagnostic(clang::DiagnosticsEngine::Level diagnosticLevel,
     const clang::Diagnostic &diagnosticInfo)
 {
     clang::DiagnosticConsumer::HandleDiagnostic(diagnosticLevel, diagnosticInfo);
@@ -31,7 +32,7 @@ void CarrierDiagnosticConsumer::HandleDiagnostic(clang::DiagnosticsEngine::Level
     Violation violation(0, filename.str(), line, column, 0, 0, diagnosticMessage.str().str());
 
     Results *results = Results::getInstance();
-    if (_isClangStaticAnalyzerCustomer)
+    if (_isCheckerCustomer)
     {
         results->addCheckerBug(violation);
     }
