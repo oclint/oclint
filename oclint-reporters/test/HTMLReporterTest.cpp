@@ -48,10 +48,10 @@ TEST_F(HTMLReporterTest, WriteSummaryTable)
     reporter.writeSummaryTable(oss, *restults);
     EXPECT_THAT(oss.str(), HasSubstr("<th>Total Files</th><th>Files with Violations</th>"
         "<th>Priority 1</th><th>Priority 2</th><th>Priority 3</th>"
-        "<th>Compiler Errors</th><th>Compiler Warnings</th>"));
+        "<th>Compiler Errors</th><th>Compiler Warnings</th><th>Clang Static Analyzer</th>"));
     EXPECT_THAT(oss.str(), HasSubstr("<td>0</td><td>0</td><td class='priority1'>0</td>"
         "<td class='priority2'>0</td><td class='priority3'>0</td>"
-        "<td class='cmplr-error'>0</td><td class='cmplr-warning'>0</td>"));
+        "<td class='cmplr-error'>0</td><td class='cmplr-warning'>0</td><td class='checker-bug'>0</td>"));
 }
 
 TEST_F(HTMLReporterTest, WriteViolation)
@@ -97,6 +97,21 @@ TEST_F(HTMLReporterTest, WriteCompilerDiagnostics)
         "<td class='cmplr-testlevel'>testlevel</td><td>test1 message</td>"));
     EXPECT_THAT(oss.str(), HasSubstr("<td>test2 path</td><td>5:6</td><td>compiler testlevel</td>"
         "<td class='cmplr-testlevel'>testlevel</td><td>test2 message</td>"));
+}
+
+TEST_F(HTMLReporterTest, WriteCheckerBugs)
+{
+    Violation violation1(0, "test1 path", 1, 2, 3, 4, "test1 message");
+    Violation violation2(0, "test2 path", 5, 6, 7, 8, "test2 message");
+    std::vector<Violation> violations;
+    violations.push_back(violation1);
+    violations.push_back(violation2);
+    std::ostringstream oss;
+    reporter.writeCheckerBugs(oss, violations);
+    EXPECT_THAT(oss.str(), HasSubstr("<td>test1 path</td><td>1:2</td><td>clang static analyzer</td>"
+        "<td class='checker-bug'>checker bug</td><td>test1 message</td>"));
+    EXPECT_THAT(oss.str(), HasSubstr("<td>test2 path</td><td>5:6</td><td>clang static analyzer</td>"
+        "<td class='checker-bug'>checker bug</td><td>test2 message</td>"));
 }
 
 int main(int argc, char **argv)

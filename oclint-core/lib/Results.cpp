@@ -21,6 +21,7 @@ Results::Results()
     _collection = new std::vector<ViolationSet*>();
     _compilerErrorSet = new ViolationSet();
     _compilerWarningSet = new ViolationSet();
+    _clangStaticCheckerBugSet = new ViolationSet();
 }
 
 Results::~Results()
@@ -31,6 +32,8 @@ Results::~Results()
     _compilerErrorSet = NULL;
     delete _compilerWarningSet;
     _compilerWarningSet = NULL;
+    delete _clangStaticCheckerBugSet;
+    _clangStaticCheckerBugSet = NULL;
 }
 
 void Results::add(ViolationSet *violationSet)
@@ -133,4 +136,24 @@ bool Results::hasWarnings()
 std::vector<Violation> Results::allWarnings()
 {
     return _compilerWarningSet->getViolations();
+}
+
+void Results::addCheckerBug(Violation& violation)
+{
+    _clangStaticCheckerBugSet->addViolation(violation);
+}
+
+int Results::numberOfCheckerBugs()
+{
+    return _clangStaticCheckerBugSet->numberOfViolations();
+}
+
+bool Results::hasCheckerBugs()
+{
+    return numberOfCheckerBugs() > 0;
+}
+
+std::vector<Violation> Results::allCheckerBugs()
+{
+    return _clangStaticCheckerBugSet->getViolations();
 }

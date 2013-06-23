@@ -25,6 +25,12 @@ public:
         {
             writeCompilerDiagnostics(out, results->allWarnings(), "Compiler Warnings:");
         }
+        if (results->hasCheckerBugs())
+        {
+            writeCompilerDiagnostics(out,
+                results->allCheckerBugs(), "Clang Static Analyzer Results:");
+        }
+        out << std::endl << std::endl;
         writeHeader(out);
         out << std::endl << std::endl;
         writeSummary(out, *results);
@@ -87,7 +93,6 @@ public:
             writeCompilerErrorOrWarning(out, violations.at(index));
             out << std::endl;
         }
-        out << std::endl;
     }
 };
 

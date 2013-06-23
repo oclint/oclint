@@ -48,9 +48,21 @@
 #include <clang/Frontend/FrontendActions.h>
 #include <clang/Basic/TargetInfo.h>
 
+#include <clang/StaticAnalyzer/Frontend/FrontendActions.h>
+
 #include "oclint/CompilerInstance.h"
+#include "oclint/Options.h"
 
 using namespace oclint;
+
+static clang::FrontendAction *getFrontendAction()
+{
+    if (option::enableClangChecker())
+    {
+        return new clang::ento::AnalysisAction();
+    }
+    return new clang::SyntaxOnlyAction();
+}
 
 void CompilerInstance::start()
 {
@@ -74,10 +86,10 @@ void CompilerInstance::start()
             getSourceManager().clearIDTables();
         }
 
-        clang::SyntaxOnlyAction *syntaxOnlyAction = new clang::SyntaxOnlyAction();
-        syntaxOnlyAction->BeginSourceFile(*this, getFrontendOpts().Inputs[inputIdx]);
-        syntaxOnlyAction->Execute();
-        _actions.push_back(syntaxOnlyAction);
+        clang::FrontendAction *frontendAction = getFrontendAction();
+        frontendAction->BeginSourceFile(*this, getFrontendOpts().Inputs[inputIdx]);
+        frontendAction->Execute();
+        _actions.push_back(frontendAction);
     }
 }
 
