@@ -63,23 +63,23 @@ cp $OCLINT_DOGFOODING_DRIVER/compile_commands.json $OCLINT_DRIVER_SRC/compile_co
 
 # dog fooding for core
 cd $OCLINT_CORE_SRC
-$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database -- -o $OCLINT_DOGFOODING/dogfooding_core_results.txt
+$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database -- -enable-clang-static-analyzer -o $OCLINT_DOGFOODING/dogfooding_core_results.txt
 
 # dog fooding for metrics
 cd $OCLINT_METRICS_SRC
-$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database -- -o $OCLINT_DOGFOODING/dogfooding_metrics_results.txt
+$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database -- -enable-clang-static-analyzer -o $OCLINT_DOGFOODING/dogfooding_metrics_results.txt
 
 # dog fooding for rules
 cd $OCLINT_RULES_SRC
-$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database -- -o $OCLINT_DOGFOODING/dogfooding_rules_results.txt
+$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database -- -enable-clang-static-analyzer -o $OCLINT_DOGFOODING/dogfooding_rules_results.txt
 
 # dog fooding for reporters
 cd $OCLINT_REPORTERS_SRC
-$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database -- -o $OCLINT_DOGFOODING/dogfooding_reporters_results.txt
+$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database -- -enable-clang-static-analyzer -o $OCLINT_DOGFOODING/dogfooding_reporters_results.txt
 
 # dog fooding for driver
 cd $OCLINT_DRIVER_SRC
-$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database -- -o $OCLINT_DOGFOODING/dogfooding_driver_results.txt
+$OCLINT_RELEASE_BUILD/bin/oclint-json-compilation-database -- -enable-clang-static-analyzer -o $OCLINT_DOGFOODING/dogfooding_driver_results.txt
 
 # display the results
 cat $OCLINT_DOGFOODING/dogfooding_core_results.txt

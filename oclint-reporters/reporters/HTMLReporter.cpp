@@ -40,6 +40,10 @@ public:
         {
             writeCompilerDiagnostics(out, results->allWarnings(), "warning");
         }
+        if (results->hasCheckerBugs())
+        {
+            writeCheckerBugs(out, results->allCheckerBugs());
+        }
         out << "</tbody></table>";
         out << "<hr />";
         writeFooter(out, Version::identifier());
@@ -81,18 +85,32 @@ public:
         }
     }
 
+    void writeCheckerBugs(std::ostream &out, std::vector<Violation> violations)
+    {
+        for (int index = 0, total = violations.size(); index < total; index++)
+        {
+            Violation violation = violations.at(index);
+            out << "<tr><td>" << violation.path << "</td><td>" << violation.startLine
+                << ":" << violation.startColumn << "</td>";
+            out << "<td>clang static analyzer</td><td class='checker-bug'>"
+                << "checker bug</td><td>" << violation.message << "</td></tr>";
+        }
+    }
+
     void writeSummaryTable(std::ostream &out, Results &results)
     {
         out << "<table><thead><tr><th>Total Files</th><th>Files with Violations</th>"
             << "<th>Priority 1</th><th>Priority 2</th><th>Priority 3</th>"
-            << "<th>Compiler Errors</th><th>Compiler Warnings</th></tr></thead>";
+            << "<th>Compiler Errors</th><th>Compiler Warnings</th>"
+            << "<th>Clang Static Analyzer</th></tr></thead>";
         out << "<tbody><tr><td>" << results.numberOfFiles() << "</td><td>"
             << results.numberOfFilesWithViolations() << "</td><td class='priority1'>"
             << results.numberOfViolationsWithPriority(1) << "</td><td class='priority2'>"
             << results.numberOfViolationsWithPriority(2) << "</td><td class='priority3'>"
             << results.numberOfViolationsWithPriority(3) << "</td><td class='cmplr-error'>"
             << results.allErrors().size() << "</td><td class='cmplr-warning'>"
-            << results.allWarnings().size() << "</td></tr></tbody></table>";
+            << results.allWarnings().size() << "</td><td class='checker-bug'>"
+            << results.allCheckerBugs().size() << "</td></tr></tbody></table>";
     }
 
     void writeHead(std::ostream &out)
@@ -101,21 +119,26 @@ public:
         out << "<title>OCLint Report</title>";
         out << "<style type='text/css'>"
             << "                             \
-.priority1, .priority2, .priority3 {         \
+.priority1, .priority2, .priority3,          \
+.cmplr-error, .cmplr-warning, .checker-bug { \
     font-weight: bold;                       \
     text-align: center;                      \
-    color: #B40527;                          \
 }                                            \
-.cmplr-error, .cmplr-warning {               \
-    font-weight: bold;                       \
-    text-align: center;                      \
-    background-color: #B40527;               \
+.priority1, .priority2, .priority3 {         \
+    color: #BF0A30;                          \
 }                                            \
 .priority1 { background-color: #FFC200; }    \
 .priority2 { background-color: #FFD3A6; }    \
 .priority3 { background-color: #FFEEB5; }    \
+.cmplr-error, .cmplr-warning {               \
+    background-color: #BF0A30;               \
+}                                            \
 .cmplr-error { color: #FFC200; }             \
 .cmplr-warning { color: #FFD3A6; }           \
+.checker-bug {                               \
+    background-color: #002868;               \
+    color: white;                            \
+}                                            \
 table {                                      \
     border: 2px solid gray;                  \
     border-collapse: collapse;               \
