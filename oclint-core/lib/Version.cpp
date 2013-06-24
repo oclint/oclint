@@ -2,5 +2,5 @@
 
 string Version::identifier()
 {
-    return "0.7rc";
+    return "0.7";
 }
