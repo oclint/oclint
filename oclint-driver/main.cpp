@@ -1,4 +1,9 @@
-#include <dlfcn.h>
+#if defined(WIN32)
+# include <windows.h>
+#else
+# include <dlfcn.h>
+#endif
+
 #include <dirent.h>
 #include <unistd.h>
 #include <iostream>
@@ -72,12 +77,22 @@ void dynamicLoadRules(string ruleDirPath)
                 continue;
             }
             string rulePath = ruleDirPath + "/" + string(dirp->d_name);
+#if defined (WIN32)
+            HMODULE rule_library = LoadLibrary(rulePath.c_str());
+            if (rule_library == NULL)
+            {
+                //cerr << dlerror() << endl;
+                closedir(pDir);
+                throw oclint::GenericException("cannot open dynamic library: " + rulePath);
+            }
+#else
             if (dlopen(rulePath.c_str(), RTLD_LAZY) == NULL)
             {
                 cerr << dlerror() << endl;
                 closedir(pDir);
                 throw oclint::GenericException("cannot open dynamic library: " + rulePath);
             }
+#endif
         }
         closedir(pDir);
     }
@@ -117,6 +132,18 @@ void loadReporter(const char* executablePath)
                 continue;
             }
             string reporterPath = defaultReportersPath + "/" + string(dirp->d_name);
+#if defined(WIN32)
+            HMODULE reporterHandle = LoadLibrary(reporterPath.c_str());
+            if (reporterHandle == NULL)
+            {
+                //cerr << dlerror() << endl;
+                closedir(pDir);
+                throw oclint::GenericException("cannot open dynamic library: " + reporterPath);
+            }
+            typedef oclint::Reporter* (*CreateReporterFunc)();
+            CreateReporterFunc createMethodPointer;
+            createMethodPointer = (CreateReporterFunc) GetProcAddress(reporterHandle, "create");
+#else
             void *reporterHandle = dlopen(reporterPath.c_str(), RTLD_LAZY);
             if (reporterHandle == NULL)
             {
@@ -126,6 +153,7 @@ void loadReporter(const char* executablePath)
             }
             oclint::Reporter* (*createMethodPointer)();
             createMethodPointer = (oclint::Reporter* (*)())dlsym(reporterHandle, "create");
+#endif
             oclint::Reporter* reporter = (oclint::Reporter*)createMethodPointer();
             if (reporter->name() == oclint::option::reportType())
             {
