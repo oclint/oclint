@@ -54,7 +54,6 @@
 #include <llvm/Option/ArgList.h>
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/Host.h>
-#include <llvm/Support/PathV1.h>
 #include <llvm/Support/raw_ostream.h>
 #include <clang/Basic/Diagnostic.h>
 #include <clang/Driver/Compilation.h>
@@ -331,7 +330,7 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
     constructCompileCommands(compileCommands, compilationDatabase, sourcePaths);
 
     static int staticSymbol;
-    std::string mainExecutable = llvm::sys::Path::GetMainExecutable("oclint", &staticSymbol).str();
+    std::string mainExecutable = llvm::sys::fs::getMainExecutable("oclint", &staticSymbol);
 
     std::vector<oclint::CompilerInstance *> compilers;
     std::vector<clang::FileManager *> fileManagers;
