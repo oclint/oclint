@@ -1,6 +1,5 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
-#include "oclint/helper/SuppressHelper.h"
 
 using namespace std;
 using namespace clang;
@@ -63,7 +62,7 @@ public:
 
     bool VisitVarDecl(VarDecl *varDecl)
     {
-        if (!markedAsSuppress(varDecl, this) && isUnusedLocalVariable(varDecl))
+        if (isUnusedLocalVariable(varDecl))
         {
             addViolation(varDecl, this);
         }

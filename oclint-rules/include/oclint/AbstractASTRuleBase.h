@@ -4,6 +4,7 @@
 #include <clang/AST/AST.h>
 
 #include "oclint/RuleBase.h"
+#include "oclint/helper/SuppressHelper.h"
 
 namespace oclint
 {
@@ -29,6 +30,11 @@ protected:
     {
         if (decl)
         {
+            if (markedAsSuppress(decl, rule))
+            {
+                return;
+            }
+
             addViolation(decl->getLocStart(), decl->getLocEnd(), rule, message);
         }
     }

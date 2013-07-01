@@ -1,7 +1,6 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
-#include "oclint/helper/SuppressHelper.h"
 #include "oclint/util/StdUtil.h"
 
 using namespace std;
@@ -19,8 +18,7 @@ private:
     void applyDecl(T *decl)
     {
         unsigned numOfParams = decl->param_size();
-        if (!markedAsSuppress(decl, this) && decl->hasBody()
-            && numOfParams > _threshold)
+        if (decl->hasBody() && numOfParams > _threshold)
         {
             string description = "Method with " + toString<int>(numOfParams) +
                 " parameters exceeds limit of " + toString<int>(_threshold);

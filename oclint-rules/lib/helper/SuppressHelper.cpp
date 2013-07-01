@@ -2,7 +2,7 @@
 
 #include "oclint/helper/SuppressHelper.h"
 
-bool markedAsSuppress(clang::Decl *decl, oclint::RuleBase *rule)
+bool markedAsSuppress(const clang::Decl *decl, oclint::RuleBase *rule)
 {
     if (!decl)
     {
