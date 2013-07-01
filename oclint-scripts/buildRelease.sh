@@ -23,6 +23,9 @@ cd $OCLINT_RELEASE_BUILD
 # put executable in place
 cp $OCLINT_DRIVER_BUILD/bin/oclint* $OCLINT_RELEASE_BUILD/bin
 cd $OCLINT_RELEASE_BUILD/bin
+if [ -e oclint ]; then
+    rm oclint
+fi
 ln -s oclint* oclint
 
 # put rules and reporters in place

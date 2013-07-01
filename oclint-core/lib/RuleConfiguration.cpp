@@ -48,3 +48,18 @@ double RuleConfiguration::doubleForKey(std::string key, double defaultValue)
 {
     return hasKey(key) ? atof(valueForKey(key).c_str()) : defaultValue;
 }
+
+string RuleConfiguration::stringForKey(string key, string defaultValue)
+{
+    return hasKey(key) ? valueForKey(key) : defaultValue;
+}
+
+int RuleConfiguration::intForKey(string key, int defaultValue)
+{
+    return hasKey(key) ? atoi(valueForKey(key).c_str()) : defaultValue;
+}
+
+double RuleConfiguration::doubleForKey(string key, double defaultValue)
+{
+    return hasKey(key) ? atof(valueForKey(key).c_str()) : defaultValue;
+}
