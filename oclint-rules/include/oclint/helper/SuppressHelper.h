@@ -5,6 +5,7 @@
 
 #include "oclint/RuleBase.h"
 
-bool markedAsSuppress(const clang::Decl *decl, oclint::RuleBase *rule);
+bool shouldSuppress(const clang::Decl *decl, clang::ASTContext &context, oclint::RuleBase *rule);
+bool shouldSuppress(const clang::Stmt *stmt, clang::ASTContext &context, oclint::RuleBase *rule);
 
 #endif

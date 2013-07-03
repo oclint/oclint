@@ -28,20 +28,15 @@ protected:
 
     void addViolation(const clang::Decl *decl, RuleBase *rule, const std::string& message = "")
     {
-        if (decl)
+        if (decl && !shouldSuppress(decl, *_carrier->getASTContext(), rule))
         {
-            if (markedAsSuppress(decl, rule))
-            {
-                return;
-            }
-
             addViolation(decl->getLocStart(), decl->getLocEnd(), rule, message);
         }
     }
 
     void addViolation(const clang::Stmt *stmt, RuleBase *rule, const std::string& message = "")
     {
-        if (stmt)
+        if (stmt && !shouldSuppress(stmt, *_carrier->getASTContext(), rule))
         {
             addViolation(stmt->getLocStart(), stmt->getLocEnd(), rule, message);
         }
