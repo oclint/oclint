@@ -1,6 +1,7 @@
 #include "TestHeaders.h"
 
 #include "oclint/AbstractASTVisitorRule.h"
+#include "oclint/AbstractSourceCodeReaderRule.h"
 
 using namespace std;
 using namespace clang;
@@ -113,6 +114,42 @@ TEST(SuppressHelperTestASTRuleTest, CommentWithDescriptionNOLINT)
     testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLINT[reason for suppressing this is blahblah]");
     testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLINT:reason for suppressing this is blahblah)");
     testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLINT     ");
+}
+
+class SuppressHelperTestSourceCodeReaderRule : public AbstractSourceCodeReaderRule
+{
+public:
+    virtual const string name() const
+    {
+        return "test source code rule";
+    }
+
+    virtual int priority() const
+    {
+        return 0;
+    }
+
+    void eachLine(int lineNumber, string line)
+    {
+        addViolation(lineNumber, 1, lineNumber, line.size(), this, "");
+    }
+};
+
+TEST(SuppressHelperTestSourceCodeReaderRuleTest, PropertyTest)
+{
+    SuppressHelperTestSourceCodeReaderRule rule;
+    EXPECT_EQ(0, rule.priority());
+    EXPECT_EQ("test source code rule", rule.name());
+}
+
+TEST(SuppressHelperTestSourceCodeReaderRuleTest, NoSuppress)
+{
+    testRuleOnCode(new SuppressHelperTestSourceCodeReaderRule(), "void a() {}", 0, 1, 1, 1, 11);
+}
+
+TEST(SuppressHelperTestSourceCodeReaderRuleTest, SuppressByComment)
+{
+    testRuleOnCode(new SuppressHelperTestSourceCodeReaderRule(), "void a() {} //!OCLINT");
 }
 
 int main(int argc, char **argv)
