@@ -16,14 +16,18 @@ protected:
         clang::SourceLocation endLocation, RuleBase *rule, const std::string& message = "")
     {
         clang::SourceManager *sourceManager = &_carrier->getSourceManager();
-        llvm::StringRef filename = sourceManager->getFilename(startLocation);
-        _carrier->addViolation(filename.str(),
-            sourceManager->getPresumedLineNumber(startLocation),
-            sourceManager->getPresumedColumnNumber(startLocation),
-            sourceManager->getPresumedLineNumber(endLocation),
-            sourceManager->getPresumedColumnNumber(endLocation),
-            rule,
-            message);
+        int beginLine = sourceManager->getPresumedLineNumber(startLocation);
+        if (!shouldSuppress(beginLine, *_carrier->getASTContext()))
+        {
+            llvm::StringRef filename = sourceManager->getFilename(startLocation);
+            _carrier->addViolation(filename.str(),
+                beginLine,
+                sourceManager->getPresumedColumnNumber(startLocation),
+                sourceManager->getPresumedLineNumber(endLocation),
+                sourceManager->getPresumedColumnNumber(endLocation),
+                rule,
+                message);
+        }
     }
 
     void addViolation(const clang::Decl *decl, RuleBase *rule, const std::string& message = "")

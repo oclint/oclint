@@ -97,6 +97,24 @@ TEST(SuppressHelperTestASTRuleTest, ObjCContainerSuppressOnMethod)
         0, 6, 52, 8, 1);
 }
 
+TEST(SuppressHelperTestASTRuleTest, SimpleNOLINT)
+{
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLINT");
+}
+
+TEST(SuppressHelperTestASTRuleTest, MultipleLineNOLINT)
+{
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() { //!OCLINT\n if (1) {//!OCLINT\n}}");
+}
+
+TEST(SuppressHelperTestASTRuleTest, CommentWithDescriptionNOLINT)
+{
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLINT(reason for suppressing this is blahblah)");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLINT[reason for suppressing this is blahblah]");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLINT:reason for suppressing this is blahblah)");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLINT     ");
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);

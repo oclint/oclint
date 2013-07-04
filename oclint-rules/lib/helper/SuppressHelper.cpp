@@ -59,3 +59,23 @@ bool shouldSuppress(const clang::Stmt *stmt, clang::ASTContext &context, oclint:
 {
     return markedParentsAsSuppress(*stmt, context, rule);
 }
+
+bool shouldSuppress(int beginLine, clang::ASTContext &context)
+{
+    clang::RawCommentList commentList = context.getRawCommentList();
+    clang::ArrayRef<clang::RawComment *> commentArray = commentList.getComments();
+
+    // TODO: Big-O is very high by iterating the entire comment set every time!!!
+    for (clang::ArrayRef<clang::RawComment *>::iterator it = commentArray.begin(),
+        itEnd = commentArray.end(); it != itEnd; it++)
+    {
+        clang::RawComment *comment = *it;
+        if (beginLine == comment->getBeginLine(context.getSourceManager()) &&
+            std::string::npos != comment->getRawText(context.getSourceManager()).find("//!OCLINT"))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
