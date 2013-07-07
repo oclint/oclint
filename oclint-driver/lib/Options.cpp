@@ -33,6 +33,14 @@ static llvm::cl::list<std::string> argRuleConfiguration("rc",
     llvm::cl::desc("Override the default behavior of rules"),
     llvm::cl::value_desc("parameter>=<value"),
     llvm::cl::ZeroOrMore);
+static llvm::cl::list<std::string> argEnabledRules("rule",
+    llvm::cl::desc("Explicitly pick rules"),
+    llvm::cl::value_desc("rule name"),
+    llvm::cl::ZeroOrMore);
+static llvm::cl::list<std::string> argDisabledRules("disable-rule",
+    llvm::cl::desc("Disable rules"),
+    llvm::cl::value_desc("rule name"),
+    llvm::cl::ZeroOrMore);
 static llvm::cl::opt<int> argMaxP1("max-priority-1",
     llvm::cl::desc("The max allowed number of priority 1 violations"),
     llvm::cl::value_desc("threshold"),
@@ -96,6 +104,16 @@ bool oclint::option::hasCustomRulesPath()
 std::vector<std::string> oclint::option::rulesPath()
 {
     return argRulesPath;
+}
+
+const std::vector<std::string> oclint::option::enabledRules()
+{
+    return std::vector<std::string>(argEnabledRules.begin(), argEnabledRules.end());
+}
+
+const std::vector<std::string> oclint::option::disabledRules()
+{
+    return std::vector<std::string>(argDisabledRules.begin(), argDisabledRules.end());
 }
 
 int oclint::option::maxP1()

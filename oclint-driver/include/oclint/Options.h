@@ -15,6 +15,8 @@ namespace option
     std::string reportType();
     bool hasCustomRulesPath();
     std::vector<std::string> rulesPath();
+    const std::vector<std::string> enabledRules();
+    const std::vector<std::string> disabledRules();
     int maxP1();
     int maxP2();
     int maxP3();
