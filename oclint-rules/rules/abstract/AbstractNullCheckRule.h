@@ -18,7 +18,7 @@ protected:
             if (castKind == clang::CK_BitCast)
             {
                 clang::Expr *subExpr = implicitCastExpr->getSubExpr();
-                while (clang::isa<clang::ParenExpr>(subExpr))
+                while (subExpr && clang::isa<clang::ParenExpr>(subExpr))
                 {
                     clang::ParenExpr *parenExpr = clang::dyn_cast<clang::ParenExpr>(subExpr);
                     subExpr = parenExpr->getSubExpr();
@@ -34,10 +34,20 @@ protected:
     bool isImplicitDeclRef(clang::Expr *expr)
     {
         clang::ImplicitCastExpr *implicitCastExpr = clang::dyn_cast<clang::ImplicitCastExpr>(expr);
-        return implicitCastExpr &&
-            (implicitCastExpr->getCastKind() == clang::CK_PointerToBoolean ||
-            (implicitCastExpr->getCastKind() == clang::CK_LValueToRValue &&
-            clang::isa<clang::DeclRefExpr>(implicitCastExpr->getSubExpr())));
+        if (implicitCastExpr)
+        {
+            clang::CastKind castKind = implicitCastExpr->getCastKind();
+            if (castKind == clang::CK_PointerToBoolean)
+            {
+                return true;
+            }
+            if (castKind == clang::CK_LValueToRValue)
+            {
+                clang::Expr *subExpr = implicitCastExpr->getSubExpr();
+                return subExpr && clang::isa<clang::DeclRefExpr>(subExpr);
+            }
+        }
+        return false;
     }
 
     bool isEqNullCheck(clang::Expr *expr)
@@ -107,6 +117,10 @@ protected:
 
     std::string extractIdentifierFromExpr(clang::Expr *expr)
     {
+        if (!expr)
+        {
+            return "";
+        }
         if (clang::isa<clang::ImplicitCastExpr>(expr))
         {
             return extractIdentifierFromImplicitCastExpr(

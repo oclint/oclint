@@ -16,13 +16,17 @@ private:
         {
             DeclStmt *declStmt = dyn_cast<DeclStmt>(initStmt);
             UnaryOperator *unaryOperator = dyn_cast<UnaryOperator>(incExpr);
-            if (declStmt && unaryOperator &&
-                declStmt->isSingleDecl() && isa<DeclRefExpr>(unaryOperator->getSubExpr()))
+            if (declStmt && unaryOperator && declStmt->isSingleDecl())
             {
-                VarDecl *varDecl = dyn_cast<VarDecl>(declStmt->getSingleDecl());
-                DeclRefExpr *declRefExpr = dyn_cast<DeclRefExpr>(unaryOperator->getSubExpr());
-                ValueDecl *valueDecl = declRefExpr->getDecl();
-                return varDecl && valueDecl && varDecl == valueDecl;
+                Decl *singleDecl = declStmt->getSingleDecl();
+                Expr *unaryOpSubExpr = unaryOperator->getSubExpr();
+                if (singleDecl && unaryOpSubExpr && isa<DeclRefExpr>(unaryOpSubExpr))
+                {
+                    VarDecl *varDecl = dyn_cast<VarDecl>(singleDecl);
+                    DeclRefExpr *declRefExpr = dyn_cast<DeclRefExpr>(unaryOpSubExpr);
+                    ValueDecl *valueDecl = declRefExpr->getDecl();
+                    return varDecl && valueDecl && varDecl == valueDecl;
+                }
             }
         }
         return false;

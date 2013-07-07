@@ -14,29 +14,31 @@ private:
         string &selectorString, map<string, string> &methodArgTypeMap)
     {
         map<string, string>::iterator selectedSelector = methodArgTypeMap.find(selectorString);
-        return isa<ParenExpr>(expr) &&
+        return expr && isa<ParenExpr>(expr) &&
             selectedSelector != methodArgTypeMap.end() &&
             selectedSelector->second == dyn_cast<ParenExpr>(expr)->getType().getAsString();
     }
 
     bool isObjCBoolBox(Expr *expr, string &selectorString)
     {
-        if (selectorString == "numberWithBool:" && isa<ImplicitCastExpr>(expr))
+        if (selectorString == "numberWithBool:" && expr && isa<ImplicitCastExpr>(expr))
         {
             ImplicitCastExpr *implicitCastExpr = dyn_cast<ImplicitCastExpr>(expr);
+            Expr *subExpr = implicitCastExpr->getSubExpr();
             return implicitCastExpr->getType().getAsString() == "BOOL" &&
-                isa<ParenExpr>(implicitCastExpr->getSubExpr());
+                subExpr && isa<ParenExpr>(subExpr);
         }
         return false;
     }
 
     bool isEnumConstantBox(Expr *expr, string &selectorString)
     {
-        if (selectorString == "numberWithInt:" && isa<DeclRefExpr>(expr))
+        if (selectorString == "numberWithInt:" && expr && isa<DeclRefExpr>(expr))
         {
             DeclRefExpr *declRefExpr = dyn_cast<DeclRefExpr>(expr);
+            Decl *refDecl = declRefExpr->getDecl();
             return declRefExpr->getType().getAsString() == "int" &&
-                isa<EnumConstantDecl>(declRefExpr->getDecl());
+                refDecl && isa<EnumConstantDecl>(refDecl);
         }
         return false;
     }
@@ -70,7 +72,7 @@ private:
         {
             Expr *subExpr = implicitCastExpr->getSubExpr();
             return implicitCastExpr->getType().getAsString() == "const char *" &&
-                subExpr->getType().getAsString() == "char *" &&
+                subExpr && subExpr->getType().getAsString() == "char *" &&
                 (isa<CallExpr>(subExpr) || isa<ParenExpr>(subExpr));
         }
         return false;
