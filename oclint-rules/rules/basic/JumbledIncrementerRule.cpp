@@ -46,21 +46,25 @@ public:
     bool VisitForStmt(ForStmt *parentStmt)
     {
         Stmt *bodyStmt = parentStmt->getBody();
-        ForStmt *forStmt = dyn_cast<ForStmt>(bodyStmt);
-        CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(bodyStmt);
-        if (!forStmt && compoundStmt && compoundStmt->size() == 1)
+        if (bodyStmt)
         {
-            forStmt = dyn_cast<ForStmt>(compoundStmt->body_back());
-        }
-        if (forStmt)
-        {
-            Stmt *initStmt = parentStmt->getInit();
-            Expr *incExpr = forStmt->getInc();
-            if (isInnerIncMatchingOuterInit(incExpr, initStmt))
+            ForStmt *forStmt = dyn_cast<ForStmt>(bodyStmt);
+            CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(bodyStmt);
+            if (!forStmt && compoundStmt && compoundStmt->size() == 1)
             {
-                addViolation(incExpr, this);
+                forStmt = dyn_cast<ForStmt>(compoundStmt->body_back());
+            }
+            if (forStmt)
+            {
+                Stmt *initStmt = parentStmt->getInit();
+                Expr *incExpr = forStmt->getInc();
+                if (isInnerIncMatchingOuterInit(incExpr, initStmt))
+                {
+                    addViolation(incExpr, this);
+                }
             }
         }
+
         return true;
     }
 };

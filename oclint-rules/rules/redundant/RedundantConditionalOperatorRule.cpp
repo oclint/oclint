@@ -16,7 +16,11 @@ private:
     {
         if (fromExpr && isa<ImplicitCastExpr>(fromExpr))
         {
-            return dyn_cast<nodeType>(dyn_cast<ImplicitCastExpr>(fromExpr)->getSubExpr());
+            Expr *subExpr = dyn_cast<ImplicitCastExpr>(fromExpr)->getSubExpr();
+            if (subExpr)
+            {
+                return dyn_cast<nodeType>(subExpr);
+            }
         }
         return NULL;
     }
@@ -73,24 +77,35 @@ private:
         CStyleCastExpr *falseObjCBOOL = extractFromImplicitCastExpr<CStyleCastExpr>(falseExpr);
         if (trueObjCBOOL && falseObjCBOOL)
         {
-            IntegerLiteral *trueInteger = dyn_cast<IntegerLiteral>(trueObjCBOOL->getSubExpr());
-            IntegerLiteral *falseInteger = dyn_cast<IntegerLiteral>(falseObjCBOOL->getSubExpr());
-            return trueInteger && falseInteger &&
-                trueInteger->getValue().getBoolValue() != falseInteger->getValue().getBoolValue();
+            Expr *trueSubExpr = trueObjCBOOL->getSubExpr();
+            Expr *falseSubExpr = falseObjCBOOL->getSubExpr();
+            if (trueSubExpr && falseSubExpr)
+            {
+                IntegerLiteral *trueInteger = dyn_cast<IntegerLiteral>(trueSubExpr);
+                IntegerLiteral *falseInteger = dyn_cast<IntegerLiteral>(falseSubExpr);
+                return trueInteger && falseInteger &&
+                    trueInteger->getValue().getBoolValue() != falseInteger->getValue().getBoolValue();
+            }
         }
         return false;
     }
 
+    // TODO: use C++11 lambda to remove the duplicated logic between this method and above method
     bool isObjCIntegerLiteralBOOLEquals(Expr *trueExpr, Expr *falseExpr)
     {
         CStyleCastExpr *trueObjCBOOL = extractFromImplicitCastExpr<CStyleCastExpr>(trueExpr);
         CStyleCastExpr *falseObjCBOOL = extractFromImplicitCastExpr<CStyleCastExpr>(falseExpr);
         if (trueObjCBOOL && falseObjCBOOL)
         {
-            IntegerLiteral *trueInteger = dyn_cast<IntegerLiteral>(trueObjCBOOL->getSubExpr());
-            IntegerLiteral *falseInteger = dyn_cast<IntegerLiteral>(falseObjCBOOL->getSubExpr());
-            return trueInteger && falseInteger &&
-                trueInteger->getValue().getBoolValue() == falseInteger->getValue().getBoolValue();
+            Expr *trueSubExpr = trueObjCBOOL->getSubExpr();
+            Expr *falseSubExpr = falseObjCBOOL->getSubExpr();
+            if (trueSubExpr && falseSubExpr)
+            {
+                IntegerLiteral *trueInteger = dyn_cast<IntegerLiteral>(trueSubExpr);
+                IntegerLiteral *falseInteger = dyn_cast<IntegerLiteral>(falseSubExpr);
+                return trueInteger && falseInteger &&
+                    trueInteger->getValue().getBoolValue() == falseInteger->getValue().getBoolValue();
+            }
         }
         return false;
     }

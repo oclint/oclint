@@ -66,14 +66,18 @@ private:
 
     bool isNSStringBox(ObjCMessageExpr *objCMsgExpr)
     {
-        ImplicitCastExpr *implicitCastExpr = dyn_cast<ImplicitCastExpr>(objCMsgExpr->getArg(0));
-        string selectorString = objCMsgExpr->getSelector().getAsString();
-        if (implicitCastExpr && selectorString == "stringWithUTF8String:")
+        Expr *argExpr = objCMsgExpr->getArg(0);
+        if (argExpr)
         {
-            Expr *subExpr = implicitCastExpr->getSubExpr();
-            return implicitCastExpr->getType().getAsString() == "const char *" &&
-                subExpr && subExpr->getType().getAsString() == "char *" &&
-                (isa<CallExpr>(subExpr) || isa<ParenExpr>(subExpr));
+            ImplicitCastExpr *implicitCastExpr = dyn_cast<ImplicitCastExpr>(argExpr);
+            string selectorString = objCMsgExpr->getSelector().getAsString();
+            if (implicitCastExpr && selectorString == "stringWithUTF8String:")
+            {
+                Expr *subExpr = implicitCastExpr->getSubExpr();
+                return implicitCastExpr->getType().getAsString() == "const char *" &&
+                    subExpr && subExpr->getType().getAsString() == "char *" &&
+                    (isa<CallExpr>(subExpr) || isa<ParenExpr>(subExpr));
+            }
         }
         return false;
     }

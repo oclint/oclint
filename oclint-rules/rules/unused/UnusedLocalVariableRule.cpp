@@ -13,10 +13,14 @@ private:
 
     bool isInNonTemplateFunction(Decl *varDecl)
     {
-        FunctionDecl *decl = dyn_cast<FunctionDecl>(varDecl->getLexicalDeclContext());
-        if (decl)
+        DeclContext *context = varDecl->getLexicalDeclContext();
+        if (context)
         {
-            return decl->getTemplatedKind() == FunctionDecl::TK_NonTemplate;
+            FunctionDecl *decl = dyn_cast<FunctionDecl>(context);
+            if (decl)
+            {
+                return decl->getTemplatedKind() == FunctionDecl::TK_NonTemplate;
+            }
         }
         return true;
     }

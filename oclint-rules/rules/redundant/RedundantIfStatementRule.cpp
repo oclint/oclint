@@ -69,9 +69,14 @@ private:
         {
             CStyleCastExpr *thenObjCBOOL = dyn_cast<CStyleCastExpr>(thenExpr);
             CStyleCastExpr *elseObjCBOOL = dyn_cast<CStyleCastExpr>(elseExpr);
-            return thenObjCBOOL && elseObjCBOOL &&
-                isCIntegerViolated(dyn_cast<IntegerLiteral>(thenObjCBOOL->getSubExpr()),
-                    dyn_cast<IntegerLiteral>(elseObjCBOOL->getSubExpr()));
+            if (thenObjCBOOL && elseObjCBOOL)
+            {
+                Expr *thenSubExpr = thenObjCBOOL->getSubExpr();
+                Expr *elseSubExpr = elseObjCBOOL->getSubExpr();
+                return thenSubExpr && elseSubExpr &&
+                    isCIntegerViolated(dyn_cast<IntegerLiteral>(thenSubExpr),
+                        dyn_cast<IntegerLiteral>(elseSubExpr));
+            }
         }
         return false;
     }

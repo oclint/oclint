@@ -22,11 +22,16 @@ private:
                 ImplicitCastExpr *implicitCastExpr = dyn_cast<ImplicitCastExpr>(returnValue);
                 if (implicitCastExpr)
                 {
-                    DeclRefExpr *returnExpr = dyn_cast<DeclRefExpr>(implicitCastExpr->getSubExpr());
-                    if (returnExpr)
+                    Expr *subExpr = implicitCastExpr->getSubExpr();
+                    if (subExpr)
                     {
-                        return returnExpr->getFoundDecl();
+                        DeclRefExpr *returnExpr = dyn_cast<DeclRefExpr>(subExpr);
+                        if (returnExpr)
+                        {
+                            return returnExpr->getFoundDecl();
+                        }
                     }
+
                 }
             }
         }

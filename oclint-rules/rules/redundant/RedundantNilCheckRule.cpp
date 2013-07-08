@@ -14,9 +14,12 @@ private:
 
     bool isRedundantNilCheck(BinaryOperator *binaryOperator)
     {
-        if(binaryOperator->getOpcode() == BO_LAnd && isNeNullCheck(binaryOperator->getLHS()))
+        Expr *leftHandExpr = binaryOperator->getLHS();
+        Expr *rightHandExpr = binaryOperator->getRHS();
+        if(leftHandExpr && rightHandExpr && binaryOperator->getOpcode() == BO_LAnd &&
+            isNeNullCheck(leftHandExpr))
         {
-            UnaryOperator *unaryOperator = dyn_cast<UnaryOperator>(binaryOperator->getRHS());
+            UnaryOperator *unaryOperator = dyn_cast<UnaryOperator>(rightHandExpr);
             if (unaryOperator)
             {
                 return unaryOperator->getOpcode() != UO_LNot;

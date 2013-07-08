@@ -64,7 +64,12 @@ public:
 
     bool VisitSwitchStmt(SwitchStmt *switchStmt)
     {
-        CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(switchStmt->getBody());
+        Stmt *switchBody = switchStmt->getBody();
+        if (!switchBody)
+        {
+            return true;
+        }
+        CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(switchBody);
         if (compoundStmt)
         {
             bool breakFound = true;
