@@ -83,8 +83,8 @@ private:
             {
                 IntegerLiteral *trueInteger = dyn_cast<IntegerLiteral>(trueSubExpr);
                 IntegerLiteral *falseInteger = dyn_cast<IntegerLiteral>(falseSubExpr);
-                return trueInteger && falseInteger &&
-                    trueInteger->getValue().getBoolValue() != falseInteger->getValue().getBoolValue();
+                return trueInteger && falseInteger && trueInteger->getValue().getBoolValue() !=
+                    falseInteger->getValue().getBoolValue();
             }
         }
         return false;
@@ -103,8 +103,8 @@ private:
             {
                 IntegerLiteral *trueInteger = dyn_cast<IntegerLiteral>(trueSubExpr);
                 IntegerLiteral *falseInteger = dyn_cast<IntegerLiteral>(falseSubExpr);
-                return trueInteger && falseInteger &&
-                    trueInteger->getValue().getBoolValue() == falseInteger->getValue().getBoolValue();
+                return trueInteger && falseInteger && trueInteger->getValue().getBoolValue() ==
+                    falseInteger->getValue().getBoolValue();
             }
         }
         return false;

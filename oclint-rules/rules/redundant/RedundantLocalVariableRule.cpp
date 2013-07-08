@@ -14,25 +14,18 @@ private:
     {
         Stmt *lastStmt = (Stmt *)*(compoundStmt->body_end() - 1);
         ReturnStmt *returnStmt = dyn_cast<ReturnStmt>(lastStmt);
-        if (returnStmt)
+        if (returnStmt && returnStmt->getRetValue())
         {
-            Expr *returnValue = returnStmt->getRetValue();
-            if (returnValue)
+            ImplicitCastExpr *implicitCastExpr =
+                dyn_cast<ImplicitCastExpr>(returnStmt->getRetValue());
+            if (implicitCastExpr && implicitCastExpr->getSubExpr())
             {
-                ImplicitCastExpr *implicitCastExpr = dyn_cast<ImplicitCastExpr>(returnValue);
-                if (implicitCastExpr)
+                DeclRefExpr *returnExpr = dyn_cast<DeclRefExpr>(implicitCastExpr->getSubExpr());
+                if (returnExpr)
                 {
-                    Expr *subExpr = implicitCastExpr->getSubExpr();
-                    if (subExpr)
-                    {
-                        DeclRefExpr *returnExpr = dyn_cast<DeclRefExpr>(subExpr);
-                        if (returnExpr)
-                        {
-                            return returnExpr->getFoundDecl();
-                        }
-                    }
-
+                    return returnExpr->getFoundDecl();
                 }
+
             }
         }
         return NULL;

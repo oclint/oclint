@@ -10,26 +10,46 @@ class JumbledIncrementerRule : public AbstractASTVisitorRule<JumbledIncrementerR
 private:
     static RuleSet rules;
 
-    bool isInnerIncMatchingOuterInit(Expr *incExpr, Stmt *initStmt)
+    VarDecl *varDeclFromInitStmt(Stmt *initStmt)
     {
-        if (initStmt && incExpr)
+        if (initStmt)
         {
             DeclStmt *declStmt = dyn_cast<DeclStmt>(initStmt);
-            UnaryOperator *unaryOperator = dyn_cast<UnaryOperator>(incExpr);
-            if (declStmt && unaryOperator && declStmt->isSingleDecl())
+            if (declStmt && declStmt->isSingleDecl())
             {
                 Decl *singleDecl = declStmt->getSingleDecl();
-                Expr *unaryOpSubExpr = unaryOperator->getSubExpr();
-                if (singleDecl && unaryOpSubExpr && isa<DeclRefExpr>(unaryOpSubExpr))
+                if (singleDecl)
                 {
-                    VarDecl *varDecl = dyn_cast<VarDecl>(singleDecl);
-                    DeclRefExpr *declRefExpr = dyn_cast<DeclRefExpr>(unaryOpSubExpr);
-                    ValueDecl *valueDecl = declRefExpr->getDecl();
-                    return varDecl && valueDecl && varDecl == valueDecl;
+                    return dyn_cast<VarDecl>(singleDecl);
                 }
             }
         }
-        return false;
+        return NULL;
+    }
+
+    ValueDecl *valueDeclFromIncExpr(Expr *incExpr)
+    {
+        if (incExpr)
+        {
+            UnaryOperator *unaryOperator = dyn_cast<UnaryOperator>(incExpr);
+            if (unaryOperator)
+            {
+                Expr *unaryOpSubExpr = unaryOperator->getSubExpr();
+                if (unaryOpSubExpr && isa<DeclRefExpr>(unaryOpSubExpr))
+                {
+                    DeclRefExpr *declRefExpr = dyn_cast<DeclRefExpr>(unaryOpSubExpr);
+                    return declRefExpr->getDecl();
+                }
+            }
+        }
+        return NULL;
+    }
+
+    bool isInnerIncMatchingOuterInit(Expr *incExpr, Stmt *initStmt)
+    {
+        VarDecl *varDecl = varDeclFromInitStmt(initStmt);
+        ValueDecl *valueDecl = valueDeclFromIncExpr(incExpr);
+        return varDecl && valueDecl && varDecl == valueDecl;
     }
 
 public:
