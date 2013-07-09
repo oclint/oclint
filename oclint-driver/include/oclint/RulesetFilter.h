@@ -1,6 +1,7 @@
 #ifndef OCLINT_RULESETFILTER_H
 #define OCLINT_RULESETFILTER_H
 
+#include <unordered_set>
 #include <vector>
 
 #include "oclint/RuleBase.h"
@@ -12,8 +13,8 @@ class RulesetFilter
 {
 
 private:
-    std::vector<std::string> _enabled;
-    std::vector<std::string> _disabled;
+    std::unordered_set<std::string> _enabled;
+    std::unordered_set<std::string> _disabled;
 
 public:
     void setEnabledRules(const std::vector<std::string> &enabledRules);

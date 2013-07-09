@@ -5,12 +5,12 @@ using namespace oclint;
 
 void RulesetFilter::setEnabledRules(const std::vector<std::string> &enabledRules)
 {
-    _enabled = enabledRules;
+    _enabled.insert(enabledRules.begin(), enabledRules.end());
 }
 
 void RulesetFilter::setDisabledRules(const std::vector<std::string> &disabledRules)
 {
-    _disabled = disabledRules;
+    _disabled.insert(disabledRules.begin(), disabledRules.end());
 }
 
 std::vector<RuleBase *> RulesetFilter::filteredRules() const
