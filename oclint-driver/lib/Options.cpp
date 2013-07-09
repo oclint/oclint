@@ -71,6 +71,8 @@ static llvm::cl::extrahelp MoreHelp(
 );
 static llvm::OwningPtr<llvm::opt::OptTable> Options(clang::driver::createDriverOptTable());
 
+static oclint::RulesetFilter filter;
+
 void oclint::option::process()
 {
     for (unsigned i = 0; i < argRuleConfiguration.size(); ++i)
@@ -82,6 +84,9 @@ void oclint::option::process()
             configuration.size() - indexOfSeparator - 1);
         oclint::RuleConfiguration::addConfiguration(key, value);
     }
+
+    filter.setEnabledRules(std::vector<std::string>(argEnabledRules.begin(), argEnabledRules.end()));
+    filter.setDisabledRules(std::vector<std::string>(argDisabledRules.begin(), argDisabledRules.end()));
 }
 
 bool oclint::option::hasOutputPath()
@@ -109,14 +114,9 @@ std::vector<std::string> oclint::option::rulesPath()
     return argRulesPath;
 }
 
-const std::vector<std::string> oclint::option::enabledRules()
+const oclint::RulesetFilter &oclint::option::rulesetFilter()
 {
-    return std::vector<std::string>(argEnabledRules.begin(), argEnabledRules.end());
-}
-
-const std::vector<std::string> oclint::option::disabledRules()
-{
-    return std::vector<std::string>(argDisabledRules.begin(), argDisabledRules.end());
+    return filter;
 }
 
 int oclint::option::maxP1()

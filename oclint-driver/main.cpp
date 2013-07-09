@@ -178,12 +178,8 @@ void disposeOutStream(ostream* out)
 
 void listRules()
 {
-    oclint::RulesetFilter rulesetFilter;
-    rulesetFilter.setEnabledRules(oclint::option::enabledRules());
-    rulesetFilter.setDisabledRules(oclint::option::disabledRules());
-
     cerr << "Enabled rules:\n";
-    for (oclint::RuleBase *rule : rulesetFilter.filteredRules())
+    for (oclint::RuleBase *rule : oclint::option::rulesetFilter().filteredRules())
     {
         cerr << "- " << rule->name() << "\n";
     }
