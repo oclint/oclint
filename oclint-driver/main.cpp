@@ -21,6 +21,7 @@
 #include "oclint/Results.h"
 #include "oclint/RuleBase.h"
 #include "oclint/RuleSet.h"
+#include "oclint/RulesetFilter.h"
 #include "oclint/RulesetBasedAnalyzer.h"
 #include "oclint/ViolationSet.h"
 #include "oclint/Violation.h"
@@ -177,19 +178,14 @@ void disposeOutStream(ostream* out)
 
 void listRules()
 {
-    std::vector<std::string> enabled = oclint::option::enabledRules();
-    std::vector<std::string> disabled = oclint::option::disabledRules();
+    oclint::RulesetFilter rulesetFilter;
+    rulesetFilter.setEnabledRules(oclint::option::enabledRules());
+    rulesetFilter.setDisabledRules(oclint::option::disabledRules());
+
     cerr << "Enabled rules:\n";
-    for (int ruleIdx = 0, numRules = oclint::RuleSet::numberOfRules(); ruleIdx < numRules; ruleIdx++)
+    for (oclint::RuleBase *rule : rulesetFilter.filteredRules())
     {
-        const string &name = oclint::RuleSet::getRuleAtIndex(ruleIdx)->name();
-        if (enabled.empty() || find(enabled.begin(), enabled.end(), name) != enabled.end())
-        {
-            if (find(disabled.begin(), disabled.end(), name) == disabled.end())
-            {
-                cerr << "- " << name << "\n";
-            }
-        }
+        cerr << "- " << rule->name() << "\n";
     }
 }
 
