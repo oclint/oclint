@@ -251,7 +251,7 @@ int main(int argc, const char **argv)
         listRules();
     }
 
-    oclint::RulesetBasedAnalyzer analyzer;
+    oclint::RulesetBasedAnalyzer analyzer(oclint::option::rulesetFilter().filteredRules());
     oclint::Driver driver;
     try
     {
