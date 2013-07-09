@@ -20,6 +20,7 @@ namespace option
     int maxP1();
     int maxP2();
     int maxP3();
+    bool list();
     bool enableClangChecker();
 } // end namespace option
 } // end namespace oclint

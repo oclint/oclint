@@ -175,6 +175,24 @@ void disposeOutStream(ostream* out)
     }
 }
 
+void listRules()
+{
+    std::vector<std::string> enabled = oclint::option::enabledRules();
+    std::vector<std::string> disabled = oclint::option::disabledRules();
+    cerr << "Enabled rules:\n";
+    for (int ruleIdx = 0, numRules = oclint::RuleSet::numberOfRules(); ruleIdx < numRules; ruleIdx++)
+    {
+        const string &name = oclint::RuleSet::getRuleAtIndex(ruleIdx)->name();
+        if (enabled.empty() || find(enabled.begin(), enabled.end(), name) != enabled.end())
+        {
+            if (find(disabled.begin(), disabled.end(), name) == disabled.end())
+            {
+                cerr << "- " << name << "\n";
+            }
+        }
+    }
+}
+
 oclint::Reporter* reporter()
 {
     return selectedReporter;
@@ -234,6 +252,11 @@ int main(int argc, const char **argv)
     if (prepareStatus)
     {
         return prepareStatus;
+    }
+
+    if (oclint::option::list())
+    {
+        listRules();
     }
 
     oclint::RulesetBasedAnalyzer analyzer;

@@ -54,6 +54,9 @@ static llvm::cl::opt<int> argMaxP3("max-priority-3",
     llvm::cl::value_desc("threshold"),
     llvm::cl::init(20));
 
+static llvm::cl::opt<bool> argList("list",
+    llvm::cl::desc("List enabled rules"),
+    llvm::cl::init(false));
 static llvm::cl::opt<bool> argClangChecker("enable-clang-static-analyzer",
     llvm::cl::desc("Enable Clang Static Analyzer, and integrate results into OCLint report"),
     llvm::cl::init(false));
@@ -129,6 +132,11 @@ int oclint::option::maxP2()
 int oclint::option::maxP3()
 {
     return argMaxP3;
+}
+
+bool oclint::option::list()
+{
+    return argList;
 }
 
 bool oclint::option::enableClangChecker()
