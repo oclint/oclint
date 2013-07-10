@@ -179,9 +179,9 @@ void disposeOutStream(ostream* out)
 void listRules()
 {
     cerr << "Enabled rules:\n";
-    for (oclint::RuleBase *rule : oclint::option::rulesetFilter().filteredRules())
+    for (const std::string &ruleName : oclint::option::rulesetFilter().filteredRuleNames())
     {
-        cerr << "- " << rule->name() << "\n";
+        cerr << "- " << ruleName << "\n";
     }
 }
 

@@ -21,6 +21,7 @@ public:
     void setDisabledRules(const std::vector<std::string> &disabledRules);
 
     std::vector<RuleBase *> filteredRules() const;
+    std::vector<std::string> filteredRuleNames() const;
 
 };
 }
