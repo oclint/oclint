@@ -354,6 +354,8 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
         compilers.at(compilerIndex)->end();
         compilers.at(compilerIndex)->resetAndLeakFileManager();
         fileManagers.at(compilerIndex)->clearStatCaches();
+        delete compilers.at(compilerIndex);
+        delete fileManagers.at(compilerIndex);
     }
 
     if (option::enableClangChecker())
