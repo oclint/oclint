@@ -4,11 +4,7 @@
 #include <clang/Driver/Options.h>
 #include <clang/Tooling/CommonOptionsParser.h>
 
-#include "llvm/Support/YAMLParser.h"
-#include "llvm/Support/YAMLTraits.h"
-#include "llvm/Support/MemoryBuffer.h"
-#include "llvm/Support/SourceMgr.h"
-
+#include "oclint/ConfigFile.h"
 #include "oclint/Debug.h"
 #include "oclint/Options.h"
 #include "oclint/RuleConfiguration.h"
@@ -82,103 +78,13 @@ static llvm::cl::extrahelp MoreHelp(
 );
 static llvm::OwningPtr<llvm::opt::OptTable> Options(clang::driver::createDriverOptTable());
 
-/* -----------
-   config file
-   ----------- */
-
-struct RuleConfigurationPair
-{
-    llvm::StringRef key;
-    llvm::StringRef value;
-};
-
-LLVM_YAML_IS_SEQUENCE_VECTOR(RuleConfigurationPair)
-
-template <>
-struct llvm::yaml::MappingTraits<RuleConfigurationPair>
-{
-    static void mapping(IO& io, RuleConfigurationPair& ruleConfiguration)
-    {
-        io.mapOptional("key", ruleConfiguration.key);
-        io.mapOptional("value", ruleConfiguration.value);
-    }
-};
-
-struct ConfigFile
-{
-    llvm::OwningPtr<llvm::MemoryBuffer> buffer;
-    std::string path;
-    std::vector<llvm::StringRef> rules;
-    std::vector<llvm::StringRef> disableRules;
-    std::vector<llvm::StringRef> rulePaths;
-    std::vector<RuleConfigurationPair> ruleConfigurations;
-};
-
-LLVM_YAML_IS_SEQUENCE_VECTOR(llvm::StringRef)
-
-template <>
-struct llvm::yaml::MappingTraits<ConfigFile>
-{
-    static void mapping(IO& io, ConfigFile& config)
-    {
-        io.mapOptional("rules", config.rules);
-        io.mapOptional("disable-rules", config.disableRules);
-        io.mapOptional("rule-paths", config.rulePaths);
-        io.mapOptional("rule-configurations", config.ruleConfigurations);
-    }
-};
-
 /* -------
    options
    ------- */
 
 static oclint::RulesetFilter filter;
 
-static ConfigFile readConfigFromFile(const std::string &path)
-{
-    debug::emit("Reading config file: ");
-    debug::emit(path.c_str());
-
-    ConfigFile configFile;
-    configFile.path = path;
-
-    llvm::OwningPtr<llvm::MemoryBuffer> buffer;
-    llvm::error_code ec = llvm::MemoryBuffer::getFile(path, configFile.buffer);
-    if (ec)
-    {
-        debug::emit(ec.message().c_str());
-        debug::emit("\n");
-    }
-    else
-    {
-        llvm::yaml::Input yin(configFile.buffer->getBuffer());
-        yin >> configFile;
-    }
-    return configFile;
-}
-
-static std::vector<std::string> configFilePaths()
-{
-    std::vector<std::string> paths;
-    paths.push_back("/etc/oclint");
-    const char *home = getenv("HOME");
-    if (home)
-    {
-        paths.push_back(std::string(home) + "/.oclint");
-    }
-    paths.push_back(".oclint");
-    return paths;
-}
-
-static std::vector<ConfigFile> readConfigFiles()
-{
-    const std::vector<std::string> paths = configFilePaths();
-    std::vector<ConfigFile> configFiles;
-    transform(paths.begin(), paths.end(), std::back_inserter(configFiles), readConfigFromFile);
-    return configFiles;
-}
-
-static void processConfigFile(const ConfigFile &config)
+static void processConfigFile(const oclint::option::ConfigFile &config)
 {
     for (const oclint::option::RuleConfigurationPair &ruleConfig : config.ruleConfigurations)
     {
@@ -190,7 +96,7 @@ static void processConfigFile(const ConfigFile &config)
 
 static void processConfigFiles()
 {
-    const std::vector<ConfigFile> configFiles = readConfigFiles();
+    const std::vector<oclint::option::ConfigFile> configFiles = oclint::option::readConfigFiles();
     for_each(configFiles.begin(), configFiles.end(), processConfigFile);
 }
 
