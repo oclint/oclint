@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "oclint/RulesetFilter.h"
 #include "oclint/RuleSet.h"
 
