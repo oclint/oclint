@@ -4,6 +4,9 @@
 #include <clang/Driver/Options.h>
 #include <clang/Tooling/CommonOptionsParser.h>
 
+#include "llvm/Support/YAMLParser.h"
+#include "llvm/Support/YAMLTraits.h"
+
 #include "oclint/Options.h"
 #include "oclint/RuleConfiguration.h"
 
@@ -73,6 +76,55 @@ static llvm::cl::extrahelp MoreHelp(
     "For more information, please visit http://oclint.org\n"
 );
 static llvm::OwningPtr<llvm::opt::OptTable> Options(clang::driver::createDriverOptTable());
+
+/* -----------
+   config file
+   ----------- */
+
+struct RuleConfigurationPair
+{
+    llvm::StringRef key;
+    llvm::StringRef value;
+};
+
+LLVM_YAML_IS_SEQUENCE_VECTOR(RuleConfigurationPair)
+
+template <>
+struct llvm::yaml::MappingTraits<RuleConfigurationPair>
+{
+    static void mapping(IO& io, RuleConfigurationPair& ruleConfiguration)
+    {
+        io.mapOptional("key", ruleConfiguration.key);
+        io.mapOptional("value", ruleConfiguration.value);
+    }
+};
+
+struct ConfigFile
+{
+    std::string path;
+    std::vector<llvm::StringRef> rules;
+    std::vector<llvm::StringRef> disableRules;
+    std::vector<llvm::StringRef> rulePaths;
+    std::vector<RuleConfigurationPair> ruleConfigurations;
+};
+
+LLVM_YAML_IS_SEQUENCE_VECTOR(llvm::StringRef)
+
+template <>
+struct llvm::yaml::MappingTraits<ConfigFile>
+{
+    static void mapping(IO& io, ConfigFile& config)
+    {
+        io.mapOptional("rules", config.rules);
+        io.mapOptional("disable-rules", config.disableRules);
+        io.mapOptional("rule-paths", config.rulePaths);
+        io.mapOptional("rule-configurations", config.ruleConfigurations);
+    }
+};
+
+/* -------
+   options
+   ------- */
 
 static oclint::RulesetFilter filter;
 
