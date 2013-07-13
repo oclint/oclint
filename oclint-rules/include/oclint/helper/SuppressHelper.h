@@ -7,6 +7,6 @@
 
 bool shouldSuppress(const clang::Decl *decl, clang::ASTContext &context, oclint::RuleBase *rule);
 bool shouldSuppress(const clang::Stmt *stmt, clang::ASTContext &context, oclint::RuleBase *rule);
-bool shouldSuppress(int beginLine, clang::ASTContext &context);
+bool shouldSuppress(int beginLine, clang::ASTContext &context, oclint::RuleBase *rule = NULL);
 
 #endif

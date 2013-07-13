@@ -33,7 +33,7 @@ protected:
     void addViolation(int startLine, int startColumn,
         int endLine, int endColumn, RuleBase *rule, const std::string& message = "")
     {
-        if (!shouldSuppress(startLine, *_carrier->getASTContext()))
+        if (!shouldSuppress(startLine, *_carrier->getASTContext(), rule))
         {
             clang::SourceManager *sourceManager = &_carrier->getSourceManager();
 

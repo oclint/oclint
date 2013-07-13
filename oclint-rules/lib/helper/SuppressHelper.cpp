@@ -1,4 +1,8 @@
+#include <utility>
+#include <vector>
+
 #include <clang/AST/Attr.h>
+#include <clang/AST/RecursiveASTVisitor.h>
 
 #include "oclint/helper/SuppressHelper.h"
 
@@ -60,7 +64,52 @@ bool shouldSuppress(const clang::Stmt *stmt, clang::ASTContext &context, oclint:
     return markedParentsAsSuppress(*stmt, context, rule);
 }
 
-bool shouldSuppress(int beginLine, clang::ASTContext &context)
+class DeclAnnotationRangeCollector : public clang::RecursiveASTVisitor<DeclAnnotationRangeCollector>
+{
+private:
+    oclint::RuleBase *_rule;
+    clang::SourceManager *_sourceManager;
+    std::vector<std::pair<int, int> > _range;
+
+public:
+    std::vector<std::pair<int, int> > collect(clang::ASTContext &astContext, oclint::RuleBase *rule)
+    {
+        _rule = rule;
+        _sourceManager = &astContext.getSourceManager();
+        _range.clear();
+
+        clang::DeclContext *decl = astContext.getTranslationUnitDecl();
+        for (clang::DeclContext::decl_iterator it = decl->decls_begin(),
+            declEnd = decl->decls_end(); it != declEnd; ++it)
+        {
+            clang::SourceLocation startLocation = (*it)->getLocStart();
+            if (startLocation.isValid() &&
+                _sourceManager->getMainFileID() == _sourceManager->getFileID(startLocation))
+            {
+                (void) /* explicitly ignore the return of this function */
+                    clang::RecursiveASTVisitor<DeclAnnotationRangeCollector>::TraverseDecl(*it);
+            }
+        }
+
+        return _range;
+    }
+
+    bool VisitDecl(clang::Decl *decl)
+    {
+        if (markedAsSuppress(decl, _rule))
+        {
+            clang::SourceLocation startLocation = decl->getLocStart();
+            clang::SourceLocation endLocation = decl->getLocEnd();
+            unsigned startLineNumber = _sourceManager->getPresumedLineNumber(startLocation);
+            unsigned endLineNumber = _sourceManager->getPresumedLineNumber(endLocation);
+            _range.push_back(std::make_pair(startLineNumber, endLineNumber));
+        }
+
+        return true;
+    }
+};
+
+bool shouldSuppress(int beginLine, clang::ASTContext &context, oclint::RuleBase *rule)
 {
     clang::RawCommentList commentList = context.getRawCommentList();
     clang::ArrayRef<clang::RawComment *> commentArray = commentList.getComments();
@@ -74,6 +123,22 @@ bool shouldSuppress(int beginLine, clang::ASTContext &context)
             std::string::npos != comment->getRawText(context.getSourceManager()).find("//!OCLINT"))
         {
             return true;
+        }
+    }
+
+    if (rule)
+    {
+        // TODO: The algorithm also needs to be improved!!!
+        DeclAnnotationRangeCollector annotationCollector;
+        std::vector<std::pair<int, int> > annotationRanges = annotationCollector.collect(context, rule);
+        for (std::vector<std::pair<int, int> >::iterator it = annotationRanges.begin(),
+            itEnd = annotationRanges.end(); it != itEnd; ++it)
+        {
+            std::pair<int, int> range = *it;
+            if (beginLine >= range.first && beginLine <= range.second)
+            {
+                return true;
+            }
         }
     }
 

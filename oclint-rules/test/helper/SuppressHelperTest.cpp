@@ -152,6 +152,24 @@ TEST(SuppressHelperTestSourceCodeReaderRuleTest, SuppressByComment)
     testRuleOnCode(new SuppressHelperTestSourceCodeReaderRule(), "void a() {} //!OCLINT");
 }
 
+TEST(SuppressHelperTestSourceCodeReaderRuleTest, SuppressEntireMethod)
+{
+    testRuleOnCode(new SuppressHelperTestSourceCodeReaderRule(),
+        "void __attribute__((annotate(\"oclint:suppress[test source code rule]\"))) a()\n{\nint i = 1;\n}\n");
+}
+
+TEST(SuppressHelperTestSourceCodeReaderRuleTest, SimpleSuppressEntireCXXClass)
+{
+    testRuleOnCXXCode(new SuppressHelperTestSourceCodeReaderRule(),
+        "class __attribute__((annotate(\"oclint:suppress[test source code rule]\"))) c\n{\nvoid a()\n{\nint i = 1;\n}\n};\n");
+}
+
+TEST(SuppressHelperTestSourceCodeReaderRuleTest, ObjCContainerSuppressOnAtInterface)
+{
+    testRuleOnObjCCode(new SuppressHelperTestSourceCodeReaderRule(),
+        "__attribute__((annotate(\"oclint:suppress\"))) @interface a {\nint i;\n}\n@end");
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);
