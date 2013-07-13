@@ -44,16 +44,15 @@ std::vector<RuleBase *> RulesetFilter::filteredRules() const
 {
     std::vector<RuleBase *> filteredRules;
 
-    for (int ruleIdx = 0, numRules = oclint::RuleSet::numberOfRules(); ruleIdx < numRules; ruleIdx++)
+    for (int ruleIdx = 0, numRules = oclint::RuleSet::numberOfRules();
+        ruleIdx < numRules; ruleIdx++)
     {
         RuleBase *rule = oclint::RuleSet::getRuleAtIndex(ruleIdx);
         const std::string &name = getName(rule);
-        if (_enabled.empty() || find(_enabled.begin(), _enabled.end(), name) != _enabled.end())
+        if ((_enabled.empty() || find(_enabled.begin(), _enabled.end(), name) != _enabled.end()) &&
+            find(_disabled.begin(), _disabled.end(), name) == _disabled.end())
         {
-            if (find(_disabled.begin(), _disabled.end(), name) == _disabled.end())
-            {
-                filteredRules.push_back(rule);
-            }
+            filteredRules.push_back(rule);
         }
     }
 

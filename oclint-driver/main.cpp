@@ -246,7 +246,7 @@ int main(int argc, const char **argv)
         return prepareStatus;
     }
 
-    if (oclint::option::list())
+    if (oclint::option::showEnabledRules())
     {
         listRules();
     }
