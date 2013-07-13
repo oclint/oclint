@@ -157,10 +157,46 @@ static ConfigFile readConfigFromFile(const std::string &path)
     return configFile;
 }
 
+static std::vector<std::string> configFilePaths()
+{
+    std::vector<std::string> paths;
+    paths.push_back("/etc/oclint");
+    const char *home = getenv("HOME");
+    if (home)
+    {
+        paths.push_back(std::string(home) + "/.oclint");
+    }
+    paths.push_back(".oclint");
+    return paths;
+}
+
+static std::vector<ConfigFile> readConfigFiles()
+{
+    const std::vector<std::string> paths = configFilePaths();
+    std::vector<ConfigFile> configFiles;
+    transform(paths.begin(), paths.end(), std::back_inserter(configFiles), readConfigFromFile);
+    return configFiles;
+}
+
+static void processConfigFile(const ConfigFile &config)
+{
+    for (const oclint::option::RuleConfigurationPair &ruleConfig : config.ruleConfigurations)
+    {
+        oclint::RuleConfiguration::addConfiguration(ruleConfig.key, ruleConfig.value);
+    }
+    filter.enableRules(config.rules.begin(), config.rules.end());
+    filter.disableRules(config.disableRules.begin(), config.disableRules.end());
+}
+
+static void processConfigFiles()
+{
+    const std::vector<ConfigFile> configFiles = readConfigFiles();
+    for_each(configFiles.begin(), configFiles.end(), processConfigFile);
+}
+
 void oclint::option::process()
 {
-    readConfigFromFile(".oclint");
-
+    processConfigFiles();
     for (unsigned i = 0; i < argRuleConfiguration.size(); ++i)
     {
         std::string configuration = argRuleConfiguration[i];
