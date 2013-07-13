@@ -171,10 +171,8 @@ void oclint::option::process()
         oclint::RuleConfiguration::addConfiguration(key, value);
     }
 
-    filter.setEnabledRules(
-        std::vector<std::string>(argEnabledRules.begin(), argEnabledRules.end()));
-    filter.setDisabledRules(
-        std::vector<std::string>(argDisabledRules.begin(), argDisabledRules.end()));
+    filter.enableRules(argEnabledRules.begin(), argEnabledRules.end());
+    filter.disableRules(argDisabledRules.begin(), argDisabledRules.end());
 }
 
 bool oclint::option::hasOutputPath()
