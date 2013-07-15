@@ -48,7 +48,7 @@
 #include <unistd.h>
 
 #include <sstream>
-
+#include <iostream>
 #include <llvm/ADT/IntrusiveRefCntPtr.h>
 #include <llvm/ADT/StringRef.h>
 #include <llvm/Option/ArgList.h>
@@ -148,6 +148,20 @@ static clang::CompilerInvocation *newInvocation(clang::DiagnosticsEngine *diagno
     return invocation;
 }
 
+static bool isDependencyCommand (const std::vector<std::string>& commandLine)
+{
+    for (int cmdIndex = 0; cmdIndex < commandLine.size(); ++cmdIndex)
+    {
+        // The flags -M and -MM indicate that a dependecy file should be generated.
+        // This may cause duplicate entries in compileCommands.
+        if (commandLine[cmdIndex].compare(0, 2, "-M") == 0)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 static void constructCompileCommands(
     std::vector<std::pair<std::string, clang::tooling::CompileCommand> > &compileCommands,
     const clang::tooling::CompilationDatabase &compilationDatabase,
@@ -164,6 +178,10 @@ static void constructCompileCommands(
             for (int commandsIndex = 0, commandsEnd = compileCmdsForFile.size();
                 commandsIndex != commandsEnd; commandsIndex++)
             {
+                if (isDependencyCommand(compileCmdsForFile[commandsIndex].CommandLine))
+                {
+                    continue;
+                }
                 compileCommands.push_back(
                     std::make_pair(filePath.str(), compileCmdsForFile[commandsIndex]));
             }
