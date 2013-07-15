@@ -87,6 +87,22 @@ const std::vector<RuleConfigurationPair> &oclint::option::ConfigFile::ruleConfig
     return _ruleConfigurations;
 }
 
+static llvm::Optional<std::string> createOptionalString(const llvm::StringRef &value)
+{
+    const std::string &string = value.str();
+    return string.size() ? llvm::Optional<std::string>(string) : llvm::Optional<std::string>();
+}
+
+llvm::Optional<std::string> oclint::option::ConfigFile::output() const
+{
+    return createOptionalString(_output);
+}
+
+llvm::Optional<std::string> oclint::option::ConfigFile::reportType() const
+{
+    return createOptionalString(_reportType);
+}
+
 static llvm::Optional<int> createOptionalInt(int value)
 {
     return value == INT_MIN ? llvm::Optional<int>() : llvm::Optional<int>(value);
@@ -113,6 +129,8 @@ void oclint::option::ConfigFile::mapping(llvm::yaml::IO& io)
     io.mapOptional("disable-rules", _disableRules);
     io.mapOptional("rule-paths", _rulePaths);
     io.mapOptional("rule-configurations", _ruleConfigurations);
+    io.mapOptional("output", _output);
+    io.mapOptional("report-type", _reportType);
     io.mapOptional("max-priority-1", _maxP1);
     io.mapOptional("max-priority-2", _maxP2);
     io.mapOptional("max-priority-3", _maxP3);

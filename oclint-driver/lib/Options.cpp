@@ -102,6 +102,8 @@ static void processConfigFile(const oclint::option::ConfigFile &config)
     filter.enableRules(config.rules().begin(), config.rules().end());
     filter.disableRules(config.disableRules().begin(), config.disableRules().end());
 
+    updateArgIfSet(argOutput, config.output());
+    updateArgIfSet(argReportType, config.reportType());
     updateArgIfSet(argMaxP1, config.maxP1());
     updateArgIfSet(argMaxP2, config.maxP2());
     updateArgIfSet(argMaxP3, config.maxP3());

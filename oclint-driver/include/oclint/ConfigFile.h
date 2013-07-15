@@ -34,6 +34,8 @@ private:
     std::vector<llvm::StringRef> _disableRules;
     std::vector<llvm::StringRef> _rulePaths;
     std::vector<RuleConfigurationPair> _ruleConfigurations;
+    llvm::StringRef _output;
+    llvm::StringRef _reportType;
     int _maxP1;
     int _maxP2;
     int _maxP3;
@@ -46,6 +48,8 @@ public:
     const std::vector<llvm::StringRef> &disableRules() const;
     const std::vector<llvm::StringRef> &rulePaths() const;
     const std::vector<RuleConfigurationPair> &ruleConfigurations() const;
+    llvm::Optional<std::string> output() const;
+    llvm::Optional<std::string> reportType() const;
     llvm::Optional<int> maxP1() const;
     llvm::Optional<int> maxP2() const;
     llvm::Optional<int> maxP3() const;
