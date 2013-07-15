@@ -86,12 +86,12 @@ static oclint::RulesetFilter filter;
 
 static void processConfigFile(const oclint::option::ConfigFile &config)
 {
-    for (const oclint::option::RuleConfigurationPair &ruleConfig : config.ruleConfigurations)
+    for (const oclint::option::RuleConfigurationPair &ruleConfig : config.ruleConfigurations())
     {
-        oclint::RuleConfiguration::addConfiguration(ruleConfig.key, ruleConfig.value);
+        oclint::RuleConfiguration::addConfiguration(ruleConfig.key(), ruleConfig.value());
     }
-    filter.enableRules(config.rules.begin(), config.rules.end());
-    filter.disableRules(config.disableRules.begin(), config.disableRules.end());
+    filter.enableRules(config.rules().begin(), config.rules().end());
+    filter.disableRules(config.disableRules().begin(), config.disableRules().end());
 }
 
 static void processConfigFiles()
