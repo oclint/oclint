@@ -48,7 +48,7 @@
 #include <unistd.h>
 
 #include <sstream>
-#include <iostream>
+
 #include <llvm/ADT/IntrusiveRefCntPtr.h>
 #include <llvm/ADT/StringRef.h>
 #include <llvm/Option/ArgList.h>
