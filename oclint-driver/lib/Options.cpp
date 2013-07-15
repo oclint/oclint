@@ -99,6 +99,10 @@ static void processConfigFile(const oclint::option::ConfigFile &config)
     {
         oclint::RuleConfiguration::addConfiguration(ruleConfig.key(), ruleConfig.value());
     }
+    for (const llvm::StringRef &rulePath : config.rulePaths())
+    {
+        argRulesPath.push_back(rulePath.str());
+    }
     filter.enableRules(config.rules().begin(), config.rules().end());
     filter.disableRules(config.disableRules().begin(), config.disableRules().end());
 
