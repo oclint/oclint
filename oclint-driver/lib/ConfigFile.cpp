@@ -16,16 +16,16 @@ LLVM_YAML_IS_SEQUENCE_VECTOR(RuleConfigurationPair)
 template <>
 struct llvm::yaml::MappingTraits<RuleConfigurationPair>
 {
-    static void mapping(IO& io, RuleConfigurationPair& ruleConfiguration)
+    static void mapping(IO& inputOutput, RuleConfigurationPair& ruleConfiguration)
     {
-        ruleConfiguration.mapping(io);
+        ruleConfiguration.mapping(inputOutput);
     }
 };
 
-void oclint::option::RuleConfigurationPair::mapping(llvm::yaml::IO& io)
+void oclint::option::RuleConfigurationPair::mapping(llvm::yaml::IO& inputOutput)
 {
-    io.mapOptional("key", _key);
-    io.mapOptional("value", _value);
+    inputOutput.mapOptional("key", _key);
+    inputOutput.mapOptional("value", _value);
 }
 
 /* ----------
@@ -37,19 +37,19 @@ LLVM_YAML_IS_SEQUENCE_VECTOR(llvm::StringRef)
 template <>
 struct llvm::yaml::MappingTraits<ConfigFile>
 {
-    static void mapping(IO& io, ConfigFile& config)
+    static void mapping(IO& inputOutput, ConfigFile& config)
     {
-        config.mapping(io);
+        config.mapping(inputOutput);
     }
 };
 
 template<>
 struct llvm::yaml::ScalarEnumerationTraits<tristate>
 {
-    static void enumeration(IO &io, tristate &value)
+    static void enumeration(IO &inputOutput, tristate &value)
     {
-        io.enumCase(value, "true", tristate::TRUE);
-        io.enumCase(value, "false", tristate::FALSE);
+        inputOutput.enumCase(value, "true", tristate::TRUE);
+        inputOutput.enumCase(value, "false", tristate::FALSE);
     }
 };
 
@@ -59,10 +59,10 @@ oclint::option::ConfigFile::ConfigFile(const std::string &path)
     debug::emit("Reading config file: ");
     debug::emit(path.c_str());
 
-    llvm::error_code ec = llvm::MemoryBuffer::getFile(path, _buffer);
-    if (ec)
+    llvm::error_code errorCode = llvm::MemoryBuffer::getFile(path, _buffer);
+    if (errorCode)
     {
-        debug::emit(ec.message().c_str());
+        debug::emit(errorCode.message().c_str());
         debug::emit("\n");
     }
     else
@@ -152,20 +152,20 @@ llvm::Optional<bool> oclint::option::ConfigFile::clangChecker() const
     return createOptionalBool(_clangChecker);
 }
 
-void oclint::option::ConfigFile::mapping(llvm::yaml::IO& io)
+void oclint::option::ConfigFile::mapping(llvm::yaml::IO& inputOutput)
 {
-    io.mapOptional("rules", _rules);
-    io.mapOptional("disable-rules", _disableRules);
-    io.mapOptional("rule-paths", _rulePaths);
-    io.mapOptional("rule-configurations", _ruleConfigurations);
-    io.mapOptional("output", _output);
-    io.mapOptional("report-type", _reportType);
-    io.mapOptional("max-priority-1", _maxP1);
-    io.mapOptional("max-priority-2", _maxP2);
-    io.mapOptional("max-priority-3", _maxP3);
+    inputOutput.mapOptional("rules", _rules);
+    inputOutput.mapOptional("disable-rules", _disableRules);
+    inputOutput.mapOptional("rule-paths", _rulePaths);
+    inputOutput.mapOptional("rule-configurations", _ruleConfigurations);
+    inputOutput.mapOptional("output", _output);
+    inputOutput.mapOptional("report-type", _reportType);
+    inputOutput.mapOptional("max-priority-1", _maxP1);
+    inputOutput.mapOptional("max-priority-2", _maxP2);
+    inputOutput.mapOptional("max-priority-3", _maxP3);
     // Can't use bool here, because we need to detect the unset state.
     // Optional<bool> does not work, either, because it doesn't support ==.
-    io.mapOptional("enable-clang-static-analyzer", _clangChecker, tristate::UNDEFINED);
+    inputOutput.mapOptional("enable-clang-static-analyzer", _clangChecker, tristate::UNDEFINED);
 }
 
 /* ---------
