@@ -25,6 +25,8 @@ public:
     void mapping(llvm::yaml::IO& io);
 };
 
+enum tristate {FALSE, TRUE, UNDEFINED};
+
 class ConfigFile
 {
 private:
@@ -39,6 +41,7 @@ private:
     int _maxP1;
     int _maxP2;
     int _maxP3;
+    tristate _clangChecker;
 
 public:
     explicit ConfigFile(const std::string &path);
@@ -53,6 +56,7 @@ public:
     llvm::Optional<int> maxP1() const;
     llvm::Optional<int> maxP2() const;
     llvm::Optional<int> maxP3() const;
+    llvm::Optional<bool> clangChecker() const;
 
     void mapping(llvm::yaml::IO& io);
 };

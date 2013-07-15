@@ -43,6 +43,16 @@ struct llvm::yaml::MappingTraits<ConfigFile>
     }
 };
 
+template<>
+struct llvm::yaml::ScalarEnumerationTraits<tristate>
+{
+    static void enumeration(IO &io, tristate &value)
+    {
+        io.enumCase(value, "true", tristate::TRUE);
+        io.enumCase(value, "false", tristate::FALSE);
+    }
+};
+
 oclint::option::ConfigFile::ConfigFile(const std::string &path)
     : _path(path), _maxP1(INT_MIN), _maxP2(INT_MIN), _maxP3(INT_MIN)
 {
@@ -123,6 +133,25 @@ llvm::Optional<int> oclint::option::ConfigFile::maxP3() const
     return createOptionalInt(_maxP3);
 }
 
+static llvm::Optional<bool> createOptionalBool(const tristate value)
+{
+    switch (value)
+    {
+    case FALSE:
+        return llvm::Optional<bool>(false);
+    case TRUE:
+        return llvm::Optional<bool>(true);
+    case UNDEFINED:
+    default:
+        return llvm::Optional<bool>();
+    }
+}
+
+llvm::Optional<bool> oclint::option::ConfigFile::clangChecker() const
+{
+    return createOptionalBool(_clangChecker);
+}
+
 void oclint::option::ConfigFile::mapping(llvm::yaml::IO& io)
 {
     io.mapOptional("rules", _rules);
@@ -134,6 +163,9 @@ void oclint::option::ConfigFile::mapping(llvm::yaml::IO& io)
     io.mapOptional("max-priority-1", _maxP1);
     io.mapOptional("max-priority-2", _maxP2);
     io.mapOptional("max-priority-3", _maxP3);
+    // Can't use bool here, because we need to detect the unset state.
+    // Optional<bool> does not work, either, because it doesn't support ==.
+    io.mapOptional("enable-clang-static-analyzer", _clangChecker, tristate::UNDEFINED);
 }
 
 /* ---------

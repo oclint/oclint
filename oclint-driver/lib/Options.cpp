@@ -107,6 +107,7 @@ static void processConfigFile(const oclint::option::ConfigFile &config)
     updateArgIfSet(argMaxP1, config.maxP1());
     updateArgIfSet(argMaxP2, config.maxP2());
     updateArgIfSet(argMaxP3, config.maxP3());
+    updateArgIfSet(argClangChecker, config.clangChecker());
 }
 
 static void processConfigFiles()
