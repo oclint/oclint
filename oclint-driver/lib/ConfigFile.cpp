@@ -43,7 +43,8 @@ struct llvm::yaml::MappingTraits<ConfigFile>
     }
 };
 
-oclint::option::ConfigFile::ConfigFile(const std::string &path) : _path(path)
+oclint::option::ConfigFile::ConfigFile(const std::string &path)
+    : _path(path), _maxP1(INT_MIN), _maxP2(INT_MIN), _maxP3(INT_MIN)
 {
     debug::emit("Reading config file: ");
     debug::emit(path.c_str());
@@ -86,12 +87,35 @@ const std::vector<RuleConfigurationPair> &oclint::option::ConfigFile::ruleConfig
     return _ruleConfigurations;
 }
 
+static llvm::Optional<int> createOptionalInt(int value)
+{
+    return value == INT_MIN ? llvm::Optional<int>() : llvm::Optional<int>(value);
+}
+
+llvm::Optional<int> oclint::option::ConfigFile::maxP1() const
+{
+    return createOptionalInt(_maxP1);
+}
+
+llvm::Optional<int> oclint::option::ConfigFile::maxP2() const
+{
+    return createOptionalInt(_maxP2);
+}
+
+llvm::Optional<int> oclint::option::ConfigFile::maxP3() const
+{
+    return createOptionalInt(_maxP3);
+}
+
 void oclint::option::ConfigFile::mapping(llvm::yaml::IO& io)
 {
     io.mapOptional("rules", _rules);
     io.mapOptional("disable-rules", _disableRules);
     io.mapOptional("rule-paths", _rulePaths);
     io.mapOptional("rule-configurations", _ruleConfigurations);
+    io.mapOptional("max-priority-1", _maxP1);
+    io.mapOptional("max-priority-2", _maxP2);
+    io.mapOptional("max-priority-3", _maxP3);
 }
 
 /* ---------

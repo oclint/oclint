@@ -84,6 +84,15 @@ static llvm::OwningPtr<llvm::opt::OptTable> Options(clang::driver::createDriverO
 
 static oclint::RulesetFilter filter;
 
+template <typename T>
+void updateArgIfSet(llvm::cl::opt<T> &argValue, const llvm::Optional<T> &configValue)
+{
+    if (configValue.hasValue() && argValue.getNumOccurrences() == 0)
+    {
+        argValue.setValue(configValue.getValue());
+    }
+}
+
 static void processConfigFile(const oclint::option::ConfigFile &config)
 {
     for (const oclint::option::RuleConfigurationPair &ruleConfig : config.ruleConfigurations())
@@ -92,6 +101,10 @@ static void processConfigFile(const oclint::option::ConfigFile &config)
     }
     filter.enableRules(config.rules().begin(), config.rules().end());
     filter.disableRules(config.disableRules().begin(), config.disableRules().end());
+
+    updateArgIfSet(argMaxP1, config.maxP1());
+    updateArgIfSet(argMaxP2, config.maxP2());
+    updateArgIfSet(argMaxP3, config.maxP3());
 }
 
 static void processConfigFiles()

@@ -1,6 +1,7 @@
 #ifndef OCLINT_CONFIGFILE_H
 #define OCLINT_CONFIGFILE_H
 
+#include "llvm/ADT/Optional.h"
 #include "llvm/Support/YAMLTraits.h"
 #include "llvm/Support/MemoryBuffer.h"
 
@@ -33,6 +34,9 @@ private:
     std::vector<llvm::StringRef> _disableRules;
     std::vector<llvm::StringRef> _rulePaths;
     std::vector<RuleConfigurationPair> _ruleConfigurations;
+    int _maxP1;
+    int _maxP2;
+    int _maxP3;
 
 public:
     explicit ConfigFile(const std::string &path);
@@ -42,6 +46,9 @@ public:
     const std::vector<llvm::StringRef> &disableRules() const;
     const std::vector<llvm::StringRef> &rulePaths() const;
     const std::vector<RuleConfigurationPair> &ruleConfigurations() const;
+    llvm::Optional<int> maxP1() const;
+    llvm::Optional<int> maxP2() const;
+    llvm::Optional<int> maxP3() const;
 
     void mapping(llvm::yaml::IO& io);
 };
