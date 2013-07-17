@@ -27,16 +27,15 @@ public:
     template <typename T>
     void enableRules(const T &beg, const T &end)
     {
-        for_each(beg, end, [this](const std::string &s) {enableRule(s);});
+        for_each(beg, end, [this](const std::string &s) { enableRule(s); });
     }
 
     void disableRule(const std::string &ruleName);
     template <typename T>
     void disableRules(const T &beg, const T &end)
     {
-        for_each(beg, end, [this](const std::string &s) {disableRule(s);});
+        for_each(beg, end, [this](const std::string &s) { disableRule(s); });
     }
-
 
     std::vector<RuleBase *> filteredRules() const;
     std::vector<std::string> filteredRuleNames() const;

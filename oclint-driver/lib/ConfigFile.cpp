@@ -1,5 +1,5 @@
-#include "llvm/Support/YAMLParser.h"
-#include "llvm/Support/SourceMgr.h"
+#include <llvm/Support/YAMLParser.h>
+#include <llvm/Support/SourceMgr.h>
 
 #include "oclint/ConfigFile.h"
 #include "oclint/Debug.h"
@@ -22,6 +22,16 @@ struct llvm::yaml::MappingTraits<RuleConfigurationPair>
     }
 };
 
+const llvm::StringRef &oclint::option::RuleConfigurationPair::key() const
+{
+    return _key;
+}
+
+const llvm::StringRef &oclint::option::RuleConfigurationPair::value() const
+{
+    return _value;
+}
+
 void oclint::option::RuleConfigurationPair::mapping(llvm::yaml::IO& inputOutput)
 {
     inputOutput.mapOptional("key", _key);
@@ -43,13 +53,13 @@ struct llvm::yaml::MappingTraits<ConfigFile>
     }
 };
 
-template<>
-struct llvm::yaml::ScalarEnumerationTraits<tristate>
+template <>
+struct llvm::yaml::ScalarEnumerationTraits<TriState>
 {
-    static void enumeration(IO &inputOutput, tristate &value)
+    static void enumeration(IO &inputOutput, TriState &value)
     {
-        inputOutput.enumCase(value, "true", tristate::TRUE);
-        inputOutput.enumCase(value, "false", tristate::FALSE);
+        inputOutput.enumCase(value, "true", TriState::TRUE);
+        inputOutput.enumCase(value, "false", TriState::FALSE);
     }
 };
 
@@ -133,7 +143,7 @@ llvm::Optional<int> oclint::option::ConfigFile::maxP3() const
     return createOptionalInt(_maxP3);
 }
 
-static llvm::Optional<bool> createOptionalBool(const tristate value)
+static llvm::Optional<bool> createOptionalBool(const TriState value)
 {
     switch (value)
     {
@@ -165,7 +175,7 @@ void oclint::option::ConfigFile::mapping(llvm::yaml::IO& inputOutput)
     inputOutput.mapOptional("max-priority-3", _maxP3);
     // Can't use bool here, because we need to detect the unset state.
     // Optional<bool> does not work, either, because it doesn't support ==.
-    inputOutput.mapOptional("enable-clang-static-analyzer", _clangChecker, tristate::UNDEFINED);
+    inputOutput.mapOptional("enable-clang-static-analyzer", _clangChecker, TriState::UNDEFINED);
 }
 
 /* ---------

@@ -1,11 +1,11 @@
 #ifndef OCLINT_CONFIGFILE_H
 #define OCLINT_CONFIGFILE_H
 
-#include "llvm/ADT/Optional.h"
-#include "llvm/Support/YAMLTraits.h"
-#include "llvm/Support/MemoryBuffer.h"
+#include <vector>
 
-#import <vector>
+#include <llvm/ADT/Optional.h>
+#include <llvm/Support/YAMLTraits.h>
+#include <llvm/Support/MemoryBuffer.h>
 
 namespace oclint
 {
@@ -19,13 +19,13 @@ private:
     llvm::StringRef _value;
 
 public:
-    const llvm::StringRef &key() const {return _key;}
-    const llvm::StringRef &value() const {return _key;}
+    const llvm::StringRef &key() const;
+    const llvm::StringRef &value() const;
 
     void mapping(llvm::yaml::IO& io);
 };
 
-enum tristate {FALSE, TRUE, UNDEFINED};
+enum TriState {FALSE, TRUE, UNDEFINED};
 
 class ConfigFile
 {
@@ -41,7 +41,7 @@ private:
     int _maxP1;
     int _maxP2;
     int _maxP3;
-    tristate _clangChecker;
+    TriState _clangChecker;
 
 public:
     explicit ConfigFile(const std::string &path);
