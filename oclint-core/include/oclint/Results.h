@@ -23,6 +23,7 @@ protected:
     std::vector<ViolationSet*>* _collection;
     ViolationSet *_compilerErrorSet;
     ViolationSet *_compilerWarningSet;
+    ViolationSet *_clangStaticCheckerBugSet;
 
 public:
     void add(ViolationSet *violationSet);
@@ -43,6 +44,11 @@ public:
     int numberOfWarnings();
     bool hasWarnings();
     std::vector<Violation> allWarnings();
+
+    void addCheckerBug(Violation& violation);
+    int numberOfCheckerBugs();
+    bool hasCheckerBugs();
+    std::vector<Violation> allCheckerBugs();
 };
 
 } // end namespace oclint

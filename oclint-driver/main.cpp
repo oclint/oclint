@@ -7,23 +7,21 @@
 #include <string>
 
 #include <llvm/ADT/SmallString.h>
-#include <llvm/Option/OptTable.h>
-#include <llvm/Option/Option.h>
 #include <llvm/Support/Path.h>
 #include <llvm/Support/Program.h>
 #include <llvm/Support/FileSystem.h>
-#include <clang/Driver/Options.h>
 #include <clang/Tooling/CommonOptionsParser.h>
 
 #include "oclint/Analyzer.h"
 #include "oclint/CompilerInstance.h"
 #include "oclint/Driver.h"
 #include "oclint/GenericException.h"
+#include "oclint/Options.h"
 #include "oclint/Reporter.h"
 #include "oclint/Results.h"
 #include "oclint/RuleBase.h"
-#include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
+#include "oclint/RulesetFilter.h"
 #include "oclint/RulesetBasedAnalyzer.h"
 #include "oclint/ViolationSet.h"
 #include "oclint/Violation.h"
@@ -32,58 +30,7 @@ using namespace std;
 using namespace llvm;
 using namespace llvm::sys;
 using namespace clang;
-using namespace clang::driver;
 using namespace clang::tooling;
-
-/* ----------------
-   input and output
-   ---------------- */
-
-cl::opt<string> argOutput("o",
-    cl::desc("Write output to <path>"),
-    cl::value_desc("path"),
-    cl::init("-"));
-
-/* --------------------
-   oclint configuration
-   -------------------- */
-
-cl::opt<string> argReportType("report-type",
-    cl::desc("Change output report type"),
-    cl::value_desc("name"),
-    cl::init("text"));
-cl::list<string> argRulesPath("R",
-    cl::Prefix,
-    cl::desc("Add directory to rule loading path"),
-    cl::value_desc("directory"),
-    cl::ZeroOrMore);
-cl::list<string> argRuleConfiguration("rc",
-    cl::desc("Override the default behavior of rules"),
-    cl::value_desc("parameter>=<value"),
-    cl::ZeroOrMore);
-cl::opt<int> argMaxP1("max-priority-1",
-    cl::desc("The max allowed number of priority 1 violations"),
-    cl::value_desc("threshold"),
-    cl::init(0));
-cl::opt<int> argMaxP2("max-priority-2",
-    cl::desc("The max allowed number of priority 2 violations"),
-    cl::value_desc("threshold"),
-    cl::init(10));
-cl::opt<int> argMaxP3("max-priority-3",
-    cl::desc("The max allowed number of priority 3 violations"),
-    cl::value_desc("threshold"),
-    cl::init(20));
-
-/* -------------
-   libTooling cl
-   ------------- */
-
-static cl::extrahelp CommonHelp(CommonOptionsParser::HelpMessage);
-static cl::extrahelp MoreHelp(
-    "For more information, please visit http://oclint.org\n"
-);
-static OwningPtr<llvm::opt::OptTable> Options(createDriverOptTable());
-
 
 static string absoluteWorkingPath("");
 static oclint::Reporter *selectedReporter = NULL;
@@ -139,31 +86,19 @@ void dynamicLoadRules(string ruleDirPath)
 
 void consumeArgRulesPath(const char* executablePath)
 {
-    if (argRulesPath.size() == 0)
+    if (oclint::option::hasCustomRulesPath())
     {
-        string exeStrPath = getExecutablePath(executablePath);
-        string defaultRulePath = exeStrPath + "/../lib/oclint/rules";
-        dynamicLoadRules(defaultRulePath);
-    }
-    else
-    {
+        vector<string> argRulesPath = oclint::option::rulesPath();
         for (unsigned i = 0; i < argRulesPath.size(); ++i)
         {
             dynamicLoadRules(argRulesPath[i]);
         }
     }
-}
-
-void consumeRuleConfigurations()
-{
-    for (unsigned i = 0; i < argRuleConfiguration.size(); ++i)
+    else
     {
-        string configuration = argRuleConfiguration[i];
-        int indexOfSeparator = configuration.find_last_of("=");
-        string key = configuration.substr(0, indexOfSeparator);
-        string value = configuration.substr(indexOfSeparator + 1,
-            configuration.size() - indexOfSeparator - 1);
-        oclint::RuleConfiguration::addConfiguration(key, value);
+        string exeStrPath = getExecutablePath(executablePath);
+        string defaultRulePath = exeStrPath + "/../lib/oclint/rules";
+        dynamicLoadRules(defaultRulePath);
     }
 }
 
@@ -193,7 +128,7 @@ void loadReporter(const char* executablePath)
             oclint::Reporter* (*createMethodPointer)();
             createMethodPointer = (oclint::Reporter* (*)())dlsym(reporterHandle, "create");
             oclint::Reporter* reporter = (oclint::Reporter*)createMethodPointer();
-            if (reporter->name() == argReportType)
+            if (reporter->name() == oclint::option::reportType())
             {
                 selectedReporter = reporter;
                 break;
@@ -204,39 +139,49 @@ void loadReporter(const char* executablePath)
     if (selectedReporter == NULL)
     {
         throw oclint::GenericException(
-            "cannot find dynamic library for report type: " + argReportType);
+            "cannot find dynamic library for report type: " + oclint::option::reportType());
     }
 }
 
 bool numberOfViolationsExceedThreshold(oclint::Results *results)
 {
-    return results->numberOfViolationsWithPriority(1) > argMaxP1 ||
-        results->numberOfViolationsWithPriority(2) > argMaxP2 ||
-        results->numberOfViolationsWithPriority(3) > argMaxP3;
+    return results->numberOfViolationsWithPriority(1) > oclint::option::maxP1() ||
+        results->numberOfViolationsWithPriority(2) > oclint::option::maxP2() ||
+        results->numberOfViolationsWithPriority(3) > oclint::option::maxP3();
 }
 
 ostream* outStream()
 {
-    if (argOutput == "-")
+    if (!oclint::option::hasOutputPath())
     {
         return &cout;
     }
-    string absoluteOutputPath = argOutput.at(0) == '/' ?
-        argOutput : absoluteWorkingPath + "/" + argOutput;
+    string output = oclint::option::outputPath();
+    string absoluteOutputPath = output.at(0) == '/' ?
+        output : absoluteWorkingPath + "/" + output;
     ofstream *out = new ofstream(absoluteOutputPath.c_str());
     if (!out->is_open())
     {
-        throw oclint::GenericException("cannot open report output file " + argOutput);
+        throw oclint::GenericException("cannot open report output file " + absoluteOutputPath);
     }
     return out;
 }
 
 void disposeOutStream(ostream* out)
 {
-    if (out && argOutput != "-")
+    if (out && oclint::option::hasOutputPath())
     {
         ofstream *fout = (ofstream *)out;
         fout->close();
+    }
+}
+
+void listRules()
+{
+    cerr << "Enabled rules:\n";
+    for (const std::string &ruleName : oclint::option::rulesetFilter().filteredRuleNames())
+    {
+        cerr << "- " << ruleName << "\n";
     }
 }
 
@@ -285,7 +230,6 @@ int prepare(const char* executablePath)
         printErrorLine(e.what());
         return REPORTER_NOT_FOUND;
     }
-    consumeRuleConfigurations();
     preserveWorkingPath();
 
     return SUCCESS;
@@ -294,6 +238,7 @@ int prepare(const char* executablePath)
 int main(int argc, const char **argv)
 {
     CommonOptionsParser optionsParser(argc, argv);
+    oclint::option::process();
 
     int prepareStatus = prepare(argv[0]);
     if (prepareStatus)
@@ -301,7 +246,12 @@ int main(int argc, const char **argv)
         return prepareStatus;
     }
 
-    oclint::RulesetBasedAnalyzer analyzer;
+    if (oclint::option::showEnabledRules())
+    {
+        listRules();
+    }
+
+    oclint::RulesetBasedAnalyzer analyzer(oclint::option::rulesetFilter().filteredRules());
     oclint::Driver driver;
     try
     {

@@ -54,7 +54,6 @@
 #include <llvm/Option/ArgList.h>
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/Host.h>
-#include <llvm/Support/PathV1.h>
 #include <llvm/Support/raw_ostream.h>
 #include <clang/Basic/Diagnostic.h>
 #include <clang/Driver/Compilation.h>
@@ -67,11 +66,12 @@
 #include <clang/Tooling/CompilationDatabase.h>
 #include <clang/Tooling/Tooling.h>
 
-#include "oclint/CarrierDiagnosticConsumer.h"
+#include "oclint/DiagnosticDispatcher.h"
 #include "oclint/CompilerInstance.h"
 #include "oclint/Debug.h"
 #include "oclint/Driver.h"
 #include "oclint/GenericException.h"
+#include "oclint/Options.h"
 #include "oclint/ViolationSet.h"
 
 using namespace oclint;
@@ -181,7 +181,7 @@ static void constructCompileCommands(
 }
 
 static clang::CompilerInvocation *newCompilerInvocation(std::string &mainExecutable,
-    std::vector<std::string> &unadjustedCmdLine)
+    std::vector<std::string> &unadjustedCmdLine, bool runClangChecker = false)
 {
     // Prepare for command lines, and convert to old-school argv
     llvm::OwningPtr<clang::tooling::ArgumentsAdjuster> argumentsAdjusterPtr(
@@ -191,10 +191,17 @@ static clang::CompilerInvocation *newCompilerInvocation(std::string &mainExecuta
     commandLine[0] = mainExecutable;
 
     std::vector<const char*> argv;
-    for (int commandLineIndex = 0, commandLineEnd = commandLine.size();
-        commandLineIndex != commandLineEnd; commandLineIndex++)
+    int start = 0, end = commandLine.size();
+    if (runClangChecker)
     {
-        argv.push_back(commandLine[commandLineIndex].c_str());
+        argv.push_back(commandLine[0].c_str());
+        argv.push_back("--analyze");
+        start = 1;
+        end -= 1;
+    }
+    for (int cmdIndex = start; cmdIndex != end; cmdIndex++)
+    {
+        argv.push_back(commandLine[cmdIndex].c_str());
     }
 
     // create diagnostic engine
@@ -226,12 +233,12 @@ static clang::FileManager *newFileManager()
 }
 
 static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *compilerInvocation,
-    clang::FileManager *fileManager)
+    clang::FileManager *fileManager, bool runClangChecker = false)
 {
     oclint::CompilerInstance *compilerInstance = new oclint::CompilerInstance();
     compilerInstance->setInvocation(compilerInvocation);
     compilerInstance->setFileManager(fileManager);
-    compilerInstance->createDiagnostics(new CarrierDiagnosticConsumer());
+    compilerInstance->createDiagnostics(new DiagnosticDispatcher(runClangChecker));
     if (!compilerInstance->hasDiagnostics())
     {
         throw oclint::GenericException("cannot create compiler diagnostics");
@@ -279,14 +286,51 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
     debug::emit("\n");
 }
 
+static void invokeClangStaticAnalyzer(
+    std::vector<std::pair<std::string, clang::tooling::CompileCommand> > &compileCommands,
+    std::string &mainExecutable)
+{
+    debug::emit("Start code analysis by Clang Static Analyzer:\n");
+    for (unsigned compileCmdIdx = 0, numCmds = compileCommands.size();
+        compileCmdIdx < numCmds; compileCmdIdx++)
+    {
+        if (chdir(compileCommands[compileCmdIdx].second.Directory.c_str()))
+        {
+            throw oclint::GenericException("Cannot change dictionary into \"" +
+                compileCommands[compileCmdIdx].second.Directory + "\", "
+                "please make sure the directory exists and you have permission to access!");
+        }
+        clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(mainExecutable,
+            compileCommands[compileCmdIdx].second.CommandLine, true);
+        clang::FileManager *fileManager = newFileManager();
+        oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation,
+            fileManager, true);
+
+        compiler->start();
+        if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
+        {
+            debug::emit(".");
+        }
+        else
+        {
+            debug::emit("X");
+        }
+        compiler->end();
+        compiler->resetAndLeakFileManager();
+        fileManager->clearStatCaches();
+    }
+    debug::emit("\n");
+}
+
 void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
-    llvm::ArrayRef<std::string> sourcePaths, oclint::Analyzer &analyzer)
+    llvm::ArrayRef<std::string> sourcePaths,
+    oclint::Analyzer &analyzer)
 {
     std::vector<std::pair<std::string, clang::tooling::CompileCommand> > compileCommands;
     constructCompileCommands(compileCommands, compilationDatabase, sourcePaths);
 
     static int staticSymbol;
-    std::string mainExecutable = llvm::sys::Path::GetMainExecutable("oclint", &staticSymbol).str();
+    std::string mainExecutable = llvm::sys::fs::getMainExecutable("oclint", &staticSymbol);
 
     std::vector<oclint::CompilerInstance *> compilers;
     std::vector<clang::FileManager *> fileManagers;
@@ -310,5 +354,12 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
         compilers.at(compilerIndex)->end();
         compilers.at(compilerIndex)->resetAndLeakFileManager();
         fileManagers.at(compilerIndex)->clearStatCaches();
+        delete compilers.at(compilerIndex);
+        delete fileManagers.at(compilerIndex);
+    }
+
+    if (option::enableClangChecker())
+    {
+        invokeClangStaticAnalyzer(compileCommands, mainExecutable);
     }
 }

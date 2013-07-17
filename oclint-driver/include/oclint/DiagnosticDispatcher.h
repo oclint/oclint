@@ -1,14 +1,18 @@
-#ifndef OCLINT_CARRIERDIAGNOSTICCONSUMER_H
-#define OCLINT_CARRIERDIAGNOSTICCONSUMER_H
+#ifndef OCLINT_DIAGNOSTICDISPATCHER_H
+#define OCLINT_DIAGNOSTICDISPATCHER_H
 
 #include <clang/Basic/Diagnostic.h>
 
 namespace oclint
 {
 
-class CarrierDiagnosticConsumer : public clang::DiagnosticConsumer
+class DiagnosticDispatcher : public clang::DiagnosticConsumer
 {
+private:
+    bool _isCheckerCustomer;
+
 public:
+    DiagnosticDispatcher(bool runClangChecker);
     void HandleDiagnostic(clang::DiagnosticsEngine::Level diagnosticLevel,
         const clang::Diagnostic &diagnosticInfo);
 };

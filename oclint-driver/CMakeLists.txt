@@ -24,6 +24,11 @@ TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
     OCLintDriver
     OCLintRuleSet
     OCLintCore
+    clangStaticAnalyzerFrontend
+    clangStaticAnalyzerCheckers
+    clangStaticAnalyzerCore
+    clangRewriteFrontend
+    clangRewriteCore
     ${CLANG_LIBRARIES}
     ${REQ_LLVM_LIBRARIES}
     ${CMAKE_DL_LIBS}

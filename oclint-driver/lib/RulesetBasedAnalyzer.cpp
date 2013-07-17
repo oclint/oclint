@@ -8,6 +8,11 @@
 
 using namespace oclint;
 
+RulesetBasedAnalyzer::RulesetBasedAnalyzer(std::vector<RuleBase *> filteredRules)
+    : _filteredRules(filteredRules)
+{
+}
+
 void RulesetBasedAnalyzer::preprocess(std::vector<clang::ASTContext *> &contexts)
 {
     debug::emit("Start pre-processing:\n");
@@ -26,9 +31,9 @@ void RulesetBasedAnalyzer::analyze(std::vector<clang::ASTContext *> &contexts)
         debug::emit(".");
         ViolationSet *violationSet = new ViolationSet();
         RuleCarrier *carrier = new RuleCarrier(context, violationSet);
-        for (int ruleIdx = 0, numRules = RuleSet::numberOfRules(); ruleIdx < numRules; ruleIdx++)
+        for (RuleBase *rule : _filteredRules)
         {
-            RuleSet::getRuleAtIndex(ruleIdx)->takeoff(carrier);
+            rule->takeoff(carrier);
         }
         Results *results = Results::getInstance();
         results->add(violationSet);

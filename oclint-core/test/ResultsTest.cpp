@@ -52,6 +52,7 @@ TEST(ResultsTest, EmptyResults)
     EXPECT_THAT(results->numberOfWarnings(), Eq(0));
     EXPECT_FALSE(results->hasErrors());
     EXPECT_FALSE(results->hasWarnings());
+    EXPECT_FALSE(results->hasCheckerBugs());
 }
 
 TEST(ResultsTest, NumberOfFiles)
@@ -149,6 +150,7 @@ TEST(ResultsTest, CompilerErrors)
     EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(0));
     EXPECT_THAT(results->numberOfWarnings(), Eq(0));
     EXPECT_FALSE(results->hasWarnings());
+    EXPECT_FALSE(results->hasCheckerBugs());
 }
 
 TEST(ResultsTest, CompilerWarnings)
@@ -176,6 +178,35 @@ TEST(ResultsTest, CompilerWarnings)
     EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(0));
     EXPECT_THAT(results->numberOfErrors(), Eq(0));
     EXPECT_FALSE(results->hasErrors());
+    EXPECT_FALSE(results->hasCheckerBugs());
+}
+
+TEST(ResultsTest, CheckerBugs)
+{
+    Results *results = new ResultsTest_ResultsStub();
+    Violation violation(0, "test checker bug path", 1, 2, 0, 0, "test checker bug message");
+    results->addCheckerBug(violation);
+    EXPECT_TRUE(results->hasCheckerBugs());
+    EXPECT_THAT(results->numberOfCheckerBugs(), Eq(1));
+    Violation compareViolation = results->allCheckerBugs().at(0);
+    EXPECT_THAT(compareViolation.path, StrEq("test checker bug path"));
+    EXPECT_THAT(compareViolation.message, StrEq("test checker bug message"));
+    EXPECT_THAT(compareViolation.rule, IsNull());
+    EXPECT_THAT(compareViolation.startLine, Eq(1));
+    EXPECT_THAT(compareViolation.startColumn, Eq(2));
+    EXPECT_THAT(compareViolation.endLine, Eq(0));
+    EXPECT_THAT(compareViolation.endColumn, Eq(0));
+
+    EXPECT_THAT(results->numberOfViolations(), Eq(0));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(0), Eq(0));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(0));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(2), Eq(0));
+    EXPECT_THAT(results->numberOfViolationsWithPriority(3), Eq(0));
+    EXPECT_THAT(results->numberOfFiles(), Eq(0));
+    EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(0));
+    EXPECT_THAT(results->numberOfErrors(), Eq(0));
+    EXPECT_FALSE(results->hasErrors());
+    EXPECT_FALSE(results->hasWarnings());
 }
 
 int main(int argc, char **argv)

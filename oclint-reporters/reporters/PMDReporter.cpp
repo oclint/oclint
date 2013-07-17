@@ -26,6 +26,7 @@ public:
 
     void writeHeader(std::ostream &out, std::string version)
     {
+        out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
         out << "<pmd version=\"oclint-" << version << "\">";
     }
 
@@ -39,7 +40,9 @@ public:
         out << "<file name=\"" << violation.path << "\">" << std::endl;
         out << "<violation ";
         out << "begincolumn=\"" << violation.startColumn << "\" ";
+        out << "endcolumn=\"" << violation.endColumn << "\" ";
         out << "beginline=\"" << violation.startLine << "\" ";
+        out << "endline=\"" << violation.endLine << "\" ";
         const RuleBase *rule = violation.rule;
         out << "priority=\"" << 2 * rule->priority() - 1 << "\" ";
         out << "rule=\"" << rule->name() << "\">" << std::endl;
