@@ -40,15 +40,16 @@ if [ $SUCCESS -eq 0 ]; then
     fi
     cat $OCLINT_CORE_BUILD/testresults.txt
 fi
-if [ $SUCCESS -eq 0 ]; then
-    lcov -b . -d . -c -o $OCLINT_CORE_BUILD/output.lcov
-    lcov -e $OCLINT_CORE_BUILD/output.lcov "*oclint-core*" -o $OCLINT_CORE_BUILD/output.lcov
-    lcov -r $OCLINT_CORE_BUILD/output.lcov "*test*" -o $OCLINT_CORE_BUILD/output.lcov
-    genhtml -o $OCLINT_CORE_BUILD/coveragereport -t "OCLint test coverage" --num-spaces 4 $OCLINT_CORE_BUILD/output.lcov
-    if [ $? -ne 0 ]; then
-        SUCCESS=4
-    fi
-fi
+# TODO: use llvm-cov instead
+#if [ $SUCCESS -eq 0 ]; then
+#    lcov -b . -d . -c -o $OCLINT_CORE_BUILD/output.lcov
+#    lcov -e $OCLINT_CORE_BUILD/output.lcov "*oclint-core*" -o $OCLINT_CORE_BUILD/output.lcov
+#    lcov -r $OCLINT_CORE_BUILD/output.lcov "*test*" -o $OCLINT_CORE_BUILD/output.lcov
+#    genhtml -o $OCLINT_CORE_BUILD/coveragereport -t "OCLint test coverage" --num-spaces 4 $OCLINT_CORE_BUILD/output.lcov
+#    if [ $? -ne 0 ]; then
+#        SUCCESS=4
+#    fi
+#fi
 
 # back to the current folder
 cd $CWD
