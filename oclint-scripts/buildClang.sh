@@ -18,6 +18,8 @@ fi
 RELEASE_CONFIG=""
 if [ $# -eq 1 ] && [ "$1" = "release" ]; then
     RELEASE_CONFIG="-D CMAKE_BUILD_TYPE=Release"
+else
+    RELEASE_CONFIG="-D CMAKE_BUILD_TYPE=Debug"
 fi
 
 # create directory and prepare for build
