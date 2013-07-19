@@ -45,7 +45,7 @@ public:
         vector<ReturnStmt*> returns;
         ExtractReturnStmts extractReturnStmts;
         extractReturnStmts.extract(finallyStmt, &returns);
-        for (auto returnStmt : returns)
+        for (const auto& returnStmt : returns)
         {
             addViolation(returnStmt, this);
         }

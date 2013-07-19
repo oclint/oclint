@@ -16,7 +16,7 @@ public:
     virtual void report(Results *results, std::ostream &out)
     {
         writeHeader(out, Version::identifier());
-        for (auto violation : results->allViolations())
+        for (const auto& violation : results->allViolations())
         {
             writeViolation(out, violation);
             out << std::endl;
@@ -35,7 +35,7 @@ public:
         out << "</pmd>";
     }
 
-    void writeViolation(std::ostream &out, Violation &violation)
+    void writeViolation(std::ostream &out, const Violation &violation)
     {
         out << "<file name=\"" << violation.path << "\">" << std::endl;
         out << "<violation ";

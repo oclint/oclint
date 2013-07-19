@@ -49,7 +49,7 @@ private:
 
     bool areAllBranchesReturn(vector<IfStmt *> &ifStmts)
     {
-        for (auto ifStmt : ifStmts)
+        for (const auto& ifStmt : ifStmts)
         {
             if (!areAllBranchesReturn(ifStmt->getThen()))
             {
@@ -63,7 +63,7 @@ private:
 
     bool isIfStmtVisited(IfStmt *ifStmt)
     {
-        for (auto itStmt : *_visitedIfStmt)
+        for (const auto& itStmt : *_visitedIfStmt)
         {
             if (itStmt == ifStmt)
             {

@@ -78,7 +78,7 @@ void CompilerInstance::start()
 
     getTarget().setForcedLangOptions(getLangOpts());
 
-    for (auto input : getFrontendOpts().Inputs)
+    for (const auto& input : getFrontendOpts().Inputs)
     {
         if (hasSourceManager())
         {
@@ -94,7 +94,7 @@ void CompilerInstance::start()
 
 void CompilerInstance::end()
 {
-    for (auto action : _actions)
+    for (const auto& action : _actions)
     {
         action->EndSourceFile();
     }

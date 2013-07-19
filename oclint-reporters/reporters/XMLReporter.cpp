@@ -21,7 +21,7 @@ public:
         writeDatetime(out);
         writeSummary(out, *results);
         out << "<violations>";
-        for (auto violation : results->allViolations())
+        for (const auto& violation : results->allViolations())
         {
             writeViolation(out, violation);
         }
@@ -57,7 +57,7 @@ public:
         out << "</oclint>";
     }
 
-    void writeViolation(std::ostream &out, Violation &violation)
+    void writeViolation(std::ostream &out, const Violation &violation)
     {
         out << "<violation";
         writeViolationAttribute(out, "path", violation.path);

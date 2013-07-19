@@ -81,7 +81,7 @@ public:
         vector<ObjCAtThrowStmt*> throws;
         ExtractObjCAtThrowStmts extractThrowStmts;
         extractThrowStmts.extract(finallyStmt, &throws);
-        for (auto throwStmt : throws)
+        for (const auto& throwStmt : throws)
         {
             addViolation(throwStmt, this);
         }
@@ -89,7 +89,7 @@ public:
         vector<ObjCMessageExpr*> exceptionRaisers;
         ExtractNSExceptionRaiser extractExceptions;
         extractExceptions.extract(finallyStmt, &exceptionRaisers);
-        for (auto raiseExpr : exceptionRaisers)
+        for (const auto& raiseExpr : exceptionRaisers)
         {
             addViolation(raiseExpr, this);
         }

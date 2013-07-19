@@ -44,9 +44,9 @@ void Results::add(ViolationSet *violationSet)
 std::vector<Violation> Results::allViolations()
 {
     std::vector<Violation> violations;
-    for (auto violationSet : *_collection)
+    for (const auto& violationSet : *_collection)
     {
-        for (auto violation : violationSet->getViolations())
+        for (const auto& violation : violationSet->getViolations())
         {
             violations.push_back(violation);
         }
@@ -62,7 +62,7 @@ int Results::numberOfViolations()
 int Results::numberOfViolationsWithPriority(int priority)
 {
     int numViolations = 0;
-    for (auto violation : allViolations())
+    for (const auto& violation : allViolations())
     {
         const RuleBase *rule = violation.rule;
         if (rule->priority() == priority)
@@ -81,7 +81,7 @@ int Results::numberOfFiles()
 int Results::numberOfFilesWithViolations()
 {
     int numFiles = 0;
-    for (auto violationSet : *_collection)
+    for (const auto& violationSet : *_collection)
     {
         if (violationSet->numberOfViolations() > 0)
         {

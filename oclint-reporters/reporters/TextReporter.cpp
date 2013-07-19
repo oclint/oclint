@@ -60,7 +60,7 @@ public:
         out << "P3=" << results.numberOfViolationsWithPriority(3) << " ";
     }
 
-    void writeViolation(std::ostream &out, Violation &violation)
+    void writeViolation(std::ostream &out, const Violation &violation)
     {
         out << violation.path << ":" << violation.startLine << ":" << violation.startColumn;
         const RuleBase *rule = violation.rule;
@@ -69,14 +69,14 @@ public:
 
     void writeViolations(std::ostream &out, std::vector<Violation> violations)
     {
-        for (auto violation : violations)
+        for (const auto& violation : violations)
         {
             writeViolation(out, violation);
             out << std::endl;
         }
     }
 
-    void writeCompilerErrorOrWarning(std::ostream &out, Violation &violation)
+    void writeCompilerErrorOrWarning(std::ostream &out, const Violation &violation)
     {
         out << violation.path << ":" << violation.startLine << ":" << violation.startColumn;
         out << ": " << violation.message;
@@ -86,7 +86,7 @@ public:
         std::string headerText)
     {
         out << std::endl << headerText << std::endl << std::endl;
-        for (auto violation : violations)
+        for (const auto& violation : violations)
         {
             writeCompilerErrorOrWarning(out, violation);
             out << std::endl;

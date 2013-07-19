@@ -16,7 +16,7 @@ RulesetBasedAnalyzer::RulesetBasedAnalyzer(std::vector<RuleBase *> filteredRules
 void RulesetBasedAnalyzer::preprocess(std::vector<clang::ASTContext *> &contexts)
 {
     debug::emit("Start pre-processing:\n");
-    for (auto context : contexts)
+    for (const auto& context : contexts)
     {
         debug::emit(".");
     }
@@ -26,7 +26,7 @@ void RulesetBasedAnalyzer::preprocess(std::vector<clang::ASTContext *> &contexts
 void RulesetBasedAnalyzer::analyze(std::vector<clang::ASTContext *> &contexts)
 {
     debug::emit("Start analyzing:\n");
-    for (auto context : contexts)
+    for (const auto& context : contexts)
     {
         debug::emit(".");
         ViolationSet *violationSet = new ViolationSet();
@@ -45,7 +45,7 @@ void RulesetBasedAnalyzer::analyze(std::vector<clang::ASTContext *> &contexts)
 void RulesetBasedAnalyzer::postprocess(std::vector<clang::ASTContext *> &contexts)
 {
     debug::emit("Start post-processing:\n");
-    for (auto context : contexts)
+    for (const auto& context : contexts)
     {
         debug::emit(".");
     }

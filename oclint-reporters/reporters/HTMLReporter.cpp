@@ -26,7 +26,7 @@ public:
         out << "<hr />";
         out << "<table><thead><tr><th>File</th><th>Location</th><th>Rule Name</th>"
             << "<th>Priority</th><th>Message</th></tr></thead><tbody>";
-        for (auto violation : results->allViolations())
+        for (const auto& violation : results->allViolations())
         {
             writeViolation(out, violation);
         }
@@ -57,7 +57,7 @@ public:
             << "| Generated with <a href='http://oclint.org'>OCLint v" << version << "</a>.</p>";
     }
 
-    void writeViolation(std::ostream &out, Violation &violation)
+    void writeViolation(std::ostream &out, const Violation &violation)
     {
         out << "<tr><td>" << violation.path << "</td><td>" << violation.startLine
             << ":" << violation.startColumn << "</td>";
@@ -66,7 +66,7 @@ public:
             << rule->priority() << "</td><td>" << violation.message << "</td></tr>";
     }
 
-    void writeCompilerErrorOrWarning(std::ostream &out, Violation &violation, std::string level)
+    void writeCompilerErrorOrWarning(std::ostream &out, const Violation &violation, std::string level)
     {
         out << "<tr><td>" << violation.path << "</td><td>" << violation.startLine
             << ":" << violation.startColumn << "</td>";
@@ -77,7 +77,7 @@ public:
     void writeCompilerDiagnostics(std::ostream &out, std::vector<Violation> violations,
         std::string level)
     {
-        for (auto violation : violations)
+        for (const auto& violation : violations)
         {
             writeCompilerErrorOrWarning(out, violation, level);
         }

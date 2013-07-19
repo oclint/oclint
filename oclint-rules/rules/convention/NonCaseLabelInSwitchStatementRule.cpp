@@ -46,7 +46,7 @@ public:
         vector<LabelStmt*> labels;
         ExtractLabelStmts extractLabelStmts;
         extractLabelStmts.extract(switchStmt, &labels);
-        for (auto labelStmt : labels)
+        for (const auto& labelStmt : labels)
         {
             addViolation(labelStmt, this);
         }
