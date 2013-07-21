@@ -76,6 +76,8 @@
 
 using namespace oclint;
 
+typedef std::vector<std::pair<std::string, clang::tooling::CompileCommand>> CompileCommandPairs;
+
 static clang::driver::Driver *newDriver(clang::DiagnosticsEngine *diagnostics,
     const char *binaryName)
 {
@@ -149,7 +151,7 @@ static clang::CompilerInvocation *newInvocation(clang::DiagnosticsEngine *diagno
 }
 
 static void constructCompileCommands(
-    std::vector<std::pair<std::string, clang::tooling::CompileCommand> > &compileCommands,
+    CompileCommandPairs &compileCommands,
     const clang::tooling::CompilationDatabase &compilationDatabase,
     llvm::ArrayRef<std::string> sourcePaths)
 {
@@ -253,55 +255,55 @@ static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *
 
 static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstance *> &compilers,
     std::vector<clang::FileManager *> &fileManagers,
-    std::vector<std::pair<std::string, clang::tooling::CompileCommand> > &compileCommands,
+    CompileCommandPairs &compileCommands,
     std::string &mainExecutable)
 {
-    debug::emit("\nStart compiling:\n");
-    for (unsigned compileCmdIdx = 0, numCmds = compileCommands.size();
-        compileCmdIdx < numCmds; compileCmdIdx++)
+    for (auto &compileCommand : compileCommands)
     {
-        if (chdir(compileCommands[compileCmdIdx].second.Directory.c_str()))
+        debug::emit("Compiling ");
+        debug::emit(compileCommand.first.c_str());
+        if (chdir(compileCommand.second.Directory.c_str()))
         {
             throw oclint::GenericException("Cannot change dictionary into \"" +
-                compileCommands[compileCmdIdx].second.Directory + "\", "
+                compileCommand.second.Directory + "\", "
                 "please make sure the directory exists and you have permission to access!");
         }
         clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(mainExecutable,
-            compileCommands[compileCmdIdx].second.CommandLine);
+            compileCommand.second.CommandLine);
         clang::FileManager *fileManager = newFileManager();
         oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation, fileManager);
 
         compiler->start();
         if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
         {
-            debug::emit(".");
+            debug::emit(" - Success");
             compilers.push_back(compiler);
             fileManagers.push_back(fileManager);
         }
         else
         {
-            debug::emit("X");
+            debug::emit(" - Failed");
         }
+        debug::emit("\n");
     }
-    debug::emit("\n");
 }
 
 static void invokeClangStaticAnalyzer(
-    std::vector<std::pair<std::string, clang::tooling::CompileCommand> > &compileCommands,
+    CompileCommandPairs &compileCommands,
     std::string &mainExecutable)
 {
-    debug::emit("Start code analysis by Clang Static Analyzer:\n");
-    for (unsigned compileCmdIdx = 0, numCmds = compileCommands.size();
-        compileCmdIdx < numCmds; compileCmdIdx++)
+    for (auto &compileCommand : compileCommands)
     {
-        if (chdir(compileCommands[compileCmdIdx].second.Directory.c_str()))
+        debug::emit("Clang Static Analyzer ");
+        debug::emit(compileCommand.first.c_str());
+        if (chdir(compileCommand.second.Directory.c_str()))
         {
             throw oclint::GenericException("Cannot change dictionary into \"" +
-                compileCommands[compileCmdIdx].second.Directory + "\", "
+                compileCommand.second.Directory + "\", "
                 "please make sure the directory exists and you have permission to access!");
         }
         clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(mainExecutable,
-            compileCommands[compileCmdIdx].second.CommandLine, true);
+            compileCommand.second.CommandLine, true);
         clang::FileManager *fileManager = newFileManager();
         oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation,
             fileManager, true);
@@ -309,29 +311,22 @@ static void invokeClangStaticAnalyzer(
         compiler->start();
         if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
         {
-            debug::emit(".");
+            debug::emit(" - Done");
         }
         else
         {
-            debug::emit("X");
+            debug::emit(" - Finished with Failure");
         }
         compiler->end();
         compiler->resetAndLeakFileManager();
         fileManager->clearStatCaches();
+        debug::emit("\n");
     }
-    debug::emit("\n");
 }
 
-void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
-    llvm::ArrayRef<std::string> sourcePaths,
-    oclint::Analyzer &analyzer)
+static void invoke(CompileCommandPairs &compileCommands,
+    std::string &mainExecutable, oclint::Analyzer &analyzer)
 {
-    std::vector<std::pair<std::string, clang::tooling::CompileCommand> > compileCommands;
-    constructCompileCommands(compileCommands, compilationDatabase, sourcePaths);
-
-    static int staticSymbol;
-    std::string mainExecutable = llvm::sys::fs::getMainExecutable("oclint", &staticSymbol);
-
     std::vector<oclint::CompilerInstance *> compilers;
     std::vector<clang::FileManager *> fileManagers;
     constructCompilersAndFileManagers(compilers, fileManagers, compileCommands, mainExecutable);
@@ -356,6 +351,29 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
         fileManagers.at(compilerIndex)->clearStatCaches();
         delete compilers.at(compilerIndex);
         delete fileManagers.at(compilerIndex);
+    }
+}
+
+void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
+    llvm::ArrayRef<std::string> sourcePaths, oclint::Analyzer &analyzer)
+{
+    CompileCommandPairs compileCommands;
+    constructCompileCommands(compileCommands, compilationDatabase, sourcePaths);
+
+    static int staticSymbol;
+    std::string mainExecutable = llvm::sys::fs::getMainExecutable("oclint", &staticSymbol);
+
+    if (option::enableGlobalAnalysis())
+    {
+        invoke(compileCommands, mainExecutable, analyzer);
+    }
+    else
+    {
+        for (auto &compileCommand : compileCommands)
+        {
+            CompileCommandPairs oneCompileCommand { compileCommand };
+            invoke(oneCompileCommand, mainExecutable, analyzer);
+        }
     }
 
     if (option::enableClangChecker())

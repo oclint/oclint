@@ -25,6 +25,7 @@ public:
     RuleCarrier(clang::ASTContext *astContext, ViolationSet *violationSet);
     clang::ASTContext* getASTContext();
     clang::SourceManager& getSourceManager();
+    std::string getMainFilePath();
     clang::TranslationUnitDecl* getTranslationUnitDecl();
 
     void addViolation(std::string filePath, int startLine, int startColumn,
