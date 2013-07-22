@@ -66,7 +66,8 @@ public:
             << rule->priority() << "</td><td>" << violation.message << "</td></tr>";
     }
 
-    void writeCompilerErrorOrWarning(std::ostream &out, const Violation &violation, std::string level)
+    void writeCompilerErrorOrWarning(std::ostream &out,
+        const Violation &violation, std::string level)
     {
         out << "<tr><td>" << violation.path << "</td><td>" << violation.startLine
             << ":" << violation.startColumn << "</td>";
