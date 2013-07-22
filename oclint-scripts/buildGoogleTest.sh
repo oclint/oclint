@@ -6,13 +6,26 @@ PROJECT_ROOT="$CWD/.."
 GOOGLE_TEST_SRC="$PROJECT_ROOT/googletest"
 GOOGLE_TEST_BUILD="$PROJECT_ROOT/build/googletest"
 
+EXTRA=
+#EXTRA="-D CMAKE_CXX_COMPILER=$LLVM_BUILD/bin/clang++ -D CMAKE_C_COMPILER=$LLVM_BUILD/bin/clang"
+GENERATOR_FLAG=
+GENERATOR=
+
+OS=$(uname -s)
+if [[ "$OS" =~ MINGW32 ]]; then
+    GENERATOR_FLAG="-G"
+    GENERATOR="MSYS Makefiles"
+    # use default compiler (g++)
+    EXTRA="-D gtest_disable_pthreads:BOOL=ON"
+fi
+
 # create directory and prepare for build
-mkdir -p $GOOGLE_TEST_BUILD
-cd $GOOGLE_TEST_BUILD
+mkdir -p "$GOOGLE_TEST_BUILD"
+cd "$GOOGLE_TEST_BUILD"
 
 # configure and build
-cmake $GOOGLE_TEST_SRC
+cmake $EXTRA "$GOOGLE_TEST_SRC" "$GENERATOR_FLAG" "$GENERATOR"
 make
 
 # back to the current folder
-cd $CWD
+cd "$CWD"
