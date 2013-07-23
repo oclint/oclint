@@ -43,12 +43,11 @@ public:
 
     bool VisitSwitchStmt(SwitchStmt *switchStmt)
     {
-        vector<LabelStmt*> *labels = new vector<LabelStmt*>();
+        vector<LabelStmt*> labels;
         ExtractLabelStmts extractLabelStmts;
-        extractLabelStmts.extract(switchStmt, labels);
-        for (int index = 0; index < labels->size(); index++)
+        extractLabelStmts.extract(switchStmt, &labels);
+        for (const auto& labelStmt : labels)
         {
-            LabelStmt *labelStmt = labels->at(index);
             addViolation(labelStmt, this);
         }
 

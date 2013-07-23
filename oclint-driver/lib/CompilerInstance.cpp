@@ -78,8 +78,7 @@ void CompilerInstance::start()
 
     getTarget().setForcedLangOptions(getLangOpts());
 
-    for (unsigned inputIdx = 0, numInputs = getFrontendOpts().Inputs.size();
-        inputIdx != numInputs; ++inputIdx)
+    for (const auto& input : getFrontendOpts().Inputs)
     {
         if (hasSourceManager())
         {
@@ -87,7 +86,7 @@ void CompilerInstance::start()
         }
 
         clang::FrontendAction *frontendAction = getFrontendAction();
-        frontendAction->BeginSourceFile(*this, getFrontendOpts().Inputs[inputIdx]);
+        frontendAction->BeginSourceFile(*this, input);
         frontendAction->Execute();
         _actions.push_back(frontendAction);
     }
@@ -95,9 +94,9 @@ void CompilerInstance::start()
 
 void CompilerInstance::end()
 {
-    for (unsigned actionIdx = 0, numActions = _actions.size(); actionIdx != numActions; ++actionIdx)
+    for (const auto& action : _actions)
     {
-        _actions.at(actionIdx)->EndSourceFile();
+        action->EndSourceFile();
     }
 
     getDiagnostics().getClient()->finish();

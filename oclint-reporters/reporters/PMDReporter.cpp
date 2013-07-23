@@ -16,15 +16,11 @@ public:
     virtual void report(Results *results, std::ostream &out)
     {
         writeHeader(out, Version::identifier());
-
-        std::vector<Violation> violationSet = results->allViolations();
-        for (int index = 0, numberOfViolations = violationSet.size();
-            index < numberOfViolations; index++)
+        for (const auto& violation : results->allViolations())
         {
-            writeViolation(out, violationSet.at(index));
+            writeViolation(out, violation);
             out << std::endl;
         }
-
         writeFooter(out);
     }
 
@@ -39,7 +35,7 @@ public:
         out << "</pmd>";
     }
 
-    void writeViolation(std::ostream &out, Violation &violation)
+    void writeViolation(std::ostream &out, const Violation &violation)
     {
         out << "<file name=\"" << violation.path << "\">" << std::endl;
         out << "<violation ";
