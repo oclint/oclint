@@ -12,6 +12,7 @@ SUCCESS=0
 EXTRA="-D CMAKE_CXX_COMPILER=$LLVM_BUILD/bin/clang++ -D CMAKE_C_COMPILER=$LLVM_BUILD/bin/clang"
 GENERATOR_FLAG=
 GENERATOR=
+HAS_LCOV=1
 
 OS=$(uname -s)
 if [[ "$OS" =~ MINGW32 ]]; then
@@ -19,6 +20,7 @@ if [[ "$OS" =~ MINGW32 ]]; then
     GENERATOR="MSYS Makefiles"
     # use default compiler (g++)
     EXTRA=
+    HAS_LCOV=0
 fi
 
 # clean test directory
@@ -51,7 +53,7 @@ if [ $SUCCESS -eq 0 ]; then
     fi
     cat "$OCLINT_CORE_BUILD"/testresults.txt
 fi
-if [ $SUCCESS -eq 0 ]; then
+if [ $SUCCESS -eq 0 ] && [ $HAS_LCOV -eq 1 ]; then
     lcov -b . -d . -c -o $OCLINT_CORE_BUILD/output.lcov
     lcov -e $OCLINT_CORE_BUILD/output.lcov "*oclint-core*" -o $OCLINT_CORE_BUILD/output.lcov
     lcov -r $OCLINT_CORE_BUILD/output.lcov "*test*" -o $OCLINT_CORE_BUILD/output.lcov

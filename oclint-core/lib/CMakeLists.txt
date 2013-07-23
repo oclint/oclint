@@ -11,6 +11,9 @@ ADD_LIBRARY(OCLintRuleSet SHARED
     RuleConfiguration.cpp
     RuleSet.cpp
     )
+  IF(TEST_BUILD)
+    target_link_libraries (OCLintRuleSet --coverage)
+  ENDIF()
 ELSE()
 ADD_LIBRARY(OCLintRuleSet
     RuleConfiguration.cpp
