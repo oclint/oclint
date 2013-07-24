@@ -8,6 +8,9 @@ void testRuleOnCode(const Twine &fileName,
     int expectEndColumn,
     const string& expectMessage = "")
 {
+    singleLineMapping.clear();
+    rangeMapping.clear();
+
     ViolationSet *violationSet = new ViolationSet();
     TestProcessor *processor = new TestProcessor(rule, violationSet);
     FrontendAction *action = new TestFrontendAction(processor);

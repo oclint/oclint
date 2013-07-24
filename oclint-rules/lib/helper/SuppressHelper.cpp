@@ -1,5 +1,6 @@
+#include <map>
+#include <set>
 #include <utility>
-#include <vector>
 
 #include <clang/AST/Attr.h>
 #include <clang/AST/RecursiveASTVisitor.h>
@@ -64,15 +65,17 @@ bool shouldSuppress(const clang::Stmt *stmt, clang::ASTContext &context, oclint:
     return markedParentsAsSuppress(*stmt, context, rule);
 }
 
+typedef std::set<std::pair<int, int> > RangeSet;
+
 class DeclAnnotationRangeCollector : public clang::RecursiveASTVisitor<DeclAnnotationRangeCollector>
 {
 private:
     oclint::RuleBase *_rule;
     clang::SourceManager *_sourceManager;
-    std::vector<std::pair<int, int> > _range;
+    RangeSet _range;
 
 public:
-    std::vector<std::pair<int, int> > collect(clang::ASTContext &astContext, oclint::RuleBase *rule)
+    RangeSet collect(clang::ASTContext &astContext, oclint::RuleBase *rule)
     {
         _rule = rule;
         _sourceManager = &astContext.getSourceManager();
@@ -102,37 +105,67 @@ public:
             clang::SourceLocation endLocation = decl->getLocEnd();
             unsigned startLineNumber = _sourceManager->getPresumedLineNumber(startLocation);
             unsigned endLineNumber = _sourceManager->getPresumedLineNumber(endLocation);
-            _range.push_back(std::make_pair(startLineNumber, endLineNumber));
+            _range.insert(std::make_pair(startLineNumber, endLineNumber));
         }
 
         return true;
     }
 };
 
+// TODO: use unordered_map and unordered_set instead
+typedef std::map<clang::ASTContext*, std::set<int> > LineMap;
+typedef std::map<clang::ASTContext*, RangeSet> RangeMap;
+static LineMap singleLineMapping;
+static RangeMap rangeMapping;
+
 bool shouldSuppress(int beginLine, clang::ASTContext &context, oclint::RuleBase *rule)
 {
-    clang::RawCommentList commentList = context.getRawCommentList();
-    clang::ArrayRef<clang::RawComment *> commentArray = commentList.getComments();
-
-    // TODO: Big-O is very high by iterating the entire comment set every time!!!
-    for (clang::ArrayRef<clang::RawComment *>::iterator it = commentArray.begin(),
-        itEnd = commentArray.end(); it != itEnd; it++)
+    LineMap::iterator commentLinesIt = singleLineMapping.find(&context);
+    std::set<int> commentLines;
+    if (commentLinesIt == singleLineMapping.end())
     {
-        clang::RawComment *comment = *it;
-        if (beginLine == comment->getBeginLine(context.getSourceManager()) &&
-            std::string::npos != comment->getRawText(context.getSourceManager()).find("//!OCLINT"))
+        clang::RawCommentList commentList = context.getRawCommentList();
+        clang::ArrayRef<clang::RawComment *> commentArray = commentList.getComments();
+
+        for (clang::ArrayRef<clang::RawComment *>::iterator it = commentArray.begin(),
+            itEnd = commentArray.end(); it != itEnd; it++)
         {
-            return true;
+            clang::RawComment *comment = *it;
+            if (std::string::npos !=
+                comment->getRawText(context.getSourceManager()).find("//!OCLINT"))
+            {
+                commentLines.insert(comment->getBeginLine(context.getSourceManager()));
+            }
         }
+        singleLineMapping[&context] = commentLines;
+    }
+    else
+    {
+        commentLines = commentLinesIt->second;
+    }
+
+    if (commentLines.find(beginLine) != commentLines.end())
+    {
+        return true;
     }
 
     if (rule)
     {
-        // TODO: The algorithm also needs to be improved!!!
-        DeclAnnotationRangeCollector annotationCollector;
-        std::vector<std::pair<int, int> > annotationRanges = annotationCollector.collect(context, rule);
-        for (std::vector<std::pair<int, int> >::iterator it = annotationRanges.begin(),
-            itEnd = annotationRanges.end(); it != itEnd; ++it)
+        RangeMap::iterator commentRangesIt = rangeMapping.find(&context);
+        RangeSet commentRanges;
+        if (commentRangesIt == rangeMapping.end())
+        {
+            DeclAnnotationRangeCollector annotationCollector;
+            commentRanges = annotationCollector.collect(context, rule);
+            rangeMapping[&context] = commentRanges;
+        }
+        else
+        {
+            commentRanges = commentRangesIt->second;
+        }
+
+        for (RangeSet::iterator it = commentRanges.begin(),
+            itEnd = commentRanges.end(); it != itEnd; ++it)
         {
             std::pair<int, int> range = *it;
             if (beginLine >= range.first && beginLine <= range.second)

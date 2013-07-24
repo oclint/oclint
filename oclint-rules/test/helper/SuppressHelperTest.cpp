@@ -116,6 +116,16 @@ TEST(SuppressHelperTestASTRuleTest, CommentWithDescriptionNOLINT)
     testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLINT     ");
 }
 
+TEST(SuppressHelperTestASTRuleTest, VerifySuppressCache)
+{
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLINT");
+    EXPECT_THAT(singleLineMapping.size(), Eq(1));
+    EXPECT_THAT(rangeMapping.size(), Eq(0));
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void __attribute__((annotate(\"oclint:suppress\"))) a() { int i = 1; }");
+    EXPECT_THAT(singleLineMapping.size(), Eq(0));
+    EXPECT_THAT(rangeMapping.size(), Eq(0));
+}
+
 class SuppressHelperTestSourceCodeReaderRule : public AbstractSourceCodeReaderRule
 {
 public:
@@ -168,6 +178,16 @@ TEST(SuppressHelperTestSourceCodeReaderRuleTest, ObjCContainerSuppressOnAtInterf
 {
     testRuleOnObjCCode(new SuppressHelperTestSourceCodeReaderRule(),
         "__attribute__((annotate(\"oclint:suppress\"))) @interface a {\nint i;\n}\n@end");
+}
+
+TEST(SuppressHelperTestSourceCodeReaderRuleTest, VerifySuppressCache)
+{
+    testRuleOnCode(new SuppressHelperTestSourceCodeReaderRule(), "void a() {} //!OCLINT");
+    EXPECT_THAT(singleLineMapping.size(), Eq(1));
+    EXPECT_THAT(rangeMapping.size(), Eq(0));
+    testRuleOnCode(new SuppressHelperTestSourceCodeReaderRule(), "void __attribute__((annotate(\"oclint:suppress\"))) a()\n{\nint i = 1;\n}\n");
+    EXPECT_THAT(singleLineMapping.size(), Eq(1));
+    EXPECT_THAT(rangeMapping.size(), Eq(1));
 }
 
 int main(int argc, char **argv)

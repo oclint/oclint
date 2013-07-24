@@ -21,5 +21,12 @@ using namespace clang::tooling;
 
 using namespace oclint;
 
+#define OCLINT_HELPER_SUPPRESSHELPER_H
+#include <clang/AST/AST.h>
+bool shouldSuppress(const clang::Decl *decl, clang::ASTContext &context, oclint::RuleBase *rule);
+bool shouldSuppress(const clang::Stmt *stmt, clang::ASTContext &context, oclint::RuleBase *rule);
+bool shouldSuppress(int beginLine, clang::ASTContext &context, oclint::RuleBase *rule = NULL);
+#include "lib/helper/SuppressHelper.cpp"
+
 #include "TestEngine.h"
 #include "TestRuleOnCode.h"
