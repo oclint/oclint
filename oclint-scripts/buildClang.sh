@@ -8,7 +8,6 @@ LLVM_BUILD="$PROJECT_ROOT/build/llvm"
 LLVM_INSTALL="$PROJECT_ROOT/build/llvm-install"
 
 EXTRA=
-#EXTRA="-D CMAKE_CXX_COMPILER=$LLVM_BUILD/bin/clang++ -D CMAKE_C_COMPILER=$LLVM_BUILD/bin/clang"
 GENERATOR_FLAG=
 GENERATOR=
 
@@ -16,7 +15,6 @@ OS=$(uname -s)
 if [[ "$OS" =~ MINGW32 ]]; then
     GENERATOR_FLAG="-G"
     GENERATOR="MSYS Makefiles"
-    # use default compiler (g++)
     # Compiler_RT may not compile on windows, so disable it
     EXTRA="-D LLVM_EXTERNAL_COMPILER_RT_BUILD:BOOL=OFF"
 fi
