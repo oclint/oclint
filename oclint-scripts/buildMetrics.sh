@@ -9,12 +9,10 @@ OCLINT_METRICS_SRC="$PROJECT_ROOT/oclint-metrics"
 OCLINT_METRICS_BUILD="$PROJECT_ROOT/build/oclint-metrics"
 
 EXTRA="-D CMAKE_CXX_COMPILER=$LLVM_BUILD/bin/clang++ -D CMAKE_C_COMPILER=$LLVM_BUILD/bin/clang"
-GENERATOR_FLAG=
 GENERATOR=
 
 OS=$(uname -s)
 if [[ "$OS" =~ MINGW32 ]]; then
-    GENERATOR_FLAG="-G"
     GENERATOR="MSYS Makefiles"
     # use default compiler (g++)
     EXTRA=
@@ -37,7 +35,7 @@ mkdir -p "$OCLINT_METRICS_BUILD"
 cd "$OCLINT_METRICS_BUILD"
 
 # configure and build
-cmake $RELEASE_CONFIG $EXTRA -D LLVM_ROOT="$LLVM_BUILD" "$OCLINT_METRICS_SRC" "$GENERATOR_FLAG" "$GENERATOR"
+cmake $RELEASE_CONFIG $EXTRA -D LLVM_ROOT="$LLVM_BUILD" "$OCLINT_METRICS_SRC" ${GENERATOR:+-G "$GENERATOR"}
 make
 
 # back to the current folder

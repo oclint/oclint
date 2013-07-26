@@ -8,12 +8,10 @@ LLVM_BUILD="$PROJECT_ROOT/build/llvm"
 LLVM_INSTALL="$PROJECT_ROOT/build/llvm-install"
 
 EXTRA=
-GENERATOR_FLAG=
 GENERATOR=
 
 OS=$(uname -s)
 if [[ "$OS" =~ MINGW32 ]]; then
-    GENERATOR_FLAG="-G"
     GENERATOR="MSYS Makefiles"
     # Compiler_RT may not compile on windows, so disable it
     EXTRA="-D LLVM_EXTERNAL_COMPILER_RT_BUILD:BOOL=OFF"
@@ -48,7 +46,7 @@ if [ "$CPU_CORES" = "" ]; then
 fi
 
 # configure and build
-cmake $RELEASE_CONFIG -D CMAKE_INSTALL_PREFIX="$LLVM_INSTALL" "$LLVM_SRC" "$GENERATOR_FLAG" "$GENERATOR"
+cmake $RELEASE_CONFIG -D CMAKE_INSTALL_PREFIX="$LLVM_INSTALL" "$LLVM_SRC" ${GENERATOR:+-G "$GENERATOR"}
 make -j $CPU_CORES
 make install
 
