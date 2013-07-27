@@ -192,6 +192,15 @@ void caller() { callBlock(^(int number) {}); }");
 }
 #endif
 
+/*
+ * because template function won't be compiled until it's actually being used
+ * so we will discard variables inside a template function
+ */
+TEST(UnusedLocalVariableRuleTest, IgnoreUnusedParameterInTemplateFunction)
+{
+    testRuleOnCXXCode(new UnusedMethodParameterRule(), "template <typename T> int m(int i) { return 0; }");
+}
+
 TEST(UnusedMethodParameterRuleTest, UnusedLocalVariableShouldBeIgnoredInThisRule)
 {
     testRuleOnCode(new UnusedMethodParameterRule(), "int aMethod() { int a; return 0; }");
