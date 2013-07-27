@@ -64,7 +64,7 @@ public:
 
     bool VisitSwitchStmt(SwitchStmt *switchStmt)
     {
-        CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(switchStmt->getBody());
+        CompoundStmt *compoundStmt = dyn_cast_or_null<CompoundStmt>(switchStmt->getBody());
         if (compoundStmt)
         {
             bool breakFound = true;

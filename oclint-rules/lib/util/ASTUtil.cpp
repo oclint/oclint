@@ -42,15 +42,19 @@ bool isObjCMethodDeclLocatedInInterfaceContainer(clang::ObjCMethodDecl *decl)
     if (decl)
     {
         clang::DeclContext *context = decl->getDeclContext();
-        return clang::isa<clang::ObjCInterfaceDecl>(context) ||
+        return context && (clang::isa<clang::ObjCInterfaceDecl>(context) ||
             clang::isa<clang::ObjCProtocolDecl>(context) ||
-            clang::isa<clang::ObjCCategoryDecl>(context);
+            clang::isa<clang::ObjCCategoryDecl>(context));
     }
     return false;
 }
 
 bool isCppMethodDeclLocatedInCppRecordDecl(clang::CXXMethodDecl *decl)
 {
-  return decl && (!decl->hasBody() ||
-    clang::isa<clang::CXXRecordDecl>(decl->getLexicalDeclContext()));
+    if (decl)
+    {
+        clang::DeclContext *context = decl->getLexicalDeclContext();
+        return !decl->hasBody() || (context && clang::isa<clang::CXXRecordDecl>(context));
+    }
+    return false;
 }

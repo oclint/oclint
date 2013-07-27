@@ -7,7 +7,7 @@ class AbstractEmptyBlockStmtRule : public oclint::AbstractASTVisitorRule<T>
 protected:
     bool isLexicalEmpty(clang::Stmt *stmt)
     {
-        clang::CompoundStmt *compoundStmt = clang::dyn_cast<clang::CompoundStmt>(stmt);
+        clang::CompoundStmt *compoundStmt = clang::dyn_cast_or_null<clang::CompoundStmt>(stmt);
         return clang::isa<clang::NullStmt>(stmt) || (compoundStmt && compoundStmt->body_empty());
     }
 

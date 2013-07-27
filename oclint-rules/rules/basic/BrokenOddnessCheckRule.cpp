@@ -12,13 +12,13 @@ private:
 
     bool isIntegerLiteral(Expr *expr, int value)
     {
-        IntegerLiteral *integerLiteral = dyn_cast<IntegerLiteral>(expr);
+        IntegerLiteral *integerLiteral = dyn_cast_or_null<IntegerLiteral>(expr);
         return integerLiteral && integerLiteral->getValue() == value;
     }
 
     bool isRemainderWhenDevidingByTwo(Expr *expr)
     {
-        BinaryOperator *binaryOperator = dyn_cast<BinaryOperator>(expr);
+        BinaryOperator *binaryOperator = dyn_cast_or_null<BinaryOperator>(expr);
         return binaryOperator &&
             binaryOperator->getOpcode() == BO_Rem && isIntegerLiteral(binaryOperator->getRHS(), 2);
     }

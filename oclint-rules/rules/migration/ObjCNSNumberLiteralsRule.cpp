@@ -12,15 +12,20 @@ private:
 
     bool isCharLiteral(Expr *expr, string &selectorString)
     {
-        return selectorString == "numberWithChar:" && isa<ImplicitCastExpr>(expr) &&
-            isa<CharacterLiteral>(dyn_cast<ImplicitCastExpr>(expr)->getSubExpr());
+        if (selectorString == "numberWithChar:" && expr && isa<ImplicitCastExpr>(expr))
+        {
+            ImplicitCastExpr *implicitCastExpr = dyn_cast<ImplicitCastExpr>(expr);
+            Expr *subExpr = implicitCastExpr->getSubExpr();
+            return subExpr && isa<CharacterLiteral>(subExpr);
+        }
+        return false;
     }
 
     template <typename T>
     bool isLiteralOf(Expr *expr, string &selectorString, map<string, string> &methodArgTypeMap)
     {
         map<string, string>::iterator selectedSelector = methodArgTypeMap.find(selectorString);
-        return isa<T>(expr) &&
+        return expr && isa<T>(expr) &&
             selectedSelector != methodArgTypeMap.end() &&
             selectedSelector->second == expr->getType().getAsString();
     }
@@ -29,11 +34,11 @@ private:
     {
         if (selectorString == "numberWithBool:")
         {
-            if (isa<ObjCBoolLiteralExpr>(expr))
+            if (expr && isa<ObjCBoolLiteralExpr>(expr))
             {
                 return true;
             }
-            if (isa<ParenExpr>(expr))
+            if (expr && isa<ParenExpr>(expr))
             {
                 CStyleCastExpr *cStyleCastExpr =
                     dyn_cast<CStyleCastExpr>(dyn_cast<ParenExpr>(expr)->getSubExpr());

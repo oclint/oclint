@@ -12,8 +12,8 @@ private:
 
     bool isInvertedLogic(Expr *condExpr)
     {
-        BinaryOperator *binaryOperator = dyn_cast<BinaryOperator>(condExpr);
-        UnaryOperator *unaryOperator = dyn_cast<UnaryOperator>(condExpr);
+        BinaryOperator *binaryOperator = dyn_cast_or_null<BinaryOperator>(condExpr);
+        UnaryOperator *unaryOperator = dyn_cast_or_null<UnaryOperator>(condExpr);
         return (binaryOperator && binaryOperator->getOpcode() == BO_NE) ||
             (unaryOperator && unaryOperator->getOpcode() == UO_LNot);
     }
