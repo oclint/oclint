@@ -16,18 +16,17 @@ private:
         ReturnStmt *returnStmt = dyn_cast<ReturnStmt>(lastStmt);
         if (returnStmt)
         {
-            Expr *returnValue = returnStmt->getRetValue();
-            if (returnValue)
+            ImplicitCastExpr *implicitCastExpr =
+                dyn_cast_or_null<ImplicitCastExpr>(returnStmt->getRetValue());
+            if (implicitCastExpr)
             {
-                ImplicitCastExpr *implicitCastExpr = dyn_cast<ImplicitCastExpr>(returnValue);
-                if (implicitCastExpr)
+                DeclRefExpr *returnExpr =
+                    dyn_cast_or_null<DeclRefExpr>(implicitCastExpr->getSubExpr());
+                if (returnExpr)
                 {
-                    DeclRefExpr *returnExpr = dyn_cast<DeclRefExpr>(implicitCastExpr->getSubExpr());
-                    if (returnExpr)
-                    {
-                        return returnExpr->getFoundDecl();
-                    }
+                    return returnExpr->getFoundDecl();
                 }
+
             }
         }
         return NULL;

@@ -34,12 +34,12 @@ public:
     bool VisitUnaryOperator(UnaryOperator *unaryOperator)
     {
         Expr *subExpr = unaryOperator->getSubExpr();
-        while (isa<ParenExpr>(subExpr))
+        while (subExpr && isa<ParenExpr>(subExpr))
         {
             ParenExpr *parenExpr = dyn_cast<ParenExpr>(subExpr);
             subExpr = parenExpr->getSubExpr();
         }
-        if (isa<UnaryOperator>(subExpr))
+        if (subExpr && isa<UnaryOperator>(subExpr))
         {
             UnaryOperator *subUnaryOperator = dyn_cast<UnaryOperator>(subExpr);
             if (bothUOLNot(unaryOperator, subUnaryOperator) ||

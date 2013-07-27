@@ -17,13 +17,14 @@ private:
 
     IfStmt *getInnerIfStmt(IfStmt *ifStmt)
     {
-        if (isa<IfStmt>(ifStmt->getThen()))
+        Stmt *thenStmt = ifStmt->getThen();
+        if (thenStmt && isa<IfStmt>(thenStmt))
         {
-            return dyn_cast<IfStmt>(ifStmt->getThen());
+            return dyn_cast<IfStmt>(thenStmt);
         }
-        if (isa<CompoundStmt>(ifStmt->getThen()))
+        if (thenStmt && isa<CompoundStmt>(thenStmt))
         {
-            CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(ifStmt->getThen());
+            CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(thenStmt);
             if (compoundStmtContainsOnlyOneIfStmt(compoundStmt))
             {
                 return dyn_cast<IfStmt>(*(compoundStmt->body_begin()));

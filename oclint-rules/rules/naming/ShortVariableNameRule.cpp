@@ -42,14 +42,10 @@ public:
 
     bool VisitForStmt(ForStmt *forStmt)
     {
-        Stmt *initStmt = forStmt->getInit();
-        if (initStmt)
+        DeclStmt *declStmt = dyn_cast_or_null<DeclStmt>(forStmt->getInit());
+        if (declStmt && declStmt->isSingleDecl())
         {
-            DeclStmt *declStmt = dyn_cast<DeclStmt>(initStmt);
-            if (declStmt && declStmt->isSingleDecl())
-            {
-                _suppressVarDecl = dyn_cast<VarDecl>(declStmt->getSingleDecl());
-            }
+            _suppressVarDecl = dyn_cast<VarDecl>(declStmt->getSingleDecl());
         }
 
         return true;

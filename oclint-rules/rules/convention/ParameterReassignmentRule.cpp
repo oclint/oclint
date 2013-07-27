@@ -24,10 +24,10 @@ class ParameterReassignmentRule : public AbstractASTVisitorRule<ParameterReassig
 
         bool VisitBinaryOperator(BinaryOperator *binaryOperator)
         {
-            if (binaryOperator->getOpcode() == BO_Assign &&
-                isa<DeclRefExpr>(binaryOperator->getLHS()))
+            Expr *leftExpr = binaryOperator->getLHS();
+            if (binaryOperator->getOpcode() == BO_Assign && leftExpr && isa<DeclRefExpr>(leftExpr))
             {
-                DeclRefExpr *declRefExpr = dyn_cast<DeclRefExpr>(binaryOperator->getLHS());
+                DeclRefExpr *declRefExpr = dyn_cast<DeclRefExpr>(leftExpr);
                 for (int index = 0; index < _names.size(); index++)
                 {
                     if (declRefExpr->getFoundDecl()->getNameAsString() == _names.at(index))
