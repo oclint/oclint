@@ -7,12 +7,8 @@ class AbstractNullCheckRule : public oclint::AbstractASTVisitorRule<T>
 protected:
     bool isNullToPointer(clang::Expr *expr)
     {
-        if (!expr)
-        {
-            return false;
-        }
-
-        clang::ImplicitCastExpr *implicitCastExpr = clang::dyn_cast<clang::ImplicitCastExpr>(expr);
+        clang::ImplicitCastExpr *implicitCastExpr =
+            clang::dyn_cast_or_null<clang::ImplicitCastExpr>(expr);
         if (implicitCastExpr)
         {
             clang::CastKind castKind = implicitCastExpr->getCastKind();
@@ -28,13 +24,9 @@ protected:
                     clang::ParenExpr *parenExpr = clang::dyn_cast<clang::ParenExpr>(subExpr);
                     subExpr = parenExpr->getSubExpr();
                 }
-                if (subExpr && clang::isa<clang::CStyleCastExpr>(subExpr))
-                {
-                    clang::CStyleCastExpr *cStyleCastExpr =
-                        clang::dyn_cast<clang::CStyleCastExpr>(subExpr);
-                    return cStyleCastExpr->getCastKind() == clang::CK_NullToPointer;
-                }
-
+                clang::CStyleCastExpr *cStyleCastExpr =
+                    clang::dyn_cast_or_null<clang::CStyleCastExpr>(subExpr);
+                return cStyleCastExpr && cStyleCastExpr->getCastKind() == clang::CK_NullToPointer;
             }
         }
         return false;
@@ -42,12 +34,8 @@ protected:
 
     bool isImplicitDeclRef(clang::Expr *expr)
     {
-        if (!expr)
-        {
-            return false;
-        }
-
-        clang::ImplicitCastExpr *implicitCastExpr = clang::dyn_cast<clang::ImplicitCastExpr>(expr);
+        clang::ImplicitCastExpr *implicitCastExpr =
+            clang::dyn_cast_or_null<clang::ImplicitCastExpr>(expr);
         if (implicitCastExpr)
         {
             clang::CastKind castKind = implicitCastExpr->getCastKind();
@@ -66,12 +54,7 @@ protected:
 
     bool isEqNullCheck(clang::Expr *expr)
     {
-        if (!expr)
-        {
-            return false;
-        }
-
-        clang::BinaryOperator *binaryOperator = clang::dyn_cast<clang::BinaryOperator>(expr);
+        clang::BinaryOperator *binaryOperator = clang::dyn_cast_or_null<clang::BinaryOperator>(expr);
         if (binaryOperator)
         {
             return binaryOperator->getOpcode() == clang::BO_EQ &&
@@ -79,7 +62,7 @@ protected:
                 isNullToPointer(binaryOperator->getRHS());
         }
 
-        clang::UnaryOperator *unaryOperator = clang::dyn_cast<clang::UnaryOperator>(expr);
+        clang::UnaryOperator *unaryOperator = clang::dyn_cast_or_null<clang::UnaryOperator>(expr);
         if (unaryOperator && unaryOperator->getOpcode() == clang::UO_LNot)
         {
             return isImplicitDeclRef(unaryOperator->getSubExpr());
@@ -90,12 +73,8 @@ protected:
 
     bool isNeNullCheck(clang::Expr *expr)
     {
-        if (!expr)
-        {
-            return false;
-        }
-
-        clang::BinaryOperator *binaryOperator = clang::dyn_cast<clang::BinaryOperator>(expr);
+        clang::BinaryOperator *binaryOperator =
+            clang::dyn_cast_or_null<clang::BinaryOperator>(expr);
         if (binaryOperator)
         {
             return binaryOperator->getOpcode() == clang::BO_NE &&
@@ -112,21 +91,14 @@ protected:
         {
             return "";
         }
-        clang::Expr *subExpr = implicitCastExpr->getSubExpr();
-        if (subExpr)
+        if (implicitCastExpr->getCastKind() == clang::CK_PointerToBoolean)
         {
-            if (implicitCastExpr->getCastKind() == clang::CK_PointerToBoolean)
-            {
-                return extractIdentifierFromImplicitCastExpr(
-                    clang::dyn_cast<clang::ImplicitCastExpr>(subExpr));
-            }
-            clang::DeclRefExpr *declRefExpr = clang::dyn_cast<clang::DeclRefExpr>(subExpr);
-            if (declRefExpr)
-            {
-                return declRefExpr->getFoundDecl()->getNameAsString();
-            }
+            return extractIdentifierFromImplicitCastExpr(
+                clang::dyn_cast_or_null<clang::ImplicitCastExpr>(implicitCastExpr->getSubExpr()));
         }
-        return "";
+        clang::DeclRefExpr *declRefExpr =
+            clang::dyn_cast_or_null<clang::DeclRefExpr>(implicitCastExpr->getSubExpr());
+        return declRefExpr ? declRefExpr->getFoundDecl()->getNameAsString() : "";
     }
 
     std::string extractIdentifierFromBinaryOperator(clang::BinaryOperator *binaryOperator)
@@ -136,23 +108,14 @@ protected:
         {
             refExpr = binaryOperator->getRHS();
         }
-        if (refExpr)
-        {
-            return extractIdentifierFromImplicitCastExpr(
-                clang::dyn_cast<clang::ImplicitCastExpr>(refExpr));
-        }
-        return "";
+        return extractIdentifierFromImplicitCastExpr(
+            clang::dyn_cast_or_null<clang::ImplicitCastExpr>(refExpr));
     }
 
     std::string extractIdentifierFromUnaryOperator(clang::UnaryOperator *unaryOperator)
     {
-        clang::Expr *subExpr = unaryOperator->getSubExpr();
-        if (subExpr)
-        {
-            return extractIdentifierFromImplicitCastExpr(
-                clang::dyn_cast<clang::ImplicitCastExpr>(subExpr));
-        }
-        return "";
+        return extractIdentifierFromImplicitCastExpr(
+            clang::dyn_cast_or_null<clang::ImplicitCastExpr>(unaryOperator->getSubExpr()));
     }
 
     std::string extractIdentifierFromExpr(clang::Expr *expr)
@@ -195,12 +158,11 @@ protected:
 
         bool VisitMemberExpr(clang::MemberExpr *memberExpr)
         {
-            clang::Expr *exprBase = memberExpr->getBase();
-            if (memberExpr->isArrow() && exprBase)
+            if (memberExpr->isArrow())
             {
                 return _variableName !=
                     _rule->extractIdentifierFromImplicitCastExpr(
-                        clang::dyn_cast<clang::ImplicitCastExpr>(exprBase));
+                        clang::dyn_cast_or_null<clang::ImplicitCastExpr>(memberExpr->getBase()));
             }
             return true;
         }
@@ -224,14 +186,9 @@ protected:
 
         bool VisitObjCMessageExpr(clang::ObjCMessageExpr *memberExpr)
         {
-            clang::Expr *instanceReceiver = memberExpr->getInstanceReceiver();
-            if (instanceReceiver)
-            {
-                return _variableName !=
-                    _rule->extractIdentifierFromImplicitCastExpr(
-                    clang::dyn_cast<clang::ImplicitCastExpr>(instanceReceiver));
-            }
-            return true;
+            return _variableName != _rule->extractIdentifierFromImplicitCastExpr(
+                clang::dyn_cast_or_null<clang::ImplicitCastExpr>(
+                    memberExpr->getInstanceReceiver()));
         }
     };
 

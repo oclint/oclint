@@ -12,34 +12,24 @@ private:
 
     VarDecl *varDeclFromInitStmt(Stmt *initStmt)
     {
-        if (initStmt)
+        DeclStmt *declStmt = dyn_cast_or_null<DeclStmt>(initStmt);
+        if (declStmt && declStmt->isSingleDecl())
         {
-            DeclStmt *declStmt = dyn_cast<DeclStmt>(initStmt);
-            if (declStmt && declStmt->isSingleDecl())
-            {
-                Decl *singleDecl = declStmt->getSingleDecl();
-                if (singleDecl)
-                {
-                    return dyn_cast<VarDecl>(singleDecl);
-                }
-            }
+            return dyn_cast_or_null<VarDecl>(declStmt->getSingleDecl());
         }
         return NULL;
     }
 
     ValueDecl *valueDeclFromIncExpr(Expr *incExpr)
     {
-        if (incExpr)
+        UnaryOperator *unaryOperator = dyn_cast_or_null<UnaryOperator>(incExpr);
+        if (unaryOperator)
         {
-            UnaryOperator *unaryOperator = dyn_cast<UnaryOperator>(incExpr);
-            if (unaryOperator)
+            Expr *unaryOpSubExpr = unaryOperator->getSubExpr();
+            if (unaryOpSubExpr && isa<DeclRefExpr>(unaryOpSubExpr))
             {
-                Expr *unaryOpSubExpr = unaryOperator->getSubExpr();
-                if (unaryOpSubExpr && isa<DeclRefExpr>(unaryOpSubExpr))
-                {
-                    DeclRefExpr *declRefExpr = dyn_cast<DeclRefExpr>(unaryOpSubExpr);
-                    return declRefExpr->getDecl();
-                }
+                DeclRefExpr *declRefExpr = dyn_cast<DeclRefExpr>(unaryOpSubExpr);
+                return declRefExpr->getDecl();
             }
         }
         return NULL;
@@ -66,22 +56,19 @@ public:
     bool VisitForStmt(ForStmt *parentStmt)
     {
         Stmt *bodyStmt = parentStmt->getBody();
-        if (bodyStmt)
+        ForStmt *forStmt = dyn_cast_or_null<ForStmt>(bodyStmt);
+        CompoundStmt *compoundStmt = dyn_cast_or_null<CompoundStmt>(bodyStmt);
+        if (!forStmt && compoundStmt && compoundStmt->size() == 1)
         {
-            ForStmt *forStmt = dyn_cast<ForStmt>(bodyStmt);
-            CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(bodyStmt);
-            if (!forStmt && compoundStmt && compoundStmt->size() == 1)
+            forStmt = dyn_cast_or_null<ForStmt>(compoundStmt->body_back());
+        }
+        if (forStmt)
+        {
+            Stmt *initStmt = parentStmt->getInit();
+            Expr *incExpr = forStmt->getInc();
+            if (isInnerIncMatchingOuterInit(incExpr, initStmt))
             {
-                forStmt = dyn_cast<ForStmt>(compoundStmt->body_back());
-            }
-            if (forStmt)
-            {
-                Stmt *initStmt = parentStmt->getInit();
-                Expr *incExpr = forStmt->getInc();
-                if (isInnerIncMatchingOuterInit(incExpr, initStmt))
-                {
-                    addViolation(incExpr, this);
-                }
+                addViolation(incExpr, this);
             }
         }
 

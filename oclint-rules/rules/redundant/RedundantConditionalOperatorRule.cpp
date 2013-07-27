@@ -14,39 +14,26 @@ private:
     template<typename nodeType>
     nodeType* extractFromImplicitCastExpr(Expr *fromExpr)
     {
-        if (fromExpr && isa<ImplicitCastExpr>(fromExpr))
+        ImplicitCastExpr *implicitCastExpr = dyn_cast_or_null<ImplicitCastExpr>(fromExpr);
+        if (implicitCastExpr)
         {
-            Expr *subExpr = dyn_cast<ImplicitCastExpr>(fromExpr)->getSubExpr();
-            if (subExpr)
-            {
-                return dyn_cast<nodeType>(subExpr);
-            }
+            return dyn_cast_or_null<nodeType>(implicitCastExpr->getSubExpr());
         }
         return NULL;
     }
 
     bool isCXXBoolNotEquals(Expr *trueExpr, Expr *falseExpr)
     {
-        if (trueExpr && falseExpr)
-        {
-            CXXBoolLiteralExpr *trueCXXBool = dyn_cast<CXXBoolLiteralExpr>(trueExpr);
-            CXXBoolLiteralExpr *falseCXXBool = dyn_cast<CXXBoolLiteralExpr>(falseExpr);
-            return trueCXXBool && falseCXXBool &&
-                trueCXXBool->getValue() != falseCXXBool->getValue();
-        }
-        return false;
+        CXXBoolLiteralExpr *trueCXXBool = dyn_cast_or_null<CXXBoolLiteralExpr>(trueExpr);
+        CXXBoolLiteralExpr *falseCXXBool = dyn_cast_or_null<CXXBoolLiteralExpr>(falseExpr);
+        return trueCXXBool && falseCXXBool && trueCXXBool->getValue() != falseCXXBool->getValue();
     }
 
     bool isCXXBoolEquals(Expr *trueExpr, Expr *falseExpr)
     {
-        if (trueExpr && falseExpr)
-        {
-            CXXBoolLiteralExpr *trueCXXBool = dyn_cast<CXXBoolLiteralExpr>(trueExpr);
-            CXXBoolLiteralExpr *falseCXXBool = dyn_cast<CXXBoolLiteralExpr>(falseExpr);
-            return trueCXXBool && falseCXXBool &&
-                trueCXXBool->getValue() == falseCXXBool->getValue();
-        }
-        return false;
+        CXXBoolLiteralExpr *trueCXXBool = dyn_cast_or_null<CXXBoolLiteralExpr>(trueExpr);
+        CXXBoolLiteralExpr *falseCXXBool = dyn_cast_or_null<CXXBoolLiteralExpr>(falseExpr);
+        return trueCXXBool && falseCXXBool && trueCXXBool->getValue() == falseCXXBool->getValue();
     }
 
     // TODO: we need to leverage C++11 lambda expressions to reduce number of methods here
@@ -77,15 +64,12 @@ private:
         CStyleCastExpr *falseObjCBOOL = extractFromImplicitCastExpr<CStyleCastExpr>(falseExpr);
         if (trueObjCBOOL && falseObjCBOOL)
         {
-            Expr *trueSubExpr = trueObjCBOOL->getSubExpr();
-            Expr *falseSubExpr = falseObjCBOOL->getSubExpr();
-            if (trueSubExpr && falseSubExpr)
-            {
-                IntegerLiteral *trueInteger = dyn_cast<IntegerLiteral>(trueSubExpr);
-                IntegerLiteral *falseInteger = dyn_cast<IntegerLiteral>(falseSubExpr);
-                return trueInteger && falseInteger && trueInteger->getValue().getBoolValue() !=
-                    falseInteger->getValue().getBoolValue();
-            }
+            IntegerLiteral *trueInteger =
+                dyn_cast_or_null<IntegerLiteral>(trueObjCBOOL->getSubExpr());
+            IntegerLiteral *falseInteger =
+                dyn_cast_or_null<IntegerLiteral>(falseObjCBOOL->getSubExpr());
+            return trueInteger && falseInteger && trueInteger->getValue().getBoolValue() !=
+                falseInteger->getValue().getBoolValue();
         }
         return false;
     }
@@ -97,64 +81,44 @@ private:
         CStyleCastExpr *falseObjCBOOL = extractFromImplicitCastExpr<CStyleCastExpr>(falseExpr);
         if (trueObjCBOOL && falseObjCBOOL)
         {
-            Expr *trueSubExpr = trueObjCBOOL->getSubExpr();
-            Expr *falseSubExpr = falseObjCBOOL->getSubExpr();
-            if (trueSubExpr && falseSubExpr)
-            {
-                IntegerLiteral *trueInteger = dyn_cast<IntegerLiteral>(trueSubExpr);
-                IntegerLiteral *falseInteger = dyn_cast<IntegerLiteral>(falseSubExpr);
-                return trueInteger && falseInteger && trueInteger->getValue().getBoolValue() ==
-                    falseInteger->getValue().getBoolValue();
-            }
+            IntegerLiteral *trueInteger =
+                dyn_cast_or_null<IntegerLiteral>(trueObjCBOOL->getSubExpr());
+            IntegerLiteral *falseInteger =
+                dyn_cast_or_null<IntegerLiteral>(falseObjCBOOL->getSubExpr());
+            return trueInteger && falseInteger && trueInteger->getValue().getBoolValue() ==
+                falseInteger->getValue().getBoolValue();
         }
         return false;
     }
 
     bool isIntegerLiteralEquals(Expr *trueExpr, Expr *falseExpr)
     {
-        if (trueExpr && falseExpr)
-        {
-            IntegerLiteral *trueInteger = dyn_cast<IntegerLiteral>(trueExpr);
-            IntegerLiteral *falseInteger = dyn_cast<IntegerLiteral>(falseExpr);
-            return trueInteger && falseInteger &&
-                trueInteger->getValue() == falseInteger->getValue();
-        }
-        return false;
+        IntegerLiteral *trueInteger = dyn_cast_or_null<IntegerLiteral>(trueExpr);
+        IntegerLiteral *falseInteger = dyn_cast_or_null<IntegerLiteral>(falseExpr);
+        return trueInteger && falseInteger && trueInteger->getValue() == falseInteger->getValue();
     }
 
     bool isFloatingLiteralEquals(Expr *trueExpr, Expr *falseExpr)
     {
-        if (trueExpr && falseExpr)
-        {
-            FloatingLiteral *trueFloating = dyn_cast<FloatingLiteral>(trueExpr);
-            FloatingLiteral *falseFloating = dyn_cast<FloatingLiteral>(falseExpr);
-            return trueFloating && falseFloating &&
-                trueFloating->getValueAsApproximateDouble() ==
+        FloatingLiteral *trueFloating = dyn_cast_or_null<FloatingLiteral>(trueExpr);
+        FloatingLiteral *falseFloating = dyn_cast_or_null<FloatingLiteral>(falseExpr);
+        return trueFloating && falseFloating &&
+            trueFloating->getValueAsApproximateDouble() ==
                 falseFloating->getValueAsApproximateDouble();
-        }
-        return false;
     }
 
     bool isCharacterLiteralEquals(Expr *trueExpr, Expr *falseExpr)
     {
-        if (trueExpr && falseExpr)
-        {
-            CharacterLiteral *trueChar = dyn_cast<CharacterLiteral>(trueExpr);
-            CharacterLiteral *falseChar = dyn_cast<CharacterLiteral>(falseExpr);
-            return trueChar && falseChar && trueChar->getValue() == falseChar->getValue();
-        }
-        return false;
+        CharacterLiteral *trueChar = dyn_cast_or_null<CharacterLiteral>(trueExpr);
+        CharacterLiteral *falseChar = dyn_cast_or_null<CharacterLiteral>(falseExpr);
+        return trueChar && falseChar && trueChar->getValue() == falseChar->getValue();
     }
 
     bool isStringLiteralEquals(Expr *trueExpr, Expr *falseExpr)
     {
-        if (trueExpr && falseExpr)
-        {
-            StringLiteral *trueStr = extractFromImplicitCastExpr<StringLiteral>(trueExpr);
-            StringLiteral *falseStr = extractFromImplicitCastExpr<StringLiteral>(falseExpr);
-            return trueStr && falseStr && trueStr->getString().equals(falseStr->getString());
-        }
-        return false;
+        StringLiteral *trueStr = extractFromImplicitCastExpr<StringLiteral>(trueExpr);
+        StringLiteral *falseStr = extractFromImplicitCastExpr<StringLiteral>(falseExpr);
+        return trueStr && falseStr && trueStr->getString().equals(falseStr->getString());
     }
 
     bool isNotEquals(Expr *trueExpr, Expr *falseExpr)
@@ -179,11 +143,7 @@ private:
     {
         DeclRefExpr *trueDeclRef = extractFromImplicitCastExpr<DeclRefExpr>(trueExpr);
         DeclRefExpr *falseDeclRef = extractFromImplicitCastExpr<DeclRefExpr>(falseExpr);
-        if (trueDeclRef && falseDeclRef)
-        {
-            return trueDeclRef && falseDeclRef && trueDeclRef->getDecl() == falseDeclRef->getDecl();
-        }
-        return false;
+        return trueDeclRef && falseDeclRef && trueDeclRef->getDecl() == falseDeclRef->getDecl();
     }
 
 public:

@@ -30,55 +30,33 @@ private:
 
     bool isCIntegerViolated(Expr *thenExpr, Expr *elseExpr)
     {
-        if (thenExpr && elseExpr)
-        {
-            IntegerLiteral *thenInteger = dyn_cast<IntegerLiteral>(thenExpr);
-            IntegerLiteral *elseInteger = dyn_cast<IntegerLiteral>(elseExpr);
-            return thenInteger && elseInteger &&
-                thenInteger->getValue().getBoolValue() != elseInteger->getValue().getBoolValue();
-        }
-        return false;
+        IntegerLiteral *thenInteger = dyn_cast_or_null<IntegerLiteral>(thenExpr);
+        IntegerLiteral *elseInteger = dyn_cast_or_null<IntegerLiteral>(elseExpr);
+        return thenInteger && elseInteger &&
+            thenInteger->getValue().getBoolValue() != elseInteger->getValue().getBoolValue();
     }
 
     bool isCXXBoolViolated(Expr *thenExpr, Expr *elseExpr)
     {
-        if (thenExpr && elseExpr)
-        {
-            CXXBoolLiteralExpr *thenCXXBool = dyn_cast<CXXBoolLiteralExpr>(thenExpr);
-            CXXBoolLiteralExpr *elseCXXBool = dyn_cast<CXXBoolLiteralExpr>(elseExpr);
-            return thenCXXBool && elseCXXBool && thenCXXBool->getValue() != elseCXXBool->getValue();
-        }
-        return false;
+        CXXBoolLiteralExpr *thenCXXBool = dyn_cast_or_null<CXXBoolLiteralExpr>(thenExpr);
+        CXXBoolLiteralExpr *elseCXXBool = dyn_cast_or_null<CXXBoolLiteralExpr>(elseExpr);
+        return thenCXXBool && elseCXXBool && thenCXXBool->getValue() != elseCXXBool->getValue();
     }
 
     bool isObjCBOOLViolated(Expr *thenExpr, Expr *elseExpr)
     {
-        if (thenExpr && elseExpr)
-        {
-            ObjCBoolLiteralExpr *thenObjCBOOL = dyn_cast<ObjCBoolLiteralExpr>(thenExpr);
-            ObjCBoolLiteralExpr *elseObjCBOOL = dyn_cast<ObjCBoolLiteralExpr>(elseExpr);
-            return thenObjCBOOL &&
-                elseObjCBOOL && thenObjCBOOL->getValue() != elseObjCBOOL->getValue();
-        }
-        return false;
+        ObjCBoolLiteralExpr *thenObjCBOOL = dyn_cast_or_null<ObjCBoolLiteralExpr>(thenExpr);
+        ObjCBoolLiteralExpr *elseObjCBOOL = dyn_cast_or_null<ObjCBoolLiteralExpr>(elseExpr);
+        return thenObjCBOOL && elseObjCBOOL && thenObjCBOOL->getValue() != elseObjCBOOL->getValue();
     }
 
     bool isObjCIntergerLiteralBOOLViolated(Expr *thenExpr, Expr *elseExpr)
     {
-        if (thenExpr && elseExpr)
-        {
-            CStyleCastExpr *thenObjCBOOL = dyn_cast<CStyleCastExpr>(thenExpr);
-            CStyleCastExpr *elseObjCBOOL = dyn_cast<CStyleCastExpr>(elseExpr);
-            if (thenObjCBOOL && elseObjCBOOL)
-            {
-                Expr *thenSubExpr = thenObjCBOOL->getSubExpr();
-                Expr *elseSubExpr = elseObjCBOOL->getSubExpr();
-                return thenSubExpr && elseSubExpr &&
-                    isCIntegerViolated(dyn_cast<IntegerLiteral>(thenSubExpr),
-                        dyn_cast<IntegerLiteral>(elseSubExpr));
-            }
-        }
-        return false;
+        CStyleCastExpr *thenObjCBOOL = dyn_cast_or_null<CStyleCastExpr>(thenExpr);
+        CStyleCastExpr *elseObjCBOOL = dyn_cast_or_null<CStyleCastExpr>(elseExpr);
+        return thenObjCBOOL && elseObjCBOOL &&
+            isCIntegerViolated(dyn_cast_or_null<IntegerLiteral>(thenObjCBOOL->getSubExpr()),
+                dyn_cast_or_null<IntegerLiteral>(elseObjCBOOL->getSubExpr()));
     }
 
     bool isNotEquals(Expr *firstExpr, Expr *secondExpr)
