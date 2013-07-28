@@ -28,14 +28,10 @@ private:
     template <typename T>
     void applyStmt(T *stmt)
     {
-        Stmt *bodyStmt = stmt->getBody();
-        if (bodyStmt)
+        CompoundStmt *compoundStmt = dyn_cast_or_null<CompoundStmt>(stmt->getBody());
+        if (compoundStmt)
         {
-            CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(bodyStmt);
-            if (compoundStmt)
-            {
-                applyLoopCompoundStmt(compoundStmt);
-            }
+            applyLoopCompoundStmt(compoundStmt);
         }
     }
 

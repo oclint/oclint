@@ -21,6 +21,7 @@
 #include "oclint/Results.h"
 #include "oclint/RuleBase.h"
 #include "oclint/RuleSet.h"
+#include "oclint/RulesetFilter.h"
 #include "oclint/RulesetBasedAnalyzer.h"
 #include "oclint/ViolationSet.h"
 #include "oclint/Violation.h"
@@ -175,6 +176,15 @@ void disposeOutStream(ostream* out)
     }
 }
 
+void listRules()
+{
+    cerr << "Enabled rules:\n";
+    for (const std::string &ruleName : oclint::option::rulesetFilter().filteredRuleNames())
+    {
+        cerr << "- " << ruleName << "\n";
+    }
+}
+
 oclint::Reporter* reporter()
 {
     return selectedReporter;
@@ -236,7 +246,12 @@ int main(int argc, const char **argv)
         return prepareStatus;
     }
 
-    oclint::RulesetBasedAnalyzer analyzer;
+    if (oclint::option::showEnabledRules())
+    {
+        listRules();
+    }
+
+    oclint::RulesetBasedAnalyzer analyzer(oclint::option::rulesetFilter().filteredRules());
     oclint::Driver driver;
     try
     {

@@ -11,6 +11,16 @@ class UnusedMethodParameterRule : public AbstractASTVisitorRule<UnusedMethodPara
 private:
     static RuleSet rules;
 
+    bool isInNonTemplateFunction(Decl *varDecl)
+    {
+        FunctionDecl *decl = dyn_cast_or_null<FunctionDecl>(varDecl->getLexicalDeclContext());
+        if (decl)
+        {
+            return decl->getTemplatedKind() == FunctionDecl::TK_NonTemplate;
+        }
+        return true;
+    }
+
     bool isFunctionDeclaration(DeclContext *context)
     {
         FunctionDecl *decl = dyn_cast<FunctionDecl>(context);
@@ -89,7 +99,10 @@ public:
 
     bool VisitParmVarDecl(ParmVarDecl *varDecl)
     {
-        if (!varDecl->isUsed() && hasVariableName(varDecl) && !isExistingByContract(varDecl))
+        if (!varDecl->isUsed() &&
+            hasVariableName(varDecl) &&
+            isInNonTemplateFunction(varDecl) &&
+            !isExistingByContract(varDecl))
         {
             addViolation(varDecl, this);
         }

@@ -47,12 +47,11 @@ private:
         return false;
     }
 
-    bool areAllBranchesReturn(vector<IfStmt *> *ifStmts)
+    bool areAllBranchesReturn(vector<IfStmt *> &ifStmts)
     {
-        for (int index = 0; index < ifStmts->size(); index++)
+        for (const auto& ifStmt : ifStmts)
         {
-            IfStmt *thisIf = ifStmts->at(index);
-            if (!areAllBranchesReturn(thisIf->getThen()))
+            if (!areAllBranchesReturn(ifStmt->getThen()))
             {
                 return false;
             }
@@ -64,9 +63,9 @@ private:
 
     bool isIfStmtVisited(IfStmt *ifStmt)
     {
-        for (int index = 0; index < _visitedIfStmt->size(); index++)
+        for (const auto& itStmt : *_visitedIfStmt)
         {
-            if (_visitedIfStmt->at(index) == ifStmt)
+            if (itStmt == ifStmt)
             {
                 return true;
             }
@@ -94,7 +93,7 @@ public:
     {
         if (!isIfStmtVisited(ifStmt))
         {
-            vector<IfStmt *> *ifStmts = new vector<IfStmt *>();
+            vector<IfStmt *> ifStmts;
             Stmt *lastElseStmt = NULL;
             bool stopSign = false;
 
@@ -103,7 +102,7 @@ public:
 
             while (!stopSign)
             {
-                ifStmts->push_back(currentIfStmt);
+                ifStmts.push_back(currentIfStmt);
                 Stmt *elseStmt = currentIfStmt->getElse();
                 if (elseStmt && isa<IfStmt>(elseStmt))
                 {
@@ -121,9 +120,6 @@ public:
             {
                 addViolation(lastElseStmt, this);
             }
-
-            delete ifStmts;
-            ifStmts = NULL;
         }
 
         return true;

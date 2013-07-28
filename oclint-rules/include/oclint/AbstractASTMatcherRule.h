@@ -14,7 +14,7 @@ class AbstractASTMatcherRule :
     public clang::ast_matchers::MatchFinder::MatchCallback
 {
 private:
-    clang::ast_matchers::MatchFinder _finder;
+    clang::ast_matchers::MatchFinder *_finder;
 
 protected:
     virtual void run(const clang::ast_matchers::MatchFinder::MatchResult &result)
@@ -25,25 +25,32 @@ protected:
     template<typename T>
     void addMatcher(const T &nodeMatch)
     {
-        _finder.addMatcher(nodeMatch, this);
+        _finder->addMatcher(nodeMatch, this);
     }
 
 public:
     virtual void setUp()
     {
+        _finder = new clang::ast_matchers::MatchFinder();
         setUpMatcher();
     }
 
     bool VisitDecl(clang::Decl *decl)
     {
-        _finder.match(*decl, *_carrier->getASTContext());
+        _finder->match(*decl, *_carrier->getASTContext());
         return true;
     }
 
     bool VisitStmt(clang::Stmt *stmt)
     {
-        _finder.match(*stmt, *_carrier->getASTContext());
+        _finder->match(*stmt, *_carrier->getASTContext());
         return true;
+    }
+
+    virtual void tearDown()
+    {
+        delete _finder;
+        _finder = NULL;
     }
 
 public:

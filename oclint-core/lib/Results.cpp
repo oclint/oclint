@@ -44,13 +44,10 @@ void Results::add(ViolationSet *violationSet)
 std::vector<Violation> Results::allViolations()
 {
     std::vector<Violation> violations;
-    for (int setIndex = 0, numberOfSets = numberOfFiles(); setIndex < numberOfSets; setIndex++)
+    for (const auto& violationSet : *_collection)
     {
-        ViolationSet *violationSet = _collection->at(setIndex);
-        for (int index = 0, numberOfViolations = violationSet->numberOfViolations();
-            index < numberOfViolations; index++)
+        for (const auto& violation : violationSet->getViolations())
         {
-            Violation violation = violationSet->getViolations().at(index);
             violations.push_back(violation);
         }
     }
@@ -65,11 +62,8 @@ int Results::numberOfViolations()
 int Results::numberOfViolationsWithPriority(int priority)
 {
     int numViolations = 0;
-    std::vector<Violation> violationSet = allViolations();
-    for (int index = 0, numberOfViolations = violationSet.size();
-        index < numberOfViolations; index++)
+    for (const auto& violation : allViolations())
     {
-        Violation violation = violationSet.at(index);
         const RuleBase *rule = violation.rule;
         if (rule->priority() == priority)
         {
@@ -87,9 +81,8 @@ int Results::numberOfFiles()
 int Results::numberOfFilesWithViolations()
 {
     int numFiles = 0;
-    for (int setIndex = 0, numberOfSets = numberOfFiles(); setIndex < numberOfSets; setIndex++)
+    for (const auto& violationSet : *_collection)
     {
-        ViolationSet *violationSet = _collection->at(setIndex);
         if (violationSet->numberOfViolations() > 0)
         {
             numFiles++;

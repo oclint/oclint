@@ -16,20 +16,17 @@ public:
     virtual void report(Results *results, std::ostream &out)
     {
         writeHeader(out, Version::identifier());
-
-        std::vector<Violation> violationSet = results->allViolations();
-        for (int index = 0, numberOfViolations = violationSet.size();
-            index < numberOfViolations; index++)
+        for (const auto& violation : results->allViolations())
         {
-            writeViolation(out, violationSet.at(index));
+            writeViolation(out, violation);
             out << std::endl;
         }
-
         writeFooter(out);
     }
 
     void writeHeader(std::ostream &out, std::string version)
     {
+        out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
         out << "<pmd version=\"oclint-" << version << "\">";
     }
 
@@ -38,12 +35,14 @@ public:
         out << "</pmd>";
     }
 
-    void writeViolation(std::ostream &out, Violation &violation)
+    void writeViolation(std::ostream &out, const Violation &violation)
     {
         out << "<file name=\"" << violation.path << "\">" << std::endl;
         out << "<violation ";
         out << "begincolumn=\"" << violation.startColumn << "\" ";
+        out << "endcolumn=\"" << violation.endColumn << "\" ";
         out << "beginline=\"" << violation.startLine << "\" ";
+        out << "endline=\"" << violation.endLine << "\" ";
         const RuleBase *rule = violation.rule;
         out << "priority=\"" << 2 * rule->priority() - 1 << "\" ";
         out << "rule=\"" << rule->name() << "\">" << std::endl;
