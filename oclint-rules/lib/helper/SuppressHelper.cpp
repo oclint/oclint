@@ -18,7 +18,7 @@ bool markedAsSuppress(const clang::Decl *decl, oclint::RuleBase *rule)
         decl->specific_attr_begin<clang::AnnotateAttr>(),
         attrEnd = decl->specific_attr_end<clang::AnnotateAttr>();
         attr != attrEnd;
-        attr++)
+        ++attr)
     {
         clang::AnnotateAttr *annotate = clang::dyn_cast<clang::AnnotateAttr>(*attr);
         if (annotate && (annotate->getAnnotation() == "oclint:suppress" ||
@@ -82,15 +82,15 @@ public:
         _range.clear();
 
         clang::DeclContext *decl = astContext.getTranslationUnitDecl();
-        for (clang::DeclContext::decl_iterator it = decl->decls_begin(),
-            declEnd = decl->decls_end(); it != declEnd; ++it)
+        for (clang::DeclContext::decl_iterator declIt = decl->decls_begin(),
+            declEnd = decl->decls_end(); declIt != declEnd; ++declIt)
         {
-            clang::SourceLocation startLocation = (*it)->getLocStart();
+            clang::SourceLocation startLocation = (*declIt)->getLocStart();
             if (startLocation.isValid() &&
                 _sourceManager->getMainFileID() == _sourceManager->getFileID(startLocation))
             {
                 (void) /* explicitly ignore the return of this function */
-                    clang::RecursiveASTVisitor<DeclAnnotationRangeCollector>::TraverseDecl(*it);
+                    clang::RecursiveASTVisitor<DeclAnnotationRangeCollector>::TraverseDecl(*declIt);
             }
         }
 
@@ -134,10 +134,10 @@ bool lineBasedShouldSuppress(int beginLine, clang::ASTContext &context)
         clang::RawCommentList commentList = context.getRawCommentList();
         clang::ArrayRef<clang::RawComment *> commentArray = commentList.getComments();
 
-        for (clang::ArrayRef<clang::RawComment *>::iterator it = commentArray.begin(),
-            itEnd = commentArray.end(); it != itEnd; it++)
+        for (clang::ArrayRef<clang::RawComment *>::iterator commentIt = commentArray.begin(),
+            itEnd = commentArray.end(); commentIt != itEnd; ++commentIt)
         {
-            clang::RawComment *comment = *it;
+            clang::RawComment *comment = *commentIt;
             if (std::string::npos !=
                 comment->getRawText(context.getSourceManager()).find("//!OCLINT"))
             {
