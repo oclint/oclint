@@ -112,12 +112,22 @@ public:
     }
 };
 
-typedef std::unordered_map<clang::ASTContext*, std::set<int>> LineMap;
+// TODO: use the same method from RuleCarrier when it's ready
+std::string getMainFilePath(clang::ASTContext &context)
+{
+    clang::FileID mainFileId = context.getSourceManager().getMainFileID();
+    clang::SourceLocation mainSourceLocation =
+        context.getSourceManager().getLocForStartOfFile(mainFileId);
+    return context.getSourceManager().getFilename(mainSourceLocation).str();
+}
+
+typedef std::unordered_map<std::string, std::set<int>> LineMap;
 static LineMap singleLineMapping;
 
 bool lineBasedShouldSuppress(int beginLine, clang::ASTContext &context)
 {
-    LineMap::iterator commentLinesIt = singleLineMapping.find(&context);
+    std::string filePath = getMainFilePath(context);
+    LineMap::iterator commentLinesIt = singleLineMapping.find(filePath);
     std::set<int> commentLines;
     if (commentLinesIt == singleLineMapping.end())
     {
@@ -134,7 +144,7 @@ bool lineBasedShouldSuppress(int beginLine, clang::ASTContext &context)
                 commentLines.insert(comment->getBeginLine(context.getSourceManager()));
             }
         }
-        singleLineMapping[&context] = commentLines;
+        singleLineMapping[filePath] = commentLines;
     }
     else
     {
@@ -144,18 +154,19 @@ bool lineBasedShouldSuppress(int beginLine, clang::ASTContext &context)
     return commentLines.find(beginLine) != commentLines.end();
 }
 
-typedef std::unordered_map<clang::ASTContext*, RangeSet> RangeMap;
+typedef std::unordered_map<std::string, RangeSet> RangeMap;
 static RangeMap rangeMapping;
 
 bool rangeBasedShouldSuppress(int beginLine, clang::ASTContext &context, oclint::RuleBase *rule)
 {
-    RangeMap::iterator commentRangesIt = rangeMapping.find(&context);
+    std::string filePath = getMainFilePath(context);
+    RangeMap::iterator commentRangesIt = rangeMapping.find(filePath);
     RangeSet commentRanges;
     if (commentRangesIt == rangeMapping.end())
     {
         DeclAnnotationRangeCollector annotationCollector;
         commentRanges = annotationCollector.collect(context, rule);
-        rangeMapping[&context] = commentRanges;
+        rangeMapping[filePath] = commentRanges;
     }
     else
     {

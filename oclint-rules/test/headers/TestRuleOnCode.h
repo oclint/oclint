@@ -8,14 +8,19 @@ void testRuleOnCode(const Twine &fileName,
     int expectEndColumn,
     const string& expectMessage = "")
 {
-    singleLineMapping.clear();
-    rangeMapping.clear();
-
     ViolationSet *violationSet = new ViolationSet();
     TestProcessor *processor = new TestProcessor(rule, violationSet);
     FrontendAction *action = new TestFrontendAction(processor);
     Twine twine(code);
-    if (runToolOnCode(action, twine, fileName))
+
+    const std::size_t randomPrefixLength = 6;
+    std::string randomPrefix(randomPrefixLength, 0);
+    const char randomChars[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    const size_t randomCharSize = sizeof(randomChars) - 1;
+    std::generate_n(randomPrefix.begin(), randomPrefixLength,
+        [randomChars, randomCharSize]() -> char { return randomChars[ rand() % randomCharSize ]; });
+
+    if (runToolOnCode(action, twine, randomPrefix + fileName))
     {
         vector<Violation> violations = violationSet->getViolations();
         if (violationIndex < 0)
