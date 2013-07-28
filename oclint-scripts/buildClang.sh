@@ -1,6 +1,7 @@
 #! /bin/sh -e
 
 # setup environment variables
+OS=$(uname -s)
 CWD=`pwd`
 PROJECT_ROOT="$CWD/.."
 LLVM_SRC="$PROJECT_ROOT/llvm"
@@ -18,6 +19,8 @@ fi
 RELEASE_CONFIG=""
 if [ $# -eq 1 ] && [ "$1" = "release" ]; then
     RELEASE_CONFIG="-D CMAKE_BUILD_TYPE=Release"
+else
+    RELEASE_CONFIG="-D CMAKE_BUILD_TYPE=Debug"
 fi
 
 # create directory and prepare for build
@@ -28,7 +31,6 @@ if [ "$CPU_CORES" = "" ]; then
     # Default to building on all cores, but allow single core builds using:
     # "CPU_CORES=1 ./buildClang.sh release"
     CPU_CORES=1
-    OS=$(uname -s)
     if [ "$OS" = "Linux" ]; then
         CPU_CORES=$(grep -c ^processor /proc/cpuinfo)
     elif [ "$OS" = "Darwin" ]; then
@@ -37,7 +39,16 @@ if [ "$CPU_CORES" = "" ]; then
 fi
 
 # configure and build
-cmake $RELEASE_CONFIG -D CMAKE_INSTALL_PREFIX=$LLVM_INSTALL $LLVM_SRC
+if [ "$OS" = "Darwin" ]; then
+    DARWIN_VERSION=`sysctl -n kern.osrelease | cut -d . -f 1`
+    if [ $DARWIN_VERSION -lt 13 ]; then
+        cmake $RELEASE_CONFIG -D CMAKE_CXX_FLAGS="-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}" -D CMAKE_INSTALL_PREFIX=$LLVM_INSTALL $LLVM_SRC
+    else
+        cmake $RELEASE_CONFIG -D CMAKE_INSTALL_PREFIX=$LLVM_INSTALL $LLVM_SRC
+    fi
+else
+    cmake $RELEASE_CONFIG -D CMAKE_INSTALL_PREFIX=$LLVM_INSTALL $LLVM_SRC
+fi
 make -j $CPU_CORES
 make install
 

@@ -21,11 +21,9 @@ public:
         writeDatetime(out);
         writeSummary(out, *results);
         out << "<violations>";
-        std::vector<Violation> violationSet = results->allViolations();
-        for (int index = 0, numberOfViolations = violationSet.size();
-            index < numberOfViolations; index++)
+        for (const auto& violation : results->allViolations())
         {
-            writeViolation(out, violationSet.at(index));
+            writeViolation(out, violation);
         }
         out << "</violations>";
         writeFooter(out);
@@ -59,7 +57,7 @@ public:
         out << "</oclint>";
     }
 
-    void writeViolation(std::ostream &out, Violation &violation)
+    void writeViolation(std::ostream &out, const Violation &violation)
     {
         out << "<violation";
         writeViolationAttribute(out, "path", violation.path);

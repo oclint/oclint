@@ -28,9 +28,9 @@ class ParameterReassignmentRule : public AbstractASTVisitorRule<ParameterReassig
             if (binaryOperator->getOpcode() == BO_Assign && leftExpr && isa<DeclRefExpr>(leftExpr))
             {
                 DeclRefExpr *declRefExpr = dyn_cast<DeclRefExpr>(leftExpr);
-                for (int index = 0; index < _names.size(); index++)
+                for (const auto& name : _names)
                 {
-                    if (declRefExpr->getFoundDecl()->getNameAsString() == _names.at(index))
+                    if (declRefExpr->getFoundDecl()->getNameAsString() == name)
                     {
                         _binaryOperators.push_back(binaryOperator);
                         break;
@@ -50,9 +50,9 @@ private:
         {
             BinaryOperatorAnalyzer biOpAnalyzer;
             vector<BinaryOperator*> binaryOperators = biOpAnalyzer.analyze(decl, names);
-            for (int index = 0; index < binaryOperators.size(); index++)
+            for (const auto& binaryOperator : binaryOperators)
             {
-                addViolation(binaryOperators.at(index), this);
+                addViolation(binaryOperator, this);
             }
         }
     }

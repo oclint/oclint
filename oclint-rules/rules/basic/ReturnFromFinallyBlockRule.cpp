@@ -42,12 +42,11 @@ public:
 
     bool VisitObjCAtFinallyStmt(ObjCAtFinallyStmt *finallyStmt)
     {
-        vector<ReturnStmt*> *returns = new vector<ReturnStmt*>();
+        vector<ReturnStmt*> returns;
         ExtractReturnStmts extractReturnStmts;
-        extractReturnStmts.extract(finallyStmt, returns);
-        for (int index = 0; index < returns->size(); index++)
+        extractReturnStmts.extract(finallyStmt, &returns);
+        for (const auto& returnStmt : returns)
         {
-            ReturnStmt *returnStmt = returns->at(index);
             addViolation(returnStmt, this);
         }
 
