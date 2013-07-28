@@ -1,5 +1,5 @@
-#include <map>
 #include <set>
+#include <unordered_map>
 #include <utility>
 
 #include <clang/AST/Attr.h>
@@ -65,7 +65,7 @@ bool shouldSuppress(const clang::Stmt *stmt, clang::ASTContext &context, oclint:
     return markedParentsAsSuppress(*stmt, context, rule);
 }
 
-typedef std::set<std::pair<int, int> > RangeSet;
+typedef std::set<std::pair<int, int>> RangeSet;
 
 class DeclAnnotationRangeCollector : public clang::RecursiveASTVisitor<DeclAnnotationRangeCollector>
 {
@@ -112,13 +112,10 @@ public:
     }
 };
 
-// TODO: use unordered_map and unordered_set instead
-typedef std::map<clang::ASTContext*, std::set<int> > LineMap;
-typedef std::map<clang::ASTContext*, RangeSet> RangeMap;
+typedef std::unordered_map<clang::ASTContext*, std::set<int>> LineMap;
 static LineMap singleLineMapping;
-static RangeMap rangeMapping;
 
-bool shouldSuppress(int beginLine, clang::ASTContext &context, oclint::RuleBase *rule)
+bool lineBasedShouldSuppress(int beginLine, clang::ASTContext &context)
 {
     LineMap::iterator commentLinesIt = singleLineMapping.find(&context);
     std::set<int> commentLines;
@@ -144,36 +141,40 @@ bool shouldSuppress(int beginLine, clang::ASTContext &context, oclint::RuleBase 
         commentLines = commentLinesIt->second;
     }
 
-    if (commentLines.find(beginLine) != commentLines.end())
+    return commentLines.find(beginLine) != commentLines.end();
+}
+
+typedef std::unordered_map<clang::ASTContext*, RangeSet> RangeMap;
+static RangeMap rangeMapping;
+
+bool rangeBasedShouldSuppress(int beginLine, clang::ASTContext &context, oclint::RuleBase *rule)
+{
+    RangeMap::iterator commentRangesIt = rangeMapping.find(&context);
+    RangeSet commentRanges;
+    if (commentRangesIt == rangeMapping.end())
     {
-        return true;
+        DeclAnnotationRangeCollector annotationCollector;
+        commentRanges = annotationCollector.collect(context, rule);
+        rangeMapping[&context] = commentRanges;
+    }
+    else
+    {
+        commentRanges = commentRangesIt->second;
     }
 
-    if (rule)
+    for (const auto& range : commentRanges)
     {
-        RangeMap::iterator commentRangesIt = rangeMapping.find(&context);
-        RangeSet commentRanges;
-        if (commentRangesIt == rangeMapping.end())
+        if (beginLine >= range.first && beginLine <= range.second)
         {
-            DeclAnnotationRangeCollector annotationCollector;
-            commentRanges = annotationCollector.collect(context, rule);
-            rangeMapping[&context] = commentRanges;
-        }
-        else
-        {
-            commentRanges = commentRangesIt->second;
-        }
-
-        for (RangeSet::iterator it = commentRanges.begin(),
-            itEnd = commentRanges.end(); it != itEnd; ++it)
-        {
-            std::pair<int, int> range = *it;
-            if (beginLine >= range.first && beginLine <= range.second)
-            {
-                return true;
-            }
+            return true;
         }
     }
 
     return false;
+}
+
+bool shouldSuppress(int beginLine, clang::ASTContext &context, oclint::RuleBase *rule)
+{
+    return lineBasedShouldSuppress(beginLine, context) ||
+        (rule && rangeBasedShouldSuppress(beginLine, context, rule));
 }
