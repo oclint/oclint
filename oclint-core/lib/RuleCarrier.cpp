@@ -20,6 +20,13 @@ clang::SourceManager& RuleCarrier::getSourceManager()
     return getASTContext()->getSourceManager();
 }
 
+std::string RuleCarrier::getMainFilePath()
+{
+    clang::FileID mainFileId = getSourceManager().getMainFileID();
+    clang::SourceLocation mainSourceLocation = getSourceManager().getLocForStartOfFile(mainFileId);
+    return getSourceManager().getFilename(mainSourceLocation).str();
+}
+
 clang::TranslationUnitDecl* RuleCarrier::getTranslationUnitDecl()
 {
     return getASTContext()->getTranslationUnitDecl();
