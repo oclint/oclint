@@ -56,6 +56,10 @@ static llvm::cl::opt<int> argMaxP3("max-priority-3",
     llvm::cl::desc("The max allowed number of priority 3 violations"),
     llvm::cl::value_desc("threshold"),
     llvm::cl::init(20));
+static llvm::cl::opt<bool> argGlobalAnalysis("enable-global-analysis",
+    llvm::cl::desc("Compile every source, and analyze across global contexts "
+        "(depends on number of source files, could results in high memory load)"),
+    llvm::cl::init(false));
 static llvm::cl::opt<bool> argClangChecker("enable-clang-static-analyzer",
     llvm::cl::desc("Enable Clang Static Analyzer, and integrate results into OCLint report"),
     llvm::cl::init(false));
@@ -138,6 +142,11 @@ int oclint::option::maxP3()
 bool oclint::option::showEnabledRules()
 {
     return argListEnabledRules;
+}
+
+bool oclint::option::enableGlobalAnalysis()
+{
+    return argGlobalAnalysis;
 }
 
 bool oclint::option::enableClangChecker()

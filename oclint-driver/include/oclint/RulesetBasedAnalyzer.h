@@ -14,9 +14,7 @@ private:
 public:
     RulesetBasedAnalyzer(std::vector<RuleBase *> filteredRules);
 
-    virtual void preprocess(std::vector<clang::ASTContext *> &contexts);
     virtual void analyze(std::vector<clang::ASTContext *> &contexts);
-    virtual void postprocess(std::vector<clang::ASTContext *> &contexts);
 };
 
 } // end namespace oclint
