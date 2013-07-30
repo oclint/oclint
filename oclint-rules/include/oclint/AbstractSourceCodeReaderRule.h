@@ -4,6 +4,7 @@
 #include <clang/AST/AST.h>
 
 #include "oclint/RuleBase.h"
+#include "oclint/helper/SuppressHelper.h"
 
 namespace oclint
 {
@@ -32,14 +33,17 @@ protected:
     void addViolation(int startLine, int startColumn,
         int endLine, int endColumn, RuleBase *rule, const std::string& message = "")
     {
-        clang::SourceManager *sourceManager = &_carrier->getSourceManager();
+        if (!shouldSuppress(startLine, *_carrier->getASTContext(), rule))
+        {
+            clang::SourceManager *sourceManager = &_carrier->getSourceManager();
 
-        clang::FileID mainFileID = sourceManager->getMainFileID();
-        clang::SourceLocation startOfMainFile = sourceManager->getLocForStartOfFile(mainFileID);
-        llvm::StringRef filePath = sourceManager->getFilename(startOfMainFile);
+            clang::FileID mainFileID = sourceManager->getMainFileID();
+            clang::SourceLocation startOfMainFile = sourceManager->getLocForStartOfFile(mainFileID);
+            llvm::StringRef filePath = sourceManager->getFilename(startOfMainFile);
 
-        _carrier->addViolation(filePath.str(),
-            startLine, startColumn, endLine, endColumn, rule, message);
+            _carrier->addViolation(filePath.str(),
+                startLine, startColumn, endLine, endColumn, rule, message);
+        }
     }
 
 public:

@@ -2,7 +2,6 @@
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 #include "oclint/metric/NcssMetric.h"
-#include "oclint/helper/SuppressHelper.h"
 #include "oclint/util/StdUtil.h"
 
 using namespace std;
@@ -16,11 +15,6 @@ private:
 
     void applyDecl(Decl *decl)
     {
-        if (markedAsSuppress(decl, this))
-        {
-            return;
-        }
-
         int ncss = getNcssCount(decl);
         int threshold = RuleConfiguration::intForKey("NCSS_METHOD", 30);
         if (ncss > threshold)

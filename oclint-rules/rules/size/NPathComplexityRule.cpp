@@ -2,7 +2,6 @@
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 #include "oclint/metric/NPathComplexityMetric.h"
-#include "oclint/helper/SuppressHelper.h"
 #include "oclint/util/StdUtil.h"
 
 using namespace std;
@@ -22,11 +21,6 @@ private:
 
     void applyDecl(Decl *decl)
     {
-        if (markedAsSuppress(decl, this))
-        {
-            return;
-        }
-
         if (decl->hasBody())
         {
             CompoundStmt *bodyStmt = dyn_cast<CompoundStmt>(decl->getBody());
