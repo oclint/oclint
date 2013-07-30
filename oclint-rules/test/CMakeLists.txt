@@ -17,6 +17,8 @@ ENDMACRO(build_test)
 
 BUILD_TEST(CanaryTest)
 
+ADD_SUBDIRECTORY(helper)
+
 ADD_SUBDIRECTORY(basic)
 ADD_SUBDIRECTORY(convention)
 ADD_SUBDIRECTORY(empty)

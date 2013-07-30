@@ -1,6 +1,5 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
-#include "oclint/helper/SuppressHelper.h"
 #include "oclint/util/ASTUtil.h"
 
 using namespace std;
@@ -100,11 +99,6 @@ public:
 
     bool VisitParmVarDecl(ParmVarDecl *varDecl)
     {
-        if (markedAsSuppress(varDecl, this))
-        {
-            return true;
-        }
-
         if (!varDecl->isUsed() &&
             hasVariableName(varDecl) &&
             isInNonTemplateFunction(varDecl) &&
