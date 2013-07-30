@@ -5,6 +5,7 @@
 #include <clang/AST/Attr.h>
 #include <clang/AST/RecursiveASTVisitor.h>
 
+#include "oclint/RuleCarrier.h"
 #include "oclint/helper/SuppressHelper.h"
 
 bool markedAsSuppress(const clang::Decl *decl, oclint::RuleBase *rule)
@@ -112,13 +113,10 @@ public:
     }
 };
 
-// TODO: use the same method from RuleCarrier when it's ready
 std::string getMainFilePath(clang::ASTContext &context)
 {
-    clang::FileID mainFileId = context.getSourceManager().getMainFileID();
-    clang::SourceLocation mainSourceLocation =
-        context.getSourceManager().getLocForStartOfFile(mainFileId);
-    return context.getSourceManager().getFilename(mainSourceLocation).str();
+    oclint::RuleCarrier ruleCarrier(&context, 0);
+    return ruleCarrier.getMainFilePath();
 }
 
 typedef std::unordered_map<std::string, std::set<int>> LineMap;
