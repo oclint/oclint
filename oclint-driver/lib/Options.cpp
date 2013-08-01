@@ -1,6 +1,9 @@
 #include <llvm/Option/OptTable.h>
 #include <llvm/Option/Option.h>
 #include <llvm/Support/CommandLine.h>
+#include <llvm/Support/FileSystem.h>
+#include <llvm/Support/Path.h>
+#include <llvm/Support/Program.h>
 #include <clang/Driver/Options.h>
 #include <clang/Tooling/CommonOptionsParser.h>
 
@@ -83,6 +86,8 @@ static llvm::OwningPtr<llvm::opt::OptTable> Options(clang::driver::createDriverO
    ------- */
 
 static oclint::RulesetFilter filter;
+static std::string absoluteWorkingPath("");
+static std::string executablePath("");
 
 template <typename T>
 void updateArgIfSet(llvm::cl::opt<T> &argValue, const llvm::Optional<T> &configValue)
@@ -120,8 +125,37 @@ static void processConfigFiles()
     for_each(configFiles.begin(), configFiles.end(), processConfigFile);
 }
 
-void oclint::option::process()
+static void preserveWorkingPath()
 {
+    char path[300];
+    if (getcwd(path, 300))
+    {
+        absoluteWorkingPath = std::string(path);
+    }
+}
+
+static void preserveExecutablePath(const char *argv)
+{
+    llvm::SmallString<128> installedPath(argv);
+    if (llvm::sys::path::filename(installedPath) == installedPath)
+    {
+        std::string intermediatePath =
+            llvm::sys::FindProgramByName(llvm::sys::path::filename(installedPath.str()));
+        if (!intermediatePath.empty())
+        {
+            installedPath = intermediatePath;
+        }
+    }
+    llvm::sys::fs::make_absolute(installedPath);
+    installedPath = llvm::sys::path::parent_path(installedPath);
+    executablePath = std::string(installedPath.c_str());
+}
+
+void oclint::option::process(const char *argv)
+{
+    preserveWorkingPath();
+    preserveExecutablePath(argv);
+
     processConfigFiles();
     for (unsigned i = 0; i < argRuleConfiguration.size(); ++i)
     {
@@ -137,6 +171,47 @@ void oclint::option::process()
     filter.disableRules(argDisabledRules.begin(), argDisabledRules.end());
 }
 
+std::string oclint::option::workingPath()
+{
+    return absoluteWorkingPath;
+}
+
+std::string oclint::option::installPrefix()
+{
+    return binPath() + "/..";
+}
+
+std::string oclint::option::binPath()
+{
+    return executablePath;
+}
+
+std::string oclint::option::libPath()
+{
+    return installPrefix() + "/lib";
+}
+
+std::string oclint::option::etcPath()
+{
+    return installPrefix() + "/etc";
+}
+
+std::vector<std::string> oclint::option::rulesPath()
+{
+    if (argRulesPath.size() > 0)
+    {
+        return argRulesPath;
+    }
+    std::string defaultRulePath = libPath() + "/oclint/rules";
+    std::vector<std::string> defaultRulesPath { defaultRulePath };
+    return defaultRulesPath;
+}
+
+std::string oclint::option::reporterPath()
+{
+    return libPath() + "/oclint/reporters";
+}
+
 bool oclint::option::hasOutputPath()
 {
     return argOutput != "-";
@@ -144,22 +219,12 @@ bool oclint::option::hasOutputPath()
 
 std::string oclint::option::outputPath()
 {
-    return argOutput;
+    return argOutput.at(0) == '/' ? argOutput : workingPath() + "/" + argOutput;
 }
 
 std::string oclint::option::reportType()
 {
     return argReportType;
-}
-
-bool oclint::option::hasCustomRulesPath()
-{
-    return argRulesPath.size() > 0;
-}
-
-std::vector<std::string> oclint::option::rulesPath()
-{
-    return argRulesPath;
 }
 
 const oclint::RulesetFilter &oclint::option::rulesetFilter()
