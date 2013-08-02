@@ -46,7 +46,7 @@ if [ "$CPU_CORES" = "" ]; then
 fi
 
 # configure and build
-cmake $RELEASE_CONFIG -D CMAKE_INSTALL_PREFIX="$LLVM_INSTALL" "$LLVM_SRC" ${GENERATOR:+-G "$GENERATOR"}
+cmake $RELEASE_CONFIG $EXTRA -D CMAKE_INSTALL_PREFIX="$LLVM_INSTALL" "$LLVM_SRC" ${GENERATOR:+-G "$GENERATOR"}
 make -j $CPU_CORES
 make install
 
