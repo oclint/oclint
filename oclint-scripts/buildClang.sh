@@ -10,8 +10,8 @@ LLVM_INSTALL="$PROJECT_ROOT/build/llvm-install"
 
 # clean clang build directory
 if [ $# -eq 1 ] && [ "$1" = "clean" ]; then
-    rm -rf $LLVM_BUILD
-    rm -rf $LLVM_INSTALL
+    rm -rf "$LLVM_BUILD"
+    rm -rf "$LLVM_INSTALL"
     exit 0
 fi
 
@@ -24,8 +24,8 @@ else
 fi
 
 # create directory and prepare for build
-mkdir -p $LLVM_BUILD
-cd $LLVM_BUILD
+mkdir -p "$LLVM_BUILD"
+cd "$LLVM_BUILD"
 
 if [ "$CPU_CORES" = "" ]; then
     # Default to building on all cores, but allow single core builds using:
@@ -39,13 +39,17 @@ if [ "$CPU_CORES" = "" ]; then
 fi
 
 # configure and build
-if [ "$OS" = "Darwin" ]; then
+if [ "$OS" = "Linux" ]; then
+    cmake $RELEASE_CONFIG -D CMAKE_INSTALL_PREFIX=$LLVM_INSTALL $LLVM_SRC
+elif [ "$OS" = "Darwin" ]; then
     DARWIN_VERSION=`sysctl -n kern.osrelease | cut -d . -f 1`
     if [ $DARWIN_VERSION -lt 13 ]; then
         cmake $RELEASE_CONFIG -D CMAKE_CXX_FLAGS="-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}" -D CMAKE_INSTALL_PREFIX=$LLVM_INSTALL $LLVM_SRC
     else
         cmake $RELEASE_CONFIG -D CMAKE_INSTALL_PREFIX=$LLVM_INSTALL $LLVM_SRC
     fi
+elif [[ "$OS" =~ MINGW32 ]]; then
+    cmake -G "MSYS Makefiles" $RELEASE_CONFIG -D LLVM_EXTERNAL_COMPILER_RT_BUILD:BOOL=OFF -D CMAKE_INSTALL_PREFIX="$LLVM_INSTALL" "$LLVM_SRC"
 else
     cmake $RELEASE_CONFIG -D CMAKE_INSTALL_PREFIX=$LLVM_INSTALL $LLVM_SRC
 fi
@@ -53,4 +57,4 @@ make -j $CPU_CORES
 make install
 
 # back to the current folder
-cd $CWD
+cd "$CWD"
