@@ -177,30 +177,3 @@ void oclint::option::ConfigFile::mapping(llvm::yaml::IO& inputOutput)
     // Optional<bool> does not work, either, because it doesn't support ==.
     inputOutput.mapOptional("enable-clang-static-analyzer", _clangChecker, TriState::UNDEFINED);
 }
-
-/* ---------
-   functions
-   --------- */
-
-static std::vector<std::string> configFilePaths()
-{
-    std::vector<std::string> paths;
-    paths.push_back("/etc/oclint");
-    const char *home = getenv("HOME");
-    if (home)
-    {
-        paths.push_back(std::string(home) + "/.oclint");
-    }
-    paths.push_back(".oclint");
-    return paths;
-}
-
-std::vector<ConfigFile> oclint::option::readConfigFiles()
-{
-    std::vector<ConfigFile> configFiles;
-    for (const std::string &path : configFilePaths())
-    {
-        configFiles.push_back(ConfigFile(path));
-    }
-    return configFiles;
-}

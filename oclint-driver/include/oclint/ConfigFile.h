@@ -61,9 +61,6 @@ public:
     void mapping(llvm::yaml::IO& io);
 };
 
-/** Read all config files in order of ascending priority. */
-std::vector<ConfigFile> readConfigFiles();
-
 } // end namespace option
 } // end namespace oclint
 

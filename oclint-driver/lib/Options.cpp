@@ -100,8 +100,22 @@ void updateArgIfSet(llvm::cl::opt<T> &argValue, const llvm::Optional<T> &configV
     }
 }
 
-static void processConfigFile(const oclint::option::ConfigFile &config)
+static std::vector<std::string> configFilePaths()
 {
+    std::vector<std::string> paths;
+    paths.push_back("/etc/oclint");
+    const char *home = getenv("HOME");
+    if (home)
+    {
+        paths.push_back(std::string(home) + "/.oclint");
+    }
+    paths.push_back(".oclint");
+    return paths;
+}
+
+static void processConfigFile(const std::string &path)
+{
+    oclint::option::ConfigFile config(path);
     for (const oclint::option::RuleConfigurationPair &ruleConfig : config.ruleConfigurations())
     {
         oclint::RuleConfiguration::addConfiguration(ruleConfig.key(), ruleConfig.value());
@@ -123,8 +137,8 @@ static void processConfigFile(const oclint::option::ConfigFile &config)
 
 static void processConfigFiles()
 {
-    const std::vector<oclint::option::ConfigFile> configFiles = oclint::option::readConfigFiles();
-    for_each(configFiles.begin(), configFiles.end(), processConfigFile);
+    std::vector<std::string> paths = configFilePaths();
+    for_each(paths.begin(), paths.end(), processConfigFile);
 }
 
 static void preserveWorkingPath()
