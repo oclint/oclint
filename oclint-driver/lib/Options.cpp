@@ -104,11 +104,7 @@ static std::vector<std::string> configFilePaths()
 {
     std::vector<std::string> paths;
     paths.push_back("/etc/oclint");
-    const char *home = getenv("HOME");
-    if (home)
-    {
-        paths.push_back(std::string(home) + "/.oclint");
-    }
+    paths.push_back(oclint::option::homePath() + "/.oclint");
     paths.push_back(".oclint");
     return paths;
 }
@@ -210,6 +206,12 @@ std::string oclint::option::libPath()
 std::string oclint::option::etcPath()
 {
     return installPrefix() + "/etc";
+}
+
+std::string oclint::option::homePath()
+{
+    const char *home = getenv("HOME");
+    return std::string(home ? home : "");
 }
 
 std::vector<std::string> oclint::option::rulesPath()

@@ -17,6 +17,7 @@ namespace option
     std::string binPath();
     std::string libPath();
     std::string etcPath();
+    std::string homePath();
     std::vector<std::string> rulesPath();
     std::string reporterPath();
 
