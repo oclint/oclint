@@ -103,9 +103,9 @@ void updateArgIfSet(llvm::cl::opt<T> &argValue, const llvm::Optional<T> &configV
 static std::vector<std::string> configFilePaths()
 {
     std::vector<std::string> paths;
-    paths.push_back("/etc/oclint");
+    paths.push_back(oclint::option::etcPath() + "/oclint");
     paths.push_back(oclint::option::homePath() + "/.oclint");
-    paths.push_back(".oclint");
+    paths.push_back(oclint::option::workingPath() + "/.oclint");
     return paths;
 }
 
