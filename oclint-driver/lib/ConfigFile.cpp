@@ -77,7 +77,18 @@ oclint::option::ConfigFile::ConfigFile(const std::string &path)
     }
     else
     {
-        llvm::yaml::Input yin(_buffer->getBuffer());
+        const llvm::StringRef &content = _buffer->getBuffer();
+
+        const std::string whitespace(" \t\f\v\n\r");
+        if (content.str().find_last_not_of(whitespace) == std::string::npos) {
+            // Config file is only whitespace.
+            // Prevent LLVM crash:
+            // http://lists.cs.uiuc.edu/pipermail/llvmbugs/2013-May/028254.html
+            debug::emit("Skip parsing empty config file\n");
+            return;
+        }
+
+        llvm::yaml::Input yin(content);
         yin >> *this;
     }
 }
