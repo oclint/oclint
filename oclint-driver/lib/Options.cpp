@@ -1,3 +1,5 @@
+#include <unistd.h>
+
 #include <llvm/Option/OptTable.h>
 #include <llvm/Option/Option.h>
 #include <llvm/Support/CommandLine.h>
