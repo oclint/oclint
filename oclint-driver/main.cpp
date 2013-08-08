@@ -1,4 +1,4 @@
-#if defined(WIN32)
+#if defined _WIN32
 # include <windows.h>
 #else
 # include <dlfcn.h>
@@ -78,7 +78,7 @@ void dynamicLoadRules(string ruleDirPath)
                 continue;
             }
             string rulePath = ruleDirPath + "/" + string(dirp->d_name);
-#if defined (WIN32)
+#if defined _WIN32
             HMODULE rule_library = LoadLibrary(rulePath.c_str());
             if (rule_library == NULL)
             {
@@ -133,7 +133,7 @@ void loadReporter(const char* executablePath)
                 continue;
             }
             string reporterPath = defaultReportersPath + "/" + string(dirp->d_name);
-#if defined(WIN32)
+#if defined _WIN32
             HMODULE reporterHandle = LoadLibrary(reporterPath.c_str());
             if (reporterHandle == NULL)
             {
