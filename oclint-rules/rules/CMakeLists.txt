@@ -7,6 +7,7 @@ MACRO(build_dynamic_rule name)
 
     SET_TARGET_PROPERTIES(${name}Rule
         PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/rules.dl
+				   RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/rules.dl
         )
 
     TARGET_LINK_LIBRARIES(${name}Rule

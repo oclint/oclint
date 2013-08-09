@@ -7,6 +7,7 @@ MACRO(build_dynamic_reporter name)
 
     SET_TARGET_PROPERTIES(${name}Reporter
         PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/reporters.dl
+				   RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/reporters.dl
         )
 
     TARGET_LINK_LIBRARIES(${name}Reporter
