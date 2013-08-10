@@ -82,7 +82,7 @@ void dynamicLoadRules(string ruleDirPath)
             HMODULE rule_library = LoadLibrary(rulePath.c_str());
             if (rule_library == NULL)
             {
-                //cerr << dlerror() << endl;
+                cerr << GetLastError() << endl;
                 closedir(pDir);
                 throw oclint::GenericException("cannot open dynamic library: " + rulePath);
             }
@@ -137,7 +137,7 @@ void loadReporter(const char* executablePath)
             HMODULE reporterHandle = LoadLibrary(reporterPath.c_str());
             if (reporterHandle == NULL)
             {
-                //cerr << dlerror() << endl;
+                cerr << GetLastError() << endl;
                 closedir(pDir);
                 throw oclint::GenericException("cannot open dynamic library: " + reporterPath);
             }
