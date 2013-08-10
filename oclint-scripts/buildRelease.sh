@@ -21,15 +21,18 @@ mkdir -p $OCLINT_RELEASE_BUILD/bin
 mkdir -p $OCLINT_RELEASE_BUILD/lib/oclint
 cd $OCLINT_RELEASE_BUILD
 
-# put executable in place
+# put executable and related in place
 cp $OCLINT_DRIVER_BUILD/bin/oclint* $OCLINT_RELEASE_BUILD/bin
-cd $OCLINT_RELEASE_BUILD/bin
-ln -s oclint* oclint
-
-# put rule set dll in place for MinGW environment
-if [[ `uname -s` =~ MINGW32 ]]; then
-	cp $OCLINT_CORE_BUILD/lib/libOCLintRuleSet.dll $OCLINT_RELEASE_BUILD/bin
-fi
+case `uname` in
+	MINGW32*)
+		cp $OCLINT_CORE_BUILD/lib/libOCLintRuleSet.dll $OCLINT_RELEASE_BUILD/bin
+		mv $OCLINT_RELEASE_BUILD/bin/oclint-*.exe $OCLINT_RELEASE_BUILD/bin/oclint.exe
+	;;
+	*)
+		cd $OCLINT_RELEASE_BUILD/bin
+		ln -s oclint* oclint
+	;;
+esac
 
 # put rules and reporters in place
 cp -rp $OCLINT_RULES_BUILD/rules.dl $OCLINT_RELEASE_BUILD/lib/oclint/rules
