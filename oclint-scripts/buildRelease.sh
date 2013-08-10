@@ -4,6 +4,7 @@
 CWD=`pwd`
 PROJECT_ROOT="$CWD/.."
 LLVM_BUILD="$PROJECT_ROOT/build/llvm-install"
+OCLINT_CORE_BUILD="$PROJECT_ROOT/build/oclint-core"
 OCLINT_RULES_BUILD="$PROJECT_ROOT/build/oclint-rules"
 OCLINT_REPORTERS_BUILD="$PROJECT_ROOT/build/oclint-reporters"
 OCLINT_DRIVER_BUILD="$PROJECT_ROOT/build/oclint-driver"
@@ -24,6 +25,11 @@ cd $OCLINT_RELEASE_BUILD
 cp $OCLINT_DRIVER_BUILD/bin/oclint* $OCLINT_RELEASE_BUILD/bin
 cd $OCLINT_RELEASE_BUILD/bin
 ln -s oclint* oclint
+
+# put rule set dll in place for MinGW environment
+if [[ `uname -s` =~ MINGW32 ]]; then
+	cp $OCLINT_CORE_BUILD/lib/libOCLintRuleSet.dll $OCLINT_RELEASE_BUILD/bin
+fi
 
 # put rules and reporters in place
 cp -rp $OCLINT_RULES_BUILD/rules.dl $OCLINT_RELEASE_BUILD/lib/oclint/rules
