@@ -8,16 +8,6 @@ LLVM_BUILD="$PROJECT_ROOT/build/llvm-install"
 OCLINT_METRICS_SRC="$PROJECT_ROOT/oclint-metrics"
 OCLINT_METRICS_BUILD="$PROJECT_ROOT/build/oclint-metrics"
 
-EXTRA="-D CMAKE_CXX_COMPILER=$LLVM_BUILD/bin/clang++ -D CMAKE_C_COMPILER=$LLVM_BUILD/bin/clang"
-GENERATOR=
-
-OS=$(uname -s)
-if [[ "$OS" =~ MINGW32 ]]; then
-    GENERATOR="MSYS Makefiles"
-    # use default compiler (g++)
-    EXTRA=
-fi
-
 # clean test directory
 if [ $# -eq 1 ] && [ "$1" = "clean" ]; then
     rm -rf "$OCLINT_METRICS_BUILD"
@@ -35,7 +25,14 @@ mkdir -p "$OCLINT_METRICS_BUILD"
 cd "$OCLINT_METRICS_BUILD"
 
 # configure and build
-cmake $RELEASE_CONFIG $EXTRA -D LLVM_ROOT="$LLVM_BUILD" "$OCLINT_METRICS_SRC" ${GENERATOR:+-G "$GENERATOR"}
+case `uname` in
+    MINGW32*)
+        cmake -G "MSYS Makefiles" $RELEASE_CONFIG -D LLVM_ROOT="$LLVM_BUILD" "$OCLINT_METRICS_SRC"
+    ;;
+    *)
+        cmake $RELEASE_CONFIG -D CMAKE_CXX_COMPILER=$LLVM_BUILD/bin/clang++ -D CMAKE_C_COMPILER=$LLVM_BUILD/bin/clang -D LLVM_ROOT=$LLVM_BUILD $OCLINT_METRICS_SRC
+    ;;
+esac
 make
 
 # back to the current folder

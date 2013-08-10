@@ -9,15 +9,6 @@ GOOGLE_TEST_BUILD="$PROJECT_ROOT/build/googletest"
 OCLINT_CORE_SRC="$PROJECT_ROOT/oclint-core"
 OCLINT_CORE_BUILD="$PROJECT_ROOT/build/oclint-core-test"
 SUCCESS=0
-EXTRA="-D CMAKE_CXX_COMPILER=$LLVM_BUILD/bin/clang++ -D CMAKE_C_COMPILER=$LLVM_BUILD/bin/clang"
-GENERATOR=
-
-OS=$(uname -s)
-if [[ "$OS" =~ MINGW32 ]]; then
-    GENERATOR="MSYS Makefiles"
-    # use default compiler (g++)
-    EXTRA=
-fi
 
 # clean test directory
 if [ $# -eq 1 ] && [ "$1" = "clean" ]; then
@@ -31,7 +22,14 @@ cd "$OCLINT_CORE_BUILD"
 
 # configure and build
 if [ $SUCCESS -eq 0 ]; then
-    cmake $EXTRA -D LLVM_ROOT="$LLVM_BUILD" -D GOOGLETEST_SRC="$GOOGLE_TEST_SRC" -D GOOGLETEST_BUILD="$GOOGLE_TEST_BUILD" -D TEST_BUILD=1 "$OCLINT_CORE_SRC" ${GENERATOR:+-G "$GENERATOR"}
+    case `uname` in
+        MINGW32*)
+            cmake -G "MSYS Makefiles" -D LLVM_ROOT="$LLVM_BUILD" -D GOOGLETEST_SRC="$GOOGLE_TEST_SRC" -D GOOGLETEST_BUILD="$GOOGLE_TEST_BUILD" -D TEST_BUILD=1 "$OCLINT_CORE_SRC"
+        ;;
+        *)
+            cmake -D CMAKE_CXX_COMPILER=$LLVM_BUILD/bin/clang++ -D CMAKE_C_COMPILER=$LLVM_BUILD/bin/clang -D LLVM_ROOT=$LLVM_BUILD -D GOOGLETEST_SRC=$GOOGLE_TEST_SRC -D GOOGLETEST_BUILD=$GOOGLE_TEST_BUILD -D TEST_BUILD=1 $OCLINT_CORE_SRC
+        ;;
+    esac
     if [ $? -ne 0 ]; then
         SUCCESS=1
     fi
