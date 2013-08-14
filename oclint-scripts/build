@@ -5,7 +5,7 @@ import shutil
 import subprocess
 import sys
 
-from oclintscripts import platform
+from oclintscripts import environment
 from oclintscripts.path import *
 
 OCLINT_MODULES = ['core', 'metrics', 'rules', 'reporters', 'driver']
@@ -23,27 +23,27 @@ def clean_module(module_name):
 
 def build_command(is_release, module_extras, source_path):
     command = 'cmake'
-    if platform.is_mingw32():
+    if environment.is_mingw32():
         command += ' -G "MSYS Makefiles"'
     if is_release:
         command += ' -D OCLINT_BUILD_TYPE=Release'
-    if platform.is_unix():
-        clang_bin_path = Build.clang_install_dir + '/bin/clang'
+    if environment.is_unix():
+        clang_bin_path = Build.clang_install_dir + os.sep + 'bin' + os.sep + 'clang'
         command += ' -D CMAKE_CXX_COMPILER=' + clang_bin_path + '++ -D CMAKE_C_COMPILER=' + clang_bin_path
     extras = {'LLVM_ROOT': Build.clang_install_dir}
     extras.update(module_extras)
     for extra_key, extra_value in extras.items():
         command += ' -D ' + extra_key + '='
-        if platform.is_mingw32():
+        if environment.is_mingw32():
             command += '"'
         command += extra_value
-        if platform.is_mingw32():
+        if environment.is_mingw32():
             command += '"'
     command += ' '
-    if platform.is_mingw32():
+    if environment.is_mingw32():
         command += '"'
     command += source_path
-    if platform.is_mingw32():
+    if environment.is_mingw32():
         command += '"'
     return command
 
