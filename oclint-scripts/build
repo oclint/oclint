@@ -1,0 +1,88 @@
+#! /usr/bin/env python
+
+import argparse
+import shutil
+import subprocess
+import sys
+
+from oclintscripts import platform
+from oclintscripts.path import *
+
+OCLINT_MODULES = ['core', 'metrics', 'rules', 'reporters', 'driver']
+
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument('module_name', nargs='?', choices=['all'] + OCLINT_MODULES, default='all')
+arg_parser.add_argument('-release', '--release', action="store_true")
+arg_parser.add_argument('-clean', '--clean', action="store_true")
+args = arg_parser.parse_args()
+
+def clean_module(module_name):
+    path = oclint_module_build_dir(module_name)
+    if os.path.isdir(path):
+        shutil.rmtree(path)
+
+def build_command(is_release, module_extras, source_path):
+    command = 'cmake'
+    if platform.is_mingw32():
+        command += ' -G "MSYS Makefiles"'
+    if is_release:
+        command += ' -D OCLINT_BUILD_TYPE=Release'
+    if platform.is_unix():
+        clang_bin_path = Build.clang_install_dir + '/bin/clang'
+        command += ' -D CMAKE_CXX_COMPILER=' + clang_bin_path + '++ -D CMAKE_C_COMPILER=' + clang_bin_path
+    extras = {'LLVM_ROOT': Build.clang_install_dir}
+    extras.update(module_extras)
+    for extra_key, extra_value in extras.items():
+        command += ' -D ' + extra_key + '='
+        if platform.is_mingw32():
+            command += '"'
+        command += extra_value
+        if platform.is_mingw32():
+            command += '"'
+    command += ' '
+    if platform.is_mingw32():
+        command += '"'
+    command += source_path
+    if platform.is_mingw32():
+        command += '"'
+    return command
+
+def build_module(module_name, is_release):
+    build_path = oclint_module_build_dir(module_name)
+    source_path = oclint_module_source_dir(module_name)
+
+    module_extras = {}
+    if module_name == "rules" or module_name == "reporters" or module_name == "driver":
+        module_extras['OCLINT_SOURCE_DIR'] = Source.core_dir
+        module_extras['OCLINT_BUILD_DIR'] = Build.core_build_dir
+    if module_name == "rules":
+        module_extras['OCLINT_METRICS_SOURCE_DIR'] = Source.metrics_dir
+        module_extras['OCLINT_METRICS_BUILD_DIR'] = Build.metrics_build_dir
+
+    command = build_command(is_release, module_extras, source_path)
+    print command
+
+    current_dir = os.getcwd()
+    if not os.path.isdir(build_path):
+        os.mkdir(build_path)
+    os.chdir(build_path)
+    cmake_exit_code = subprocess.call(command, shell=True)
+    if cmake_exit_code:
+        sys.exit(cmake_exit_code)
+    make_exit_code = subprocess.call('make', shell=True)
+    if make_exit_code:
+        sys.exit(make_exit_code)
+    os.chdir(current_dir)
+
+build_modules = []
+if args.module_name == 'all':
+    build_modules.extend(OCLINT_MODULES)
+else:
+    build_modules.append(args.module_name)
+
+if args.clean:
+    for module in build_modules:
+        clean_module(module)
+
+for module in build_modules:
+    build_module(module, args.release)
