@@ -37,9 +37,15 @@ class source:
 
 class build:
     clang_install_dir = module_build_dir("llvm-install")
+    googletest_build_dir = module_build_dir("googletest")
 
     core_build_dir = oclint_module_build_dir("core")
     metrics_build_dir = oclint_module_build_dir("metrics")
     rules_build_dir = oclint_module_build_dir("rules")
     reporters_build_dir = oclint_module_build_dir("reporters")
     driver_build_dir = oclint_module_build_dir("driver")
+
+    core_test_dir = oclint_module_test_dir("core")
+    metrics_test_dir = oclint_module_test_dir("metrics")
+    rules_test_dir = oclint_module_test_dir("rules")
+    reporters_test_dir = oclint_module_test_dir("reporters")
