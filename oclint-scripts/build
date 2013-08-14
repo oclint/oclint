@@ -4,9 +4,10 @@ import argparse
 import shutil
 import subprocess
 import sys
+import os
 
 from oclintscripts import environment
-from oclintscripts.path import *
+from oclintscripts import path
 
 OCLINT_MODULES = ['core', 'metrics', 'rules', 'reporters', 'driver']
 
@@ -17,9 +18,9 @@ arg_parser.add_argument('-clean', '--clean', action="store_true")
 args = arg_parser.parse_args()
 
 def clean_module(module_name):
-    path = oclint_module_build_dir(module_name)
-    if os.path.isdir(path):
-        shutil.rmtree(path)
+    build_path = path.oclint_module_build_dir(module_name)
+    if os.path.isdir(build_path):
+        shutil.rmtree(build_path)
 
 def build_command(is_release, module_extras, source_path):
     command = 'cmake'
@@ -28,9 +29,9 @@ def build_command(is_release, module_extras, source_path):
     if is_release:
         command += ' -D OCLINT_BUILD_TYPE=Release'
     if environment.is_unix():
-        clang_bin_path = Build.clang_install_dir + os.sep + 'bin' + os.sep + 'clang'
+        clang_bin_path = path.build.clang_install_dir + os.sep + 'bin' + os.sep + 'clang'
         command += ' -D CMAKE_CXX_COMPILER=' + clang_bin_path + '++ -D CMAKE_C_COMPILER=' + clang_bin_path
-    extras = {'LLVM_ROOT': Build.clang_install_dir}
+    extras = {'LLVM_ROOT': path.build.clang_install_dir}
     extras.update(module_extras)
     for extra_key, extra_value in extras.items():
         command += ' -D ' + extra_key + '='
@@ -48,16 +49,16 @@ def build_command(is_release, module_extras, source_path):
     return command
 
 def build_module(module_name, is_release):
-    build_path = oclint_module_build_dir(module_name)
-    source_path = oclint_module_source_dir(module_name)
+    build_path = path.oclint_module_build_dir(module_name)
+    source_path = path.oclint_module_source_dir(module_name)
 
     module_extras = {}
     if module_name == "rules" or module_name == "reporters" or module_name == "driver":
-        module_extras['OCLINT_SOURCE_DIR'] = Source.core_dir
-        module_extras['OCLINT_BUILD_DIR'] = Build.core_build_dir
+        module_extras['OCLINT_SOURCE_DIR'] = path.source.core_dir
+        module_extras['OCLINT_BUILD_DIR'] = path.build.core_build_dir
     if module_name == "rules":
-        module_extras['OCLINT_METRICS_SOURCE_DIR'] = Source.metrics_dir
-        module_extras['OCLINT_METRICS_BUILD_DIR'] = Build.metrics_build_dir
+        module_extras['OCLINT_METRICS_SOURCE_DIR'] = path.source.metrics_dir
+        module_extras['OCLINT_METRICS_BUILD_DIR'] = path.build.metrics_build_dir
 
     command = build_command(is_release, module_extras, source_path)
     print command

@@ -22,7 +22,7 @@ def oclint_module_build_dir(module_name):
 def oclint_module_test_dir(module_name):
     return module_build_dir("oclint-" + module_name + "-test")    
 
-class Source:
+class source:
     clang_dir = module_source_dir("llvm")
     googletest_dir = module_source_dir("googletest")
 
@@ -35,7 +35,7 @@ class Source:
     json_compilation_database_dir = oclint_module_source_dir("json-compilation-database")
     xcodebuild_dir = oclint_module_source_dir("xcodebuild")
 
-class Build:
+class build:
     clang_install_dir = module_build_dir("llvm-install")
 
     core_build_dir = oclint_module_build_dir("core")
