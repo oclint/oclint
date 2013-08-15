@@ -1,0 +1,113 @@
+#! /usr/bin/env python
+
+import argparse
+import shutil
+import subprocess
+import sys
+import os
+
+from oclintscripts import environment
+from oclintscripts import path
+from oclintscripts import version
+
+bundle_root_dir = path.build.bundle_dir
+bundle_bin_dir = os.path.join(bundle_root_dir, 'bin')
+bundle_lib_dir = os.path.join(bundle_root_dir, 'lib')
+bundle_lib_oclint_dir = os.path.join(bundle_lib_dir, 'oclint')
+
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument('-archive', '--archive', action='store_true')
+arg_parser.add_argument('-release', '--release', action='store_true')
+args = arg_parser.parse_args()
+
+def clean_module(module_name):
+    build_path = path.oclint_module_build_dir(module_name)
+    if os.path.isdir(build_path):
+        shutil.rmtree(build_path)
+
+def setup_release_dir():
+    clean_module('release')
+    os.mkdir(bundle_root_dir)
+    os.mkdir(bundle_lib_dir)
+    os.mkdir(bundle_lib_oclint_dir)
+
+def install_binary():
+    driver_bin_dir = os.path.join(path.build.driver_build_dir, 'bin')
+    shutil.copytree(driver_bin_dir, bundle_bin_dir)
+    if environment.is_unix():
+        os.chdir(bundle_bin_dir)
+        subprocess.call('ln -s oclint-' + version.oclint_version() + ' oclint', shell=True)
+    if environment.is_mingw32():
+        ruleset_dll_name = 'libOCLintRuleSet.dll'
+        ruleset_dll_path = os.path.join(path.build.core_build_dir, 'lib', ruleset_dll_name)
+        ruleset_dll_dst_path = os.path.join(driver_bin_dir, ruleset_dll_name)
+        shutil.copy2(ruleset_dll_path, ruleset_dll_dst_path)
+        os.rename(os.path.join(driver_bin_dir, 'oclint-' + version.oclint_version() + '.exe'), os.path.join(driver_bin_dir, 'oclint.exe'))
+
+def install_rules():
+    rules_src_path = os.path.join(path.build.rules_build_dir, 'rules.dl')
+    rules_dst_path = os.path.join(bundle_lib_oclint_dir, 'rules')
+    shutil.copytree(rules_src_path, rules_dst_path)
+
+def install_reporters():
+    reporters_src_path = os.path.join(path.build.reporters_build_dir, 'reporters.dl')
+    reporters_dst_path = os.path.join(bundle_lib_oclint_dir, 'reporters')
+    shutil.copytree(reporters_src_path, reporters_dst_path)
+
+def install_clang_headers():
+    clang_headers_src_path = os.path.join(path.build.clang_install_dir, 'lib', 'clang')
+    clang_headers_dst_path = os.path.join(bundle_lib_dir, 'clang')
+    shutil.copytree(clang_headers_src_path, clang_headers_dst_path)
+
+def install_json_compilation_database():
+    json_cd_name = 'oclint-json-compilation-database'
+    json_cd_src_path = os.path.join(path.source.json_compilation_database_dir, json_cd_name)
+    json_cd_dst_path = os.path.join(bundle_bin_dir, json_cd_name)
+    if os.path.isfile(json_cd_src_path):
+        shutil.copy2(json_cd_src_path, json_cd_dst_path)
+
+def install_xcodebuild():
+    if environment.is_darwin():
+        xcodebuild_name = 'oclint-xcodebuild'
+        xcodebuild_src_path = os.path.join(path.source.xcodebuild_dir, xcodebuild_name)
+        xcodebuild_dst_path = os.path.join(bundle_bin_dir, xcodebuild_name)
+        if os.path.isfile(xcodebuild_src_path):
+            shutil.copy2(xcodebuild_src_path, xcodebuild_dst_path)
+
+def install_licenses():
+    license_path = os.path.join(bundle_root_dir, 'LICENSE')
+    oclint_license_path = os.path.join(path.source.core_dir, 'LICENSE')
+    llvm_license_path = os.path.join(path.source.clang_dir, 'LICENSE.TXT')
+    with open(license_path, 'w') as license_file:
+        with open(oclint_license_path, 'r') as oclint_license_file:
+            license_file.write(oclint_license_file.read())
+        license_file.write('\n')
+        with open(llvm_license_path, 'r') as llvm_license_file:
+            for _it in range(44):
+                license_file.write(llvm_license_file.readline())
+
+def archive(is_release):
+    full_version = version.oclint_version()
+    if not is_release:
+        full_version += '.dev.' + version.git_hash()
+    distribution_name = full_version + '-' + environment.arch() + '-' + environment.kernel() + '-' + environment.kernel_version()
+    archive_dir = path.oclint_module_build_dir(full_version)
+    os.rename(bundle_root_dir, archive_dir)
+    archive_file_name = path.oclint_module_build_dir(distribution_name)
+    if environment.is_darwin() or environment.is_mingw32():
+        shutil.make_archive(archive_file_name, 'zip', path.build_root, 'oclint-' + full_version)
+    if 1 or environment.is_linux():
+        shutil.make_archive(archive_file_name, 'gztar', path.build_root, 'oclint-' + full_version)
+
+setup_release_dir()
+install_licenses()
+install_binary()
+install_rules()
+install_reporters()
+install_clang_headers()
+install_json_compilation_database()
+install_xcodebuild()
+
+if args.archive:
+    archive(args.release)
+
