@@ -18,8 +18,9 @@ ENDMACRO(build_test)
 BUILD_TEST(CanaryTest)
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Win")
 # Do it once, instead of copying for each test
+file(TO_CMAKE_PATH "${OCLINT_BUILD_DIR}" OCLINT_BUILD_CMAKE_PATH)
 add_custom_command(TARGET CanaryTest PRE_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_if_different "${OCLINT_BUILD_DIR}/bin/libOCLintRuleSet.dll" $<TARGET_FILE_DIR:CanaryTest>)
+                   COMMAND ${CMAKE_COMMAND} -E copy_if_different "${OCLINT_BUILD_CMAKE_PATH}/bin/libOCLintRuleSet.dll" $<TARGET_FILE_DIR:CanaryTest>)
 ENDIF()
 
 
