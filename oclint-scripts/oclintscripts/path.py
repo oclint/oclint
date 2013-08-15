@@ -5,22 +5,22 @@ import os
 __python_package_dir = os.path.dirname(os.path.abspath(__file__))
 scripts_dir = os.path.dirname(__python_package_dir)
 root_dir = os.path.dirname(scripts_dir)
-build_root = root_dir + os.sep + "build"
+build_root = os.path.join(root_dir, "build")
 
 def module_source_dir(module_name):
-    return root_dir + os.sep + module_name
+    return os.path.join(root_dir, module_name)
 
 def oclint_module_source_dir(module_name):
     return module_source_dir("oclint-" + module_name)
 
 def module_build_dir(module_name):
-    return build_root + os.sep + module_name
+    return os.path.join(build_root, module_name)
 
 def oclint_module_build_dir(module_name):
     return module_build_dir("oclint-" + module_name)
 
 def oclint_module_test_dir(module_name):
-    return module_build_dir("oclint-" + module_name + "-test")    
+    return module_build_dir("oclint-" + module_name + "-test")
 
 class source:
     clang_dir = module_source_dir("llvm")

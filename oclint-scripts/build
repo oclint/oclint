@@ -29,7 +29,7 @@ def build_command(is_release, module_extras, source_path):
     if is_release:
         command += ' -D OCLINT_BUILD_TYPE=Release'
     if environment.is_unix():
-        clang_bin_path = path.build.clang_install_dir + os.sep + 'bin' + os.sep + 'clang'
+        clang_bin_path = os.path.join(path.build.clang_install_dir, 'bin', 'clang')
         command += ' -D CMAKE_CXX_COMPILER=' + clang_bin_path + '++ -D CMAKE_C_COMPILER=' + clang_bin_path
     extras = {'LLVM_ROOT': path.build.clang_install_dir}
     extras.update(module_extras)

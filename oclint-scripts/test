@@ -28,7 +28,7 @@ def build_command(module_extras, source_path):
         command += ' -G "MSYS Makefiles"'
     command += ' -D TEST_BUILD=1'
     if environment.is_unix():
-        clang_bin_path = path.build.clang_install_dir + os.sep + 'bin' + os.sep + 'clang'
+        clang_bin_path = os.path.join(path.build.clang_install_dir, 'bin', 'clang')
         command += ' -D CMAKE_CXX_COMPILER=' + clang_bin_path + '++ -D CMAKE_C_COMPILER=' + clang_bin_path
     extras = {'LLVM_ROOT': path.build.clang_install_dir, 'GOOGLETEST_SRC': path.source.googletest_dir, 'GOOGLETEST_BUILD': path.build.googletest_build_dir}
     extras.update(module_extras)
@@ -48,7 +48,7 @@ def build_command(module_extras, source_path):
     return command
 
 def test_result_path(module_name):
-    return path.oclint_module_test_dir(module_name) + os.sep + 'testresults.txt'
+    return os.path.join(path.oclint_module_test_dir(module_name), 'testresults.txt')
 
 def display_test_result(module_name):
     testresult_path = test_result_path(module_name)
