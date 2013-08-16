@@ -39,6 +39,7 @@ class source:
     xcodebuild_dir = oclint_module_source_dir("xcodebuild")
 
 class build:
+    clang_build_dir = module_build_dir('llvm')
     clang_install_dir = module_build_dir("llvm-install")
     googletest_build_dir = module_build_dir("googletest")
 
@@ -60,3 +61,9 @@ class build:
     rules_champagne_dir = oclint_module_champagne_dir("rules")
     reporters_champagne_dir = oclint_module_champagne_dir("reporters")
     driver_champagne_dir = oclint_module_champagne_dir("driver")
+
+class url:
+    llvm = 'http://llvm.org/svn/llvm-project/llvm/'
+    clang = 'http://llvm.org/svn/llvm-project/cfe/'
+    clang_rt = 'http://llvm.org/svn/llvm-project/compiler-rt/'
+    googletest = 'http://googlemock.googlecode.com/svn/trunk/'

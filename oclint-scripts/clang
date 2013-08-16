@@ -1,0 +1,125 @@
+#! /usr/bin/env python
+
+import argparse
+import shutil
+import subprocess
+import sys
+import os
+
+from oclintscripts import environment
+from oclintscripts import path
+
+llvm_branches = ['branches/release_33', 'tags/RELEASE_33/final', 'branches/release_32', 'tags/RELEASE_32/final']
+
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument('task_name', choices=['checkout', 'co', 'update', 'up', 'build'])
+arg_parser.add_argument('-branch', '--branch', nargs='?', choices=['trunk'] + llvm_branches, default='trunk')
+arg_parser.add_argument('-rev', '--rev')
+arg_parser.add_argument('-clean', '--clean', action="store_true")
+arg_parser.add_argument('-release', '--release', action="store_true")
+arg_parser.add_argument('-j', type=int, default=0)
+args = arg_parser.parse_args()
+
+def clean_module():
+    build_path = path.build.clang_build_dir
+    if os.path.isdir(build_path):
+        shutil.rmtree(build_path)
+    install_dir = path.build.clang_install_dir
+    if os.path.isdir(install_dir):
+        shutil.rmtree(install_dir)
+
+def build_command(is_release):
+    command = 'cmake'
+    if environment.is_mingw32():
+        command += ' -G "MSYS Makefiles"'
+    if is_release:
+        command += ' -D CMAKE_BUILD_TYPE=Release'
+    else:
+        command += ' -D CMAKE_BUILD_TYPE=Debug'
+    if environment.is_mingw32():
+        command += ' -D LLVM_EXTERNAL_COMPILER_RT_BUILD:BOOL=OFF'
+    if environment.is_darwin_13():
+        command += ' -D CMAKE_CXX_FLAGS="-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}"'
+    command += ' -D CMAKE_INSTALL_PREFIX='
+    if environment.is_mingw32():
+        command += '"'
+    command += path.build.clang_install_dir
+    if environment.is_mingw32():
+        command += '"'
+    command += ' '
+    if environment.is_mingw32():
+        command += '"'
+    command += path.source.clang_dir
+    if environment.is_mingw32():
+        command += '"'
+    return command
+
+def build_module(is_release, multiple_thread):
+    build_path = path.build.clang_build_dir
+
+    command = build_command(is_release)
+
+    current_dir = os.getcwd()
+    if not os.path.isdir(build_path):
+        os.mkdir(build_path)
+    os.chdir(build_path)
+    cmake_exit_code = subprocess.call(command, shell=True)
+    if cmake_exit_code:
+        sys.exit(cmake_exit_code)
+    make_exit_code = subprocess.call('make -j ' + multiple_thread, shell=True)
+    if make_exit_code:
+        sys.exit(make_exit_code)
+    install_exit_code = subprocess.call('make install', shell=True)
+    if install_exit_code:
+        sys.exit(install_exit_code)
+    os.chdir(current_dir)
+
+def svn_checkout(url, prefix, root_dir):
+    current_dir = os.getcwd()
+    os.chdir(root_dir)
+    svn_exit_code = subprocess.call('svn checkout ' + url + ' ' + prefix, shell=True)
+    if svn_exit_code:
+        sys.exit(svn_exit_code)
+    os.chdir(current_dir)
+
+def svn_update(root_dir, rev):
+    current_dir = os.getcwd()
+    os.chdir(root_dir)
+    svn_command = 'svn up'
+    if rev:
+        svn_command += ' -r ' + rev
+    svn_exit_code = subprocess.call(svn_command, shell=True)
+    if svn_exit_code:
+        sys.exit(svn_exit_code)
+    os.chdir(current_dir)
+
+def checkout_clang(branch_name):
+    if os.path.isdir(path.source.clang_dir):
+        sys.exit('Clang folder exists!')
+    svn_checkout(path.url.llvm + branch_name, 'llvm', path.root_dir)
+    svn_checkout(path.url.clang + branch_name, 'clang', os.path.join(path.root_dir, 'llvm', 'tools'))
+    svn_checkout(path.url.clang_rt + branch_name, 'compiler-rt', os.path.join(path.root_dir, 'llvm', 'projects'))
+
+def update_clang(rev):
+    if not os.path.isdir(path.source.clang_dir):
+        sys.exit('Clang folder does not exist!')
+    svn_update(os.path.join(path.root_dir, 'llvm'), rev)
+    svn_update(os.path.join(path.root_dir, 'llvm', 'tools', 'clang'), rev)
+    svn_update(os.path.join(path.root_dir, 'llvm', 'projects', 'compiler-rt'), rev)
+
+if args.task_name == 'checkout' or args.task_name == 'co':
+    checkout_clang(args.branch)
+
+if args.task_name == 'update' or args.task_name == 'up':
+    update_clang(args.rev)
+
+multiple_thread = environment.cpu_count()
+if environment.is_mingw32():
+    multiple_thread = 1
+if not args.j is 0:
+    multiple_thread = args.j
+
+if args.task_name == 'build':
+    if args.clean:
+        clean_module()
+    build_module(args.release, str(multiple_thread))

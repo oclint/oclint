@@ -1,0 +1,89 @@
+#! /usr/bin/env python
+
+import argparse
+import shutil
+import subprocess
+import sys
+import os
+
+from oclintscripts import environment
+from oclintscripts import path
+
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument('task_name', choices=['checkout', 'co', 'update', 'up', 'build'])
+arg_parser.add_argument('-clean', '--clean', action="store_true")
+arg_parser.add_argument('-j', type=int, default=0)
+args = arg_parser.parse_args()
+
+def clean_module():
+    build_path = path.build.googletest_build_dir
+    if os.path.isdir(build_path):
+        shutil.rmtree(build_path)
+
+def build_command():
+    command = 'cmake'
+    if environment.is_mingw32():
+        command += ' -G "MSYS Makefiles" -D gtest_disable_pthreads:BOOL=ON'
+    if environment.is_darwin_13():
+        command += ' -D CMAKE_CXX_FLAGS="-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}"'
+    command += ' '
+    if environment.is_mingw32():
+        command += '"'
+    command += path.source.googletest_dir
+    if environment.is_mingw32():
+        command += '"'
+    return command
+
+def build_module(multiple_thread):
+    build_path = path.build.googletest_build_dir
+
+    command = build_command()
+
+    current_dir = os.getcwd()
+    if not os.path.isdir(build_path):
+        os.mkdir(build_path)
+    os.chdir(build_path)
+    cmake_exit_code = subprocess.call(command, shell=True)
+    if cmake_exit_code:
+        sys.exit(cmake_exit_code)
+    make_exit_code = subprocess.call('make -j ' + multiple_thread, shell=True)
+    if make_exit_code:
+        sys.exit(make_exit_code)
+    os.chdir(current_dir)
+
+def checkout_googletest():
+    if os.path.isdir(path.source.googletest_dir):
+        sys.exit('GoogleTest folder exists!')
+    current_dir = os.getcwd()
+    os.chdir(path.root_dir)
+    svn_exit_code = subprocess.call('svn checkout ' + path.url.googletest + ' googletest', shell=True)
+    if svn_exit_code:
+        sys.exit(svn_exit_code)
+    os.chdir(current_dir)
+
+def update_googletest():
+    if not os.path.isdir(path.source.googletest_dir):
+        sys.exit('GoogleTest folder does not exist!')
+    current_dir = os.getcwd()
+    os.chdir(path.source.googletest_dir)
+    svn_exit_code = subprocess.call('svn up', shell=True)
+    if svn_exit_code:
+        sys.exit(svn_exit_code)
+    os.chdir(current_dir)
+
+if args.task_name == 'checkout' or args.task_name == 'co':
+    checkout_googletest()
+
+if args.task_name == 'update' or args.task_name == 'up':
+    update_googletest()
+
+multiple_thread = environment.cpu_count()
+if environment.is_mingw32():
+    multiple_thread = 1
+if not args.j is 0:
+    multiple_thread = args.j
+
+if args.task_name == 'build':
+    if args.clean:
+        clean_module()
+    build_module(str(multiple_thread))
