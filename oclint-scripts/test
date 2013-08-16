@@ -15,6 +15,7 @@ arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('module_name', nargs='?', choices=['all'] + OCLINT_MODULES, default='all')
 arg_parser.add_argument('-show', '--show', action="store_true")
 arg_parser.add_argument('-clean', '--clean', action="store_true")
+arg_parser.add_argument('-j', type=int, default=0)
 args = arg_parser.parse_args()
 
 def clean_module(module_name):
@@ -55,7 +56,7 @@ def display_test_result(module_name):
     with open(testresult_path, 'r') as testresult_file:
         print testresult_file.read()
 
-def test_module(module_name):
+def test_module(module_name, multiple_thread):
     build_path = path.oclint_module_test_dir(module_name)
     source_path = path.oclint_module_source_dir(module_name)
 
@@ -77,7 +78,7 @@ def test_module(module_name):
     cmake_exit_code = subprocess.call(command, shell=True)
     if cmake_exit_code:
         sys.exit(cmake_exit_code)
-    make_exit_code = subprocess.call('make', shell=True)
+    make_exit_code = subprocess.call('make -j ' + multiple_thread, shell=True)
     if make_exit_code:
         sys.exit(make_exit_code)
     run_ctest_command = 'ctest --output-on-failure > ' + test_result_path(module_name)
@@ -102,5 +103,9 @@ if args.clean:
     for module in build_modules:
         clean_module(module)
 
+multiple_thread = environment.cpu_count()
+if not args.j is 0:
+    multiple_thread = args.j
+
 for module in build_modules:
-    test_module(module)
+    test_module(module, str(multiple_thread))

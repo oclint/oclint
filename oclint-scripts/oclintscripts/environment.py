@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import platform
+import multiprocessing
 
 def kernel():
     return platform.uname()[0]
@@ -23,3 +24,6 @@ def kernel_version():
 
 def arch():
     return platform.uname()[4]
+
+def cpu_count():
+    return multiprocessing.cpu_count()
