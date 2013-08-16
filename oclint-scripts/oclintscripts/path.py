@@ -22,6 +22,9 @@ def oclint_module_build_dir(module_name):
 def oclint_module_test_dir(module_name):
     return module_build_dir("oclint-" + module_name + "-test")
 
+def oclint_module_champagne_dir(module_name):
+    return module_build_dir("oclint-" + module_name + "-champagne")
+
 class source:
     clang_dir = module_source_dir("llvm")
     googletest_dir = module_source_dir("googletest")
@@ -51,3 +54,9 @@ class build:
     metrics_test_dir = oclint_module_test_dir("metrics")
     rules_test_dir = oclint_module_test_dir("rules")
     reporters_test_dir = oclint_module_test_dir("reporters")
+
+    core_champagne_dir = oclint_module_champagne_dir("core")
+    metrics_champagne_dir = oclint_module_champagne_dir("metrics")
+    rules_champagne_dir = oclint_module_champagne_dir("rules")
+    reporters_champagne_dir = oclint_module_champagne_dir("reporters")
+    driver_champagne_dir = oclint_module_champagne_dir("driver")
