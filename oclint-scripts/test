@@ -104,6 +104,8 @@ if args.clean:
         clean_module(module)
 
 multiple_thread = environment.cpu_count()
+if environment.is_mingw32():
+    multiple_thread = 1
 if not args.j is 0:
     multiple_thread = args.j
 
