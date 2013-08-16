@@ -42,7 +42,7 @@ def install_binary():
         ruleset_dll_path = os.path.join(path.build.core_build_dir, 'lib', ruleset_dll_name)
         ruleset_dll_dst_path = os.path.join(driver_bin_dir, ruleset_dll_name)
         shutil.copy2(ruleset_dll_path, ruleset_dll_dst_path)
-        os.rename(os.path.join(driver_bin_dir, 'oclint-' + version.oclint_version() + '.exe'), os.path.join(driver_bin_dir, 'oclint.exe'))
+        os.rename(os.path.join(bundle_bin_dir, 'oclint-' + version.oclint_version() + '.exe'), os.path.join(bundle_bin_dir, 'oclint.exe'))
 
 def install_rules():
     rules_src_path = os.path.join(path.build.rules_build_dir, 'rules.dl')
@@ -96,7 +96,7 @@ def archive(is_release):
     archive_file_name = path.oclint_module_build_dir(distribution_name)
     if environment.is_darwin() or environment.is_mingw32():
         shutil.make_archive(archive_file_name, 'zip', path.build_root, 'oclint-' + full_version)
-    if 1 or environment.is_linux():
+    if environment.is_linux():
         shutil.make_archive(archive_file_name, 'gztar', path.build_root, 'oclint-' + full_version)
 
 setup_release_dir()
