@@ -68,6 +68,7 @@ oclint::option::ConfigFile::ConfigFile(const std::string &path)
 {
     debug::emit("Reading config file: ");
     debug::emit(path.c_str());
+    debug::emit("\n");
 
     llvm::error_code errorCode = llvm::MemoryBuffer::getFile(path, _buffer);
     if (errorCode)
