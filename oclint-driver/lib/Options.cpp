@@ -213,7 +213,7 @@ std::string oclint::option::etcPath()
 std::string oclint::option::homePath()
 {
     const char *home = getenv("HOME");
-    return std::string(home ? home : "");
+    return home ? std::string(home) : std::string();
 }
 
 std::vector<std::string> oclint::option::rulesPath()
