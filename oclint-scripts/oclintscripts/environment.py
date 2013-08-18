@@ -23,7 +23,7 @@ def is_darwin():
     return kernel().startswith("darwin")
 
 def is_darwin_13():
-    if 1 or is_darwin():
+    if is_darwin():
         kernel_full_version = kernel_version()
         first_dot_index = kernel_full_version.find('.')
         kernel_main_version_str = kernel_full_version[:first_dot_index]
