@@ -104,7 +104,9 @@ static std::vector<std::string> configFilePaths()
 {
     std::vector<std::string> paths;
     paths.push_back(oclint::option::etcPath() + "/oclint");
-    paths.push_back(oclint::option::homePath() + "/.oclint");
+    if (oclint::option::homePath().length() > 0) {
+        paths.push_back(oclint::option::homePath() + "/.oclint");
+    }
     paths.push_back(oclint::option::workingPath() + "/.oclint");
     return paths;
 }
