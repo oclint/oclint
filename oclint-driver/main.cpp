@@ -6,10 +6,6 @@
 #include <ctime>
 #include <string>
 
-#include <llvm/ADT/SmallString.h>
-#include <llvm/Support/Path.h>
-#include <llvm/Support/Program.h>
-#include <llvm/Support/FileSystem.h>
 #include <clang/Tooling/CommonOptionsParser.h>
 
 #include "oclint/Analyzer.h"
@@ -28,37 +24,10 @@
 
 using namespace std;
 using namespace llvm;
-using namespace llvm::sys;
 using namespace clang;
 using namespace clang::tooling;
 
-static string absoluteWorkingPath("");
 static oclint::Reporter *selectedReporter = NULL;
-
-void preserveWorkingPath()
-{
-    char path[300];
-    if (getcwd(path, 300))
-    {
-        absoluteWorkingPath = string(path);
-    }
-}
-
-string getExecutablePath(const char *argv)
-{
-    llvm::SmallString<128> installedPath(argv);
-    if (path::filename(installedPath) == installedPath)
-    {
-        std::string intermediatePath = FindProgramByName(path::filename(installedPath.str()));
-        if (!intermediatePath.empty())
-        {
-            installedPath = intermediatePath;
-        }
-    }
-    fs::make_absolute(installedPath);
-    installedPath = path::parent_path(installedPath);
-    return string(installedPath.c_str());
-}
 
 void dynamicLoadRules(string ruleDirPath)
 {
@@ -84,29 +53,18 @@ void dynamicLoadRules(string ruleDirPath)
     }
 }
 
-void consumeArgRulesPath(const char* executablePath)
+void consumeArgRulesPath()
 {
-    if (oclint::option::hasCustomRulesPath())
+    for (const auto& rulePath : oclint::option::rulesPath())
     {
-        vector<string> argRulesPath = oclint::option::rulesPath();
-        for (unsigned i = 0; i < argRulesPath.size(); ++i)
-        {
-            dynamicLoadRules(argRulesPath[i]);
-        }
-    }
-    else
-    {
-        string exeStrPath = getExecutablePath(executablePath);
-        string defaultRulePath = exeStrPath + "/../lib/oclint/rules";
-        dynamicLoadRules(defaultRulePath);
+        dynamicLoadRules(rulePath);
     }
 }
 
-void loadReporter(const char* executablePath)
+void loadReporter()
 {
     selectedReporter = NULL;
-    string exeStrPath = getExecutablePath(executablePath);
-    string defaultReportersPath = exeStrPath + "/../lib/oclint/reporters";
+    string defaultReportersPath = oclint::option::reporterPath();
     DIR *pDir = opendir(defaultReportersPath.c_str());
     if (pDir != NULL)
     {
@@ -157,12 +115,10 @@ ostream* outStream()
         return &cout;
     }
     string output = oclint::option::outputPath();
-    string absoluteOutputPath = output.at(0) == '/' ?
-        output : absoluteWorkingPath + "/" + output;
-    ofstream *out = new ofstream(absoluteOutputPath.c_str());
+    ofstream *out = new ofstream(output.c_str());
     if (!out->is_open())
     {
-        throw oclint::GenericException("cannot open report output file " + absoluteOutputPath);
+        throw oclint::GenericException("cannot open report output file " + output);
     }
     return out;
 }
@@ -205,11 +161,11 @@ enum ExitCode
     VIOLATIONS_EXCEED_THRESHOLD
 };
 
-int prepare(const char* executablePath)
+int prepare()
 {
     try
     {
-        consumeArgRulesPath(executablePath);
+        consumeArgRulesPath();
     }
     catch (const exception& e)
     {
@@ -223,14 +179,13 @@ int prepare(const char* executablePath)
     }
     try
     {
-        loadReporter(executablePath);
+        loadReporter();
     }
     catch (const exception& e)
     {
         printErrorLine(e.what());
         return REPORTER_NOT_FOUND;
     }
-    preserveWorkingPath();
 
     return SUCCESS;
 }
@@ -238,9 +193,9 @@ int prepare(const char* executablePath)
 int main(int argc, const char **argv)
 {
     CommonOptionsParser optionsParser(argc, argv);
-    oclint::option::process();
+    oclint::option::process(argv[0]);
 
-    int prepareStatus = prepare(argv[0]);
+    int prepareStatus = prepare();
     if (prepareStatus)
     {
         return prepareStatus;

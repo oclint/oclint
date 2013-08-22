@@ -31,15 +31,24 @@ static std::string getName(const oclint::RuleBase *rule)
     return convertSpacesInName(rule->name());
 }
 
-
-void RulesetFilter::setEnabledRules(const std::vector<std::string> &enabledRules)
+void RulesetFilter::enableRule(const std::string &ruleName)
 {
-    _enabled.insert(enabledRules.begin(), enabledRules.end());
+    _enabled.insert(ruleName);
+    auto iterator = _disabled.find(ruleName);
+    if (iterator != _disabled.end())
+    {
+        _disabled.erase(iterator);
+    }
 }
 
-void RulesetFilter::setDisabledRules(const std::vector<std::string> &disabledRules)
+void RulesetFilter::disableRule(const std::string &ruleName)
 {
-    _disabled.insert(disabledRules.begin(), disabledRules.end());
+    _disabled.insert(ruleName);
+    auto iterator = _enabled.find(ruleName);
+    if (iterator != _enabled.end())
+    {
+        _enabled.erase(iterator);
+    }
 }
 
 std::vector<RuleBase *> RulesetFilter::filteredRules() const
