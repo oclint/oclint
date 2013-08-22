@@ -87,7 +87,7 @@ def display_result(module_name):
 def drink_champagne(module_name, enable_clang_static_analyzer):
     source_path = path.oclint_module_source_dir(module_name)
     oclint_json_compilation_database_path = os.path.join(path.build.bundle_dir, 'bin', 'oclint-json-compilation-database')
-    command = oclint_json_compilation_database_path + ' -- -debug'
+    command = oclint_json_compilation_database_path + ' -- -debug -max-priority-1=0 -max-priority-2=0 -max-priority-3=0'
     if enable_clang_static_analyzer:
         command += ' -enable-clang-static-analyzer'
     command += ' -o ' + result_path(module_name)
@@ -95,6 +95,7 @@ def drink_champagne(module_name, enable_clang_static_analyzer):
     current_dir = os.getcwd()
     os.chdir(source_path)
     champagne_exit_code = subprocess.call(command, shell=True)
+    display_result(module_name)
     if champagne_exit_code:
         sys.exit(champagne_exit_code)
     os.chdir(current_dir)
@@ -114,4 +115,3 @@ for module in build_modules:
     clean_module(module)
     build_module(module)
     drink_champagne(module, args.enable_clang_static_analyzer)
-    display_result(module)
