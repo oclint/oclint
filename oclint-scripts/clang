@@ -8,12 +8,11 @@ import os
 
 from oclintscripts import environment
 from oclintscripts import path
-
-llvm_branches = ['branches/release_33', 'tags/RELEASE_33/final', 'branches/release_32', 'tags/RELEASE_32/final']
+from oclintscripts import version
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('task_name', choices=['checkout', 'co', 'update', 'up', 'build'])
-arg_parser.add_argument('-branch', '--branch', nargs='?', choices=['trunk'] + llvm_branches, default='trunk')
+arg_parser.add_argument('-branch', '--branch', nargs='?', choices=version.llvm_branches(), default='trunk')
 arg_parser.add_argument('-rev', '--rev')
 arg_parser.add_argument('-clean', '--clean', action="store_true")
 arg_parser.add_argument('-release', '--release', action="store_true")

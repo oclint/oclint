@@ -67,3 +67,6 @@ class url:
     clang = 'http://llvm.org/svn/llvm-project/cfe/'
     clang_rt = 'http://llvm.org/svn/llvm-project/compiler-rt/'
     googletest = 'http://googlemock.googlecode.com/svn/trunk/'
+
+    json_compilation_database = 'https://github.com/oclint/oclint-json-compilation-database.git'
+    xcodebuild = 'https://github.com/oclint/oclint-xcodebuild.git'
