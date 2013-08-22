@@ -10,13 +10,20 @@ namespace oclint
 {
 namespace option
 {
-    void process();
+    void process(const char *argv);
+
+    std::string workingPath();
+    std::string installPrefix();
+    std::string binPath();
+    std::string libPath();
+    std::string etcPath();
+    std::string homePath();
+    std::vector<std::string> rulesPath();
+    std::string reporterPath();
 
     bool hasOutputPath();
     std::string outputPath();
     std::string reportType();
-    bool hasCustomRulesPath();
-    std::vector<std::string> rulesPath();
     const oclint::RulesetFilter &rulesetFilter();
     int maxP1();
     int maxP2();
