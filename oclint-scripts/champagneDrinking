@@ -64,7 +64,7 @@ def build_module(module_name):
 
     current_dir = os.getcwd()
     if not os.path.isdir(build_path):
-        os.mkdir(build_path)
+        os.makedirs(build_path)
     os.chdir(build_path)
     cmake_exit_code = subprocess.call(command, shell=True)
     if cmake_exit_code:
