@@ -76,7 +76,8 @@
 
 using namespace oclint;
 
-typedef std::vector<std::pair<std::string, clang::tooling::CompileCommand>> CompileCommandPairs;
+typedef std::pair<std::string, clang::tooling::CompileCommand> CompileCommandPair;
+typedef std::vector<CompileCommandPair> CompileCommandPairs;
 
 static clang::driver::Driver *newDriver(clang::DiagnosticsEngine *diagnostics,
     const char *binaryName)
