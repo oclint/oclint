@@ -323,10 +323,11 @@ static void invokeClangStaticAnalyzer(CompileCommandPairs &compileCommands)
     }
 }
 
-static void invoke(CompileCommandPairs &compileCommands, oclint::Analyzer &analyzer)
+static std::vector<clang::ASTContext *> compile(
+        std::vector<oclint::CompilerInstance *> compilers,
+        std::vector<clang::FileManager *> fileManagers,
+        CompileCommandPairs &compileCommands)
 {
-    std::vector<oclint::CompilerInstance *> compilers;
-    std::vector<clang::FileManager *> fileManagers;
     constructCompilersAndFileManagers(compilers, fileManagers, compileCommands);
 
     // collect a collection of AST contexts
@@ -336,11 +337,20 @@ static void invoke(CompileCommandPairs &compileCommands, oclint::Analyzer &analy
         localContexts.push_back(&compilers.at(compilerIndex)->getASTContext());
     }
 
+    return localContexts;
+}
+
+static void analyze(oclint::Analyzer &analyzer, std::vector<clang::ASTContext *> &localContexts)
+{
     // use the analyzer to do the actual analysis
     analyzer.preprocess(localContexts);
     analyzer.analyze(localContexts);
     analyzer.postprocess(localContexts);
+}
 
+static void cleanUp(const std::vector<oclint::CompilerInstance *> &compilers,
+                    const std::vector<clang::FileManager *> &fileManagers)
+{
     // send out the signals to release or simply leak resources
     for (int compilerIndex = 0; compilerIndex < compilers.size(); compilerIndex++)
     {
@@ -358,16 +368,23 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
     CompileCommandPairs compileCommands;
     constructCompileCommands(compileCommands, compilationDatabase, sourcePaths);
 
+    std::vector<oclint::CompilerInstance *> compilers;
+    std::vector<clang::FileManager *> fileManagers;
+
     if (option::enableGlobalAnalysis())
     {
-        invoke(compileCommands, analyzer);
+        auto contexts = compile(compilers, fileManagers, compileCommands);
+        analyze(analyzer, contexts);
+        cleanUp(compilers, fileManagers);
     }
     else
     {
         for (auto &compileCommand : compileCommands)
         {
             CompileCommandPairs oneCompileCommand { compileCommand };
-            invoke(oneCompileCommand, analyzer);
+            auto contexts = compile(compilers, fileManagers, compileCommands);
+            analyze(analyzer, contexts);
+            cleanUp(compilers, fileManagers);
         }
     }
 
