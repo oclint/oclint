@@ -182,7 +182,7 @@ static void constructCompileCommands(
     }
 }
 
-static clang::CompilerInvocation *newCompilerInvocation(std::string &mainExecutable,
+static clang::CompilerInvocation *newCompilerInvocation(
     std::vector<std::string> &unadjustedCmdLine, bool runClangChecker = false)
 {
     // Prepare for command lines, and convert to old-school argv
@@ -190,7 +190,8 @@ static clang::CompilerInvocation *newCompilerInvocation(std::string &mainExecuta
         new clang::tooling::ClangSyntaxOnlyAdjuster());
     std::vector<std::string> commandLine = argumentsAdjusterPtr->Adjust(unadjustedCmdLine);
     assert(!commandLine.empty());
-    commandLine[0] = mainExecutable;
+    static int staticSymbol;
+    commandLine[0] = llvm::sys::fs::getMainExecutable("oclint", &staticSymbol);
 
     std::vector<const char*> argv;
     int start = 0, end = commandLine.size();
@@ -255,8 +256,7 @@ static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *
 
 static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstance *> &compilers,
     std::vector<clang::FileManager *> &fileManagers,
-    CompileCommandPairs &compileCommands,
-    std::string &mainExecutable)
+    CompileCommandPairs &compileCommands)
 {
     for (auto &compileCommand : compileCommands)
     {
@@ -268,7 +268,7 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
                 compileCommand.second.Directory + "\", "
                 "please make sure the directory exists and you have permission to access!");
         }
-        clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(mainExecutable,
+        clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(
             compileCommand.second.CommandLine);
         clang::FileManager *fileManager = newFileManager();
         oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation, fileManager);
@@ -288,9 +288,7 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
     }
 }
 
-static void invokeClangStaticAnalyzer(
-    CompileCommandPairs &compileCommands,
-    std::string &mainExecutable)
+static void invokeClangStaticAnalyzer(CompileCommandPairs &compileCommands)
 {
     for (auto &compileCommand : compileCommands)
     {
@@ -302,7 +300,7 @@ static void invokeClangStaticAnalyzer(
                 compileCommand.second.Directory + "\", "
                 "please make sure the directory exists and you have permission to access!");
         }
-        clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(mainExecutable,
+        clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(
             compileCommand.second.CommandLine, true);
         clang::FileManager *fileManager = newFileManager();
         oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation,
@@ -324,12 +322,11 @@ static void invokeClangStaticAnalyzer(
     }
 }
 
-static void invoke(CompileCommandPairs &compileCommands,
-    std::string &mainExecutable, oclint::Analyzer &analyzer)
+static void invoke(CompileCommandPairs &compileCommands, oclint::Analyzer &analyzer)
 {
     std::vector<oclint::CompilerInstance *> compilers;
     std::vector<clang::FileManager *> fileManagers;
-    constructCompilersAndFileManagers(compilers, fileManagers, compileCommands, mainExecutable);
+    constructCompilersAndFileManagers(compilers, fileManagers, compileCommands);
 
     // collect a collection of AST contexts
     std::vector<clang::ASTContext *> localContexts;
@@ -360,24 +357,21 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
     CompileCommandPairs compileCommands;
     constructCompileCommands(compileCommands, compilationDatabase, sourcePaths);
 
-    static int staticSymbol;
-    std::string mainExecutable = llvm::sys::fs::getMainExecutable("oclint", &staticSymbol);
-
     if (option::enableGlobalAnalysis())
     {
-        invoke(compileCommands, mainExecutable, analyzer);
+        invoke(compileCommands, analyzer);
     }
     else
     {
         for (auto &compileCommand : compileCommands)
         {
             CompileCommandPairs oneCompileCommand { compileCommand };
-            invoke(oneCompileCommand, mainExecutable, analyzer);
+            invoke(oneCompileCommand, analyzer);
         }
     }
 
     if (option::enableClangChecker())
     {
-        invokeClangStaticAnalyzer(compileCommands, mainExecutable);
+        invokeClangStaticAnalyzer(compileCommands);
     }
 }
