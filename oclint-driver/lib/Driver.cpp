@@ -71,6 +71,7 @@
 #include "oclint/Debug.h"
 #include "oclint/Driver.h"
 #include "oclint/GenericException.h"
+#include "oclint/Queue.h"
 #include "oclint/Options.h"
 #include "oclint/ViolationSet.h"
 
@@ -340,6 +341,8 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
     CompileCommandPairs compileCommands;
     constructCompileCommands(compileCommands, compilationDatabase, sourcePaths);
 
+    oclint::Queue<CompileCommandPair> remainingCompileCommands(compileCommands);
+
     const int numThreads = 1;
     if (numThreads > 1)
     {
@@ -348,16 +351,18 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
 
     if (option::enableGlobalAnalysis())
     {
-        std::vector<oclint::CompilerInstance *> compilers;
-        for (auto &compileCommand : compileCommands)
+        oclint::Queue<oclint::CompilerInstance *> compilers;
+        CompileCommandPair compileCommand;
+        while (remainingCompileCommands.pop(compileCommand))
         {
             oclint::CompilerInstance *compiler;
             if (constructCompilerAndFileManager(compiler, compileCommand))
             {
-                compilers.push_back(compiler);
+                compilers.add(compiler);
             }
         }
-        for (oclint::CompilerInstance *compiler : compilers)
+        oclint::CompilerInstance *compiler;
+        while (compilers.pop(compiler))
         {
             analyze(analyzer, &compiler->getASTContext());
             cleanUp(compiler);
@@ -365,7 +370,8 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
     }
     else
     {
-        for (auto &compileCommand : compileCommands)
+        CompileCommandPair compileCommand;
+        while (remainingCompileCommands.pop(compileCommand))
         {
             oclint::CompilerInstance *compiler;
             if (constructCompilerAndFileManager(compiler, compileCommand))
@@ -378,7 +384,10 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
 
     if (option::enableClangChecker())
     {
-        for (auto &compileCommand : compileCommands)
+        oclint::Queue<CompileCommandPair> remainingCheckerCommands(compileCommands);
+
+        CompileCommandPair compileCommand;
+        while (remainingCheckerCommands.pop(compileCommand))
         {
             invokeClangStaticAnalyzer(compileCommand);
         }
