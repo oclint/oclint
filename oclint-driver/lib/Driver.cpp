@@ -255,111 +255,85 @@ static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *
     return compilerInstance;
 }
 
-static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstance *> &compilers,
-    std::vector<clang::FileManager *> &fileManagers,
-    CompileCommandPairs &compileCommands)
+static bool constructCompilerAndFileManager(oclint::CompilerInstance *&compiler,
+    clang::FileManager *&fileManager,
+    CompileCommandPair &compileCommand)
 {
-    for (auto &compileCommand : compileCommands)
+    debug::emit("Compiling ");
+    debug::emit(compileCommand.first.c_str());
+    if (chdir(compileCommand.second.Directory.c_str()))
     {
-        debug::emit("Compiling ");
-        debug::emit(compileCommand.first.c_str());
-        if (chdir(compileCommand.second.Directory.c_str()))
-        {
-            throw oclint::GenericException("Cannot change dictionary into \"" +
-                compileCommand.second.Directory + "\", "
-                "please make sure the directory exists and you have permission to access!");
-        }
-        clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(
+        throw oclint::GenericException("Cannot change dictionary into \"" +
+            compileCommand.second.Directory + "\", "
+            "please make sure the directory exists and you have permission to access!");
+    }
+    clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(
             compileCommand.second.CommandLine);
-        clang::FileManager *fileManager = newFileManager();
-        oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation, fileManager);
+    fileManager = newFileManager();
+    compiler = newCompilerInstance(compilerInvocation, fileManager);
 
-        compiler->start();
-        if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
-        {
-            debug::emit(" - Success");
-            compilers.push_back(compiler);
-            fileManagers.push_back(fileManager);
-        }
-        else
-        {
-            debug::emit(" - Failed");
-        }
-        debug::emit("\n");
+    compiler->start();
+    bool success = !compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext();
+    if (success)
+    {
+        debug::emit(" - Success");
     }
+    else
+    {
+        debug::emit(" - Failed");
+    }
+    debug::emit("\n");
+    return success;
 }
 
-static void invokeClangStaticAnalyzer(CompileCommandPairs &compileCommands)
+static void invokeClangStaticAnalyzer(CompileCommandPair &compileCommand)
 {
-    for (auto &compileCommand : compileCommands)
+    debug::emit("Clang Static Analyzer ");
+    debug::emit(compileCommand.first.c_str());
+    if (chdir(compileCommand.second.Directory.c_str()))
     {
-        debug::emit("Clang Static Analyzer ");
-        debug::emit(compileCommand.first.c_str());
-        if (chdir(compileCommand.second.Directory.c_str()))
-        {
-            throw oclint::GenericException("Cannot change dictionary into \"" +
-                compileCommand.second.Directory + "\", "
-                "please make sure the directory exists and you have permission to access!");
-        }
-        clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(
+        throw oclint::GenericException("Cannot change dictionary into \"" +
+            compileCommand.second.Directory + "\", "
+            "please make sure the directory exists and you have permission to access!");
+    }
+    clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(
             compileCommand.second.CommandLine, true);
-        clang::FileManager *fileManager = newFileManager();
-        oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation,
-            fileManager, true);
+    clang::FileManager *fileManager = newFileManager();
+    oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation,
+                                                             fileManager, true);
 
-        compiler->start();
-        if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
-        {
-            debug::emit(" - Done");
-        }
-        else
-        {
-            debug::emit(" - Finished with Failure");
-        }
-        compiler->end();
-        compiler->resetAndLeakFileManager();
-        fileManager->clearStatCaches();
-        debug::emit("\n");
-    }
-}
-
-static std::vector<clang::ASTContext *> compile(
-        std::vector<oclint::CompilerInstance *> compilers,
-        std::vector<clang::FileManager *> fileManagers,
-        CompileCommandPairs &compileCommands)
-{
-    constructCompilersAndFileManagers(compilers, fileManagers, compileCommands);
-
-    // collect a collection of AST contexts
-    std::vector<clang::ASTContext *> localContexts;
-    for (int compilerIndex = 0; compilerIndex < compilers.size(); compilerIndex++)
+    compiler->start();
+    if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
     {
-        localContexts.push_back(&compilers.at(compilerIndex)->getASTContext());
+        debug::emit(" - Done");
     }
-
-    return localContexts;
+    else
+    {
+        debug::emit(" - Finished with Failure");
+    }
+    compiler->end();
+    compiler->resetAndLeakFileManager();
+    fileManager->clearStatCaches();
+    debug::emit("\n");
 }
 
-static void analyze(oclint::Analyzer &analyzer, std::vector<clang::ASTContext *> &localContexts)
+static void analyze(oclint::Analyzer &analyzer, clang::ASTContext *localContext)
 {
     // use the analyzer to do the actual analysis
-    analyzer.preprocess(localContexts);
-    analyzer.analyze(localContexts);
-    analyzer.postprocess(localContexts);
+    analyzer.preprocess(localContext);
+    analyzer.analyze(localContext);
+    analyzer.postprocess(localContext);
 }
 
-static void cleanUp(const std::vector<oclint::CompilerInstance *> &compilers,
-                    const std::vector<clang::FileManager *> &fileManagers)
+static void cleanUp(oclint::CompilerInstance *compiler,
+                    clang::FileManager *fileManager)
 {
     // send out the signals to release or simply leak resources
-    for (int compilerIndex = 0; compilerIndex < compilers.size(); compilerIndex++)
-    {
-        compilers.at(compilerIndex)->end();
-        compilers.at(compilerIndex)->resetAndLeakFileManager();
-        fileManagers.at(compilerIndex)->clearStatCaches();
-        delete compilers.at(compilerIndex);
-        delete fileManagers.at(compilerIndex);
-    }
+    compiler->end();
+    compiler->resetAndLeakFileManager();
+    fileManager->clearStatCaches();
+    delete compiler;
+    delete fileManager;
 }
 
 void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
@@ -368,28 +342,45 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
     CompileCommandPairs compileCommands;
     constructCompileCommands(compileCommands, compilationDatabase, sourcePaths);
 
-    std::vector<oclint::CompilerInstance *> compilers;
-    std::vector<clang::FileManager *> fileManagers;
-
     if (option::enableGlobalAnalysis())
     {
-        auto contexts = compile(compilers, fileManagers, compileCommands);
-        analyze(analyzer, contexts);
-        cleanUp(compilers, fileManagers);
+        std::vector<oclint::CompilerInstance *> compilers;
+        std::vector<clang::FileManager *> fileManagers;
+        for (auto &compileCommand : compileCommands)
+        {
+            oclint::CompilerInstance *compiler;
+            clang::FileManager *fileManager;
+            if (constructCompilerAndFileManager(compiler, fileManager, compileCommand))
+            {
+                compilers.push_back(compiler);
+                fileManagers.push_back(fileManager);
+            }
+        }
+        for (int i = 0; i < compilers.size(); i++)
+        {
+            analyze(analyzer, &compilers[i]->getASTContext());
+            cleanUp(compilers[i], fileManagers[i]);
+        }
     }
     else
     {
         for (auto &compileCommand : compileCommands)
         {
-            CompileCommandPairs oneCompileCommand { compileCommand };
-            auto contexts = compile(compilers, fileManagers, compileCommands);
-            analyze(analyzer, contexts);
-            cleanUp(compilers, fileManagers);
+            oclint::CompilerInstance *compiler;
+            clang::FileManager *fileManager;
+            if (constructCompilerAndFileManager(compiler, fileManager, compileCommand))
+            {
+                analyze(analyzer, &compiler->getASTContext());
+                cleanUp(compiler, fileManager);
+            }
         }
     }
 
     if (option::enableClangChecker())
     {
-        invokeClangStaticAnalyzer(compileCommands);
+        for (auto &compileCommand : compileCommands)
+        {
+            invokeClangStaticAnalyzer(compileCommand);
+        }
     }
 }
