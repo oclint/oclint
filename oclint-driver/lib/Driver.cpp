@@ -74,6 +74,7 @@
 #include "oclint/Queue.h"
 #include "oclint/Options.h"
 #include "oclint/ViolationSet.h"
+#include "oclint/ThreadPool.h"
 
 using namespace oclint;
 
@@ -341,10 +342,10 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
     CompileCommandPairs compileCommands;
     constructCompileCommands(compileCommands, compilationDatabase, sourcePaths);
 
+    ThreadPool threadPool;
     oclint::Queue<CompileCommandPair> remainingCompileCommands(compileCommands);
 
-    const int numThreads = 1;
-    if (numThreads > 1)
+    if (threadPool.getNumberOfThreads() > 1)
     {
         LLVMStartMultithreaded();
     }
@@ -352,48 +353,56 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
     if (option::enableGlobalAnalysis())
     {
         oclint::Queue<oclint::CompilerInstance *> compilers;
-        CompileCommandPair compileCommand;
-        while (remainingCompileCommands.pop(compileCommand))
+        threadPool.run([&]
         {
-            oclint::CompilerInstance *compiler;
-            if (constructCompilerAndFileManager(compiler, compileCommand))
+            CompileCommandPair compileCommand;
+            while (remainingCompileCommands.pop(compileCommand))
             {
-                compilers.add(compiler);
+                oclint::CompilerInstance *compiler;
+                if (constructCompilerAndFileManager(compiler, compileCommand))
+                {
+                    compilers.add(compiler);
+                }
             }
-        }
-        oclint::CompilerInstance *compiler;
-        while (compilers.pop(compiler))
-        {
-            analyze(analyzer, &compiler->getASTContext());
-            cleanUp(compiler);
-        }
-    }
-    else
-    {
-        CompileCommandPair compileCommand;
-        while (remainingCompileCommands.pop(compileCommand))
-        {
             oclint::CompilerInstance *compiler;
-            if (constructCompilerAndFileManager(compiler, compileCommand))
+            while (compilers.pop(compiler))
             {
                 analyze(analyzer, &compiler->getASTContext());
                 cleanUp(compiler);
             }
-        }
+        });
+    }
+    else
+    {
+        threadPool.run([&]
+        {
+            CompileCommandPair compileCommand;
+            while (remainingCompileCommands.pop(compileCommand))
+            {
+                oclint::CompilerInstance *compiler;
+                if (constructCompilerAndFileManager(compiler, compileCommand))
+                {
+                    analyze(analyzer, &compiler->getASTContext());
+                    cleanUp(compiler);
+                }
+            }
+        });
     }
 
     if (option::enableClangChecker())
     {
         oclint::Queue<CompileCommandPair> remainingCheckerCommands(compileCommands);
-
-        CompileCommandPair compileCommand;
-        while (remainingCheckerCommands.pop(compileCommand))
+        threadPool.run([&]
         {
-            invokeClangStaticAnalyzer(compileCommand);
-        }
+            CompileCommandPair compileCommand;
+            while (remainingCheckerCommands.pop(compileCommand))
+            {
+                invokeClangStaticAnalyzer(compileCommand);
+            }
+        });
     }
 
-    if (numThreads > 1)
+    if (threadPool.getNumberOfThreads() > 1)
     {
         LLVMStopMultithreaded();
     }
