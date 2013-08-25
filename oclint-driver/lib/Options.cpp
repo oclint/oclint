@@ -73,9 +73,9 @@ static llvm::cl::opt<bool> argClangChecker("enable-clang-static-analyzer",
     llvm::cl::desc("Enable Clang Static Analyzer, and integrate results into OCLint report"),
     llvm::cl::init(false));
 static llvm::cl::opt<unsigned int> argNumThreads("num-threads",
-    llvm::cl::desc("The number of parallel execution threads"),
+    llvm::cl::desc("The number of parallel execution threads (experimental)"),
     llvm::cl::value_desc("number of threads"),
-    llvm::cl::init(0));
+    llvm::cl::init(1)); // while experimental, should default to 0
 
 /* -------------
    libTooling cl
