@@ -1,10 +1,11 @@
 #include "oclint/ThreadPool.h"
+#include "oclint/Options.h"
 
 using namespace oclint;
 
 unsigned int ThreadPool::getNumberOfThreads()
 {
-    return std::max(1u, std::thread::hardware_concurrency());
+    return option::numThreads();
 }
 
 void ThreadPool::run(std::function<void ()> function)
