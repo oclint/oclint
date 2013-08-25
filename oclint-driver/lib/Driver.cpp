@@ -79,6 +79,9 @@ using namespace oclint;
 typedef std::pair<std::string, clang::tooling::CompileCommand> CompileCommandPair;
 typedef std::vector<CompileCommandPair> CompileCommandPairs;
 
+static void cleanUp(oclint::CompilerInstance *compiler,
+                    clang::FileManager *fileManager);
+
 static clang::driver::Driver *newDriver(clang::DiagnosticsEngine *diagnostics,
     const char *binaryName)
 {
@@ -311,10 +314,8 @@ static void invokeClangStaticAnalyzer(CompileCommandPair &compileCommand)
     {
         debug::emit(" - Finished with Failure");
     }
-    compiler->end();
-    compiler->resetAndLeakFileManager();
-    fileManager->clearStatCaches();
     debug::emit("\n");
+    cleanUp(compiler, fileManager);
 }
 
 static void analyze(oclint::Analyzer &analyzer, clang::ASTContext *localContext)
