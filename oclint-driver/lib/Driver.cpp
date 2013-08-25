@@ -79,8 +79,7 @@ using namespace oclint;
 typedef std::pair<std::string, clang::tooling::CompileCommand> CompileCommandPair;
 typedef std::vector<CompileCommandPair> CompileCommandPairs;
 
-static void cleanUp(oclint::CompilerInstance *compiler,
-                    clang::FileManager *fileManager);
+static void cleanUp(oclint::CompilerInstance *compiler);
 
 static clang::driver::Driver *newDriver(clang::DiagnosticsEngine *diagnostics,
     const char *binaryName)
@@ -240,8 +239,10 @@ static clang::FileManager *newFileManager()
 }
 
 static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *compilerInvocation,
-    clang::FileManager *fileManager, bool runClangChecker = false)
+    bool runClangChecker = false)
 {
+    clang::FileManager *fileManager = newFileManager();
+
     oclint::CompilerInstance *compilerInstance = new oclint::CompilerInstance();
     compilerInstance->setInvocation(compilerInvocation);
     compilerInstance->setFileManager(fileManager);
@@ -259,7 +260,6 @@ static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *
 }
 
 static bool constructCompilerAndFileManager(oclint::CompilerInstance *&compiler,
-    clang::FileManager *&fileManager,
     CompileCommandPair &compileCommand)
 {
     debug::emit("Compiling ");
@@ -272,8 +272,7 @@ static bool constructCompilerAndFileManager(oclint::CompilerInstance *&compiler,
     }
     clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(
             compileCommand.second.CommandLine);
-    fileManager = newFileManager();
-    compiler = newCompilerInstance(compilerInvocation, fileManager);
+    compiler = newCompilerInstance(compilerInvocation);
 
     compiler->start();
     bool success = !compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext();
@@ -301,9 +300,7 @@ static void invokeClangStaticAnalyzer(CompileCommandPair &compileCommand)
     }
     clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(
             compileCommand.second.CommandLine, true);
-    clang::FileManager *fileManager = newFileManager();
-    oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation,
-                                                             fileManager, true);
+    oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation, true);
 
     compiler->start();
     if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
@@ -315,7 +312,7 @@ static void invokeClangStaticAnalyzer(CompileCommandPair &compileCommand)
         debug::emit(" - Finished with Failure");
     }
     debug::emit("\n");
-    cleanUp(compiler, fileManager);
+    cleanUp(compiler);
 }
 
 static void analyze(oclint::Analyzer &analyzer, clang::ASTContext *localContext)
@@ -326,9 +323,9 @@ static void analyze(oclint::Analyzer &analyzer, clang::ASTContext *localContext)
     analyzer.postprocess(localContext);
 }
 
-static void cleanUp(oclint::CompilerInstance *compiler,
-                    clang::FileManager *fileManager)
+static void cleanUp(oclint::CompilerInstance *compiler)
 {
+    clang::FileManager *fileManager = &compiler->getFileManager();
     // send out the signals to release or simply leak resources
     compiler->end();
     compiler->resetAndLeakFileManager();
@@ -352,21 +349,18 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
     if (option::enableGlobalAnalysis())
     {
         std::vector<oclint::CompilerInstance *> compilers;
-        std::vector<clang::FileManager *> fileManagers;
         for (auto &compileCommand : compileCommands)
         {
             oclint::CompilerInstance *compiler;
-            clang::FileManager *fileManager;
-            if (constructCompilerAndFileManager(compiler, fileManager, compileCommand))
+            if (constructCompilerAndFileManager(compiler, compileCommand))
             {
                 compilers.push_back(compiler);
-                fileManagers.push_back(fileManager);
             }
         }
-        for (int i = 0; i < compilers.size(); i++)
+        for (oclint::CompilerInstance *compiler : compilers)
         {
-            analyze(analyzer, &compilers[i]->getASTContext());
-            cleanUp(compilers[i], fileManagers[i]);
+            analyze(analyzer, &compiler->getASTContext());
+            cleanUp(compiler);
         }
     }
     else
@@ -374,11 +368,10 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
         for (auto &compileCommand : compileCommands)
         {
             oclint::CompilerInstance *compiler;
-            clang::FileManager *fileManager;
-            if (constructCompilerAndFileManager(compiler, fileManager, compileCommand))
+            if (constructCompilerAndFileManager(compiler, compileCommand))
             {
                 analyze(analyzer, &compiler->getASTContext());
-                cleanUp(compiler, fileManager);
+                cleanUp(compiler);
             }
         }
     }
