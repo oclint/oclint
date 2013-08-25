@@ -4,6 +4,8 @@
 
 using namespace oclint;
 
+// This class must be thread-safe!
+
 RuleCarrier::RuleCarrier(clang::ASTContext *astContext, ViolationSet *violationSet)
 {
     _violationSet = violationSet;
@@ -39,6 +41,8 @@ void RuleCarrier::addViolation(std::string filePath, int startLine, int startCol
     {
         Violation violation(rule,
             filePath, startLine, startColumn, endLine, endColumn, message);
+
+        std::lock_guard<std::mutex> lock(_mutex);
         _violationSet->addViolation(violation);
     }
 }
