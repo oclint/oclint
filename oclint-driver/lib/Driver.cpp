@@ -342,6 +342,12 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
     CompileCommandPairs compileCommands;
     constructCompileCommands(compileCommands, compilationDatabase, sourcePaths);
 
+    const int numThreads = 1;
+    if (numThreads > 1)
+    {
+        LLVMStartMultithreaded();
+    }
+
     if (option::enableGlobalAnalysis())
     {
         std::vector<oclint::CompilerInstance *> compilers;
@@ -382,5 +388,10 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
         {
             invokeClangStaticAnalyzer(compileCommand);
         }
+    }
+
+    if (numThreads > 1)
+    {
+        LLVMStopMultithreaded();
     }
 }
