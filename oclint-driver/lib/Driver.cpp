@@ -261,7 +261,7 @@ static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *
     return compilerInstance;
 }
 
-static bool constructCompilerAndFileManager(oclint::CompilerInstance *&compiler,
+static oclint::CompilerInstance *constructCompilerAndFileManager(
     CompileCommandPair &compileCommand)
 {
     debug::emit("Compiling ");
@@ -274,7 +274,7 @@ static bool constructCompilerAndFileManager(oclint::CompilerInstance *&compiler,
     }
     clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(
             compileCommand.second.CommandLine);
-    compiler = newCompilerInstance(compilerInvocation);
+    oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation);
 
     compiler->start();
     bool success = !compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext();
@@ -284,10 +284,12 @@ static bool constructCompilerAndFileManager(oclint::CompilerInstance *&compiler,
     }
     else
     {
+        cleanUp(compiler);
+        compiler = NULL;
         debug::emit(" - Failed");
     }
     debug::emit("\n");
-    return success;
+    return compiler;
 }
 
 static void invokeClangStaticAnalyzer(CompileCommandPair &compileCommand)
@@ -377,8 +379,8 @@ void Driver::runAnalyzerGlobally(const CompileCommandPairs &compileCommands,
         CompileCommandPair compileCommand;
         while (remaining.pop(compileCommand))
         {
-            oclint::CompilerInstance *compiler;
-            if (constructCompilerAndFileManager(compiler, compileCommand))
+            oclint::CompilerInstance *compiler = constructCompilerAndFileManager(compileCommand);
+            if (compiler)
             {
                 compilers.add(compiler);
             }
@@ -401,8 +403,8 @@ void Driver::runAnalyzerLocally(const CompileCommandPairs &compileCommands,
         CompileCommandPair compileCommand;
         while (remaining.pop(compileCommand))
         {
-            oclint::CompilerInstance *compiler;
-            if (constructCompilerAndFileManager(compiler, compileCommand))
+            oclint::CompilerInstance *compiler = constructCompilerAndFileManager(compileCommand);
+            if (compiler)
             {
                 analyze(analyzer, &compiler->getASTContext());
                 cleanUp(compiler);
