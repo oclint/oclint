@@ -342,68 +342,84 @@ void Driver::run(const clang::tooling::CompilationDatabase &compilationDatabase,
     CompileCommandPairs compileCommands;
     constructCompileCommands(compileCommands, compilationDatabase, sourcePaths);
 
-    ThreadPool threadPool;
-    oclint::Queue<CompileCommandPair> remainingCompileCommands(compileCommands);
-
-    if (threadPool.getNumberOfThreads() > 1)
+    if (_threadPool.getNumberOfThreads() > 1)
     {
         LLVMStartMultithreaded();
     }
 
     if (option::enableGlobalAnalysis())
     {
-        oclint::Queue<oclint::CompilerInstance *> compilers;
-        threadPool.run([&]
-        {
-            CompileCommandPair compileCommand;
-            while (remainingCompileCommands.pop(compileCommand))
-            {
-                oclint::CompilerInstance *compiler;
-                if (constructCompilerAndFileManager(compiler, compileCommand))
-                {
-                    compilers.add(compiler);
-                }
-            }
-            oclint::CompilerInstance *compiler;
-            while (compilers.pop(compiler))
-            {
-                analyze(analyzer, &compiler->getASTContext());
-                cleanUp(compiler);
-            }
-        });
+        runAnalyzerGlobally(compileCommands, analyzer);
     }
     else
     {
-        threadPool.run([&]
-        {
-            CompileCommandPair compileCommand;
-            while (remainingCompileCommands.pop(compileCommand))
-            {
-                oclint::CompilerInstance *compiler;
-                if (constructCompilerAndFileManager(compiler, compileCommand))
-                {
-                    analyze(analyzer, &compiler->getASTContext());
-                    cleanUp(compiler);
-                }
-            }
-        });
+        runAnalyzerLocally(compileCommands, analyzer);
     }
 
     if (option::enableClangChecker())
     {
-        oclint::Queue<CompileCommandPair> remainingCheckerCommands(compileCommands);
-        threadPool.run([&]
-        {
-            CompileCommandPair compileCommand;
-            while (remainingCheckerCommands.pop(compileCommand))
-            {
-                invokeClangStaticAnalyzer(compileCommand);
-            }
-        });
+        runClangChecker(compileCommands);
     }
 
-    if (threadPool.getNumberOfThreads() > 1)
+    if (_threadPool.getNumberOfThreads() > 1)
     {
         LLVMStopMultithreaded();
     }
+}
+
+void Driver::runAnalyzerGlobally(const CompileCommandPairs &compileCommands,
+    oclint::Analyzer &analyzer)
+{
+    oclint::Queue<CompileCommandPair> remaining(compileCommands);
+    oclint::Queue<oclint::CompilerInstance *> compilers;
+    _threadPool.run([&]
+    {
+        CompileCommandPair compileCommand;
+        while (remaining.pop(compileCommand))
+        {
+            oclint::CompilerInstance *compiler;
+            if (constructCompilerAndFileManager(compiler, compileCommand))
+            {
+                compilers.add(compiler);
+            }
+        }
+        oclint::CompilerInstance *compiler;
+        while (compilers.pop(compiler))
+        {
+            analyze(analyzer, &compiler->getASTContext());
+            cleanUp(compiler);
+        }
+    });
+}
+
+void Driver::runAnalyzerLocally(const CompileCommandPairs &compileCommands,
+    oclint::Analyzer &analyzer)
+{
+    oclint::Queue<CompileCommandPair> remaining(compileCommands);
+    _threadPool.run([&]
+    {
+        CompileCommandPair compileCommand;
+        while (remaining.pop(compileCommand))
+        {
+            oclint::CompilerInstance *compiler;
+            if (constructCompilerAndFileManager(compiler, compileCommand))
+            {
+                analyze(analyzer, &compiler->getASTContext());
+                cleanUp(compiler);
+            }
+        }
+    });
+}
+
+void Driver::runClangChecker(const CompileCommandPairs &compileCommands)
+{
+    oclint::Queue<CompileCommandPair> remaining(compileCommands);
+    _threadPool.run([&]
+    {
+        CompileCommandPair compileCommand;
+        while (remaining.pop(compileCommand))
+        {
+            invokeClangStaticAnalyzer(compileCommand);
+        }
+    });
 }
