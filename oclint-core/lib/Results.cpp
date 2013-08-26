@@ -5,6 +5,8 @@
 
 using namespace oclint;
 
+#define UNUSED __attribute__((annotate("oclint:suppress[unused local variable]")))
+
 // This class must be thread-safe!
 
 Results* Results::getInstance()
@@ -36,13 +38,14 @@ Results::~Results()
 
 void Results::add(ViolationSet *violationSet)
 {
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::mutex> UNUSED lock(_mutex);
     _collection->push_back(violationSet);
 }
 
 std::vector<Violation> Results::allViolations()
 {
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::mutex> UNUSED lock(_mutex);
+
     std::vector<Violation> violations;
     for (const auto& violationSet : *_collection)
     {
@@ -75,13 +78,13 @@ int Results::numberOfViolationsWithPriority(int priority)
 
 int Results::numberOfFiles()
 {
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::mutex> UNUSED lock(_mutex);
     return _collection->size();
 }
 
 int Results::numberOfFilesWithViolations()
 {
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::mutex> UNUSED lock(_mutex);
     int numFiles = 0;
     for (const auto& violationSet : *_collection)
     {
@@ -95,13 +98,13 @@ int Results::numberOfFilesWithViolations()
 
 void Results::addError(Violation& violation)
 {
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::mutex> UNUSED lock(_mutex);
     _compilerErrorSet->addViolation(violation);
 }
 
 int Results::numberOfErrors()
 {
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::mutex> UNUSED lock(_mutex);
     return _compilerErrorSet->numberOfViolations();
 }
 
@@ -112,19 +115,19 @@ bool Results::hasErrors()
 
 std::vector<Violation> Results::allErrors()
 {
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::mutex> UNUSED lock(_mutex);
     return _compilerErrorSet->getViolations();
 }
 
 void Results::addWarning(Violation& violation)
 {
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::mutex> UNUSED lock(_mutex);
     _compilerWarningSet->addViolation(violation);
 }
 
 int Results::numberOfWarnings()
 {
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::mutex> UNUSED lock(_mutex);
     return _compilerWarningSet->numberOfViolations();
 }
 
@@ -135,19 +138,19 @@ bool Results::hasWarnings()
 
 std::vector<Violation> Results::allWarnings()
 {
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::mutex> UNUSED lock(_mutex);
     return _compilerWarningSet->getViolations();
 }
 
 void Results::addCheckerBug(Violation& violation)
 {
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::mutex> UNUSED lock(_mutex);
     _clangStaticCheckerBugSet->addViolation(violation);
 }
 
 int Results::numberOfCheckerBugs()
 {
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::mutex> UNUSED lock(_mutex);
     return _clangStaticCheckerBugSet->numberOfViolations();
 }
 
@@ -158,6 +161,6 @@ bool Results::hasCheckerBugs()
 
 std::vector<Violation> Results::allCheckerBugs()
 {
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::mutex> UNUSED lock(_mutex);
     return _clangStaticCheckerBugSet->getViolations();
 }
