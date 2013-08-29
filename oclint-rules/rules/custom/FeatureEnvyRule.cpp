@@ -1,4 +1,5 @@
 #include "oclint/AbstractASTVisitorRule.h"
+#include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 
 using namespace std;
