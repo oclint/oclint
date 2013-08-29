@@ -38,7 +38,7 @@ if [ -d "$OCLINT_JSON_CD_FOLDER" ]; then
 fi
 
 # put oclint-xcodebuild in place if exists
-if [ -d "$OCLINT_XCODBUILD_FOLDER" ] && [ `uname` == "Darwin" ]; then
+if [ -d "$OCLINT_XCODBUILD_FOLDER" ] && [ `uname` = "Darwin" ]; then
     cp $OCLINT_XCODBUILD_FOLDER/oclint* $OCLINT_RELEASE_BUILD/bin
 fi
 
