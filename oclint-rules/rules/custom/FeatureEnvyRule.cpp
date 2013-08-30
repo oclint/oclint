@@ -88,7 +88,6 @@ public:
     virtual void setUp() {}
     virtual void tearDown() {}
     
-    /* Visit ObjCMethodDecl */
     bool VisitObjCMethodDecl(ObjCMethodDecl *node)
     {
         MessageAnalyzer analyzer;
