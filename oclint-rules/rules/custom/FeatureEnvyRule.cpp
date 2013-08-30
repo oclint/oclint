@@ -152,13 +152,6 @@ public:
         return true;
     }
      */
-
-    /* Visit ObjCSelectorExpr
-    bool VisitObjCSelectorExpr(ObjCSelectorExpr *node)
-    {
-        return true;
-    }
-     */
 };
 
 RuleSet FeatureEnvyRule::rules(new FeatureEnvyRule());
