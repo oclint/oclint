@@ -25,23 +25,31 @@ def custom_test_folder_path(folder_name):
 def custom_test_cmake_lists_path(folder_name):
     return os.path.join(custom_test_folder_path(folder_name), "CMakeLists.txt")
 
-def pre_check(folder_name):
-    folder_path = custom_folder_path(folder_name)
-    if not os.path.isdir(folder_path):
-        os.mkdir(folder_path)
-    test_folder_path = custom_test_folder_path(folder_name)
-    if not os.path.isdir(test_folder_path):
-        os.mkdir(test_folder_path)
+def mkdir(path):
+    if not os.path.isdir(path):
+        os.mkdir(path)
+
+def add_path_to_cmake_lists(path, cmake_lists, build_step):
+    if not os.path.isfile(path):
+        open(path, 'a').close()
+        with open(cmake_lists, 'a') as cmake_lists_file:
+            cmake_lists_file.write(build_step)
+
+def pre_check_rule(folder_name):
+    mkdir(custom_folder_path(folder_name))
     cmake_lists_path = custom_cmake_lists_path(folder_name)
-    if not os.path.isfile(cmake_lists_path):
-        open(cmake_lists_path, 'a').close()
-        with open(RULES_SOURCE_ROOT_CMAKELISTS, 'a') as rules_cmake_lists_file:
-            rules_cmake_lists_file.write('\nADD_RULE_CATEGORY_DIRECTORY(' + folder_name + ')\n')
+    rule_build_step = '\nADD_RULE_CATEGORY_DIRECTORY(' + folder_name + ')\n'
+    add_path_to_cmake_lists(cmake_lists_path, RULES_SOURCE_ROOT_CMAKELISTS, rule_build_step)
+
+def pre_check_test(folder_name):
+    mkdir(custom_test_folder_path(folder_name))
     test_cmake_lists_path = custom_test_cmake_lists_path(folder_name)
-    if not os.path.isfile(test_cmake_lists_path):
-        open(test_cmake_lists_path, 'a').close()
-        with open(RULES_TEST_ROOT_CMAKELISTS, 'a') as test_cmake_lists_file:
-            test_cmake_lists_file.write('\nADD_SUBDIRECTORY(' + folder_name + ')\n')
+    test_build_step = '\nADD_SUBDIRECTORY(' + folder_name + ')\n'
+    add_path_to_cmake_lists(test_cmake_lists_path, RULES_TEST_ROOT_CMAKELISTS, test_build_step)
+
+def pre_check(folder_name):
+    pre_check_rule(folder_name)
+    pre_check_test(folder_name)
 
 def generate_code_block(line, node_type = ""):
     line_re = re.search('def (.+) :', line)
@@ -72,25 +80,22 @@ def replace_wildcard(each_line, rule_dict):
         each_line = each_line.replace(wildcard, rule_dict[each])
     return each_line.replace('{{VISIT_AST_NODE_BLOCK}}', visit_ast_nodes())
 
-def copy_template(template_path, class_path, rule_dict):
-    class_file = open(class_path, 'w')
+def copy_template(folder_path, rule_type, suffix, rule_dict):
+    template_path = os.path.join(RULES_TEMPLATE_DIRECTORY, rule_type + suffix + '.tmpl')
+    rule_class_name = rule_dict['RULE_CLASS_NAME']
+    dst_path = os.path.join(folder_path, rule_class_name + suffix + '.cpp')
+    dst_file = open(dst_path, 'w')
     with open(template_path, 'r') as template_file:
         for each_line in template_file:
-            class_file.write(replace_wildcard(each_line, rule_dict))
-    class_file.close()
+            dst_file.write(replace_wildcard(each_line, rule_dict))
+    dst_file.close()
 
 def copy_rule(folder_path, rule_dict):
     rule_type = rule_dict['RULE_TYPE']
-    rule_template_path = os.path.join(RULES_TEMPLATE_DIRECTORY, rule_type + 'Rule.tmpl')
-    rule_class_name = rule_dict['RULE_CLASS_NAME']
-    rule_class_path = os.path.join(folder_path, rule_class_name + 'Rule.cpp')
-    copy_template(rule_template_path, rule_class_path, rule_dict)
+    copy_template(folder_path, rule_type, 'Rule', rule_dict)
 
 def copy_test(folder_path, rule_dict):
-    test_template_path = os.path.join(RULES_TEMPLATE_DIRECTORY, 'RuleTest.tmpl')
-    rule_class_name = rule_dict['RULE_CLASS_NAME']
-    test_class_path = os.path.join(folder_path, rule_class_name + 'RuleTest.cpp')
-    copy_template(test_template_path, test_class_path, rule_dict)
+    copy_template(folder_path, '', 'RuleTest', rule_dict)
 
 def write_cmake_lists(cmake_lists_path, rule_dict):
     rule_class_name = rule_dict['RULE_CLASS_NAME']
