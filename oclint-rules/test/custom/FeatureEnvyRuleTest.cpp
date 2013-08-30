@@ -106,6 +106,30 @@ TEST(FeatureEnvyRuleTest, ObjcMethodMessageSelfLessThanOther)
       0, 10, 1, 15, 1, "Method f messages B more than self.");
 }
 
+TEST(FeatureEnvyRuleTest, ObjcMethodAccessesIvarOfAnotherClass)
+{
+    testRuleOnObjCCode(new FeatureEnvyRule(),
+      "@interface B {\n"
+      "    @public \n"
+      "    int _p; \n"
+      "}; \n"
+      "@end \n"
+
+      "@implementation B \n"
+      "@end \n"
+
+      "@interface A \n"
+      "@end \n"
+
+      "@implementation A \n"
+      "- (void)f { \n"
+      "    B *b; \n"
+      "    b->_p = 5; \n"
+      "} \n"
+      "@end\n",
+      0, 11, 1, 14, 1, "Method f messages B more than self.");
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);

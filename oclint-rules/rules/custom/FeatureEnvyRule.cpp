@@ -29,14 +29,39 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
         bool VisitObjCMessageExpr(ObjCMessageExpr *node)
         {
             if (!node->isImplicit()) {
-                ObjCInterfaceDecl *interface = node->getReceiverInterface();
-                string receiverClassName = interface->getNameAsString();
-                ++_receiversCount[receiverClassName];
+                countInterface(node->getReceiverInterface());
             }
             return true;
         }
 
+        bool VisitObjCIvarRefExpr(ObjCIvarRefExpr *node)
+        {
+            countInterface(node->getDecl()->getContainingInterface());
+
+            return true;
+        }
+
+        // bool VisitObjCPropertyRefExpr(ObjCPropertyRefExpr *node)
+        // {
+        //     if (node->isClassReceiver()) {
+        //         cout << "Class Receiver" << endl;
+        //         cout << "Property Receiver: " << node->getClassReceiver()->getNameAsString() << endl;
+        //     } else if (node->isObjectReceiver()) {
+        //         cout << "Object Receiver" << endl;
+        //         node->getBase()->dump();
+        //     } else if (node->isSuperReceiver()) {
+        //         cout << "Super Receiver" << endl;
+        //     }
+        //     return true;
+        // }
+
     private:
+        void countInterface(const ObjCInterfaceDecl *interface)
+        {
+            string receiverClassName = interface->getNameAsString();
+            ++_receiversCount[receiverClassName];
+        }
+
         long self_messages(string selfname)
         {
             long occurances = 0;
@@ -124,27 +149,6 @@ public:
 
     /* Visit ObjCSelectorExpr
     bool VisitObjCSelectorExpr(ObjCSelectorExpr *node)
-    {
-        return true;
-    }
-     */
-
-    /* Visit ObjCProtocolExpr
-    bool VisitObjCProtocolExpr(ObjCProtocolExpr *node)
-    {
-        return true;
-    }
-     */
-
-    /* Visit ObjCIvarRefExpr
-    bool VisitObjCIvarRefExpr(ObjCIvarRefExpr *node)
-    {
-        return true;
-    }
-     */
-
-    /* Visit ObjCPropertyRefExpr
-    bool VisitObjCPropertyRefExpr(ObjCPropertyRefExpr *node)
     {
         return true;
     }
