@@ -18,8 +18,8 @@ arg_parser.add_argument('-show', '--show', action="store_true")
 args = arg_parser.parse_args()
 
 def clean_module(module_name):
-    champagne_path = path.oclint_module_champagne_dir(module_name)
-    path.rm_f(champagne_path)
+    dogfooding_path = path.oclint_module_dogfooding_dir(module_name)
+    path.rm_f(dogfooding_path)
 
 def build_command(module_extras, source_path):
     command = 'cmake'
@@ -47,7 +47,7 @@ def build_command(module_extras, source_path):
     return command
 
 def build_module(module_name):
-    build_path = path.oclint_module_champagne_dir(module_name)
+    build_path = path.oclint_module_dogfooding_dir(module_name)
     source_path = path.oclint_module_source_dir(module_name)
 
     module_extras = {}
@@ -74,14 +74,14 @@ def build_module(module_name):
     path.cp(compile_commands_src_path, compile_commands_dst_path)
 
 def result_path(module_name):
-    build_path = path.oclint_module_champagne_dir(module_name)
-    return os.path.join(build_path, 'champagne_results.txt')
+    build_path = path.oclint_module_dogfooding_dir(module_name)
+    return os.path.join(build_path, 'dogfooding_results.txt')
 
 def display_result(module_name):
     with open(result_path(module_name), 'r') as result_file:
         print result_file.read()
 
-def drink_champagne(module_name, enable_clang_static_analyzer):
+def drink_dogfooding(module_name, enable_clang_static_analyzer):
     source_path = path.oclint_module_source_dir(module_name)
     oclint_json_compilation_database_path = os.path.join(path.build.bundle_dir, 'bin', 'oclint-json-compilation-database')
     command = oclint_json_compilation_database_path + ' -- -debug -max-priority-1=0 -max-priority-2=0 -max-priority-3=0'
@@ -91,10 +91,10 @@ def drink_champagne(module_name, enable_clang_static_analyzer):
 
     current_dir = os.getcwd()
     path.cd(source_path)
-    champagne_exit_code = subprocess.call(command, shell=True)
+    dogfooding_exit_code = subprocess.call(command, shell=True)
     display_result(module_name)
-    if champagne_exit_code:
-        sys.exit(champagne_exit_code)
+    if dogfooding_exit_code:
+        sys.exit(dogfooding_exit_code)
     path.cd(current_dir)
 
 build_modules = []
@@ -111,4 +111,4 @@ if args.show:
 for module in build_modules:
     clean_module(module)
     build_module(module)
-    drink_champagne(module, args.enable_clang_static_analyzer)
+    drink_dogfooding(module, args.enable_clang_static_analyzer)

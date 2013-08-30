@@ -23,8 +23,8 @@ def oclint_module_build_dir(module_name):
 def oclint_module_test_dir(module_name):
     return module_build_dir("oclint-" + module_name + "-test")
 
-def oclint_module_champagne_dir(module_name):
-    return module_build_dir("oclint-" + module_name + "-champagne")
+def oclint_module_dogfooding_dir(module_name):
+    return module_build_dir("oclint-" + module_name + "-dogfooding")
 
 class source:
     clang_dir = module_source_dir("llvm")
@@ -57,11 +57,11 @@ class build:
     rules_test_dir = oclint_module_test_dir("rules")
     reporters_test_dir = oclint_module_test_dir("reporters")
 
-    core_champagne_dir = oclint_module_champagne_dir("core")
-    metrics_champagne_dir = oclint_module_champagne_dir("metrics")
-    rules_champagne_dir = oclint_module_champagne_dir("rules")
-    reporters_champagne_dir = oclint_module_champagne_dir("reporters")
-    driver_champagne_dir = oclint_module_champagne_dir("driver")
+    core_dogfooding_dir = oclint_module_dogfooding_dir("core")
+    metrics_dogfooding_dir = oclint_module_dogfooding_dir("metrics")
+    rules_dogfooding_dir = oclint_module_dogfooding_dir("rules")
+    reporters_dogfooding_dir = oclint_module_dogfooding_dir("reporters")
+    driver_dogfooding_dir = oclint_module_dogfooding_dir("driver")
 
 class url:
     llvm = 'http://llvm.org/svn/llvm-project/llvm/'

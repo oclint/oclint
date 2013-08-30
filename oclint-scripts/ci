@@ -58,9 +58,9 @@ else:
 run_command('python bundle')
 if environment.is_unix() and not args.release:
     if args.jenkins:
-        run_command('python champagneDrinking -enable-clang-static-analyzer')
+        run_command('python dogFooding -enable-clang-static-analyzer')
     else:
-        run_command('python champagneDrinking')
+        run_command('python dogFooding')
 if args.jenkins:
     run_command('python bundle -archive')
     if not args.release:
