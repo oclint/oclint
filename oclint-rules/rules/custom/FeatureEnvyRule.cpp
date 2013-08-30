@@ -2,6 +2,7 @@
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 #include <unordered_map>
+#include <sstream>
 
 using namespace std;
 using namespace clang;
@@ -66,6 +67,13 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
 private:
     static RuleSet rules;
 
+    string description(string methodName, string enviedClass)
+    {
+        ostringstream stream;
+        stream << "Method " <<  methodName << " messages " << enviedClass << " more than self.";
+        return stream.str();
+    }
+
 public:
     virtual const string name() const
     {
@@ -87,9 +95,8 @@ public:
         vector<string> enviedClasses = analyzer.analyze(node);
         for (const auto& enviedClass : enviedClasses)
         {
-            ostringstream os;
-            os << "Method " << node->getNameAsString() << " messages " << enviedClass << " more than self.";
-            addViolation(node, this, os.str());
+            string methodName = node->getNameAsString();
+            addViolation(node, this, description(methodName, enviedClass));
         }
 
         return true;
