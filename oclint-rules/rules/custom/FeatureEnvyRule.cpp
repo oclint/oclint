@@ -15,15 +15,16 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
         unordered_map<string, long> _receiversCount;
 
     public:
-        vector<string> analyze(ObjCMethodDecl *decl)
+        vector<string> analyzeObjC(ObjCMethodDecl *decl)
         {
             string selfName = decl->getClassInterface()->getNameAsString();
+            return analyzeCommon(selfName, decl);
+        }
 
-            _receiversCount.clear();
-
-            TraverseDecl(decl);
-
-            return enviedClasses(self_messages(selfName));
+        vector<string> analyzeCXX(CXXMethodDecl *decl)
+        {
+            string selfName = decl->getParent()->getName();
+            return analyzeCommon(selfName, decl);
         }
 
         bool VisitObjCMessageExpr(ObjCMessageExpr *node)
@@ -56,16 +57,39 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
             return true;
         }
 
+        bool VisitCXXMemberCallExpr(CXXMemberCallExpr *node)
+        {
+            countCXXRecord(node->getRecordDecl());
+            return true;
+        }
+
     private:
+        vector<string> analyzeCommon(string selfName, Decl *decl)
+        {
+            _receiversCount.clear();
+            TraverseDecl(decl);
+
+            return enviedClasses(self_messages(selfName));
+        }
+
+        void countClassName(string className)
+        {
+            ++_receiversCount[className];
+        }
+
         void countInterface(const ObjCInterfaceDecl *interface)
         {
-            string receiverClassName = interface->getNameAsString();
-            ++_receiversCount[receiverClassName];
+            countClassName(interface->getNameAsString());
         }
 
         void countIvar(ObjCIvarDecl *ivarDecl)
         {
             countInterface(ivarDecl->getContainingInterface());
+        }
+
+        void countCXXRecord(CXXRecordDecl *decl)
+        {
+            countClassName(decl->getName());
         }
 
         long self_messages(string selfname)
@@ -105,6 +129,15 @@ private:
         return stream.str();
     }
 
+    void addViolationsForEnviedClasses(NamedDecl *node, vector<string> enviedClasses)
+    {
+        for (const auto& enviedClass : enviedClasses)
+        {
+            string methodName = node->getNameAsString();
+            addViolation(node, this, description(methodName, enviedClass));
+        }
+    }
+
 public:
     virtual const string name() const
     {
@@ -122,36 +155,18 @@ public:
     bool VisitObjCMethodDecl(ObjCMethodDecl *node)
     {
         MessageAnalyzer analyzer;
-        vector<string> enviedClasses = analyzer.analyze(node);
-        for (const auto& enviedClass : enviedClasses)
-        {
-            string methodName = node->getNameAsString();
-            addViolation(node, this, description(methodName, enviedClass));
-        }
+        addViolationsForEnviedClasses(node, analyzer.analyzeObjC(node));
 
         return true;
     }
 
-    /* Visit CXXOperatorCallExpr
-    bool VisitCXXOperatorCallExpr(CXXOperatorCallExpr *node)
-    {
-        return true;
-    }
-     */
-
-    /* Visit CXXMemberCallExpr
-    bool VisitCXXMemberCallExpr(CXXMemberCallExpr *node)
-    {
-        return true;
-    }
-     */
-
-    /* Visit CXXMethodDecl
     bool VisitCXXMethodDecl(CXXMethodDecl *node)
     {
+        MessageAnalyzer analyzer;
+        addViolationsForEnviedClasses(node, analyzer.analyzeCXX(node));
+
         return true;
     }
-     */
 };
 
 RuleSet FeatureEnvyRule::rules(new FeatureEnvyRule());

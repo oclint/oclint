@@ -198,6 +198,74 @@ TEST(FeatureEnvyRuleTest, ObjcMethodAccessesIvarOfAnotherClass)
       0, 11, 1, 14, 1, "Method f messages B more than self.");
 }
 
+TEST(FeatureEnvyRuleTest, CXXMemberCallsOther)
+{
+    testRuleOnCXXCode(new FeatureEnvyRule(),
+      "class B { \n"
+      "public: \n"
+      "    void f() {} \n"
+      "}; \n"
+
+      "class A { \n"
+      "    void f() { \n"
+      "        B b; \n"
+      "        b.f(); \n"
+      "    } \n"
+      "}; \n",
+      0, 6, 5, 9, 5, "Method f messages B more than self.");
+}
+
+TEST(FeatureEnvyRuleTest, CXXMemberCallsThis)
+{
+    testRuleOnCXXCode(new FeatureEnvyRule(),
+      "class B { \n"
+      "public: \n"
+      "    void f() {} \n"
+      "}; \n"
+
+      "class A { \n"
+      "    void f() { \n"
+      "        this->f(); \n"
+      "    } \n"
+      "}; \n");
+}
+
+TEST(FeatureEnvyRuleTest, CXXMemberCallsThisAndOtherEqually)
+{
+    testRuleOnCXXCode(new FeatureEnvyRule(),
+      "class B { \n"
+      "public: \n"
+      "    void f() {} \n"
+      "}; \n"
+
+      "class A { \n"
+      "    void f() { \n"
+      "        B b; \n"
+      "        b.f(); \n"
+      "        this->f(); \n"
+      "    } \n"
+      "}; \n");
+}
+
+TEST(FeatureEnvyRuleTest, CXXMemberCallsThisLessThanOther)
+{
+    testRuleOnCXXCode(new FeatureEnvyRule(),
+      "class B { \n"
+      "public: \n"
+      "    void f() {} \n"
+      "}; \n"
+
+      "class A { \n"
+      "    void f() { \n"
+      "        B b; \n"
+      "        b.f(); \n"
+      "        this->f(); \n"
+      "        b.f(); \n"
+      "    } \n"
+      "}; \n",
+      0, 6, 5, 11, 5, "Method f messages B more than self.");
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);
