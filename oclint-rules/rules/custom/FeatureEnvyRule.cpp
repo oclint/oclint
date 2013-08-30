@@ -36,30 +36,36 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
 
         bool VisitObjCIvarRefExpr(ObjCIvarRefExpr *node)
         {
-            countInterface(node->getDecl()->getContainingInterface());
+            countIvar(node->getDecl());
 
             return true;
         }
 
-        // bool VisitObjCPropertyRefExpr(ObjCPropertyRefExpr *node)
-        // {
-        //     if (node->isClassReceiver()) {
-        //         cout << "Class Receiver" << endl;
-        //         cout << "Property Receiver: " << node->getClassReceiver()->getNameAsString() << endl;
-        //     } else if (node->isObjectReceiver()) {
-        //         cout << "Object Receiver" << endl;
-        //         node->getBase()->dump();
-        //     } else if (node->isSuperReceiver()) {
-        //         cout << "Super Receiver" << endl;
-        //     }
-        //     return true;
-        // }
+        bool VisitObjCPropertyRefExpr(ObjCPropertyRefExpr *node)
+        {
+            if (node->isExplicitProperty()) {
+                countIvar(node->getExplicitProperty()->getPropertyIvarDecl());
+            } else {
+                if (node->isMessagingSetter()) {
+                    countInterface(node->getImplicitPropertySetter()->getClassInterface());
+                } else {
+                    countInterface(node->getImplicitPropertyGetter()->getClassInterface());
+                }
+            }
+
+            return true;
+        }
 
     private:
         void countInterface(const ObjCInterfaceDecl *interface)
         {
             string receiverClassName = interface->getNameAsString();
             ++_receiversCount[receiverClassName];
+        }
+
+        void countIvar(ObjCIvarDecl *ivarDecl)
+        {
+            countInterface(ivarDecl->getContainingInterface());
         }
 
         long self_messages(string selfname)

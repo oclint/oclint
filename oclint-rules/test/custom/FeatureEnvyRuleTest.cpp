@@ -106,6 +106,74 @@ TEST(FeatureEnvyRuleTest, ObjcMethodMessageSelfLessThanOther)
       0, 10, 1, 15, 1, "Method f messages B more than self.");
 }
 
+TEST(FeatureEnvyRuleTest, ObjcMethodAccessesPropertyOfAnotherClass)
+{
+    testRuleOnObjCCode(new FeatureEnvyRule(),
+      "@interface B \n"
+      "@property int p; \n"
+      "@end \n"
+
+      "@implementation B \n"
+      "@end \n"
+
+      "@interface A \n"
+      "@end \n"
+
+      "@implementation A \n"
+      "- (void)f { \n"
+      "    B *b; \n"
+      "    b.p = 5; \n"
+      "} \n"
+      "@end\n",
+      0, 9, 1, 12, 1, "Method f messages B more than self.");
+}
+
+TEST(FeatureEnvyRuleTest, ObjcMethodAccessesImplicitPropertySetterOfAnotherClass)
+{
+    testRuleOnObjCCode(new FeatureEnvyRule(),
+      "@interface B \n"
+      "- (int)p; \n"
+      "- (void)setP:(int)value; \n"
+      "@end \n"
+
+      "@implementation B \n"
+      "@end \n"
+
+      "@interface A \n"
+      "@end \n"
+
+      "@implementation A \n"
+      "- (void)f { \n"
+      "    B *b; \n"
+      "    b.p = 5; \n"
+      "} \n"
+      "@end\n",
+      0, 10, 1, 13, 1, "Method f messages B more than self.");
+}
+
+TEST(FeatureEnvyRuleTest, ObjcMethodAccessesImplicitPropertyGetterOfAnotherClass)
+{
+    testRuleOnObjCCode(new FeatureEnvyRule(),
+      "@interface B \n"
+      "- (int)p; \n"
+      "- (void)setP:(int)value; \n"
+      "@end \n"
+
+      "@implementation B \n"
+      "@end \n"
+
+      "@interface A \n"
+      "@end \n"
+
+      "@implementation A \n"
+      "- (int)f { \n"
+      "    B *b; \n"
+      "    return b.p; \n"
+      "} \n"
+      "@end\n",
+      0, 10, 1, 13, 1, "Method f messages B more than self.");
+}
+
 TEST(FeatureEnvyRuleTest, ObjcMethodAccessesIvarOfAnotherClass)
 {
     testRuleOnObjCCode(new FeatureEnvyRule(),
