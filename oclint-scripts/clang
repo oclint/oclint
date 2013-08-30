@@ -21,11 +21,9 @@ args = arg_parser.parse_args()
 
 def clean_module():
     build_path = path.build.clang_build_dir
-    if os.path.isdir(build_path):
-        shutil.rmtree(build_path)
+    path.rm_f(build_path)
     install_dir = path.build.clang_install_dir
-    if os.path.isdir(install_dir):
-        shutil.rmtree(install_dir)
+    path.rm_f(install_dir)
 
 def build_command(is_release):
     command = 'cmake'
@@ -59,9 +57,8 @@ def build_module(is_release, multiple_thread):
     command = build_command(is_release)
 
     current_dir = os.getcwd()
-    if not os.path.isdir(build_path):
-        os.makedirs(build_path)
-    os.chdir(build_path)
+    path.mkdir_p(build_path)
+    path.cd(build_path)
     cmake_exit_code = subprocess.call(command, shell=True)
     if cmake_exit_code:
         sys.exit(cmake_exit_code)
@@ -71,26 +68,26 @@ def build_module(is_release, multiple_thread):
     install_exit_code = subprocess.call('make install', shell=True)
     if install_exit_code:
         sys.exit(install_exit_code)
-    os.chdir(current_dir)
+    path.cd(current_dir)
 
 def svn_checkout(url, prefix, root_dir):
     current_dir = os.getcwd()
-    os.chdir(root_dir)
+    path.cd(root_dir)
     svn_exit_code = subprocess.call('svn checkout ' + url + ' ' + prefix, shell=True)
     if svn_exit_code:
         sys.exit(svn_exit_code)
-    os.chdir(current_dir)
+    path.cd(current_dir)
 
 def svn_update(root_dir, rev):
     current_dir = os.getcwd()
-    os.chdir(root_dir)
+    path.cd(root_dir)
     svn_command = 'svn up'
     if rev:
         svn_command += ' -r ' + rev
     svn_exit_code = subprocess.call(svn_command, shell=True)
     if svn_exit_code:
         sys.exit(svn_exit_code)
-    os.chdir(current_dir)
+    path.cd(current_dir)
 
 def checkout_clang(branch_name):
     if os.path.isdir(path.source.clang_dir):

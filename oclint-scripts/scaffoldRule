@@ -4,6 +4,8 @@ import os
 import re
 import argparse
 
+from oclintscripts import path
+
 SCRIPT_WORKING_FOLDER = os.path.dirname(os.path.abspath(__file__))
 RULES_PROJECT_DIRECTORY = os.path.join(SCRIPT_WORKING_FOLDER, "../oclint-rules")
 RULES_SOURCE_ROOT_DIRECTORY = os.path.join(RULES_PROJECT_DIRECTORY, "rules")
@@ -19,8 +21,7 @@ def custom_cmake_lists_path(folder_name):
 
 def pre_check(folder_name):
     folder_path = custom_folder_path(folder_name)
-    if not os.path.isdir(folder_path):
-        os.mkdir(folder_path)
+    path.mkdir_p(folder_path)
     cmake_lists_path = custom_cmake_lists_path(folder_name)
     if not os.path.isfile(cmake_lists_path):
         open(cmake_lists_path, 'a').close()
@@ -29,7 +30,7 @@ def pre_check(folder_name):
 
 def generate_code_block(line, node_type = ""):
     line_re = re.search('def (.+) :', line)
-    if (line_re):
+    if line_re:
         node_name = line_re.group(1) + node_type
         code_block = "\n    /* Visit " + node_name + "\n"
         code_block += "    bool Visit" + node_name + "(" + node_name + " *node)\n"

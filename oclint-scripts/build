@@ -20,8 +20,7 @@ args = arg_parser.parse_args()
 
 def clean_module(module_name):
     build_path = path.oclint_module_build_dir(module_name)
-    if os.path.isdir(build_path):
-        shutil.rmtree(build_path)
+    path.rm_f(build_path)
 
 def build_command(is_release, module_extras, source_path):
     command = 'cmake'
@@ -62,19 +61,17 @@ def build_module(module_name, is_release, multiple_thread):
         module_extras['OCLINT_METRICS_BUILD_DIR'] = path.build.metrics_build_dir
 
     command = build_command(is_release, module_extras, source_path)
-    print command
 
     current_dir = os.getcwd()
-    if not os.path.isdir(build_path):
-        os.makedirs(build_path)
-    os.chdir(build_path)
+    path.mkdir_p(build_path)
+    path.cd(build_path)
     cmake_exit_code = subprocess.call(command, shell=True)
     if cmake_exit_code:
         sys.exit(cmake_exit_code)
     make_exit_code = subprocess.call('make -j ' + multiple_thread, shell=True)
     if make_exit_code:
         sys.exit(make_exit_code)
-    os.chdir(current_dir)
+    path.cd(current_dir)
 
 build_modules = []
 if args.module_name == 'all':
