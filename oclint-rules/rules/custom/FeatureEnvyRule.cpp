@@ -31,24 +31,17 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
         {
             if (!node->isImplicit())
             {
-                switch (node->getReceiverKind())
+                if (node->getReceiverKind() == ObjCMessageExpr::Instance)
                 {
-                case ObjCMessageExpr::Instance:
                     if (node->getReceiverInterface())
                     {
                         countInterface(node->getReceiverInterface());
                     }
-                    break;
-
-                case ObjCMessageExpr::Class:
-                    {
-                        QualType qualType = node->getClassReceiver();
-                        countClassName(QualType::getAsString(qualType.split()));
-                    }
-                    break;
-
-                default:
-                    break;
+                }
+                else if (node->getReceiverKind() == ObjCMessageExpr::Class)
+                {
+                    QualType qualType = node->getClassReceiver();
+                    countClassName(QualType::getAsString(qualType.split()));
                 }
             }
             return true;
