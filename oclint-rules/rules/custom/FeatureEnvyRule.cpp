@@ -63,28 +63,13 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
 
         bool VisitObjCPropertyRefExpr(ObjCPropertyRefExpr *node)
         {
-            if (node->isExplicitProperty())
+            if (node->isMessagingSetter())
             {
-                ObjCPropertyDecl *decl = node->getExplicitProperty();
-                if (node->isMessagingSetter())
-                {
-                    countInterface(decl->getSetterMethodDecl()->getClassInterface());
-                }
-                else
-                {
-                    countInterface(decl->getGetterMethodDecl()->getClassInterface());
-                }
+                countInterface(getSetterInterface(node));
             }
             else
             {
-                if (node->isMessagingSetter())
-                {
-                    countInterface(node->getImplicitPropertySetter()->getClassInterface());
-                }
-                else
-                {
-                    countInterface(node->getImplicitPropertyGetter()->getClassInterface());
-                }
+                countInterface(getGetterInterface(node));
             }
 
             return true;
@@ -103,6 +88,40 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
             TraverseDecl(decl);
 
             return enviedClasses(self_messages(selfName));
+        }
+
+        ObjCInterfaceDecl *getSetterInterface(ObjCPropertyRefExpr *node)
+        {
+            ObjCInterfaceDecl *result;
+
+            if (node->isExplicitProperty())
+            {
+                ObjCPropertyDecl *decl = node->getExplicitProperty();
+                result = decl->getSetterMethodDecl()->getClassInterface();
+            }
+            else
+            {
+                result = node->getImplicitPropertySetter()->getClassInterface();
+            }
+
+            return result;
+        }
+
+        ObjCInterfaceDecl *getGetterInterface(ObjCPropertyRefExpr *node)
+        {
+            ObjCInterfaceDecl *result;
+
+            if (node->isExplicitProperty())
+            {
+                ObjCPropertyDecl *decl = node->getExplicitProperty();
+                result = decl->getGetterMethodDecl()->getClassInterface();
+            }
+            else
+            {
+                result = node->getImplicitPropertyGetter()->getClassInterface();
+            }
+
+            return result;
         }
 
         void countClassName(string className)
