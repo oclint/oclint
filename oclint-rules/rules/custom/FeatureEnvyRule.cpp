@@ -29,7 +29,8 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
 
         bool VisitObjCMessageExpr(ObjCMessageExpr *node)
         {
-            if (!node->isImplicit()) {
+            if (!node->isImplicit())
+            {
                 countInterface(node->getReceiverInterface());
             }
             return true;
@@ -44,7 +45,8 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
 
         bool VisitObjCPropertyRefExpr(ObjCPropertyRefExpr *node)
         {
-            if (node->isExplicitProperty()) {
+            if (node->isExplicitProperty())
+            {
                 ObjCPropertyDecl *decl = node->getExplicitProperty();
                 if (node->isMessagingSetter())
                 {
@@ -54,10 +56,15 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
                 {
                     countInterface(decl->getGetterMethodDecl()->getClassInterface());
                 }
-            } else {
-                if (node->isMessagingSetter()) {
+            }
+            else
+            {
+                if (node->isMessagingSetter())
+                {
                     countInterface(node->getImplicitPropertySetter()->getClassInterface());
-                } else {
+                }
+                else
+                {
                     countInterface(node->getImplicitPropertyGetter()->getClassInterface());
                 }
             }
