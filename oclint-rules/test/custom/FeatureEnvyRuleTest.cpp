@@ -58,6 +58,19 @@ TEST(FeatureEnvyRuleTest, ObjcMethodMessageSelf)
       "@end\n");
 }
 
+TEST(FeatureEnvyRuleTest, ObjcClassMethodMessageSelf)
+{
+    testRuleOnObjCCode(new FeatureEnvyRule(),
+      "@interface A \n"
+      "@end \n"
+
+      "@implementation A \n"
+      "+ (void)f { \n"
+      "    [self f]; \n"
+      "} \n"
+      "@end\n");
+}
+
 TEST(FeatureEnvyRuleTest, ObjcMethodMessageSelfAndOtherEqually)
 {
     testRuleOnObjCCode(new FeatureEnvyRule(),

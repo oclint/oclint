@@ -31,7 +31,25 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
         {
             if (!node->isImplicit())
             {
-                countInterface(node->getReceiverInterface());
+                switch (node->getReceiverKind())
+                {
+                case ObjCMessageExpr::Instance:
+                    if (node->getReceiverInterface())
+                    {
+                        countInterface(node->getReceiverInterface());
+                    }
+                    break;
+
+                case ObjCMessageExpr::Class:
+                    {
+                        QualType qualType = node->getClassReceiver();
+                        countClassName(QualType::getAsString(qualType.split()));
+                    }
+                    break;
+
+                default:
+                    break;
+                }
             }
             return true;
         }
