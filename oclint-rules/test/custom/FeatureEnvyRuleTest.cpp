@@ -174,6 +174,30 @@ TEST(FeatureEnvyRuleTest, ObjcMethodAccessesImplicitPropertyGetterOfAnotherClass
       0, 10, 1, 13, 1, "Method f messages B more than self.");
 }
 
+TEST(FeatureEnvyRuleTest, ObjcMethodAccessesDynamicPropertyOfAnotherClass)
+{
+    testRuleOnObjCCode(new FeatureEnvyRule(),
+      "@interface B \n"
+      "@property int p; \n"
+      "@end \n"
+
+      "@implementation B \n"
+      "@dynamic p;"
+      "@end \n"
+
+      "@interface A \n"
+      "@end \n"
+
+      "@implementation A \n"
+      "- (void)f { \n"
+      "    B *b; \n"
+      "    b.p = 5; \n"
+      "} \n"
+      "@end\n",
+      0, 9, 1, 12, 1, "Method f messages B more than self.");
+}
+
+
 TEST(FeatureEnvyRuleTest, ObjcMethodAccessesIvarOfAnotherClass)
 {
     testRuleOnObjCCode(new FeatureEnvyRule(),
@@ -265,6 +289,7 @@ TEST(FeatureEnvyRuleTest, CXXMemberCallsThisLessThanOther)
       "}; \n",
       0, 6, 5, 11, 5, "Method f messages B more than self.");
 }
+
 
 int main(int argc, char **argv)
 {

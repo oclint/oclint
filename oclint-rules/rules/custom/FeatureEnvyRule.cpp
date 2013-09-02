@@ -45,7 +45,15 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
         bool VisitObjCPropertyRefExpr(ObjCPropertyRefExpr *node)
         {
             if (node->isExplicitProperty()) {
-                countIvar(node->getExplicitProperty()->getPropertyIvarDecl());
+                ObjCPropertyDecl *decl = node->getExplicitProperty();
+                if (node->isMessagingSetter())
+                {
+                    countInterface(decl->getSetterMethodDecl()->getClassInterface());
+                }
+                else
+                {
+                    countInterface(decl->getGetterMethodDecl()->getClassInterface());
+                }
             } else {
                 if (node->isMessagingSetter()) {
                     countInterface(node->getImplicitPropertySetter()->getClassInterface());
