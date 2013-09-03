@@ -6,6 +6,7 @@ import subprocess
 import sys
 import os
 
+from oclintscripts import cmake
 from oclintscripts import environment
 from oclintscripts import path
 from oclintscripts import process
@@ -24,30 +25,14 @@ def clean_module(module_name):
     path.rm_f(build_path)
 
 def build_command(is_release, module_extras, source_path):
-    command = 'cmake'
-    if environment.is_mingw32():
-        command += ' -G "MSYS Makefiles"'
+    cmd_build = cmake.builder(source_path)
     if is_release:
-        command += ' -D OCLINT_BUILD_TYPE=Release'
+        cmd_build.release_build()
     if environment.is_unix():
-        clang_bin_path = os.path.join(path.build.clang_install_dir, 'bin', 'clang')
-        command += ' -D CMAKE_CXX_COMPILER=' + clang_bin_path + '++ -D CMAKE_C_COMPILER=' + clang_bin_path
+        cmd_build.use_clang_compiler()
     extras = {'LLVM_ROOT': path.build.clang_install_dir}
     extras.update(module_extras)
-    for extra_key, extra_value in extras.items():
-        command += ' -D ' + extra_key + '='
-        if environment.is_mingw32():
-            command += '"'
-        command += extra_value
-        if environment.is_mingw32():
-            command += '"'
-    command += ' '
-    if environment.is_mingw32():
-        command += '"'
-    command += source_path
-    if environment.is_mingw32():
-        command += '"'
-    return command
+    return cmd_build.append_dict(extras).str()
 
 def build_module(module_name, is_release, multiple_thread):
     build_path = path.oclint_module_build_dir(module_name)

@@ -6,6 +6,7 @@ import subprocess
 import sys
 import os
 
+from oclintscripts import cmake
 from oclintscripts import environment
 from oclintscripts import path
 from oclintscripts import process
@@ -21,18 +22,12 @@ def clean_module():
     path.rm_f(build_path)
 
 def build_command():
-    command = 'cmake'
+    cmd_build = cmake.builder(path.source.googletest_dir)
     if environment.is_mingw32():
-        command += ' -G "MSYS Makefiles" -D gtest_disable_pthreads:BOOL=ON'
+        cmd_build.append('gtest_disable_pthreads:BOOL', 'ON')
     if environment.is_darwin_13():
-        command += ' -D CMAKE_CXX_FLAGS="-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}"'
-    command += ' '
-    if environment.is_mingw32():
-        command += '"'
-    command += path.source.googletest_dir
-    if environment.is_mingw32():
-        command += '"'
-    return command
+        cmd_build.append('CMAKE_CXX_FLAGS', '-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}', True)
+    return cmd_build.str()
 
 def build_module(multiple_thread):
     build_path = path.build.googletest_build_dir

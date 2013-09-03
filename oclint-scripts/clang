@@ -6,6 +6,7 @@ import subprocess
 import sys
 import os
 
+from oclintscripts import cmake
 from oclintscripts import environment
 from oclintscripts import path
 from oclintscripts import process
@@ -27,30 +28,17 @@ def clean_module():
     path.rm_f(install_dir)
 
 def build_command(is_release):
-    command = 'cmake'
-    if environment.is_mingw32():
-        command += ' -G "MSYS Makefiles"'
+    cmd_build = cmake.builder(path.source.clang_dir)
     if is_release:
-        command += ' -D CMAKE_BUILD_TYPE=Release'
+        cmd_build.append('CMAKE_BUILD_TYPE', 'Release')
     else:
-        command += ' -D CMAKE_BUILD_TYPE=Debug'
+        cmd_build.append('CMAKE_BUILD_TYPE', 'Debug')
     if environment.is_mingw32():
-        command += ' -D LLVM_EXTERNAL_COMPILER_RT_BUILD:BOOL=OFF'
+        cmd_build.append('LLVM_EXTERNAL_COMPILER_RT_BUILD:BOOL', 'OFF')
     if environment.is_darwin_13():
-        command += ' -D CMAKE_CXX_FLAGS="-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}"'
-    command += ' -D CMAKE_INSTALL_PREFIX='
-    if environment.is_mingw32():
-        command += '"'
-    command += path.build.clang_install_dir
-    if environment.is_mingw32():
-        command += '"'
-    command += ' '
-    if environment.is_mingw32():
-        command += '"'
-    command += path.source.clang_dir
-    if environment.is_mingw32():
-        command += '"'
-    return command
+        cmd_build.append('CMAKE_CXX_FLAGS', '-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}', True)
+    cmd_build.append('CMAKE_INSTALL_PREFIX', path.build.clang_install_dir, environment.is_mingw32())
+    return cmd_build.str()
 
 def build_module(is_release, multiple_thread):
     build_path = path.build.clang_build_dir
