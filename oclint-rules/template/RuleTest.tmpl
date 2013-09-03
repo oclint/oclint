@@ -1,0 +1,20 @@
+#include "TestHeaders.h"
+#include "rules/{{RULE_CATEGORY}}/{{RULE_CLASS_NAME}}Rule.cpp"
+
+TEST({{RULE_CLASS_NAME}}RuleTest, PropertyTest)
+{
+    {{RULE_CLASS_NAME}}Rule rule;
+    EXPECT_EQ({{RULE_PRIORITY}}, rule.priority());
+    EXPECT_EQ("{{RULE_NAME}}", rule.name());
+}
+
+TEST({{RULE_CLASS_NAME}}RuleTest, FirstFailingTest)
+{
+    EXPECT_FALSE("Start writing a new test");
+}
+
+int main(int argc, char **argv)
+{
+    ::testing::InitGoogleMock(&argc, argv);
+    return RUN_ALL_TESTS();
+}
