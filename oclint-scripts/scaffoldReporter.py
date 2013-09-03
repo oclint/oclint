@@ -11,9 +11,12 @@ REPORTERS_SOURCE_ROOT_CMAKELISTS = os.path.join(REPORTERS_SOURCE_ROOT_DIRECTORY,
 REPORTERS_TEMPLATE_DIRECTORY = os.path.join(REPORTERS_PROJECT_DIRECTORY, "template")
 REPORTERS_TEMPLATE_FILE_PATH = os.path.join(REPORTERS_TEMPLATE_DIRECTORY, "Reporter.tmpl")
 
-def pre_check(class_name):
+def pre_validate(class_name):
     new_class_path = os.path.join(REPORTERS_SOURCE_ROOT_DIRECTORY, class_name + "Reporter.cpp")
-    return not os.path.isfile(new_class_path)
+    file_exits = os.path.isfile(new_class_path)
+    if file_exits:
+        print "Error: " + reporter_class_name + "Reporter.cpp already exists."
+    return file_exits
 
 def replace_wildcard(each_line, class_name, reporter_name):
     class_name_wildcard = '{{REPORTER_CLASS_NAME}}'
@@ -49,7 +52,5 @@ reporter_class_name = args.class_name
 reporter_name = args.reporter_name
 if not reporter_name:
     reporter_name = re.sub('[A-Z]', lower_add_space, reporter_class_name)[1:]
-if pre_check(reporter_class_name):
+if pre_validate(reporter_class_name):
     scaffold(reporter_class_name, reporter_name)
-else:
-    print "Error: " + reporter_class_name + "Reporter.cpp already exists."
