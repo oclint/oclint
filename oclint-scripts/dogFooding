@@ -90,7 +90,9 @@ def drink_dogfooding(module_name, enable_clang_static_analyzer):
 
     current_dir = os.getcwd()
     path.cd(source_path)
-    process.call(command)
+    dogfooding_exit_code = subprocess.call(command, shell=True)
+    display_result(module_name)
+    if dogfooding_exit_code:
         sys.exit(dogfooding_exit_code)
     path.cd(current_dir)
 
