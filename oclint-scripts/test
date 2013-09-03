@@ -8,6 +8,7 @@ import os
 
 from oclintscripts import environment
 from oclintscripts import path
+from oclintscripts import process
 
 OCLINT_MODULES = ['core', 'metrics', 'rules', 'reporters']
 
@@ -72,16 +73,10 @@ def test_module(module_name, multiple_thread):
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
     path.cd(build_path)
-    cmake_exit_code = subprocess.call(command, shell=True)
-    if cmake_exit_code:
-        sys.exit(cmake_exit_code)
-    make_exit_code = subprocess.call('make -j ' + multiple_thread, shell=True)
-    if make_exit_code:
-        sys.exit(make_exit_code)
+    process.call(command)
+    process.call('make -j ' + multiple_thread)
     run_ctest_command = 'ctest --output-on-failure > ' + test_result_path(module_name)
-    ctest_exit_code = subprocess.call(run_ctest_command, shell=True)
-    if ctest_exit_code:
-        sys.exit(ctest_exit_code)
+    process.call(run_ctest_command)
     display_test_result(module_name)
     path.cd(current_dir)
 

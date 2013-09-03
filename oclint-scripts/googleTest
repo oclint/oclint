@@ -8,6 +8,7 @@ import os
 
 from oclintscripts import environment
 from oclintscripts import path
+from oclintscripts import process
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('task_name', choices=['checkout', 'co', 'update', 'up', 'build'])
@@ -41,12 +42,8 @@ def build_module(multiple_thread):
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
     path.cd(build_path)
-    cmake_exit_code = subprocess.call(command, shell=True)
-    if cmake_exit_code:
-        sys.exit(cmake_exit_code)
-    make_exit_code = subprocess.call('make -j ' + multiple_thread, shell=True)
-    if make_exit_code:
-        sys.exit(make_exit_code)
+    process.call(command)
+    process.call('make -j ' + multiple_thread)
     path.cd(current_dir)
 
 def checkout_googletest():
@@ -54,9 +51,7 @@ def checkout_googletest():
         sys.exit('GoogleTest folder exists!')
     current_dir = os.getcwd()
     path.cd(path.root_dir)
-    svn_exit_code = subprocess.call('svn checkout ' + path.url.googletest + ' googletest', shell=True)
-    if svn_exit_code:
-        sys.exit(svn_exit_code)
+    process.call('svn checkout ' + path.url.googletest + ' googletest')
     path.cd(current_dir)
 
 def update_googletest():
@@ -64,9 +59,7 @@ def update_googletest():
         sys.exit('GoogleTest folder does not exist!')
     current_dir = os.getcwd()
     path.cd(path.source.googletest_dir)
-    svn_exit_code = subprocess.call('svn up', shell=True)
-    if svn_exit_code:
-        sys.exit(svn_exit_code)
+    process.call('svn up')
     path.cd(current_dir)
 
 if args.task_name == 'checkout' or args.task_name == 'co':

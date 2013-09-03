@@ -8,6 +8,7 @@ import os
 
 from oclintscripts import environment
 from oclintscripts import path
+from oclintscripts import process
 
 OCLINT_MODULES = ['core', 'metrics', 'rules', 'reporters', 'driver']
 
@@ -63,9 +64,7 @@ def build_module(module_name):
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
     path.cd(build_path)
-    cmake_exit_code = subprocess.call(command, shell=True)
-    if cmake_exit_code:
-        sys.exit(cmake_exit_code)
+    process.call(command)
     path.cd(current_dir)
 
     compile_commands_file_name = 'compile_commands.json'
@@ -91,9 +90,7 @@ def drink_dogfooding(module_name, enable_clang_static_analyzer):
 
     current_dir = os.getcwd()
     path.cd(source_path)
-    dogfooding_exit_code = subprocess.call(command, shell=True)
-    display_result(module_name)
-    if dogfooding_exit_code:
+    process.call(command)
         sys.exit(dogfooding_exit_code)
     path.cd(current_dir)
 

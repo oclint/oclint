@@ -8,6 +8,7 @@ import os
 
 from oclintscripts import environment
 from oclintscripts import path
+from oclintscripts import process
 from oclintscripts import version
 
 bundle_root_dir = path.build.bundle_dir
@@ -35,7 +36,7 @@ def install_binary():
     path.cp_r(driver_bin_dir, bundle_bin_dir)
     if environment.is_unix():
         path.cd(bundle_bin_dir)
-        subprocess.call('ln -s oclint-' + version.oclint_version() + ' oclint', shell=True)
+        process.call('ln -s oclint-' + version.oclint_version() + ' oclint')
     if environment.is_mingw32():
         ruleset_dll_name = 'libOCLintRuleSet.dll'
         ruleset_dll_path = os.path.join(path.build.core_build_dir, 'lib', ruleset_dll_name)

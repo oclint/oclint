@@ -8,6 +8,7 @@ import os
 
 from oclintscripts import environment
 from oclintscripts import path
+from oclintscripts import process
 
 OCLINT_MODULES = ['core', 'metrics', 'rules', 'reporters', 'driver']
 
@@ -65,12 +66,8 @@ def build_module(module_name, is_release, multiple_thread):
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
     path.cd(build_path)
-    cmake_exit_code = subprocess.call(command, shell=True)
-    if cmake_exit_code:
-        sys.exit(cmake_exit_code)
-    make_exit_code = subprocess.call('make -j ' + multiple_thread, shell=True)
-    if make_exit_code:
-        sys.exit(make_exit_code)
+    process.call(command)
+    process.call('make -j ' + multiple_thread)
     path.cd(current_dir)
 
 build_modules = []

@@ -8,6 +8,7 @@ import os
 
 from oclintscripts import environment
 from oclintscripts import path
+from oclintscripts import process
 from oclintscripts import version
 
 arg_parser = argparse.ArgumentParser()
@@ -59,23 +60,15 @@ def build_module(is_release, multiple_thread):
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
     path.cd(build_path)
-    cmake_exit_code = subprocess.call(command, shell=True)
-    if cmake_exit_code:
-        sys.exit(cmake_exit_code)
-    make_exit_code = subprocess.call('make -j ' + multiple_thread, shell=True)
-    if make_exit_code:
-        sys.exit(make_exit_code)
-    install_exit_code = subprocess.call('make install', shell=True)
-    if install_exit_code:
-        sys.exit(install_exit_code)
+    process.call(command)
+    process.call('make -j ' + multiple_thread)
+    process.call('make install')
     path.cd(current_dir)
 
 def svn_checkout(url, prefix, root_dir):
     current_dir = os.getcwd()
     path.cd(root_dir)
-    svn_exit_code = subprocess.call('svn checkout ' + url + ' ' + prefix, shell=True)
-    if svn_exit_code:
-        sys.exit(svn_exit_code)
+    process.call('svn checkout ' + url + ' ' + prefix)
     path.cd(current_dir)
 
 def svn_update(root_dir, rev):
@@ -84,9 +77,7 @@ def svn_update(root_dir, rev):
     svn_command = 'svn up'
     if rev:
         svn_command += ' -r ' + rev
-    svn_exit_code = subprocess.call(svn_command, shell=True)
-    if svn_exit_code:
-        sys.exit(svn_exit_code)
+    process.call(svn_command)
     path.cd(current_dir)
 
 def checkout_clang(branch_name):

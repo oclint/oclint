@@ -8,6 +8,7 @@ import os
 
 from oclintscripts import environment
 from oclintscripts import path
+from oclintscripts import process
 from oclintscripts import version
 
 arg_parser = argparse.ArgumentParser()
@@ -18,11 +19,6 @@ arg_parser.add_argument('-release', '--release', action="store_true")
 arg_parser.add_argument('-jenkins', '--jenkins', action="store_true")
 arg_parser.add_argument('-archive', '--archive', action="store_true")
 args = arg_parser.parse_args()
-
-def run_command(command):
-    command_exit_code = subprocess.call(command, shell=True)
-    if command_exit_code:
-        sys.exit(command_exit_code)
 
 def upload_snapshot():
     pass
@@ -38,32 +34,32 @@ if args.reset:
 if args.setup or args.jenkins:
     current_dir = os.getcwd()
     path.cd(path.root_dir)
-    run_command('git clone ' + path.url.json_compilation_database)
+    process.call('git clone ' + path.url.json_compilation_database)
     if environment.is_darwin():
-        run_command('git clone ' + path.url.xcodebuild)
+        process.call('git clone ' + path.url.xcodebuild)
     path.cd(current_dir)
-    run_command('python clang co -branch ' + args.llvm_branch)
+    process.call('python clang co -branch ' + args.llvm_branch)
     if args.release:
-        run_command('python clang build -release -clean')
+        process.call('python clang build -release -clean')
     else:
-        run_command('python googleTest co')
-        run_command('python clang build -clean')
-        run_command('python googleTest build -clean')
+        process.call('python googleTest co')
+        process.call('python clang build -clean')
+        process.call('python googleTest build -clean')
 
 if args.release:
-    run_command('python build -clean -release')
+    process.call('python build -clean -release')
 else:
-    run_command('python test -clean')
-    run_command('python build -clean')
-run_command('python bundle')
+    process.call('python test -clean')
+    process.call('python build -clean')
+process.call('python bundle')
 if environment.is_unix() and not args.release:
     if args.jenkins:
-        run_command('python dogFooding -enable-clang-static-analyzer')
+        process.call('python dogFooding -enable-clang-static-analyzer')
     else:
-        run_command('python dogFooding')
+        process.call('python dogFooding')
 if args.jenkins:
-    run_command('python bundle -archive')
+    process.call('python bundle -archive')
     if not args.release:
         upload_snapshot()
 elif args.archive and args.release:
-    run_command('python bundle -archive -release')
+    process.call('python bundle -archive -release')
