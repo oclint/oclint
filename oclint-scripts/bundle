@@ -89,8 +89,8 @@ def install_licenses():
 def archive(is_release):
     full_version = version.oclint_version()
     if not is_release:
-        full_version += '.dev.' + version.git_hash()
-    distribution_name = full_version + '-' + environment.arch() + '-' + environment.kernel() + '-' + environment.kernel_version()
+        full_version = version.oclint_dev_version()
+    distribution_name = full_version + '-' + environment.dist_env()
     archive_dir = path.oclint_module_build_dir(full_version)
     path.mv(bundle_root_dir, archive_dir)
     archive_file_name = path.oclint_module_build_dir(distribution_name)

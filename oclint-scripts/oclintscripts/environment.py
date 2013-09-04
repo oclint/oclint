@@ -15,6 +15,9 @@ def kernel_version():
 def arch():
     return platform.uname()[4].lower()
 
+def dist_env():
+    return arch() + '-' + kernel() + '-' + kernel_version()
+
 def is_mingw32():
     return kernel().startswith("windows")
     # Cygwin should say CYGWIN_NT-6.1-WOW64
