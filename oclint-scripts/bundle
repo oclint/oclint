@@ -40,7 +40,7 @@ def install_binary():
     if environment.is_mingw32():
         ruleset_dll_name = 'libOCLintRuleSet.dll'
         ruleset_dll_path = os.path.join(path.build.core_build_dir, 'lib', ruleset_dll_name)
-        ruleset_dll_dst_path = os.path.join(driver_bin_dir, ruleset_dll_name)
+        ruleset_dll_dst_path = os.path.join(bundle_bin_dir, ruleset_dll_name)
         path.cp(ruleset_dll_path, ruleset_dll_dst_path)
         path.mv(os.path.join(bundle_bin_dir, 'oclint-' + version.oclint_version() + '.exe'), os.path.join(bundle_bin_dir, 'oclint.exe'))
 
