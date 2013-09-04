@@ -64,7 +64,7 @@ def display_result(module_name):
     with open(result_path(module_name), 'r') as result_file:
         print result_file.read()
 
-def drink_dogfooding(module_name, enable_clang_static_analyzer):
+def dogfooding(module_name, enable_clang_static_analyzer):
     source_path = path.oclint_module_source_dir(module_name)
     oclint_json_compilation_database_path = os.path.join(path.build.bundle_dir, 'bin', 'oclint-json-compilation-database')
     command = oclint_json_compilation_database_path + ' -- -debug -max-priority-1=0 -max-priority-2=0 -max-priority-3=0'
@@ -94,4 +94,4 @@ if args.show:
 for module in build_modules:
     clean_module(module)
     build_module(module)
-    drink_dogfooding(module, args.enable_clang_static_analyzer)
+    dogfooding(module, args.enable_clang_static_analyzer)
