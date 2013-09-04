@@ -1,0 +1,54 @@
+#! /usr/bin/env python
+
+import json
+import sys
+import time
+import os
+
+from oclintscripts import environment
+from oclintscripts import path
+from oclintscripts import process
+from oclintscripts import version
+
+# This is a placeholder script for uploading generated oclint archive to remote server.
+# Implement this script and comment the line below
+sys.exit("Error: no upload script implemented.")
+
+def build_root_dir():
+    return path.build_root
+
+def archive_file_name():
+    distribution_name = version.oclint_dev_version() + '-' + environment.dist_env()
+    if environment.is_darwin() or environment.is_mingw32():
+        return 'oclint-' + distribution_name + '.zip'
+    elif environment.is_linux():
+        return 'oclint-' + distribution_name + '.tar.gz'
+    else:
+        sys.exit("Error: this environment is not supported yet.")
+
+def archive_file_path():
+    return os.path.join(build_root_dir(), archive_file_name())
+
+def archive_file_size():
+    return os.path.getsize(archive_file_path())
+
+def archive_file_human_readable_size():
+    size = archive_file_size()
+    format = "%.0f%s"
+    for unit in ['bytes','KB','MB','GB']:
+        if size < 1024.0:
+            return format % (size, unit)
+        size /= 1024.0
+    return format % (size, 'TB')
+
+def archive_json(var_name):
+    archive_info_dict = {}
+    archive_info_dict['date'] = int(time.time())
+    archive_info_dict['version'] = version.oclint_dev_version();
+    archive_info_dict['size'] = archive_file_human_readable_size();
+    archive_info_dict['path'] = archive_file_name();
+    archive_info_dict['description'] = 'OCLint ' + version.oclint_version() + ' dev build for ' + environment.kernel() + '/' + environment.arch()
+    return 'var ' + var_name + ' = ' + json.dumps(archive_info_dict)
+
+def run_command(cmd):
+    process.call(cmd)

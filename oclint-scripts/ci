@@ -21,7 +21,7 @@ arg_parser.add_argument('-archive', '--archive', action="store_true")
 args = arg_parser.parse_args()
 
 def upload_snapshot():
-    pass
+    process.call('python upload')
 
 if args.reset:
     path.rm_f(path.build_root)
