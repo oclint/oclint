@@ -30,32 +30,35 @@ def replace_wildcard(each_line, class_name, reporter_name):
     reporter_name_wildcard = '{{REPORTER_NAME}}'
     return each_line.replace(class_name_wildcard, class_name).replace(reporter_name_wildcard, reporter_name)
 
+def copy_template(new_path, template_path, class_name, reporter_name):
+    new_file = open(new_path, 'w')
+    with open(template_path, 'r') as template_file:
+        for each_line in template_file:
+            new_file.write(replace_wildcard(each_line, class_name, reporter_name))
+    new_file.close()
+
 def copy_reporter(class_name, reporter_name):
     new_class_path = os.path.join(REPORTERS_SOURCE_ROOT_DIRECTORY, class_name + "Reporter.cpp")
-    new_class_file = open(new_class_path, 'w')
-    with open(REPORTERS_TEMPLATE_FILE_PATH, 'r') as reporter_template_file:
-        for each_line in reporter_template_file:
-            new_class_file.write(replace_wildcard(each_line, class_name, reporter_name))
-    new_class_file.close()
+    template_path = REPORTERS_TEMPLATE_FILE_PATH
+    copy_template(new_class_path, template_path, class_name, reporter_name);
 
 def copy_test(class_name, reporter_name):
     new_test_path = os.path.join(REPORTERS_TEST_ROOT_DIRECTORY, class_name + "ReporterTest.cpp")
-    new_test_file = open(new_test_path, 'w')
-    with open(REPORTERS_TEST_TEMPLATE_FILE_PATH, 'r') as reporter_template_file:
-        for each_line in reporter_template_file:
-            new_test_file.write(replace_wildcard(each_line, class_name, reporter_name))
-    new_test_file.close()
+    template_path = REPORTERS_TEST_TEMPLATE_FILE_PATH
+    copy_template(new_test_path, template_path, class_name, reporter_name);
+
+def append_cmake_lists(path, new_line):
+    with open(path, 'a') as cmake_lists_file:
+        cmake_lists_file.write('\n' + new_line + '\n')
 
 def write_cmake_lists(reporter_class_name):
     build_dynamic_reporter = 'BUILD_DYNAMIC_REPORTER(' + reporter_class_name + ')'
-    with open(REPORTERS_SOURCE_ROOT_CMAKELISTS, 'a') as cmake_lists_file:
-        cmake_lists_file.write('\n' + build_dynamic_reporter + '\n')
+    append_cmake_lists(REPORTERS_SOURCE_ROOT_CMAKELISTS, build_dynamic_reporter)
 
 
 def write_test_cmake_lists(reporter_class_name):
     build_test = 'BUILD_TEST(' + reporter_class_name + 'ReporterTest)'
-    with open(REPORTERS_TEST_ROOT_CMAKELISTS, 'a') as cmake_lists_file:
-        cmake_lists_file.write('\n' + build_test + '\n')
+    append_cmake_lists(REPORTERS_TEST_ROOT_CMAKELISTS, build_test)
 
 def scaffold(class_name, reporter_name):
     copy_reporter(class_name, reporter_name)
@@ -77,9 +80,10 @@ args = arg_parser.parse_args()
 
 reporter_class_name = args.class_name
 reporter_name = args.reporter_name
+generate_tests = args.generate_tests
 if not reporter_name:
     reporter_name = re.sub('[A-Z]', lower_add_space, reporter_class_name)[1:]
-if pre_validate(reporter_class_name, args.generate_tests):
+if pre_validate(reporter_class_name, generate_tests):
     scaffold(reporter_class_name, reporter_name)
-    if args.generate_tests:
+    if generate_tests:
         scaffold_test(reporter_class_name, reporter_name)
