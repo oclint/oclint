@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <ctime>
 
 #include "oclint/Reporter.h"
 #include "oclint/RuleBase.h"

@@ -1,0 +1,65 @@
+#! /usr/bin/env python
+
+import argparse
+import shutil
+import subprocess
+import sys
+import os
+
+from oclintscripts import environment
+from oclintscripts import path
+from oclintscripts import process
+from oclintscripts import version
+
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument('-reset', '--reset', action="store_true")
+arg_parser.add_argument('-setup', '--setup', action="store_true")
+arg_parser.add_argument('-llvm-branch', '--llvm-branch', nargs='?', choices=version.llvm_branches(), default='trunk')
+arg_parser.add_argument('-release', '--release', action="store_true")
+arg_parser.add_argument('-jenkins', '--jenkins', action="store_true")
+arg_parser.add_argument('-archive', '--archive', action="store_true")
+args = arg_parser.parse_args()
+
+def upload_snapshot():
+    process.call('python upload')
+
+if args.reset:
+    path.rm_f(path.build_root)
+    path.rm_f(path.source.clang_dir)
+    path.rm_f(path.source.googletest_dir)
+    path.rm_f(path.source.json_compilation_database_dir)
+    path.rm_f(path.source.xcodebuild_dir)
+    sys.exit(0)
+
+if args.setup or args.jenkins:
+    current_dir = os.getcwd()
+    path.cd(path.root_dir)
+    process.call('git clone ' + path.url.json_compilation_database)
+    if environment.is_darwin():
+        process.call('git clone ' + path.url.xcodebuild)
+    path.cd(current_dir)
+    process.call('python clang co -branch ' + args.llvm_branch)
+    if args.release:
+        process.call('python clang build -release -clean')
+    else:
+        process.call('python googleTest co')
+        process.call('python clang build -clean')
+        process.call('python googleTest build -clean')
+
+if args.release:
+    process.call('python build -clean -release')
+else:
+    process.call('python test -clean')
+    process.call('python build -clean')
+process.call('python bundle')
+if environment.is_unix() and not args.release:
+    if args.jenkins:
+        process.call('python dogFooding -enable-clang-static-analyzer')
+    else:
+        process.call('python dogFooding')
+if args.jenkins:
+    process.call('python bundle -archive')
+    if not args.release:
+        upload_snapshot()
+elif args.archive and args.release:
+    process.call('python bundle -archive -release')

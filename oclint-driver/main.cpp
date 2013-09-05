@@ -1,5 +1,3 @@
-#include <dlfcn.h>
-#include <dirent.h>
 #include <unistd.h>
 #include <iostream>
 #include <fstream>
@@ -22,82 +20,19 @@
 #include "oclint/ViolationSet.h"
 #include "oclint/Violation.h"
 
+#include "reporters.h"
+#include "rules.h"
+
 using namespace std;
 using namespace llvm;
 using namespace clang;
 using namespace clang::tooling;
-
-static oclint::Reporter *selectedReporter = NULL;
-
-void dynamicLoadRules(string ruleDirPath)
-{
-    DIR *pDir = opendir(ruleDirPath.c_str());
-    if (pDir != NULL)
-    {
-        struct dirent *dirp;
-        while ((dirp = readdir(pDir)))
-        {
-            if (dirp->d_name[0] == '.')
-            {
-                continue;
-            }
-            string rulePath = ruleDirPath + "/" + string(dirp->d_name);
-            if (dlopen(rulePath.c_str(), RTLD_LAZY) == NULL)
-            {
-                cerr << dlerror() << endl;
-                closedir(pDir);
-                throw oclint::GenericException("cannot open dynamic library: " + rulePath);
-            }
-        }
-        closedir(pDir);
-    }
-}
 
 void consumeArgRulesPath()
 {
     for (const auto& rulePath : oclint::option::rulesPath())
     {
         dynamicLoadRules(rulePath);
-    }
-}
-
-void loadReporter()
-{
-    selectedReporter = NULL;
-    string defaultReportersPath = oclint::option::reporterPath();
-    DIR *pDir = opendir(defaultReportersPath.c_str());
-    if (pDir != NULL)
-    {
-        struct dirent *dirp;
-        while ((dirp = readdir(pDir)))
-        {
-            if (dirp->d_name[0] == '.')
-            {
-                continue;
-            }
-            string reporterPath = defaultReportersPath + "/" + string(dirp->d_name);
-            void *reporterHandle = dlopen(reporterPath.c_str(), RTLD_LAZY);
-            if (reporterHandle == NULL)
-            {
-                cerr << dlerror() << endl;
-                closedir(pDir);
-                throw oclint::GenericException("cannot open dynamic library: " + reporterPath);
-            }
-            oclint::Reporter* (*createMethodPointer)();
-            createMethodPointer = (oclint::Reporter* (*)())dlsym(reporterHandle, "create");
-            oclint::Reporter* reporter = (oclint::Reporter*)createMethodPointer();
-            if (reporter->name() == oclint::option::reportType())
-            {
-                selectedReporter = reporter;
-                break;
-            }
-        }
-        closedir(pDir);
-    }
-    if (selectedReporter == NULL)
-    {
-        throw oclint::GenericException(
-            "cannot find dynamic library for report type: " + oclint::option::reportType());
     }
 }
 
@@ -139,11 +74,6 @@ void listRules()
     {
         cerr << "- " << ruleName << "\n";
     }
-}
-
-oclint::Reporter* reporter()
-{
-    return selectedReporter;
 }
 
 void printErrorLine(const char *errorMessage)

@@ -1,13 +1,12 @@
 Quick Start
 -------------------------------------------------------------------------------
 
-./checkoutLLVMClang.sh - Checkout LLVM/Clang
-./buildClang.sh release - Build LLVM/Clang
-./buildAll.sh release - Build OCLint, and then please find generated
-                        binary and libraries at ../build/oclint-release
+./make - Delete existing build, check out dependencies, build LLVM/Clang,
+         build OCLint in optimized mode, bundle binaries and libraries
+         together, and finally archive everything at ../build folder
 
 Detail description can be found at
-    http://docs.oclint.org/en/dev/intro/build.html
+    http://oclint.org/docs/intro/build.html
 
 Compiling in debug mode and enabling testing, please look at
-    http://docs.oclint.org/en/dev/devel/compiletest.html
+    http://oclint.org/docs/devel/compiletest.html

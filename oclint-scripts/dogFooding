@@ -1,0 +1,97 @@
+#! /usr/bin/env python
+
+import argparse
+import shutil
+import subprocess
+import sys
+import os
+
+from oclintscripts import cmake
+from oclintscripts import environment
+from oclintscripts import path
+from oclintscripts import process
+
+OCLINT_MODULES = ['core', 'metrics', 'rules', 'reporters', 'driver']
+
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument('module_name', nargs='?', choices=['all'] + OCLINT_MODULES, default='all')
+arg_parser.add_argument('-enable-clang-static-analyzer', '--enable-clang-static-analyzer', action="store_true")
+arg_parser.add_argument('-show', '--show', action="store_true")
+args = arg_parser.parse_args()
+
+def clean_module(module_name):
+    dogfooding_path = path.oclint_module_dogfooding_dir(module_name)
+    path.rm_f(dogfooding_path)
+
+def build_command(module_extras, source_path):
+    cmd_build = cmake.builder(source_path).append('CMAKE_EXPORT_COMPILE_COMMANDS', 'ON')
+    if environment.is_unix():
+        cmd_build.use_clang_compiler()
+    extras = {'LLVM_ROOT': path.build.clang_install_dir}
+    extras.update(module_extras)
+    return cmd_build.append_dict(extras).str()
+
+def build_module(module_name):
+    build_path = path.oclint_module_dogfooding_dir(module_name)
+    source_path = path.oclint_module_source_dir(module_name)
+
+    module_extras = {}
+    if module_name == "rules" or module_name == "reporters" or module_name == "driver":
+        module_extras['OCLINT_SOURCE_DIR'] = path.source.core_dir
+        module_extras['OCLINT_BUILD_DIR'] = path.build.core_build_dir
+    if module_name == "rules":
+        module_extras['OCLINT_METRICS_SOURCE_DIR'] = path.source.metrics_dir
+        module_extras['OCLINT_METRICS_BUILD_DIR'] = path.build.metrics_build_dir
+
+    command = build_command(module_extras, source_path)
+
+    current_dir = os.getcwd()
+    path.mkdir_p(build_path)
+    path.cd(build_path)
+    process.call(command)
+    path.cd(current_dir)
+
+    compile_commands_file_name = 'compile_commands.json'
+    compile_commands_src_path = os.path.join(build_path, compile_commands_file_name)
+    compile_commands_dst_path = os.path.join(source_path, compile_commands_file_name)
+    path.cp(compile_commands_src_path, compile_commands_dst_path)
+
+def result_path(module_name):
+    build_path = path.oclint_module_dogfooding_dir(module_name)
+    return os.path.join(build_path, 'dogfooding_results.txt')
+
+def display_result(module_name):
+    with open(result_path(module_name), 'r') as result_file:
+        print result_file.read()
+
+def dogfooding(module_name, enable_clang_static_analyzer):
+    source_path = path.oclint_module_source_dir(module_name)
+    oclint_json_compilation_database_path = os.path.join(path.build.bundle_dir, 'bin', 'oclint-json-compilation-database')
+    command = oclint_json_compilation_database_path + ' -- -debug -max-priority-1=0 -max-priority-2=0 -max-priority-3=0'
+    if enable_clang_static_analyzer:
+        command += ' -enable-clang-static-analyzer'
+    command += ' -o ' + result_path(module_name)
+
+    current_dir = os.getcwd()
+    path.cd(source_path)
+    dogfooding_exit_code = subprocess.call(command, shell=True)
+    display_result(module_name)
+    if dogfooding_exit_code:
+        sys.exit(dogfooding_exit_code)
+    path.cd(current_dir)
+
+build_modules = []
+if args.module_name == 'all':
+    build_modules.extend(OCLINT_MODULES)
+else:
+    build_modules.append(args.module_name)
+
+if args.show:
+    for module in build_modules:
+        display_result(module)
+    sys.exit(0)
+
+for module in build_modules:
+    clean_module(module)
+    build_module(module)
+    dogfooding(module, args.enable_clang_static_analyzer)

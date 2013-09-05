@@ -1,0 +1,100 @@
+#! /usr/bin/env python
+
+import argparse
+import shutil
+import subprocess
+import sys
+import os
+
+from oclintscripts import cmake
+from oclintscripts import environment
+from oclintscripts import path
+from oclintscripts import process
+from oclintscripts import version
+
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument('task_name', choices=['checkout', 'co', 'update', 'up', 'build'])
+arg_parser.add_argument('-branch', '--branch', nargs='?', choices=version.llvm_branches(), default='trunk')
+arg_parser.add_argument('-rev', '--rev')
+arg_parser.add_argument('-clean', '--clean', action="store_true")
+arg_parser.add_argument('-release', '--release', action="store_true")
+arg_parser.add_argument('-j', type=int, default=0)
+args = arg_parser.parse_args()
+
+def clean_module():
+    build_path = path.build.clang_build_dir
+    path.rm_f(build_path)
+    install_dir = path.build.clang_install_dir
+    path.rm_f(install_dir)
+
+def build_command(is_release):
+    cmd_build = cmake.builder(path.source.clang_dir)
+    if is_release:
+        cmd_build.append('CMAKE_BUILD_TYPE', 'Release')
+    else:
+        cmd_build.append('CMAKE_BUILD_TYPE', 'Debug')
+    if environment.is_mingw32():
+        cmd_build.append('LLVM_EXTERNAL_COMPILER_RT_BUILD:BOOL', 'OFF')
+    if environment.is_darwin_13():
+        cmd_build.append('CMAKE_CXX_FLAGS', '-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}', True)
+    cmd_build.append('CMAKE_INSTALL_PREFIX', path.build.clang_install_dir, environment.is_mingw32())
+    return cmd_build.str()
+
+def build_module(is_release, multiple_thread):
+    build_path = path.build.clang_build_dir
+
+    command = build_command(is_release)
+
+    current_dir = os.getcwd()
+    path.mkdir_p(build_path)
+    path.cd(build_path)
+    process.call(command)
+    process.call('make -j ' + multiple_thread)
+    process.call('make install')
+    path.cd(current_dir)
+
+def svn_checkout(url, prefix, root_dir):
+    current_dir = os.getcwd()
+    path.cd(root_dir)
+    process.call('svn checkout ' + url + ' ' + prefix)
+    path.cd(current_dir)
+
+def svn_update(root_dir, rev):
+    current_dir = os.getcwd()
+    path.cd(root_dir)
+    svn_command = 'svn up'
+    if rev:
+        svn_command += ' -r ' + rev
+    process.call(svn_command)
+    path.cd(current_dir)
+
+def checkout_clang(branch_name):
+    if os.path.isdir(path.source.clang_dir):
+        sys.exit('Clang folder exists!')
+    svn_checkout(path.url.llvm + branch_name, 'llvm', path.root_dir)
+    svn_checkout(path.url.clang + branch_name, 'clang', os.path.join(path.root_dir, 'llvm', 'tools'))
+    svn_checkout(path.url.clang_rt + branch_name, 'compiler-rt', os.path.join(path.root_dir, 'llvm', 'projects'))
+
+def update_clang(rev):
+    if not os.path.isdir(path.source.clang_dir):
+        sys.exit('Clang folder does not exist!')
+    svn_update(os.path.join(path.root_dir, 'llvm'), rev)
+    svn_update(os.path.join(path.root_dir, 'llvm', 'tools', 'clang'), rev)
+    svn_update(os.path.join(path.root_dir, 'llvm', 'projects', 'compiler-rt'), rev)
+
+if args.task_name == 'checkout' or args.task_name == 'co':
+    checkout_clang(args.branch)
+
+if args.task_name == 'update' or args.task_name == 'up':
+    update_clang(args.rev)
+
+multiple_thread = environment.cpu_count()
+if environment.is_mingw32():
+    multiple_thread = 1
+if not args.j is 0:
+    multiple_thread = args.j
+
+if args.task_name == 'build':
+    if args.clean:
+        clean_module()
+    build_module(args.release, str(multiple_thread))

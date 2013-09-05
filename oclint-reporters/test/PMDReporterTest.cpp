@@ -16,7 +16,7 @@ public:
     MOCK_CONST_METHOD0(priority, int());
 };
 
-class TextReporterTest : public ::testing::Test
+class PMDReporterTest : public ::testing::Test
 {
 protected:
     virtual void setUp()
@@ -27,12 +27,12 @@ protected:
     PMDReporter reporter;
 };
 
-TEST_F(TextReporterTest, PropertyTest)
+TEST_F(PMDReporterTest, PropertyTest)
 {
     EXPECT_THAT(reporter.name(), StrEq("pmd"));
 }
 
-TEST_F(TextReporterTest, WriteHeader)
+TEST_F(PMDReporterTest, WriteHeader)
 {
     std::ostringstream oss;
     reporter.writeHeader(oss, "test");
@@ -40,14 +40,14 @@ TEST_F(TextReporterTest, WriteHeader)
     EXPECT_THAT(oss.str(), HasSubstr("<pmd version=\"oclint-test\">"));
 }
 
-TEST_F(TextReporterTest, WriteFooter)
+TEST_F(PMDReporterTest, WriteFooter)
 {
     std::ostringstream oss;
     reporter.writeFooter(oss);
     EXPECT_THAT(oss.str(), StrEq("</pmd>"));
 }
 
-TEST_F(TextReporterTest, WriteViolation)
+TEST_F(PMDReporterTest, WriteViolation)
 {
     RuleBase *rule = new MockRuleBase();
     Violation violation(rule, "test path", 1, 2, 3, 4, "test message");

@@ -7,6 +7,7 @@ MACRO(build_dynamic_rule name)
 
     SET_TARGET_PROPERTIES(${name}Rule
         PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/rules.dl
+				   RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/rules.dl
         )
 
     TARGET_LINK_LIBRARIES(${name}Rule
@@ -28,6 +29,14 @@ MACRO(build_dynamic_rule name)
             OCLintRuleSet
         )
     ENDIF()
+    IF (${CMAKE_SYSTEM_NAME} MATCHES "Win")
+        TARGET_LINK_LIBRARIES(${name}Rule
+            ${CLANG_LIBRARIES}
+            ${REQ_LLVM_LIBRARIES}
+            OCLintRuleSet
+        )
+    ENDIF()
+
 ENDMACRO(build_dynamic_rule)
 
 MACRO(build_dynamic_rules rules)

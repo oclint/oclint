@@ -4,6 +4,8 @@ import os
 import re
 import argparse
 
+from oclintscripts import path
+
 SCRIPT_WORKING_FOLDER = os.path.dirname(os.path.abspath(__file__))
 RULES_PROJECT_DIRECTORY = os.path.join(SCRIPT_WORKING_FOLDER, "../oclint-rules")
 RULES_SOURCE_ROOT_DIRECTORY = os.path.join(RULES_PROJECT_DIRECTORY, "rules")
@@ -25,10 +27,6 @@ def custom_test_folder_path(folder_name):
 def custom_test_cmake_lists_path(folder_name):
     return os.path.join(custom_test_folder_path(folder_name), "CMakeLists.txt")
 
-def mkdir(path):
-    if not os.path.isdir(path):
-        os.mkdir(path)
-
 def add_path_to_cmake_lists(path, cmake_lists, build_step):
     if not os.path.isfile(path):
         open(path, 'a').close()
@@ -36,13 +34,13 @@ def add_path_to_cmake_lists(path, cmake_lists, build_step):
             cmake_lists_file.write(build_step)
 
 def pre_check_rule(folder_name):
-    mkdir(custom_folder_path(folder_name))
+    path.mkdir_p(custom_folder_path(folder_name))
     cmake_lists_path = custom_cmake_lists_path(folder_name)
     rule_build_step = '\nADD_RULE_CATEGORY_DIRECTORY(' + folder_name + ')\n'
     add_path_to_cmake_lists(cmake_lists_path, RULES_SOURCE_ROOT_CMAKELISTS, rule_build_step)
 
 def pre_check_test(folder_name):
-    mkdir(custom_test_folder_path(folder_name))
+    path.mkdir_p(custom_test_folder_path(folder_name))
     test_cmake_lists_path = custom_test_cmake_lists_path(folder_name)
     test_build_step = '\nADD_SUBDIRECTORY(' + folder_name + ')\n'
     add_path_to_cmake_lists(test_cmake_lists_path, RULES_TEST_ROOT_CMAKELISTS, test_build_step)
@@ -53,7 +51,7 @@ def pre_check(folder_name):
 
 def generate_code_block(line, node_type = ""):
     line_re = re.search('def (.+) :', line)
-    if (line_re):
+    if line_re:
         node_name = line_re.group(1) + node_type
         code_block = "\n    /* Visit " + node_name + "\n"
         code_block += "    bool Visit" + node_name + "(" + node_name + " *node)\n"
@@ -132,7 +130,7 @@ arg_parser.add_argument(      "--no-test", dest='generate_tests', action='store_
 arg_parser.set_defaults(generate_tests=True)
 args = arg_parser.parse_args()
 
-rule_info_dict = {"RULE_CLASS_NAME" : args.class_name, 
+rule_info_dict = {"RULE_CLASS_NAME" : args.class_name,
                   "RULE_TYPE"       : args.rule_type,
                   "RULE_PRIORITY"   : str(args.rule_priority),
                   "RULE_NAME"       : args.rule_name,
