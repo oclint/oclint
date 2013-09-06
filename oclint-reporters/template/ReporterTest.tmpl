@@ -1,0 +1,24 @@
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+
+#include "{{REPORTER_CLASS_NAME}}Reporter.cpp"
+
+using namespace ::testing;
+using namespace oclint;
+
+TEST({{REPORTER_CLASS_NAME}}ReporterTest, PropertyTest)
+{
+    {{REPORTER_CLASS_NAME}}Reporter reporter;
+    EXPECT_THAT(reporter.name(), StrEq("{{REPORTER_NAME}}"));
+}
+
+TEST({{REPORTER_CLASS_NAME}}ReporterTest, FirstFailingTest)
+{
+    EXPECT_FALSE("Start writing a new test");
+}
+
+int main(int argc, char **argv)
+{
+    ::testing::InitGoogleMock(&argc, argv);
+    return RUN_ALL_TESTS();
+}
