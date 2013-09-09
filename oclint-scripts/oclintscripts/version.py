@@ -2,7 +2,8 @@
 
 import subprocess
 import os
-import path
+
+from oclintscripts import path
 
 def git_hash():
     os.chdir(path.root_dir)
