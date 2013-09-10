@@ -13,14 +13,20 @@ using namespace oclint::option;
 
 LLVM_YAML_IS_SEQUENCE_VECTOR(RuleConfigurationPair)
 
+namespace llvm {
+namespace yaml {
+
 template <>
-struct llvm::yaml::MappingTraits<RuleConfigurationPair>
+struct MappingTraits<RuleConfigurationPair>
 {
     static void mapping(IO& inputOutput, RuleConfigurationPair& ruleConfiguration)
     {
         ruleConfiguration.mapping(inputOutput);
     }
 };
+
+}
+}
 
 const llvm::StringRef &oclint::option::RuleConfigurationPair::key() const
 {
@@ -44,8 +50,11 @@ void oclint::option::RuleConfigurationPair::mapping(llvm::yaml::IO& inputOutput)
 
 LLVM_YAML_IS_SEQUENCE_VECTOR(llvm::StringRef)
 
+namespace llvm {
+namespace yaml {
+
 template <>
-struct llvm::yaml::MappingTraits<ConfigFile>
+struct MappingTraits<ConfigFile>
 {
     static void mapping(IO& inputOutput, ConfigFile& config)
     {
@@ -54,7 +63,7 @@ struct llvm::yaml::MappingTraits<ConfigFile>
 };
 
 template <>
-struct llvm::yaml::ScalarEnumerationTraits<TriState>
+struct ScalarEnumerationTraits<TriState>
 {
     static void enumeration(IO &inputOutput, TriState &value)
     {
@@ -62,6 +71,9 @@ struct llvm::yaml::ScalarEnumerationTraits<TriState>
         inputOutput.enumCase(value, "false", TriState::FALSE);
     }
 };
+
+}
+}
 
 oclint::option::ConfigFile::ConfigFile(const std::string &path)
     : _path(path), _maxP1(INT_MIN), _maxP2(INT_MIN), _maxP3(INT_MIN)
