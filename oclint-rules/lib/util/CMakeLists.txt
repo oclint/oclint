@@ -1,3 +1,4 @@
-ADD_LIBRARY(OCLintUtil
-    ASTUtil.cpp
-    )
+IF (${CMAKE_SYSTEM_NAME} MATCHES "Win")
+ELSE()
+    ADD_LIBRARY(OCLintUtil ASTUtil.cpp)
+ENDIF()

@@ -10,31 +10,33 @@ MACRO(build_dynamic_rule name)
 				   RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/rules.dl
         )
 
-    TARGET_LINK_LIBRARIES(${name}Rule
-        LLVMSupport
-        clangASTMatchers
-        ) # TODO: might be redundant
-
-    TARGET_LINK_LIBRARIES(${name}Rule
-        OCLintMetric
-        OCLintHelper
-        OCLintUtil
-        OCLintCore
-        )
-
-    IF (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
-        TARGET_LINK_LIBRARIES(${name}Rule
-            ${CLANG_LIBRARIES}
-            ${REQ_LLVM_LIBRARIES}
-            OCLintRuleSet
-        )
-    ENDIF()
     IF (${CMAKE_SYSTEM_NAME} MATCHES "Win")
         TARGET_LINK_LIBRARIES(${name}Rule
-            ${CLANG_LIBRARIES}
-            ${REQ_LLVM_LIBRARIES}
-            OCLintRuleSet
+            abstractRules
+            OCLintMetric
         )
+    ELSE()
+        TARGET_LINK_LIBRARIES(${name}Rule abstractRules)
+
+        TARGET_LINK_LIBRARIES(${name}Rule
+            LLVMSupport
+            clangASTMatchers
+            ) # TODO: might be redundant
+
+        TARGET_LINK_LIBRARIES(${name}Rule
+            OCLintMetric
+            OCLintHelper
+            OCLintUtil
+            OCLintCore
+            )
+
+        IF (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+            TARGET_LINK_LIBRARIES(${name}Rule
+                ${CLANG_LIBRARIES}
+                ${REQ_LLVM_LIBRARIES}
+                OCLintRuleSet
+            )
+        ENDIF()
     ENDIF()
 
 ENDMACRO(build_dynamic_rule)

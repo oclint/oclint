@@ -17,10 +17,7 @@ private:
     clang::ast_matchers::MatchFinder *_finder;
 
 protected:
-    virtual void run(const clang::ast_matchers::MatchFinder::MatchResult &result)
-    {
-        callback(result);
-    }
+    virtual void run(const clang::ast_matchers::MatchFinder::MatchResult &result);
 
     template<typename T>
     void addMatcher(const T &nodeMatch)
@@ -29,32 +26,16 @@ protected:
     }
 
 public:
-    virtual void setUp()
-    {
-        _finder = new clang::ast_matchers::MatchFinder();
-        setUpMatcher();
-    }
+    virtual void setUp();
 
-    bool VisitDecl(clang::Decl *decl)
-    {
-        _finder->match(*decl, *_carrier->getASTContext());
-        return true;
-    }
+    bool VisitDecl(clang::Decl *decl);
 
-    bool VisitStmt(clang::Stmt *stmt)
-    {
-        _finder->match(*stmt, *_carrier->getASTContext());
-        return true;
-    }
+    bool VisitStmt(clang::Stmt *stmt);
 
-    virtual void tearDown()
-    {
-        delete _finder;
-        _finder = NULL;
-    }
+    virtual void tearDown();
 
 public:
-    virtual ~AbstractASTMatcherRule() {}
+    virtual ~AbstractASTMatcherRule();
 
     virtual void setUpMatcher() = 0;
     virtual void callback(const clang::ast_matchers::MatchFinder::MatchResult &result) = 0;
