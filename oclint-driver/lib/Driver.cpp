@@ -90,35 +90,10 @@ static clang::driver::Driver *newDriver(clang::DiagnosticsEngine *diagnostics,
 
 static std::string compilationJobsToString(const clang::driver::Job &job)
 {
-    std::stringstream buffer;
-    if (const clang::driver::Command *cmd = clang::dyn_cast<clang::driver::Command>(&job))
-    {
-        buffer << cmd->getExecutable();
-        for (llvm::opt::ArgStringList::const_iterator argIdx = cmd->getArguments().begin(),
-            argEnd = cmd->getArguments().end(); argIdx != argEnd; ++argIdx)
-        {
-            buffer << " ";
-            for (const char *s = *argIdx; *s; ++s)
-            {
-                if (*s == '"' || *s == '\\' || *s == '$')
-                {
-                    buffer << '\\';
-                }
-                buffer << *s;
-            }
-        }
-        buffer << "\n";
-    }
-    else
-    {
-        const clang::driver::JobList *jobs = clang::cast<clang::driver::JobList>(&job);
-        for (clang::driver::JobList::const_iterator jobIdx = jobs->begin(), jobEnd = jobs->end();
-            jobIdx != jobEnd; ++jobIdx)
-        {
-            buffer << compilationJobsToString(**jobIdx);
-        }
-    }
-    return buffer.str();
+    clang::SmallString<256> errorMsg;
+    llvm::raw_svector_ostream errorStream(errorMsg);
+    job.Print(errorStream, "; ", true);
+    return errorStream.str();
 }
 
 static const llvm::opt::ArgStringList *getCC1Arguments(clang::driver::Compilation *compilation)
@@ -127,7 +102,7 @@ static const llvm::opt::ArgStringList *getCC1Arguments(clang::driver::Compilatio
     if (jobList.size() != 1 || !clang::isa<clang::driver::Command>(*jobList.begin()))
     {
         throw oclint::GenericException("one compiler command contains multiple jobs:\n" +
-            compilationJobsToString(compilation->getJobs()) + "\n");
+            compilationJobsToString(jobList) + "\n");
     }
 
     const clang::driver::Command *cmd = clang::cast<clang::driver::Command>(*jobList.begin());
