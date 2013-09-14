@@ -8,6 +8,8 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
+// TODO Count ObjC fast enumeration as a message
+
 class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
 {
     class MessageAnalyzer : public RecursiveASTVisitor<MessageAnalyzer>
