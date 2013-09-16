@@ -12,7 +12,6 @@ IF (MINGW)
     TARGET_LINK_LIBRARIES(OCLintAbstractRule
         OCLintCore
         OCLintRuleSet
-
         ${CLANG_LIBRARIES}
         ${REQ_LLVM_LIBRARIES}
     )

@@ -13,6 +13,7 @@ MACRO(build_test name)
         )
     ELSE()
         TARGET_LINK_LIBRARIES(${name}
+            OCLintAbstractRule
             OCLintMetric
             OCLintHelper
             OCLintUtil
