@@ -43,7 +43,7 @@ def install_binary():
         ruleset_dll_dst_path = os.path.join(bundle_bin_dir, ruleset_dll_name)
         path.cp(ruleset_dll_path, ruleset_dll_dst_path)
 
-        abstractrule_dll_name = 'libOClintAbstractRule.dll'
+        abstractrule_dll_name = 'libOCLintAbstractRule.dll'
         abstractrule_dll_path = os.path.join(path.build.rules_build_dir, 'bin', abstractrule_dll_name)
         abstractrule_dll_dst_path = os.path.join(bundle_bin_dir, abstractrule_dll_name)
         path.cp(abstractrule_dll_path, abstractrule_dll_dst_path)
