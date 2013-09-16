@@ -62,7 +62,7 @@ def result_path(module_name):
 
 def display_result(module_name):
     with open(result_path(module_name), 'r') as result_file:
-        print result_file.read()
+        print(result_file.read())
 
 def dogfooding(module_name, enable_clang_static_analyzer):
     source_path = path.oclint_module_source_dir(module_name)

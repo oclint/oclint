@@ -18,11 +18,11 @@ def pre_validate(class_name, generate_tests):
     new_class_path = os.path.join(REPORTERS_SOURCE_ROOT_DIRECTORY, class_name + "Reporter.cpp")
     class_file_exits = os.path.isfile(new_class_path)
     if class_file_exits:
-        print "Error: " + reporter_class_name + "Reporter.cpp already exists."
+        print("Error: " + reporter_class_name + "Reporter.cpp already exists.")
     new_test_path = os.path.join(REPORTERS_TEST_ROOT_DIRECTORY, class_name + "ReporterTest.cpp")
     test_file_exits = generate_tests and os.path.isfile(new_test_path)
     if test_file_exits:
-        print "Error: " + reporter_class_name + "ReporterTest.cpp already exists."
+        print("Error: " + reporter_class_name + "ReporterTest.cpp already exists.")
     return not (class_file_exits or test_file_exits)
 
 def replace_wildcard(each_line, class_name, reporter_name):
