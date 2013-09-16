@@ -7,28 +7,28 @@ MACRO(build_dynamic_rule name)
 
     SET_TARGET_PROPERTIES(${name}Rule
         PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/rules.dl
-				   RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/rules.dl
+                   RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/rules.dl
         )
 
-    IF (${CMAKE_SYSTEM_NAME} MATCHES "Win")
+    IF (MINGW)
         TARGET_LINK_LIBRARIES(${name}Rule
-            abstractRules
+            OCLintAbstractRule
             OCLintMetric
         )
     ELSE()
-        TARGET_LINK_LIBRARIES(${name}Rule abstractRules)
+        TARGET_LINK_LIBRARIES(${name}Rule OCLintAbstractRule)
 
         TARGET_LINK_LIBRARIES(${name}Rule
             LLVMSupport
             clangASTMatchers
-            ) # TODO: might be redundant
+        ) # TODO: might be redundant
 
         TARGET_LINK_LIBRARIES(${name}Rule
             OCLintMetric
             OCLintHelper
             OCLintUtil
             OCLintCore
-            )
+        )
 
         IF (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
             TARGET_LINK_LIBRARIES(${name}Rule

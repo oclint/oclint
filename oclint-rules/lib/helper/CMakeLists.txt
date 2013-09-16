@@ -1,4 +1,3 @@
-IF (${CMAKE_SYSTEM_NAME} MATCHES "Win")
-ELSE()
+IF (NOT MINGW)
     ADD_LIBRARY(OCLintHelper SuppressHelper.cpp)
 ENDIF()

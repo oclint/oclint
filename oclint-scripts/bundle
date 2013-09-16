@@ -43,13 +43,13 @@ def install_binary():
         ruleset_dll_dst_path = os.path.join(bundle_bin_dir, ruleset_dll_name)
         path.cp(ruleset_dll_path, ruleset_dll_dst_path)
 
-        abstractrule_dll_name = 'libabstractRules.dll'
-        abstractrule_dll_path = os.path.join(path.build.rules_build_dir, 'lib', abstractrule_dll_name)
+        abstractrule_dll_name = 'libOClintAbstractRule.dll'
+        abstractrule_dll_path = os.path.join(path.build.rules_build_dir, 'bin', abstractrule_dll_name)
         abstractrule_dll_dst_path = os.path.join(bundle_bin_dir, abstractrule_dll_name)
         path.cp(abstractrule_dll_path, abstractrule_dll_dst_path)
 
         metric_dll_name = 'libOCLintMetric.dll'
-        metric_dll_path = os.path.join(path.build.metrics_build_dir, 'lib', metric_dll_name)
+        metric_dll_path = os.path.join(path.build.metrics_build_dir, 'bin', metric_dll_name)
         metric_dll_dst_path = os.path.join(bundle_bin_dir, metric_dll_name)
         path.cp(metric_dll_path, metric_dll_dst_path)
 
