@@ -38,7 +38,7 @@ def test_result_path(module_name):
 def display_test_result(module_name):
     testresult_path = test_result_path(module_name)
     with open(testresult_path, 'r') as testresult_file:
-        print testresult_file.read()
+        print(testresult_file.read())
 
 def test_module(module_name, multiple_thread):
     build_path = path.oclint_module_test_dir(module_name)
