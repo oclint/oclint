@@ -7,34 +7,36 @@ MACRO(build_dynamic_rule name)
 
     SET_TARGET_PROPERTIES(${name}Rule
         PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/rules.dl
-				   RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/rules.dl
+                   RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/rules.dl
         )
 
-    TARGET_LINK_LIBRARIES(${name}Rule
-        LLVMSupport
-        clangASTMatchers
+    IF (MINGW)
+        TARGET_LINK_LIBRARIES(${name}Rule
+            OCLintAbstractRule
+            OCLintMetric
+        )
+    ELSE()
+        TARGET_LINK_LIBRARIES(${name}Rule OCLintAbstractRule)
+
+        TARGET_LINK_LIBRARIES(${name}Rule
+            LLVMSupport
+            clangASTMatchers
         ) # TODO: might be redundant
 
-    TARGET_LINK_LIBRARIES(${name}Rule
-        OCLintMetric
-        OCLintHelper
-        OCLintUtil
-        OCLintCore
+        TARGET_LINK_LIBRARIES(${name}Rule
+            OCLintMetric
+            OCLintHelper
+            OCLintUtil
+            OCLintCore
         )
 
-    IF (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
-        TARGET_LINK_LIBRARIES(${name}Rule
-            ${CLANG_LIBRARIES}
-            ${REQ_LLVM_LIBRARIES}
-            OCLintRuleSet
-        )
-    ENDIF()
-    IF (${CMAKE_SYSTEM_NAME} MATCHES "Win")
-        TARGET_LINK_LIBRARIES(${name}Rule
-            ${CLANG_LIBRARIES}
-            ${REQ_LLVM_LIBRARIES}
-            OCLintRuleSet
-        )
+        IF (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+            TARGET_LINK_LIBRARIES(${name}Rule
+                ${CLANG_LIBRARIES}
+                ${REQ_LLVM_LIBRARIES}
+                OCLintRuleSet
+            )
+        ENDIF()
     ENDIF()
 
 ENDMACRO(build_dynamic_rule)

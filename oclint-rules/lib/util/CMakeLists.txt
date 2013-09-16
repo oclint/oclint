@@ -1,3 +1,3 @@
-ADD_LIBRARY(OCLintUtil
-    ASTUtil.cpp
-    )
+IF (NOT MINGW)
+    ADD_LIBRARY(OCLintUtil ASTUtil.cpp)
+ENDIF()

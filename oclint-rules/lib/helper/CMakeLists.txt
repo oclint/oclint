@@ -1,3 +1,3 @@
-ADD_LIBRARY(OCLintHelper
-    SuppressHelper.cpp
-    )
+IF (NOT MINGW)
+    ADD_LIBRARY(OCLintHelper SuppressHelper.cpp)
+ENDIF()
