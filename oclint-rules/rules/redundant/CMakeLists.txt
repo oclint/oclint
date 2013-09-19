@@ -1,4 +1,5 @@
 SET(LIST_OF_RULES
+    DeleteNullptrIsSafe
     RedundantConditionalOperator
     RedundantIfStatement
     RedundantLocalVariable

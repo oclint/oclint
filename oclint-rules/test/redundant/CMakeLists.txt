@@ -1,3 +1,4 @@
+BUILD_TEST(DeleteNullptrIsSafeRuleTest)
 BUILD_TEST(RedundantConditionalOperatorRuleTest)
 BUILD_TEST(RedundantIfStatementRuleTest)
 BUILD_TEST(RedundantLocalVariableRuleTest)
