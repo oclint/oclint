@@ -122,7 +122,7 @@ private:
     static oclint::RuleSet rules;
 
 public:
-    virtual std::string name() const
+    virtual const std::string name() const
     {
         return "delete nullptr is safe";
     }
