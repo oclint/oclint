@@ -2,6 +2,7 @@
 #define OCLINT_RULECARRIER_H
 
 #include <string>
+#include <mutex>
 
 namespace clang
 {
@@ -20,6 +21,7 @@ class RuleCarrier
 private:
     ViolationSet *_violationSet;
     clang::ASTContext *_astContext;
+    std::mutex _mutex;
 
 public:
     RuleCarrier(clang::ASTContext *astContext, ViolationSet *violationSet);

@@ -31,6 +31,7 @@ namespace option
     bool showEnabledRules();
     bool enableGlobalAnalysis();
     bool enableClangChecker();
+    unsigned int numThreads();
 } // end namespace option
 } // end namespace oclint
 

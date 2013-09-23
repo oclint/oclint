@@ -13,20 +13,17 @@ RulesetBasedAnalyzer::RulesetBasedAnalyzer(std::vector<RuleBase *> filteredRules
 {
 }
 
-void RulesetBasedAnalyzer::analyze(std::vector<clang::ASTContext *> &contexts)
+void RulesetBasedAnalyzer::analyze(clang::ASTContext *context)
 {
-    for (const auto& context : contexts)
+    debug::emit("Analyzing ");
+    ViolationSet *violationSet = new ViolationSet();
+    RuleCarrier *carrier = new RuleCarrier(context, violationSet);
+    debug::emit(carrier->getMainFilePath().c_str());
+    for (RuleBase *rule : _filteredRules)
     {
-        debug::emit("Analyzing ");
-        ViolationSet *violationSet = new ViolationSet();
-        RuleCarrier *carrier = new RuleCarrier(context, violationSet);
-        debug::emit(carrier->getMainFilePath().c_str());
-        for (RuleBase *rule : _filteredRules)
-        {
-            rule->takeoff(carrier);
-        }
-        Results *results = Results::getInstance();
-        results->add(violationSet);
-        debug::emit(" - Done\n");
+        rule->takeoff(carrier);
     }
+    Results *results = Results::getInstance();
+    results->add(violationSet);
+    debug::emit(" - Done\n");
 }

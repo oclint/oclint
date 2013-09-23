@@ -1,6 +1,7 @@
 #ifndef OCLINT_RESULTS_H
 #define OCLINT_RESULTS_H
 
+#include <mutex>
 #include <vector>
 
 namespace oclint
@@ -11,8 +12,10 @@ class ViolationSet;
 
 class Results
 {
+private:
+    std::mutex _mutex;
+
 protected:
-    static Results *_singleton;
     Results();
     ~Results();
 
