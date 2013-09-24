@@ -207,13 +207,14 @@ public:
         return true;
     }
 
-    bool VisitCXXMethodDecl(CXXMethodDecl *node)
-    {
-        MessageAnalyzer analyzer;
-        addViolationsForEnviedClasses(node, analyzer.analyzeCXX(node));
-
-        return true;
-    }
+    // Disable C++ for now
+    // bool VisitCXXMethodDecl(CXXMethodDecl *node)
+    // {
+    //     MessageAnalyzer analyzer;
+    //     addViolationsForEnviedClasses(node, analyzer.analyzeCXX(node));
+    //
+    //     return true;
+    // }
 };
 
 RuleSet FeatureEnvyRule::rules(new FeatureEnvyRule());
