@@ -1,0 +1,2 @@
+BUILD_TEST(UseMinOrMaxRuleTest)
+BUILD_TEST(UseSwapRuleTest)
