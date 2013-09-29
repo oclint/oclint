@@ -139,7 +139,10 @@ bool lineBasedShouldSuppress(int beginLine, clang::ASTContext &context)
             if (std::string::npos !=
                 comment->getRawText(context.getSourceManager()).find("//!OCLINT"))
             {
-                commentLines.insert(comment->getBeginLine(context.getSourceManager()));
+                clang::SourceLocation startLocation = comment->getLocStart();
+                int startLocationLine =
+                    context.getSourceManager().getPresumedLineNumber(startLocation);
+                commentLines.insert(startLocationLine);
             }
         }
         singleLineMapping[filePath] = commentLines;
