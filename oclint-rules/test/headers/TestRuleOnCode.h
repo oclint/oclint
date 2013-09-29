@@ -119,3 +119,43 @@ void testRuleOnObjCCode(RuleBase *rule, const string &code)
 {
     testRuleOnObjCCode(rule, code, -1, 0, 0, 0, 0);
 }
+
+#define TAG_START "TAG_START"
+#define TAG_END "TAG_END"
+
+void ComputeLocalisation(const std::string& s, size_t offset,
+                            int* line, int* column)
+{
+    int c = 1;
+    int l = 1;
+
+    for (size_t i = 0; i != offset; ++i) {
+        if (s[i] == '\n') {
+            c = 1;
+            ++l;
+        } else {
+            ++c;
+        }
+    }
+    *line = l;
+    *column = c;
+}
+
+void testRuleOnCXXCodeWithViolation(RuleBase* rule, std::string code,
+                        const std::string& message = "")
+{
+    const size_t startOffset = code.find(TAG_START);
+    assert(startOffset != std::string::npos);
+    code.erase(startOffset, strlen(TAG_START));
+    const size_t endOffset = code.find(TAG_END, startOffset);
+    assert(endOffset != std::string::npos);
+    code.erase(endOffset, strlen(TAG_END));
+
+    int startLine;
+    int startColumn;
+    int endLine;
+    int endColumn;
+    ComputeLocalisation(code, startOffset, &startLine, &startColumn);
+    ComputeLocalisation(code, endOffset, &endLine, &endColumn);
+    testRuleOnCXXCode(rule, code, 0, startLine, startColumn, endLine, endColumn, message);
+}
