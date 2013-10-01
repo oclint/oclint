@@ -62,7 +62,7 @@ int NcssMetric::ncss(clang::SwitchCase *stmt)
 int NcssMetric::ncss(clang::CXXTryStmt *stmt)
 {
     int ncssCatches = 0;
-    for (int catchIndex = 0; catchIndex < stmt->getNumHandlers(); catchIndex++)
+    for (size_t catchIndex = 0; catchIndex != stmt->getNumHandlers(); ++catchIndex)
     {
         ncssCatches += ncss(stmt->getHandler(catchIndex));
     }
@@ -77,7 +77,7 @@ int NcssMetric::ncss(clang::CXXCatchStmt *stmt)
 int NcssMetric::ncss(clang::ObjCAtTryStmt *stmt)
 {
     int ncssCatches = 0;
-    for (int catchIndex = 0; catchIndex < stmt->getNumCatchStmts(); catchIndex++)
+    for (size_t catchIndex = 0; catchIndex != stmt->getNumCatchStmts(); ++catchIndex)
     {
         ncssCatches += ncss(stmt->getCatchStmt(catchIndex));
     }

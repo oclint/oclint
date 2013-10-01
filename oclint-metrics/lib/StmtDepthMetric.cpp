@@ -62,7 +62,7 @@ int StmtDepthMetric::depth(clang::SwitchCase *stmt)
 int StmtDepthMetric::depth(clang::CXXTryStmt *stmt)
 {
     int maxDepth = depth(stmt->getTryBlock());
-    for (int catchIndex = 0; catchIndex < stmt->getNumHandlers(); catchIndex++)
+    for (size_t catchIndex = 0; catchIndex != stmt->getNumHandlers(); ++catchIndex)
     {
         int depthCatch = depth(stmt->getHandler(catchIndex));
         if (depthCatch > maxDepth)
@@ -81,7 +81,7 @@ int StmtDepthMetric::depth(clang::CXXCatchStmt *stmt)
 int StmtDepthMetric::depth(clang::ObjCAtTryStmt *stmt)
 {
     int maxDepth = depth(stmt->getTryBody());
-    for (int catchIndex = 0; catchIndex < stmt->getNumCatchStmts(); catchIndex++)
+    for (size_t catchIndex = 0; catchIndex != stmt->getNumCatchStmts(); ++catchIndex)
     {
         int depthCatch = depth(stmt->getCatchStmt(catchIndex));
         if (depthCatch > maxDepth)
