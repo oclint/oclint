@@ -10,7 +10,7 @@ Violation::Violation(RuleBase *violatedRule,
     int violationEndLine,
     int violationEndColumn,
     const std::string& violationMessage)
-    : message(violationMessage), path(violationFilePath)
+    : path(violationFilePath), message(violationMessage)
 {
     rule = violatedRule;
     startLine = violationStartLine;
