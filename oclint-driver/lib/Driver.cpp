@@ -308,9 +308,9 @@ static void invoke(CompileCommandPairs &compileCommands,
 
     // collect a collection of AST contexts
     std::vector<clang::ASTContext *> localContexts;
-    for (int compilerIndex = 0; compilerIndex < compilers.size(); compilerIndex++)
+    for (auto it : compilers)
     {
-        localContexts.push_back(&compilers.at(compilerIndex)->getASTContext());
+        localContexts.push_back(&it->getASTContext());
     }
 
     // use the analyzer to do the actual analysis
@@ -319,7 +319,7 @@ static void invoke(CompileCommandPairs &compileCommands,
     analyzer.postprocess(localContexts);
 
     // send out the signals to release or simply leak resources
-    for (int compilerIndex = 0; compilerIndex < compilers.size(); compilerIndex++)
+    for (size_t compilerIndex = 0; compilerIndex != compilers.size(); ++compilerIndex)
     {
         compilers.at(compilerIndex)->end();
         compilers.at(compilerIndex)->resetAndLeakFileManager();
