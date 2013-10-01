@@ -35,13 +35,13 @@ static const Expr* IgnoreCastExpr(const Expr& expr)
     return last;
 }
 
-static bool IsCondNoNullPointer_binop(const BinaryOperator& b, const Expr** pointer)
+static bool IsCondNoNullPointer_binop(const BinaryOperator& binOp, const Expr** pointer)
 {
-    if (b.getOpcode() != BO_NE) {
+    if (binOp.getOpcode() != BO_NE) {
         return false;
     }
-    const Expr& lhs = *b.getLHS();
-    const Expr& rhs = *b.getRHS();
+    const Expr& lhs = *binOp.getLHS();
+    const Expr& rhs = *binOp.getRHS();
     *pointer = nullptr;
     if (IsANullPointer(lhs) == true) {
         *pointer = IgnoreCastExpr(rhs);
@@ -87,7 +87,9 @@ static bool IsAnAssignToNullptr(ASTContext& context, const Stmt& stmt, const Exp
     return IsANullPointer(*binOp->getRHS()) && AreSameExpr(context, lhs, pointer);
 }
 
-static bool IsADeleteBlock_compound(ASTContext& context, const CompoundStmt& compoundStmt, const Expr& pointer)
+static bool IsADeleteBlock_compound(ASTContext& context,
+                                    const CompoundStmt& compoundStmt,
+                                    const Expr& pointer)
 {
     if (compoundStmt.size() != 1 && compoundStmt.size() != 2) {
         return false;
