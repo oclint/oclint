@@ -308,9 +308,9 @@ static void invoke(CompileCommandPairs &compileCommands,
 
     // collect a collection of AST contexts
     std::vector<clang::ASTContext *> localContexts;
-    for (auto it : compilers)
+    for (auto compiler : compilers)
     {
-        localContexts.push_back(&it->getASTContext());
+        localContexts.push_back(&compiler->getASTContext());
     }
 
     // use the analyzer to do the actual analysis
