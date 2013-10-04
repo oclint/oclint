@@ -34,7 +34,9 @@ def build_command(is_release):
     else:
         cmd_build.append('CMAKE_BUILD_TYPE', 'Debug')
     if environment.is_mingw32():
-        cmd_build.append('LLVM_EXTERNAL_COMPILER_RT_BUILD:BOOL', 'OFF')
+        cmd_build.append('LLVM_BUILD_RUNTIME', 'OFF')
+    else:
+        cmd_build.append('LLVM_BUILD_RUNTIME', 'ON')
     if environment.is_darwin() and not environment.is_darwin_13():
         cmd_build.append('CMAKE_CXX_FLAGS', '-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}', True)
     cmd_build.append('CMAKE_INSTALL_PREFIX', path.build.clang_install_dir, environment.is_mingw32())
