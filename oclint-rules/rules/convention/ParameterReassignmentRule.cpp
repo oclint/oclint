@@ -46,7 +46,7 @@ private:
 
     void locateParamNames(Decl *decl, vector<string> &names)
     {
-        if (names.empty() == false)
+        if (!names.empty())
         {
             BinaryOperatorAnalyzer biOpAnalyzer;
             vector<BinaryOperator*> binaryOperators = biOpAnalyzer.analyze(decl, names);
