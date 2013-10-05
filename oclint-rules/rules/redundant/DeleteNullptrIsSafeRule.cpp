@@ -12,9 +12,9 @@ static bool IsCondNoNullPointer_binop(const BinaryOperator& binOp, const Expr** 
     const Expr& lhs = *binOp.getLHS();
     const Expr& rhs = *binOp.getRHS();
     *pointer = nullptr;
-    if (isANullPointerExpr(lhs) == true) {
+    if (isANullPointerExpr(lhs)) {
         *pointer = ignoreCastExpr(rhs);
-    } else if (isANullPointerExpr(rhs) == true) {
+    } else if (isANullPointerExpr(rhs)) {
         *pointer = ignoreCastExpr(lhs);
     }
     return *pointer != nullptr;
@@ -65,7 +65,7 @@ static bool IsADeleteBlock_compound(ASTContext& context,
     }
     const Stmt* stmt1 = *compoundStmt.body_begin();
 
-    if (IsADeleteStmt(context, *stmt1, pointer) == false) {
+    if (!IsADeleteStmt(context, *stmt1, pointer)) {
         return false;
     }
     if (compoundStmt.size() == 1) {
@@ -109,12 +109,12 @@ public:
             return true;
         }
         const Expr* pointer = nullptr;
-        if (IsCondNoNullPointer(*ifStmt->getCond(), &pointer) == false) {
+        if (!IsCondNoNullPointer(*ifStmt->getCond(), &pointer)) {
             return true;
         }
         ASTContext* context = _carrier->getASTContext();
 
-        if (IsADeleteBlock(*context, *ifStmt->getThen(), pointer) == false) {
+        if (!IsADeleteBlock(*context, *ifStmt->getThen(), pointer)) {
             return true;
         }
         addViolation(ifStmt, this);
