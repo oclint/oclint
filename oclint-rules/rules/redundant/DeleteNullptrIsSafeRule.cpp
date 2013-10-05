@@ -1,39 +1,8 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
+#include "oclint/util/ASTUtil.h"
 
 using namespace clang;
-
-static bool IsANullPointer(const Expr& expr)
-{
-    for (const CastExpr* castExpr = dyn_cast<CastExpr>(&expr);
-         castExpr;
-         castExpr = dyn_cast<CastExpr>(castExpr->getSubExpr())) {
-        if (castExpr->getCastKind() == CK_NullToPointer) {
-            return true;
-        }
-    }
-    return false;
-}
-
-static bool AreSameExpr(ASTContext& context, const Expr& lhs, const Expr& rhs)
-{
-    llvm::FoldingSetNodeID lhsID;
-    llvm::FoldingSetNodeID rhsID;
-    lhs.Profile(lhsID, context, true);
-    rhs.Profile(rhsID, context, true);
-    return lhsID == rhsID;
-}
-
-static const Expr* IgnoreCastExpr(const Expr& expr)
-{
-    const Expr* last = &expr;
-    for (const CastExpr* e = dyn_cast<CastExpr>(&expr);
-         e;
-         e = dyn_cast<CastExpr>(e->getSubExpr())) {
-        last = e->getSubExpr();
-    }
-    return last;
-}
 
 static bool IsCondNoNullPointer_binop(const BinaryOperator& binOp, const Expr** pointer)
 {
@@ -43,10 +12,10 @@ static bool IsCondNoNullPointer_binop(const BinaryOperator& binOp, const Expr** 
     const Expr& lhs = *binOp.getLHS();
     const Expr& rhs = *binOp.getRHS();
     *pointer = nullptr;
-    if (IsANullPointer(lhs) == true) {
-        *pointer = IgnoreCastExpr(rhs);
-    } else if (IsANullPointer(rhs) == true) {
-        *pointer = IgnoreCastExpr(lhs);
+    if (isANullPointerExpr(lhs) == true) {
+        *pointer = ignoreCastExpr(rhs);
+    } else if (isANullPointerExpr(rhs) == true) {
+        *pointer = ignoreCastExpr(lhs);
     }
     return *pointer != nullptr;
 }
@@ -57,7 +26,7 @@ static bool IsCondNoNullPointer(const Expr& expr, const Expr** pointer)
     if (binop) {
         return IsCondNoNullPointer_binop(*binop, pointer);
     }
-    *pointer = IgnoreCastExpr(expr);
+    *pointer = ignoreCastExpr(expr);
     return *pointer != nullptr;
 }
 
@@ -68,11 +37,11 @@ static bool IsADeleteStmt(ASTContext& context, const Stmt& stmt, const Expr& poi
     if (cxxDeleteExpr == nullptr) {
         return false;
     }
-    const Expr* expr = IgnoreCastExpr(*cxxDeleteExpr->getArgument());
+    const Expr* expr = ignoreCastExpr(*cxxDeleteExpr->getArgument());
     if (expr == nullptr) {
         return false;
     }
-    return AreSameExpr(context, *expr, pointer);
+    return areSameExpr(context, *expr, pointer);
 }
 
 static bool IsAnAssignToNullptr(ASTContext& context, const Stmt& stmt, const Expr& pointer)
@@ -82,9 +51,9 @@ static bool IsAnAssignToNullptr(ASTContext& context, const Stmt& stmt, const Exp
     if (binOp == nullptr || binOp->getOpcode() != BO_Assign) {
         return false;
     }
-    const Expr& lhs = *IgnoreCastExpr(*binOp->getLHS());
+    const Expr& lhs = *ignoreCastExpr(*binOp->getLHS());
 
-    return IsANullPointer(*binOp->getRHS()) && AreSameExpr(context, lhs, pointer);
+    return isANullPointerExpr(*binOp->getRHS()) && areSameExpr(context, lhs, pointer);
 }
 
 static bool IsADeleteBlock_compound(ASTContext& context,

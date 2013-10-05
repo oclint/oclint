@@ -58,3 +58,35 @@ bool isCppMethodDeclLocatedInCppRecordDecl(clang::CXXMethodDecl *decl)
     }
     return false;
 }
+
+bool isANullPointerExpr(const clang::Expr& expr)
+{
+    for (const clang::CastExpr* castExpr = clang::dyn_cast<clang::CastExpr>(&expr);
+         castExpr;
+         castExpr = clang::dyn_cast<clang::CastExpr>(castExpr->getSubExpr())) {
+        if (castExpr->getCastKind() == clang::CK_NullToPointer) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool areSameExpr(clang::ASTContext& context, const clang::Expr& lhs, const clang::Expr& rhs)
+{
+    llvm::FoldingSetNodeID lhsID;
+    llvm::FoldingSetNodeID rhsID;
+    lhs.Profile(lhsID, context, true);
+    rhs.Profile(rhsID, context, true);
+    return lhsID == rhsID;
+}
+
+const clang::Expr* ignoreCastExpr(const clang::Expr& expr)
+{
+    const clang::Expr* last = &expr;
+    for (const clang::CastExpr* e = clang::dyn_cast<clang::CastExpr>(&expr);
+         e;
+         e = clang::dyn_cast<clang::CastExpr>(e->getSubExpr())) {
+        last = e->getSubExpr();
+    }
+    return last;
+}
