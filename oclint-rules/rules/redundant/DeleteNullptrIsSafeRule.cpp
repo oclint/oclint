@@ -87,7 +87,8 @@ static bool IsADeleteBlock(ASTContext& context, const Stmt& stmt, const Expr* po
     return IsADeleteStmt(context, stmt, *pointer);
 }
 
-class DeleteNullptrIsSafeRule : public oclint::AbstractASTVisitorRule<DeleteNullptrIsSafeRule>
+class UnnecessaryNullCheckForCXXDeallocRule :
+    public oclint::AbstractASTVisitorRule<UnnecessaryNullCheckForCXXDeallocRule>
 {
 private:
     static oclint::RuleSet rules;
@@ -95,7 +96,7 @@ private:
 public:
     virtual const std::string name() const
     {
-        return "delete nullptr is safe";
+        return "unnecessary null check for cxxdealloc";
     }
 
     virtual int priority() const
@@ -122,4 +123,4 @@ public:
     }
 };
 
-oclint::RuleSet DeleteNullptrIsSafeRule::rules(new DeleteNullptrIsSafeRule);
+oclint::RuleSet UnnecessaryNullCheckForCXXDeallocRule::rules(new UnnecessaryNullCheckForCXXDeallocRule);
