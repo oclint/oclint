@@ -1,6 +1,6 @@
 #include "TestHeaders.h"
 
-#include "rules/redundant/DeleteNullptrIsSafeRule.cpp"
+#include "rules/redundant/UnnecessaryNullCheckForCXXDeallocRule.cpp"
 
 TEST(UnnecessaryNullCheckForCXXDeallocRuleTest, PropertyTest)
 {

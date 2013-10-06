@@ -1,7 +1,7 @@
-BUILD_TEST(DeleteNullptrIsSafeRuleTest)
 BUILD_TEST(RedundantConditionalOperatorRuleTest)
 BUILD_TEST(RedundantIfStatementRuleTest)
 BUILD_TEST(RedundantLocalVariableRuleTest)
 BUILD_TEST(RedundantNilCheckRuleTest)
 BUILD_TEST(UnnecessaryElseStatementRuleTest)
+BUILD_TEST(UnnecessaryNullCheckForCXXDeallocRuleTest)
 BUILD_TEST(UselessParenthesesRuleTest)
