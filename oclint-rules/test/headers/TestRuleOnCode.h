@@ -30,8 +30,8 @@ void testRuleOnCode(const Twine &fileName,
         }
         else
         {
-            EXPECT_LT(violationIndex, violations.size());
-            if (violationIndex < violations.size())
+            EXPECT_LT(size_t(violationIndex), violations.size());
+            if (size_t(violationIndex) < violations.size())
             {
                 Violation violation = violations.at(violationIndex);
                 EXPECT_THAT(violation.startLine, Eq(expectStartLine));

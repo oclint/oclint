@@ -46,7 +46,7 @@ private:
 
     void locateParamNames(Decl *decl, vector<string> &names)
     {
-        if (names.size() > 0)
+        if (!names.empty())
         {
             BinaryOperatorAnalyzer biOpAnalyzer;
             vector<BinaryOperator*> binaryOperators = biOpAnalyzer.analyze(decl, names);
@@ -71,7 +71,7 @@ public:
     bool VisitFunctionDecl(FunctionDecl *decl)
     {
         vector<string> names;
-        for (int i = 0; i < decl->getNumParams(); i++)
+        for (size_t i = 0; i != decl->getNumParams(); ++i)
         {
             ParmVarDecl *parmVarDecl = decl->getParamDecl(i);
             if (parmVarDecl->getNameAsString() != "")
