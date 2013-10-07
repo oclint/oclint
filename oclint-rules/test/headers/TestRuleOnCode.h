@@ -1,6 +1,7 @@
 void testRuleOnCode(const Twine &fileName,
     RuleBase *rule,
     const string &code,
+    const std::vector<std::string> &args,
     int violationIndex,
     int expectStartLine,
     int expectStartColumn,
@@ -20,7 +21,7 @@ void testRuleOnCode(const Twine &fileName,
     std::generate_n(randomPrefix.begin(), randomPrefixLength,
         [randomChars, randomCharSize]() -> char { return randomChars[ rand() % randomCharSize ]; });
 
-    if (runToolOnCode(action, twine, randomPrefix + fileName))
+    if (runToolOnCodeWithArgs(action, twine, args, randomPrefix + fileName))
     {
         vector<Violation> violations = violationSet->getViolations();
         if (violationIndex < 0)
@@ -56,7 +57,7 @@ void testRuleOnCode(RuleBase *rule,
     int expectEndColumn,
     const string& expectMessage = "")
 {
-    testRuleOnCode("input.c", rule, code, violationIndex,
+    testRuleOnCode("input.c", rule, code, {}, violationIndex,
         expectStartLine, expectStartColumn, expectEndLine, expectEndColumn, expectMessage);
 }
 
@@ -69,7 +70,20 @@ void testRuleOnCXXCode(RuleBase *rule,
     int expectEndColumn,
     const string& expectMessage = "")
 {
-    testRuleOnCode("input.cpp", rule, code, violationIndex,
+    testRuleOnCode("input.cpp", rule, code, {}, violationIndex,
+        expectStartLine, expectStartColumn, expectEndLine, expectEndColumn, expectMessage);
+}
+
+void testRuleOnCXX11Code(RuleBase *rule,
+    const string &code,
+    int violationIndex,
+    int expectStartLine,
+    int expectStartColumn,
+    int expectEndLine,
+    int expectEndColumn,
+    const string& expectMessage = "")
+{
+    testRuleOnCode("input.cpp", rule, code, {"-std=c++11"}, violationIndex,
         expectStartLine, expectStartColumn, expectEndLine, expectEndColumn, expectMessage);
 }
 
@@ -82,7 +96,7 @@ void testRuleOnObjCCode(RuleBase *rule,
     int expectEndColumn,
     const string& expectMessage = "")
 {
-    testRuleOnCode("input.m", rule, code, violationIndex,
+    testRuleOnCode("input.m", rule, code, {}, violationIndex,
         expectStartLine, expectStartColumn, expectEndLine, expectEndColumn, expectMessage);
 }
 
@@ -94,6 +108,11 @@ void testRuleOnCode(RuleBase *rule, const string &code)
 void testRuleOnCXXCode(RuleBase *rule, const string &code)
 {
     testRuleOnCXXCode(rule, code, -1, 0, 0, 0, 0);
+}
+
+void testRuleOnCXX11Code(RuleBase *rule, const string &code)
+{
+    testRuleOnCXX11Code(rule, code, -1, 0, 0, 0, 0);
 }
 
 void testRuleOnObjCCode(RuleBase *rule, const string &code)
