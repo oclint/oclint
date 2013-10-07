@@ -12,7 +12,7 @@ class TooManyParametersRule : public AbstractASTVisitorRule<TooManyParametersRul
 private:
     static RuleSet rules;
 
-    int _threshold;
+    unsigned int _threshold;
 
     template <typename T>
     void applyDecl(T *decl)
