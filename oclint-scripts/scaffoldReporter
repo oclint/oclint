@@ -74,8 +74,8 @@ def lower_add_space(name_re):
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument("class_name", help="class name of the reporter")
 arg_parser.add_argument("-n", "--name", dest='reporter_name', default="")
-arg_parser.add_argument(      "--tests",    dest='generate_tests', action='store_true',  help="Generate a test for the new reporter")
-arg_parser.add_argument(      "--no-tests", dest='generate_tests', action='store_false', help="Do not generate a test for the new reporter (default)")
+arg_parser.add_argument(      "--tests",    dest='generate_tests', action='store_true',  help="Generate a test for the new reporter (default)")
+arg_parser.add_argument(      "--no-tests", dest='generate_tests', action='store_false', help="Do not generate a test for the new reporter")
 arg_parser.set_defaults(generate_tests=True)
 args = arg_parser.parse_args()
 
