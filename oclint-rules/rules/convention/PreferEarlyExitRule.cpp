@@ -57,7 +57,7 @@ private:
     }
 
     template <class LoopStmt>
-    bool VisiLoopStmt(LoopStmt* loopStmt)
+    bool VisitLoopStmt(LoopStmt* loopStmt)
     {
         addViolationIfStmtIsLongIf(getLastStatement(loopStmt->getBody()),
                                    "Use continue to simplify code and reduce indentation");
@@ -94,17 +94,17 @@ public:
 
     bool VisitForStmt(ForStmt* forStmt)
     {
-        return VisiLoopStmt(forStmt);
+        return VisitLoopStmt(forStmt);
     }
 
     bool VisitWhileStmt(WhileStmt* whileStmt)
     {
-        return VisiLoopStmt(whileStmt);
+        return VisitLoopStmt(whileStmt);
     }
 
     bool VisitDoStmt(DoStmt* doStmt)
     {
-        return VisiLoopStmt(doStmt);
+        return VisitLoopStmt(doStmt);
     }
 };
 
