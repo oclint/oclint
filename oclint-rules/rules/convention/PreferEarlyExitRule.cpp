@@ -51,11 +51,7 @@ private:
     {
         if (auto compoundStmt = dyn_cast_or_null<CompoundStmt>(stmt))
         {
-            if (!compoundStmt->body_empty())
-            {
-                return compoundStmt->body_back();
-            }
-            return 0;
+            return compoundStmt->body_back();
         }
         return stmt;
     }
@@ -63,11 +59,8 @@ private:
     template <class LoopStmt>
     bool VisiLoopStmt(LoopStmt* loopStmt)
     {
-        if (auto stmt = getLastStatement(loopStmt->getBody()))
-        {
-            addViolationIfStmtIsLongIf(stmt,
-                                       "Use continue to simplify code and reduce indentation");
-        }
+        addViolationIfStmtIsLongIf(getLastStatement(loopStmt->getBody()),
+                                   "Use continue to simplify code and reduce indentation");
         return true;
     }
 
