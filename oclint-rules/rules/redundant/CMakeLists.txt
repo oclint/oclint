@@ -4,6 +4,7 @@ SET(LIST_OF_RULES
     RedundantLocalVariable
     RedundantNilCheck
     UnnecessaryElseStatement
+    UnnecessaryNullCheckForCXXDealloc
     UselessParentheses
     )
 
