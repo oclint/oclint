@@ -4,47 +4,49 @@
 
 using namespace clang;
 
-static bool IsCondNoNullPointer_binop(const BinaryOperator& binOp, const Expr** pointer)
+static bool IsCondNoNullPointerForBinOp(const BinaryOperator& binOp, const Expr** exprPointer)
 {
-    if (binOp.getOpcode() != BO_NE) {
+    if (binOp.getOpcode() != BO_NE)
+    {
         return false;
     }
     const Expr& lhs = *binOp.getLHS();
     const Expr& rhs = *binOp.getRHS();
-    *pointer = nullptr;
-    if (isANullPointerExpr(lhs)) {
-        *pointer = ignoreCastExpr(rhs);
-    } else if (isANullPointerExpr(rhs)) {
-        *pointer = ignoreCastExpr(lhs);
+    *exprPointer = nullptr;
+    if (isANullPointerExpr(lhs))
+    {
+        *exprPointer = ignoreCastExpr(rhs);
     }
-    return *pointer != nullptr;
+    else if (isANullPointerExpr(rhs))
+    {
+        *exprPointer = ignoreCastExpr(lhs);
+    }
+    return *exprPointer != nullptr;
 }
 
-static bool IsCondNoNullPointer(const Expr& expr, const Expr** pointer)
+static bool IsCondNoNullPointer(const Expr& expr, const Expr** exprPointer)
 {
-    const BinaryOperator* binop = dyn_cast<BinaryOperator>(&expr);
-    if (binop) {
-        return IsCondNoNullPointer_binop(*binop, pointer);
+    const BinaryOperator* binOp = dyn_cast<BinaryOperator>(&expr);
+    if (binOp)
+    {
+        return IsCondNoNullPointerForBinOp(*binOp, exprPointer);
     }
-    *pointer = ignoreCastExpr(expr);
-    return *pointer != nullptr;
+    *exprPointer = ignoreCastExpr(expr);
+    return *exprPointer != nullptr;
 }
 
-static bool IsADeleteStmt(ASTContext& context, const Stmt& stmt, const Expr& pointer)
+static bool IsADeleteStmt(ASTContext& context, const Stmt& stmt, const Expr& exprPointer)
 {
     const CXXDeleteExpr* cxxDeleteExpr = dyn_cast<CXXDeleteExpr>(&stmt);
-
-    if (cxxDeleteExpr == nullptr) {
-        return false;
+    if (cxxDeleteExpr)
+    {
+        const Expr* expr = ignoreCastExpr(*cxxDeleteExpr->getArgument());
+        return expr && areSameExpr(context, *expr, exprPointer);
     }
-    const Expr* expr = ignoreCastExpr(*cxxDeleteExpr->getArgument());
-    if (expr == nullptr) {
-        return false;
-    }
-    return areSameExpr(context, *expr, pointer);
+    return false;
 }
 
-static bool IsAnAssignToNullptr(ASTContext& context, const Stmt& stmt, const Expr& pointer)
+static bool IsAnAssignToNullptr(ASTContext& context, const Stmt& stmt, const Expr& expr)
 {
     const BinaryOperator* binOp = dyn_cast<BinaryOperator>(&stmt);
 
@@ -53,38 +55,42 @@ static bool IsAnAssignToNullptr(ASTContext& context, const Stmt& stmt, const Exp
     }
     const Expr& lhs = *ignoreCastExpr(*binOp->getLHS());
 
-    return isANullPointerExpr(*binOp->getRHS()) && areSameExpr(context, lhs, pointer);
+    return isANullPointerExpr(*binOp->getRHS()) && areSameExpr(context, lhs, expr);
 }
 
-static bool IsADeleteBlock_compound(ASTContext& context,
-                                    const CompoundStmt& compoundStmt,
-                                    const Expr& pointer)
+static bool IsADeleteBlockForCompoundStmt(ASTContext& context,
+    const CompoundStmt& compoundStmt, const Expr& expr)
 {
-    if (compoundStmt.size() != 1 && compoundStmt.size() != 2) {
+    if (compoundStmt.size() != 1 && compoundStmt.size() != 2)
+    {
         return false;
     }
-    const Stmt* stmt1 = *compoundStmt.body_begin();
+    const Stmt* firstStmt = *compoundStmt.body_begin();
 
-    if (!IsADeleteStmt(context, *stmt1, pointer)) {
+    if (!IsADeleteStmt(context, *firstStmt, expr))
+    {
         return false;
     }
-    if (compoundStmt.size() == 1) {
+    if (compoundStmt.size() == 1)
+    {
         return true;
     }
-    const Stmt* stmt2 = *(compoundStmt.body_begin() + 1);
-    return IsAnAssignToNullptr(context, *stmt2, pointer);
+    const Stmt* secondStmt = *(compoundStmt.body_begin() + 1);
+    return IsAnAssignToNullptr(context, *secondStmt, expr);
 }
 
-static bool IsADeleteBlock(ASTContext& context, const Stmt& stmt, const Expr* pointer)
+static bool IsADeleteBlock(ASTContext& context, const Stmt& stmt, const Expr* expr)
 {
-    if (pointer == nullptr) {
+    if (expr == nullptr)
+    {
         return false;
     }
     const CompoundStmt* compoundStmt = dyn_cast<CompoundStmt>(&stmt);
-    if (compoundStmt) {
-        return IsADeleteBlock_compound(context, *compoundStmt, *pointer);
+    if (compoundStmt)
+    {
+        return IsADeleteBlockForCompoundStmt(context, *compoundStmt, *expr);
     }
-    return IsADeleteStmt(context, stmt, *pointer);
+    return IsADeleteStmt(context, stmt, *expr);
 }
 
 class UnnecessaryNullCheckForCXXDeallocRule :
@@ -106,21 +112,23 @@ public:
 
     bool VisitIfStmt(IfStmt* ifStmt)
     {
-        if (ifStmt == nullptr || ifStmt->getElse() != nullptr) {
+        if (ifStmt == nullptr || ifStmt->getElse() != nullptr)
+        {
             return true;
         }
         const Expr* pointer = nullptr;
-        if (!IsCondNoNullPointer(*ifStmt->getCond(), &pointer)) {
+        if (!IsCondNoNullPointer(*ifStmt->getCond(), &pointer))
+        {
             return true;
         }
         ASTContext* context = _carrier->getASTContext();
-
-        if (!IsADeleteBlock(*context, *ifStmt->getThen(), pointer)) {
-            return true;
+        if (IsADeleteBlock(*context, *ifStmt->getThen(), pointer))
+        {
+            addViolation(ifStmt, this);
         }
-        addViolation(ifStmt, this);
         return true;
     }
 };
 
-oclint::RuleSet UnnecessaryNullCheckForCXXDeallocRule::rules(new UnnecessaryNullCheckForCXXDeallocRule);
+oclint::RuleSet UnnecessaryNullCheckForCXXDeallocRule::rules(
+    new UnnecessaryNullCheckForCXXDeallocRule);
