@@ -1,7 +1,6 @@
 #ifndef OCLINT_VIOLATIONSET_H
 #define OCLINT_VIOLATIONSET_H
 
-#include <string>
 #include <vector>
 
 #include "oclint/Violation.h"
@@ -15,9 +14,9 @@ private:
     std::vector<Violation> _violations;
 
 public:
-    void addViolation(Violation& violation);
+    void addViolation(const Violation& violation);
     int numberOfViolations() const;
-    const std::vector<Violation> getViolations() const;
+    const std::vector<Violation>& getViolations() const;
 
     // TODO: getViolation(int index)
 };
