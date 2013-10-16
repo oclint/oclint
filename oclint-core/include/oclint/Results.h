@@ -20,7 +20,7 @@ public:
     static Results* getInstance();
 
 protected:
-    std::vector<ViolationSet*>* _collection;
+    std::vector<ViolationSet*> _collection;
     ViolationSet *_compilerErrorSet;
     ViolationSet *_compilerWarningSet;
     ViolationSet *_clangStaticCheckerBugSet;
@@ -28,27 +28,27 @@ protected:
 public:
     void add(ViolationSet *violationSet);
 
-    std::vector<Violation> allViolations();
+    std::vector<Violation> allViolations() const;
 
-    int numberOfViolations();
-    int numberOfViolationsWithPriority(int priority);
-    int numberOfFiles();
-    int numberOfFilesWithViolations();
+    int numberOfViolations() const;
+    int numberOfViolationsWithPriority(int priority) const;
+    int numberOfFiles() const;
+    int numberOfFilesWithViolations() const;
 
-    void addError(Violation& violation);
-    int numberOfErrors();
-    bool hasErrors();
-    std::vector<Violation> allErrors();
+    void addError(const Violation& violation);
+    int numberOfErrors() const;
+    bool hasErrors() const;
+    const std::vector<Violation>& allErrors() const;
 
-    void addWarning(Violation& violation);
-    int numberOfWarnings();
-    bool hasWarnings();
-    std::vector<Violation> allWarnings();
+    void addWarning(const Violation& violation);
+    int numberOfWarnings() const;
+    bool hasWarnings() const;
+    const std::vector<Violation>& allWarnings() const;
 
-    void addCheckerBug(Violation& violation);
-    int numberOfCheckerBugs();
-    bool hasCheckerBugs();
-    std::vector<Violation> allCheckerBugs();
+    void addCheckerBug(const Violation& violation);
+    int numberOfCheckerBugs() const;
+    bool hasCheckerBugs() const;
+    const std::vector<Violation>& allCheckerBugs() const;
 };
 
 } // end namespace oclint
