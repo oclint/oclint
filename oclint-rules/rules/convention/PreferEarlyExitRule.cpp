@@ -56,11 +56,17 @@ private:
         return stmt;
     }
 
+    bool isFlowOfControlInterrupt(Stmt* stmt)
+    {
+        return dyn_cast_or_null<BreakStmt>(stmt) || dyn_cast_or_null<ContinueStmt>(stmt)
+            || dyn_cast_or_null<GotoStmt>(stmt)  || dyn_cast_or_null<IndirectGotoStmt>(stmt)
+            || dyn_cast_or_null<ReturnStmt>(stmt);
+    }
+
     template <class LoopStmt>
     bool VisitLoopStmt(LoopStmt* loopStmt)
     {
-        addViolationIfStmtIsLongIf(getLastStatement(loopStmt->getBody()),
-                                   "Use continue to simplify code and reduce indentation");
+        addViolationIfStmtIsLongIf(getLastStatement(loopStmt->getBody()), getMessage());
         return true;
     }
 
@@ -75,6 +81,11 @@ public:
         return 3;
     }
 
+    static string getMessage()
+    {
+        return "Use early exit/continue to simplify code and reduce indentation";
+    }
+
     bool VisitCompoundStmt(CompoundStmt* compoundStmt)
     {
         if (compoundStmt->size() < 2)
@@ -83,10 +94,9 @@ public:
         }
 
         auto last = compoundStmt->body_rbegin();
-        if (dyn_cast_or_null<ReturnStmt>(*last))
+        if (isFlowOfControlInterrupt(*last))
         {
-            addViolationIfStmtIsLongIf(*++last,
-                                       "Use early return to simplify code and reduce indentation");
+            addViolationIfStmtIsLongIf(*++last, getMessage());
         }
 
         return true;
