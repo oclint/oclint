@@ -135,8 +135,8 @@ std::string toString(clang::ASTContext& context, const clang::Expr& expr)
 {
     const clang::Stmt& stmt = static_cast<const clang::Stmt&>(expr);
     std::string res;
-    llvm::raw_string_ostream POut(res);
+    llvm::raw_string_ostream outStream(res);
 
-    stmt.printPretty(POut, 0, clang::PrintingPolicy(context.getLangOpts()));
+    stmt.printPretty(outStream, nullptr, clang::PrintingPolicy(context.getLangOpts()));
     return res;
 }
