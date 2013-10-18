@@ -6,7 +6,7 @@ class PreferEarlyExitRuleTest : public ::testing::Test
 protected:
     virtual void SetUp()
     {
-        RuleConfiguration::addConfiguration("MAXIMUM_IF_LENGTH", "15");
+        RuleConfiguration::addConfiguration("MAXIMUM_IF_LENGTH", "3");
     }
 
     virtual void TearDown()
@@ -78,7 +78,7 @@ protected:
 };
 
 class FlowControlStatementsTest : public PreferEarlyExitRuleTest,
-                        public ::testing::WithParamInterface<const char*>
+                                  public ::testing::WithParamInterface<const char*>
 {
 protected:
     std::string getTestCode(int ifStatementBodyLength)
@@ -107,27 +107,27 @@ TEST_F(PreferEarlyExitRuleTest, PropertyTest)
 
 TEST_P(LoopsTest, LoopWithShortIf)
 {
-    std::string code = getTestCode(13);
+    std::string code = getTestCode(1);
     testRuleOnCode(new PreferEarlyExitRule(), code);
 }
 
 TEST_P(LoopsTest, LoopWithLongIf)
 {
-    std::string code = getTestCode(14);
-    testRuleOnCode(new PreferEarlyExitRule(), code, 0, 4, 1, 19, 1,
+    std::string code = getTestCode(2);
+    testRuleOnCode(new PreferEarlyExitRule(), code, 0, 4, 1, 7, 1,
                    PreferEarlyExitRule::getMessage());
 }
 
 TEST_P(FlowControlStatementsTest, FunctionWithShortIf)
 {
-    std::string code = getTestCode(13);
+    std::string code = getTestCode(1);
     testRuleOnCode(new PreferEarlyExitRule(), code);
 }
 
 TEST_P(FlowControlStatementsTest, FunctionWithLongIf)
 {
-    std::string code = getTestCode(14);
-    testRuleOnCode(new PreferEarlyExitRule(), code, 0, 6, 3, 21, 3,
+    std::string code = getTestCode(2);
+    testRuleOnCode(new PreferEarlyExitRule(), code, 0, 6, 3, 9, 3,
                    PreferEarlyExitRule::getMessage());
 }
 
@@ -136,11 +136,11 @@ TEST_F(PreferEarlyExitRuleTest, LongIfAndReturnInsideBlock)
     std::string code = "int test(int a) {\n";
     code += "  int i = 2;\n";
     code += "  if (a) {\n";
-    code += filler("i *= 2;\n", 14);
+    code += filler("i *= 2;\n", 2);
     code += "  }\n";
     code += "  return i;\n";
     code += "}\n";
-    testRuleOnCode(new PreferEarlyExitRule(), code, 0, 3, 3, 18, 3,
+    testRuleOnCode(new PreferEarlyExitRule(), code, 0, 3, 3, 6, 3,
                    PreferEarlyExitRule::getMessage());
 }
 

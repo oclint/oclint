@@ -2,8 +2,6 @@
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
 
-#include <algorithm>
-
 using namespace std;
 using namespace clang;
 using namespace oclint;
@@ -13,10 +11,12 @@ class PreferEarlyExitRule : public AbstractASTVisitorRule<PreferEarlyExitRule>
 private:
     static RuleSet rules;
 
-    int getStmtLength(Stmt *stmt)
+    int _threshold;
+
+    int getLineCount(const Stmt& stmt) const
     {
-        SourceLocation startLocation = stmt->getLocStart();
-        SourceLocation endLocation = stmt->getLocEnd();
+        SourceLocation startLocation = stmt.getLocStart();
+        SourceLocation endLocation = stmt.getLocEnd();
         SourceManager* sourceManager = &_carrier->getSourceManager();
 
         unsigned startLineNumber = sourceManager->getPresumedLineNumber(startLocation);
@@ -24,30 +24,29 @@ private:
         return endLineNumber - startLineNumber + 1;
     }
 
-    bool isLongIfWithoutElse(Stmt* statement)
+    bool isLongIfWithoutElse(const Stmt* statement) const
     {
-        if (IfStmt* ifStmt = dyn_cast_or_null<IfStmt>(statement))
+        if (auto ifStmt = dyn_cast_or_null<IfStmt>(statement))
         {
             if (ifStmt->getElse())
             {
                 return false;
             }
-            const auto threshold = RuleConfiguration::intForKey("MAXIMUM_IF_LENGTH", 15);
-            return getStmtLength(ifStmt) > threshold;
+            return getLineCount(*ifStmt) > _threshold;
         }
 
         return false;
     }
 
-    void addViolationIfStmtIsLongIf(Stmt* stmt, const std::string& message)
+    void addViolationIfStmtIsLongIf(const Stmt* stmt)
     {
         if (isLongIfWithoutElse(stmt))
         {
-            addViolation(stmt, this, message);
+            addViolation(stmt, this, getMessage());
         }
     }
 
-    Stmt* getLastStatement(Stmt* stmt)
+    Stmt* getLastStatement(Stmt* stmt) const
     {
         if (auto compoundStmt = dyn_cast_or_null<CompoundStmt>(stmt))
         {
@@ -56,17 +55,21 @@ private:
         return stmt;
     }
 
-    bool isFlowOfControlInterrupt(Stmt* stmt)
+    bool isFlowOfControlInterrupt(const Stmt* stmt) const
     {
-        return dyn_cast_or_null<BreakStmt>(stmt) || dyn_cast_or_null<ContinueStmt>(stmt)
-            || dyn_cast_or_null<GotoStmt>(stmt)  || dyn_cast_or_null<IndirectGotoStmt>(stmt)
-            || dyn_cast_or_null<ReturnStmt>(stmt);
+        if (stmt == nullptr)
+        {
+            return false;
+        }
+
+        return isa<BreakStmt>(stmt) || isa<ContinueStmt>(stmt)
+            || isa<GotoStmt>(stmt)  || isa<IndirectGotoStmt>(stmt)
+            || isa<ReturnStmt>(stmt);
     }
 
-    template <class LoopStmt>
-    bool VisitLoopStmt(LoopStmt* loopStmt)
+    bool VisitLoopBody(Stmt* loopBody)
     {
-        addViolationIfStmtIsLongIf(getLastStatement(loopStmt->getBody()), getMessage());
+        addViolationIfStmtIsLongIf(getLastStatement(loopBody));
         return true;
     }
 
@@ -79,6 +82,11 @@ public:
     virtual int priority() const
     {
         return 3;
+    }
+
+    virtual void setUp()
+    {
+        _threshold = RuleConfiguration::intForKey("MAXIMUM_IF_LENGTH", 15);
     }
 
     static string getMessage()
@@ -96,7 +104,7 @@ public:
         auto last = compoundStmt->body_rbegin();
         if (isFlowOfControlInterrupt(*last))
         {
-            addViolationIfStmtIsLongIf(*++last, getMessage());
+            addViolationIfStmtIsLongIf(*++last);
         }
 
         return true;
@@ -104,17 +112,17 @@ public:
 
     bool VisitForStmt(ForStmt* forStmt)
     {
-        return VisitLoopStmt(forStmt);
+        return VisitLoopBody(forStmt->getBody());
     }
 
     bool VisitWhileStmt(WhileStmt* whileStmt)
     {
-        return VisitLoopStmt(whileStmt);
+        return VisitLoopBody(whileStmt->getBody());
     }
 
     bool VisitDoStmt(DoStmt* doStmt)
     {
-        return VisitLoopStmt(doStmt);
+        return VisitLoopBody(doStmt->getBody());
     }
 };
 
