@@ -30,7 +30,7 @@ public:
 };
 
 
-class MustCallSuperRule : public AbstractASTVisitorRule<MustCallSuperRule>
+class ObjCVerifyMustCallSuperRule : public AbstractASTVisitorRule<ObjCVerifyMustCallSuperRule>
 {
 private:
     static RuleSet rules;
@@ -86,29 +86,30 @@ private:
 
 public:
     
-    MustCallSuperRule() {
-        libraryCases.insert(pair<string, vector<string>>("viewWillAppear:", {"UIViewController"}));
-        libraryCases.insert(pair<string, vector<string>>("viewDidAppear:", {"UIViewController"}));
-        libraryCases.insert(pair<string, vector<string>>("viewWillDisappear:", {"UIViewController"}));
-        libraryCases.insert(pair<string, vector<string>>("viewDidDisappear:", {"UIViewController"}));
-        libraryCases.insert(pair<string, vector<string>>("viewDidLayoutSubviews", {"UIViewController"}));
-        libraryCases.insert(pair<string, vector<string>>("layoutSubviews", {"UIView"}));
-        libraryCases.insert(pair<string, vector<string>>("updateConstraints", {"UIView"}));
-        libraryCases.insert(pair<string, vector<string>>("viewDidLoad", {"UIView"}));
-        libraryCases.insert(pair<string, vector<string>>("reset", {"UIGestureRecognizer"}));
-        libraryCases.insert(pair<string, vector<string>>("canPreventGestureRecognizer:", {"UIGestureRecognizer"}));
-        libraryCases.insert(pair<string, vector<string>>("canBePreventedByGestureRecognizer:", {"UIGestureRecognizer"}));
-        libraryCases.insert(pair<string, vector<string>>("shouldRequireFailureOfGestureRecognizer:", {"UIGestureRecognizer"}));
-        libraryCases.insert(pair<string, vector<string>>("shouldBeRequiredToFailByGestureRecognizer:", {"UIGestureRecognizer"}));
-        libraryCases.insert(pair<string, vector<string>>("touchesBegan:withEvent:", {"UIGestureRecognizer"}));
-        libraryCases.insert(pair<string, vector<string>>("touchesMoved:withEvent:", {"UIGestureRecognizer"}));
-        libraryCases.insert(pair<string, vector<string>>("touchesEnded:withEvent:", {"UIGestureRecognizer"}));
-        libraryCases.insert(pair<string, vector<string>>("touchesCancelled:withEvent:", {"UIGestureRecognizer"}));
+    ObjCVerifyMustCallSuperRule() {
+        // UIKit cases
+        libraryCases.insert({"viewWillAppear:", {"UIViewController"}});
+        libraryCases.insert({"viewDidAppear:", {"UIViewController"}});
+        libraryCases.insert({"viewWillDisappear:", {"UIViewController"}});
+        libraryCases.insert({"viewDidDisappear:", {"UIViewController"}});
+        libraryCases.insert({"viewDidLayoutSubviews", {"UIViewController"}});
+        libraryCases.insert({"layoutSubviews", {"UIView"}});
+        libraryCases.insert({"updateConstraints", {"UIView"}});
+        libraryCases.insert({"viewDidLoad", {"UIView"}});
+        libraryCases.insert({"reset", {"UIGestureRecognizer"}});
+        libraryCases.insert({"canPreventGestureRecognizer:", {"UIGestureRecognizer"}});
+        libraryCases.insert({"canBePreventedByGestureRecognizer:", {"UIGestureRecognizer"}});
+        libraryCases.insert({"shouldRequireFailureOfGestureRecognizer:", {"UIGestureRecognizer"}});
+        libraryCases.insert({"shouldBeRequiredToFailByGestureRecognizer:", {"UIGestureRecognizer"}});
+        libraryCases.insert({"touchesBegan:withEvent:", {"UIGestureRecognizer"}});
+        libraryCases.insert({"touchesMoved:withEvent:", {"UIGestureRecognizer"}});
+        libraryCases.insert({"touchesEnded:withEvent:", {"UIGestureRecognizer"}});
+        libraryCases.insert({"touchesCancelled:withEvent:", {"UIGestureRecognizer"}});
     }
 
     virtual const string name() const
     {
-        return "must call super";
+        return "overridden method must call super";
     }
 
     virtual int priority() const
@@ -138,8 +139,8 @@ public:
         string selectorName = decl->getSelector().getAsString();
 
         // Figure out if anything in the super chain is marked
-        // If so, start a separate checker to look for method sends just in the method body
         if(this->DeclRequiresSuperCall(decl)) {
+            // If so, start a separate checker to look for method sends just in the method body
             ContainsCallToSuperMethod checker(selectorName);
             checker.TraverseDecl(decl);
             if(!checker.foundSuperCall) {
@@ -153,4 +154,4 @@ public:
 };
 
 
-RuleSet MustCallSuperRule::rules(new MustCallSuperRule());
+RuleSet ObjCVerifyMustCallSuperRule::rules(new ObjCVerifyMustCallSuperRule());

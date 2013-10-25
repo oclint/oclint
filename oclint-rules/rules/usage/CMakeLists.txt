@@ -1,3 +1,5 @@
+SET(LIST_OF_RULES,
+    ObjCVerifyMustCallSuper
+    )
 
-SET(BuildMustCallSuperRule MustCallSuper)
-BUILD_DYNAMIC_RULES("${BuildMustCallSuperRule}")
+BUILD_DYNAMIC_RULES("${LIST_OF_RULES}")
