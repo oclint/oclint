@@ -86,8 +86,8 @@ public:
 
 // Main rule implementation.
 // Looks for methods then finds accesses in each method and sees if they're okay
-class AssignIvarOutsideAccessorsRule:
-    public AbstractASTVisitorRule<AssignIvarOutsideAccessorsRule>
+class ObjCAssignIvarOutsideAccessorsRule:
+    public AbstractASTVisitorRule<ObjCAssignIvarOutsideAccessorsRule>
 {
 
 private:
@@ -132,5 +132,5 @@ public:
 };
 
 // Instantiate the rule
-RuleSet AssignIvarOutsideAccessorsRule::rules(new AssignIvarOutsideAccessorsRule());
+RuleSet ObjCAssignIvarOutsideAccessorsRule::rules(new ObjCAssignIvarOutsideAccessorsRule());
 
