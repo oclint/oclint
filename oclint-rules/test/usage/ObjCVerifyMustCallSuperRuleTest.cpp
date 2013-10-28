@@ -30,35 +30,68 @@ typedef unsigned char BOOL;                         \n\
                                                     \n\
 ";
 
+static string testSuppression = "\
+typedef unsigned char BOOL;                                                                    \n\
+@interface NSObject                                                                            \n\
+@end                                                                                           \n\
+                                                                                               \n\
+@interface SomeBaseClass : NSObject                                                            \n\
+                                                                                               \n\
+- (void)viewWillAppear:(BOOL)animated __attribute__((annotate(\"oclint:must_call_super\")));   \n\
+- (void)viewDidAppear:(BOOL)animated __attribute__((annotate(\"oclint:must_call_super\")));    \n\
+                                                                                               \n\
+@end                                                                                           \n\
+                                                                                               \n\
+                                                                                               \n\
+@interface ChildViewController : SomeBaseClass                                                 \n\
+                                                                                               \n\
+@end                                                                                           \n\
+                                                                                               \n\
+@implementation ChildViewController                                                            \n\
+                                                                                               \n\
+- (void)viewWillAppear:(BOOL)animated {                                                        \n\
+    [super viewWillAppear:animated];                                                           \n\
+}                                                                                              \n\
+                                                                                               \n\
+- (void)viewDidAppear:(BOOL)animated                                                           \n\
+    __attribute__((annotate(\"oclint:suppress[overridden method must call super]\")));         \n\
+{                                                                                              \n\
+    [super viewWillAppear:animated];                                                           \n\
+}                                                                                              \n\
+                                                                                               \n\
+@end                                                                                           \n\
+                                                                                               \n\
+";
+
 static string testAnnotation = "\
-typedef unsigned char BOOL;                                                                     \n\
-@interface NSObject                                                                             \n\
-@end                                                                                            \n\
-                                                                                                \n\
-@interface SomeBaseClass : NSObject                                                             \n\
-                                                                                                \n\
-- (void)viewWillAppear:(BOOL)animated __attribute__((annotate(\"oclint:must_call_super\")));    \n\
-- (void)viewDidAppear:(BOOL)animated __attribute__((annotate(\"oclint:must_call_super\")));     \n\
-                                                                                                \n\
-@end                                                                                            \n\
-                                                                                                \n\
-                                                                                                \n\
-@interface ChildViewController : SomeBaseClass                                                  \n\
-                                                                                                \n\
-@end                                                                                            \n\
-                                                                                                \n\
-@implementation ChildViewController                                                             \n\
-                                                                                                \n\
-- (void)viewWillAppear:(BOOL)animated {                                                         \n\
-    [super viewWillAppear:animated];                                                            \n\
-}                                                                                               \n\
-                                                                                                \n\
-- (void)viewDidAppear:(BOOL)animated {                                                          \n\
-    [super viewWillAppear:animated];                                                            \n\
-}                                                                                               \n\
-                                                                                                \n\
-@end                                                                                            \n\
-                                                                                                \n\
+typedef unsigned char BOOL;                                                                    \n\
+@interface NSObject                                                                            \n\
+@end                                                                                           \n\
+                                                                                               \n\
+@interface SomeBaseClass : NSObject                                                            \n\
+                                                                                               \n\
+- (void)viewWillAppear:(BOOL)animated __attribute__((annotate(\"oclint:must_call_super\")));   \n\
+- (void)viewDidAppear:(BOOL)animated __attribute__((annotate(\"oclint:must_call_super\")));    \n\
+                                                                                               \n\
+@end                                                                                           \n\
+                                                                                               \n\
+                                                                                               \n\
+@interface ChildViewController : SomeBaseClass                                                 \n\
+                                                                                               \n\
+@end                                                                                           \n\
+                                                                                               \n\
+@implementation ChildViewController                                                            \n\
+                                                                                               \n\
+- (void)viewWillAppear:(BOOL)animated {                                                        \n\
+    [super viewWillAppear:animated];                                                           \n\
+}                                                                                              \n\
+                                                                                               \n\
+- (void)viewDidAppear:(BOOL)animated {                                                         \n\
+    [super viewWillAppear:animated];                                                           \n\
+}                                                                                              \n\
+                                                                                               \n\
+@end                                                                                           \n\
+                                                                                               \n\
 ";
 
 static string testFalsePositive = "\
@@ -72,7 +105,7 @@ static string testFalsePositive = "\
                                                     \n\
 @end                                                \n\
                                                     \n\
-@implementation SomeBaseClass                       \n\
+@implementation ControllerBase                      \n\
                                                     \n\
 - (void)someMethod {                                \n\
 }                                                   \n\
@@ -108,14 +141,19 @@ TEST(ObjcVerifyMustCallSuperRuleTest, PropertyTest)
     EXPECT_EQ("overridden method must call super", rule.name());
 }
 
-TEST(ObjcVerifyMustCallSuperRuleTest, ViewControllerLibraryCases)
+TEST(ObjcVerifyMustCallSuperRuleTest, ViewControllerLibraryCase)
 {
     testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(), testUIViewController, 0, 21, 1, 23, 1);
 }
 
-TEST(ObjcVerifyMustCallSuperRuleTest, AnnotationCases)
+TEST(ObjcVerifyMustCallSuperRuleTest, AnnotationCase)
 {
     testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(), testAnnotation, 0, 23, 1, 25, 1);
+}
+
+TEST(ObjcVerifyMustCallSuperRuleTest, SuppresionCase)
+{
+    testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(), testSuppression);
 }
 
 TEST(ObjcVerifyMustCallSuperRuleTest, FalsePositive)
