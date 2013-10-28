@@ -1,39 +1,26 @@
-// Finds assignments to ivars outside of their associated getter or setter methods
-
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
+#include "oclint/util/StdUtil.h"
 
-#include <algorithm>
 using namespace std;
 using namespace clang;
 using namespace oclint;
 
-
-// Helper functions
-static bool IsUnderscore(char c) {
-    return c == '_';
-}
-
-static string RemoveUnderscores(string s) {
-    s.erase(remove_if(s.begin(), s.end(), &::IsUnderscore), s.end());
-    return s;
-}
-
-static string Capitalize(string s) {
-    transform(s.begin(), s.begin() + 1, s.begin(), ::toupper);
-    return s;
-}
 
 // Traversal for ivar accesses
 class ContainsIvarFetch : public RecursiveASTVisitor<ContainsIvarFetch>
 {
 public: 
     // Location to save found ivar accesses
-    vector<ObjCIvarRefExpr*> instances;
+    vector<ObjCIvarRefExpr*> _instances;
 
     bool VisitObjCIvarRefExpr(ObjCIvarRefExpr* ivarRef) {
-        this->instances.push_back(ivarRef);
+        _instances.push_back(ivarRef);
         return true;
+    }
+
+    vector<ObjCIvarRefExpr*>& getInstances() {
+        return _instances;
     }
 
 };
@@ -43,6 +30,9 @@ public:
 class ContainsBinaryOperatorWithIvarAssignment : public RecursiveASTVisitor<ContainsBinaryOperatorWithIvarAssignment>
 {
 private:
+    // Location to save found ivar accesses
+    vector<ObjCIvarRefExpr*> _instances;
+
     bool IsAssignOperator(BinaryOperatorKind kind) {
         switch(kind) {
             case BO_Assign:
@@ -63,8 +53,6 @@ private:
     }
 
 public:
-    // Location to save found ivar accesses
-    vector<ObjCIvarRefExpr*> instances;
 
     bool VisitBinaryOperator(BinaryOperator *binaryOperator)
     {
@@ -75,10 +63,14 @@ public:
             // So check for ivar references in the assignment part
             ContainsIvarFetch checker;
             checker.TraverseStmt(leftExpr);
-            this->instances.insert(this->instances.end(), checker.instances.begin(), checker.instances.end());
+            _instances.insert(_instances.end(), checker.getInstances().begin(), checker.getInstances().end());
         }
 
         return true;
+    }
+
+    vector<ObjCIvarRefExpr*>& getInstances() {
+        return _instances;
     }
 };
     
@@ -113,17 +105,17 @@ public:
         ContainsBinaryOperatorWithIvarAssignment checker;
         checker.TraverseDecl(decl);
 
-        // Now go through all the ivar accesses and see if they match the method name as a getter or setter
-        for (vector<ObjCIvarRefExpr*>::iterator it = checker.instances.begin(); it != checker.instances.end(); ++it) {
+        // Now go through all the ivar accesses and see if they match the method name as a getter, setter, or init method
+        for (vector<ObjCIvarRefExpr*>::iterator it = checker.getInstances().begin(); it != checker.getInstances().end(); ++it) {
             ObjCIvarRefExpr* access = *it;
             // ivarName is _foo or foo or foo_
             string ivarName = access->getDecl()->getNameAsString();
             // getterName is foo. Note this won't work for properties that reassign getter= or setter=
-            string getterName = RemoveUnderscores(ivarName);
+            string getterName = removeUnderscores(ivarName);
             // setterName is setFoo
-            string setterName = "set" + Capitalize(getterName) + ":";
+            string setterName = "set" + capitalize(getterName) + ":";
             if((selectorName != getterName && selectorName != setterName) && selectorName.substr(0, 4) != "init") {
-                this->addViolation(*it, this);
+                addViolation(*it, this);
             }
         }
         return true;
