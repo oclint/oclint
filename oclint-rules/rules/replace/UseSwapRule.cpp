@@ -9,39 +9,39 @@ using namespace clang;
 // a = b;
 // b = tmp;
 static bool IsASwap(ASTContext& context,
-                    const Stmt& stmt1,
-                    const BinaryOperator* binOp2,
-                    const BinaryOperator* binOp3,
+                    const Stmt& assignsAToTmp,
+                    const BinaryOperator* assignsBToA,
+                    const BinaryOperator* assignsTmpToB,
                     SourceLocation* sourceLocation)
 {
-    if (binOp2 == nullptr || binOp3 == nullptr
-        || binOp2->getOpcode() != BO_Assign
-        || binOp3->getOpcode() != BO_Assign)
+    if (assignsBToA == nullptr || assignsTmpToB == nullptr
+        || assignsBToA->getOpcode() != BO_Assign
+        || assignsTmpToB->getOpcode() != BO_Assign)
     {
         return false;
     }
 
-    const BinaryOperator* const binOp1 = dyn_cast<BinaryOperator>(&stmt1);
-    const DeclStmt* const declStmt = dyn_cast<DeclStmt>(&stmt1);
-    const Expr& tmp2 = *ignoreCastExpr(*binOp3->getRHS());
+    const BinaryOperator* const binOpAssignsAToTmp = dyn_cast<BinaryOperator>(&assignsAToTmp);
+    const DeclStmt* const declStmtAssignsAToTmp = dyn_cast<DeclStmt>(&assignsAToTmp);
+    const Expr& tmp2 = *ignoreCastExpr(*assignsTmpToB->getRHS());
     const Expr* a1 = nullptr;
 
-    if (binOp1 != nullptr && binOp1->getOpcode() == BO_Assign)
+    if (binOpAssignsAToTmp != nullptr && binOpAssignsAToTmp->getOpcode() == BO_Assign)
     {
         // tmp = a;
-        const Expr* tmp1 = ignoreCastExpr(*binOp1->getLHS());
+        const Expr* tmp1 = ignoreCastExpr(*binOpAssignsAToTmp->getLHS());
         if (areSameExpr(context, *tmp1, tmp2) == false)
         {
             return false;
         }
-        a1 = ignoreCastExpr(*binOp1->getRHS());
+        a1 = ignoreCastExpr(*binOpAssignsAToTmp->getRHS());
         *sourceLocation = tmp1->getLocStart();
     }
-    else if (declStmt != nullptr && declStmt->isSingleDecl())
+    else if (declStmtAssignsAToTmp != nullptr && declStmtAssignsAToTmp->isSingleDecl())
     {
         // int tmp = a;
         // int tmp(a);
-        const VarDecl* decl = dyn_cast<VarDecl>(declStmt->getSingleDecl());
+        const VarDecl* decl = dyn_cast<VarDecl>(declStmtAssignsAToTmp->getSingleDecl());
 
         if (decl == nullptr)
         {
@@ -65,9 +65,9 @@ static bool IsASwap(ASTContext& context,
     {
         return false;
     }
-    const Expr& a2 = *ignoreCastExpr(*binOp2->getLHS());
-    const Expr& b1 = *ignoreCastExpr(*binOp2->getRHS());
-    const Expr& b2 = *ignoreCastExpr(*binOp3->getLHS());
+    const Expr& a2 = *ignoreCastExpr(*assignsBToA->getLHS());
+    const Expr& b1 = *ignoreCastExpr(*assignsBToA->getRHS());
+    const Expr& b2 = *ignoreCastExpr(*assignsTmpToB->getLHS());
 
     return areSameExpr(context, *a1, a2) && areSameExpr(context, b1, b2);
 }

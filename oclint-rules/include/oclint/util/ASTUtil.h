@@ -13,6 +13,6 @@ bool areSameExpr(clang::ASTContext& context, const clang::Expr& lhs, const clang
 const clang::Expr* ignoreCastExpr(const clang::Expr& expr);
 int getLineCount(clang::SourceRange sourceRange, const clang::SourceManager& sourceManager);
 const clang::Stmt* getSingleStmt(const clang::Stmt& stmt);
-std::string toString(clang::ASTContext& context, const clang::Expr& expr);
+std::string exprToString(clang::ASTContext& context, const clang::Expr& expr);
 
 #endif

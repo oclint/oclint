@@ -1,4 +1,5 @@
 #include "oclint/util/ASTUtil.h"
+
 #include <llvm/Support/raw_os_ostream.h>
 
 bool isObjCMethodDeclaredInSuperClass(clang::ObjCMethodDecl *decl)
@@ -131,7 +132,7 @@ const clang::Stmt* getSingleStmt(const clang::Stmt& stmt)
     return *compoundStmt->body_begin();
 }
 
-std::string toString(clang::ASTContext& context, const clang::Expr& expr)
+std::string exprToString(clang::ASTContext& context, const clang::Expr& expr)
 {
     const clang::Stmt& stmt = static_cast<const clang::Stmt&>(expr);
     std::string res;

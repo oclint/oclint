@@ -7,7 +7,7 @@ using namespace clang;
 static std::string getMessage(const std::string& prefix, ASTContext& context,
                               const Expr& lhs, const Expr& rhs)
 {
-    return prefix + toString(context, lhs) + ", " + toString(context, rhs) + ")";
+    return prefix + exprToString(context, lhs) + ", " + exprToString(context, rhs) + ")";
 }
 
 bool Test_BinOp(ASTContext& context,
@@ -59,7 +59,7 @@ bool Test_if_noElse(ASTContext& context, const IfStmt& ifStmt, std::string& mess
     const Expr& assign_lhs = *ignoreCastExpr(*assignOp->getLHS());
     const Expr& assign_rhs = *ignoreCastExpr(*assignOp->getRHS());
 
-    message += toString(context, assign_lhs) + " = ";
+    message += exprToString(context, assign_lhs) + " = ";
     // if (a < b) a = b -> a = std::max(a, b)
     // if (a < b) b = a -> b = std::min(a, b)
     if (Test_BinOp(context, *binop, assign_rhs, assign_lhs, message))
@@ -91,7 +91,7 @@ bool ExtractDiffExpr(ASTContext& context,
         }
         *expr1 = assignOp1->getRHS();
         *expr2 = assignOp2->getRHS();
-        message += toString(context, lhs1) + " " + assignOp1->getOpcodeStr().str() + " ";
+        message += exprToString(context, lhs1) + " " + assignOp1->getOpcodeStr().str() + " ";
         return true;
     }
     // return a; return b; -> a, b
