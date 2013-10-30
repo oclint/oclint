@@ -113,7 +113,7 @@ public:
             // getterName is foo. Note this won't work for properties that reassign getter= or setter=
             string getterName = removeUnderscores(ivarName);
             // setterName is setFoo
-            string setterName = "set" + capitalize(getterName) + ":";
+            string setterName = "set" + capitalizeFirstLetter(getterName) + ":";
             if((selectorName != getterName && selectorName != setterName) && selectorName.substr(0, 4) != "init") {
                 addViolation(*it, this);
             }
