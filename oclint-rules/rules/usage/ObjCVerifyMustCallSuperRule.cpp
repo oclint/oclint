@@ -52,7 +52,12 @@ private:
             ++attr)
         {
             AnnotateAttr *annotate = dyn_cast<AnnotateAttr>(*attr);
-            if (annotate && (annotate->getAnnotation() == "oclint:must_call_super"))
+
+            std::ostringstream enforceBuffer;
+            enforceBuffer << "oclint:enforce[" << name() << "]";
+            std::string enforceString = enforceBuffer.str();
+            // TODO add a mechanism to separate the annotation name from the rule name and use that
+            if (annotate && (annotate->getAnnotation() == enforceString))
             {
                 return true;
             }

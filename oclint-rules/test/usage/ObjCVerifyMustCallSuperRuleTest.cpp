@@ -37,8 +37,10 @@ typedef unsigned char BOOL;                                                     
                                                                                                \n\
 @interface SomeBaseClass : NSObject                                                            \n\
                                                                                                \n\
-- (void)viewWillAppear:(BOOL)animated __attribute__((annotate(\"oclint:must_call_super\")));   \n\
-- (void)viewDidAppear:(BOOL)animated __attribute__((annotate(\"oclint:must_call_super\")));    \n\
+- (void)viewWillAppear:(BOOL)animated                                                          \n\
+__attribute__((annotate(\"oclint:enforce[overridden method must call super]\")));              \n\
+- (void)viewDidAppear:(BOOL)animated                                                           \n\
+__attribute__((annotate(\"oclint:enforce[overridden method must call super]\")));              \n\
                                                                                                \n\
 @end                                                                                           \n\
                                                                                                \n\
@@ -70,8 +72,10 @@ typedef unsigned char BOOL;                                                     
                                                                                                \n\
 @interface SomeBaseClass : NSObject                                                            \n\
                                                                                                \n\
-- (void)viewWillAppear:(BOOL)animated __attribute__((annotate(\"oclint:must_call_super\")));   \n\
-- (void)viewDidAppear:(BOOL)animated __attribute__((annotate(\"oclint:must_call_super\")));    \n\
+- (void)viewWillAppear:(BOOL)animated                                                          \n\
+__attribute__((annotate(\"oclint:enforce[overridden method must call super]\")));              \n\
+- (void)viewDidAppear:(BOOL)animated                                                           \n\
+__attribute__((annotate(\"oclint:enforce[overridden method must call super]\")));              \n\
                                                                                                \n\
 @end                                                                                           \n\
                                                                                                \n\
@@ -148,7 +152,7 @@ TEST(ObjcVerifyMustCallSuperRuleTest, ViewControllerLibraryCase)
 
 TEST(ObjcVerifyMustCallSuperRuleTest, AnnotationCase)
 {
-    testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(), testAnnotation, 0, 23, 1, 25, 1);
+    testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(), testAnnotation, 0, 25, 1, 27, 1);
 }
 
 TEST(ObjcVerifyMustCallSuperRuleTest, SuppresionCase)
