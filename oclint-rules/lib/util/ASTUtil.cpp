@@ -17,23 +17,26 @@ bool isObjCMethodDeclaredInSuperClass(clang::ObjCMethodDecl *decl)
 
 bool isObjCMethodDeclaredInProtocol(clang::ObjCMethodDecl *decl)
 {
-    if (decl && !isObjCMethodDeclLocatedInInterfaceContainer(decl))
+    if (!decl || isObjCMethodDeclLocatedInInterfaceContainer(decl))
     {
-        clang::Selector selector = decl->getSelector();
-        clang::ObjCInterfaceDecl *interfaceDecl = decl->getClassInterface();
-        if (interfaceDecl)
+        return false;
+    }
+    
+    clang::Selector selector = decl->getSelector();
+    clang::ObjCInterfaceDecl *interfaceDecl = decl->getClassInterface();
+    if (interfaceDecl)
+    {
+        for (clang::ObjCProtocolList::iterator protocol = interfaceDecl->protocol_begin(),
+            protocolEnd = interfaceDecl->protocol_end(); protocol != protocolEnd; protocol++)
         {
-            for (clang::ObjCProtocolList::iterator protocol = interfaceDecl->protocol_begin(),
-                protocolEnd = interfaceDecl->protocol_end(); protocol != protocolEnd; protocol++)
+            clang::ObjCProtocolDecl *protocolDecl = (clang::ObjCProtocolDecl *)*protocol;
+            if (protocolDecl->lookupInstanceMethod(selector))
             {
-                clang::ObjCProtocolDecl *protocolDecl = (clang::ObjCProtocolDecl *)*protocol;
-                if (protocolDecl->lookupInstanceMethod(selector))
-                {
-                    return true;
-                }
+                return true;
             }
         }
     }
+
     return false;
 }
 

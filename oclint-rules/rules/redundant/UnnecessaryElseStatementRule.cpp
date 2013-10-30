@@ -91,35 +91,37 @@ public:
 
     bool VisitIfStmt(IfStmt *ifStmt)
     {
-        if (!isIfStmtVisited(ifStmt))
+        if (isIfStmtVisited(ifStmt))
         {
-            vector<IfStmt *> ifStmts;
-            Stmt *lastElseStmt = NULL;
-            bool stopSign = false;
+            return true;
+        }
+        
+        vector<IfStmt *> ifStmts;
+        Stmt *lastElseStmt = NULL;
+        bool stopSign = false;
 
-            _visitedIfStmt->push_back(ifStmt);
-            IfStmt *currentIfStmt = ifStmt;
+        _visitedIfStmt->push_back(ifStmt);
+        IfStmt *currentIfStmt = ifStmt;
 
-            while (!stopSign)
+        while (!stopSign)
+        {
+            ifStmts.push_back(currentIfStmt);
+            Stmt *elseStmt = currentIfStmt->getElse();
+            if (elseStmt && isa<IfStmt>(elseStmt))
             {
-                ifStmts.push_back(currentIfStmt);
-                Stmt *elseStmt = currentIfStmt->getElse();
-                if (elseStmt && isa<IfStmt>(elseStmt))
-                {
-                    currentIfStmt = dyn_cast<IfStmt>(elseStmt);
-                    _visitedIfStmt->push_back(currentIfStmt);
-                }
-                else
-                {
-                    lastElseStmt = elseStmt;
-                    stopSign = true;
-                }
+                currentIfStmt = dyn_cast<IfStmt>(elseStmt);
+                _visitedIfStmt->push_back(currentIfStmt);
             }
-
-            if (lastElseStmt && areAllBranchesReturn(ifStmts))
+            else
             {
-                addViolation(lastElseStmt, this);
+                lastElseStmt = elseStmt;
+                stopSign = true;
             }
+        }
+
+        if (lastElseStmt && areAllBranchesReturn(ifStmts))
+        {
+            addViolation(lastElseStmt, this);
         }
 
         return true;

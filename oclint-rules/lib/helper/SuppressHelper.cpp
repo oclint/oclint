@@ -36,21 +36,25 @@ template <typename T>
 bool markedParentsAsSuppress(const T &node, clang::ASTContext &context, oclint::RuleBase *rule)
 {
     clang::ASTContext::ParentVector parentVector = context.getParents(node);
-    if (parentVector.size() > 0)
+    if (parentVector.size() <= 0)
     {
-        clang::ast_type_traits::DynTypedNode *dynTypedNode = parentVector.begin();
-        const clang::Decl *aDecl = dynTypedNode->get<clang::Decl>();
-        if (aDecl) {
-            if (markedAsSuppress(aDecl, rule))
-            {
-                return true;
-            }
-            return markedParentsAsSuppress(*aDecl, context, rule);
+        return false;
+    }
+
+    clang::ast_type_traits::DynTypedNode *dynTypedNode = parentVector.begin();
+    const clang::Decl *aDecl = dynTypedNode->get<clang::Decl>();
+    if (aDecl)
+    {
+        if (markedAsSuppress(aDecl, rule))
+        {
+            return true;
         }
-        const clang::Stmt *aStmt = dynTypedNode->get<clang::Stmt>();
-        if (aStmt) {
-            return markedParentsAsSuppress(*aStmt, context, rule);
-        }
+        return markedParentsAsSuppress(*aDecl, context, rule);
+    }
+    const clang::Stmt *aStmt = dynTypedNode->get<clang::Stmt>();
+    if (aStmt)
+    {
+        return markedParentsAsSuppress(*aStmt, context, rule);
     }
 
     return false;

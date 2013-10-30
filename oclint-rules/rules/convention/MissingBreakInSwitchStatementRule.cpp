@@ -65,34 +65,36 @@ public:
     bool VisitSwitchStmt(SwitchStmt *switchStmt)
     {
         CompoundStmt *compoundStmt = dyn_cast_or_null<CompoundStmt>(switchStmt->getBody());
-        if (compoundStmt)
+        if (!compoundStmt)
         {
-            bool breakFound = true;
-            for (CompoundStmt::body_iterator body = compoundStmt->body_begin(),
-                bodyEnd = compoundStmt->body_end(); body != bodyEnd; body++)
-            {
-                Stmt *bodyStmt = dyn_cast<Stmt>(*body);
-                if (isBreakingPoint(bodyStmt))
-                {
-                    breakFound = true;
-                    continue;
-                }
-                if (isSwitchCase(bodyStmt))
-                {
-                    if (!breakFound)
-                    {
-                        addViolation(switchStmt, this);
-                        break;
-                    }
+            return true;
+        }
 
-                    FindingBreak findingBreak;
-                    breakFound = findingBreak.findBreak(dyn_cast<SwitchCase>(bodyStmt));
-                }
-            }
-            if (!breakFound)
+        bool breakFound = true;
+        for (CompoundStmt::body_iterator body = compoundStmt->body_begin(),
+            bodyEnd = compoundStmt->body_end(); body != bodyEnd; body++)
+        {
+            Stmt *bodyStmt = dyn_cast<Stmt>(*body);
+            if (isBreakingPoint(bodyStmt))
             {
-                addViolation(switchStmt, this);
+                breakFound = true;
+                continue;
             }
+            if (isSwitchCase(bodyStmt))
+            {
+                if (!breakFound)
+                {
+                    addViolation(switchStmt, this);
+                    break;
+                }
+
+                FindingBreak findingBreak;
+                breakFound = findingBreak.findBreak(dyn_cast<SwitchCase>(bodyStmt));
+            }
+        }
+        if (!breakFound)
+        {
+            addViolation(switchStmt, this);
         }
 
         return true;
