@@ -27,13 +27,17 @@ public:
 
 
 // Look for assignment operators. Then collect ivar accesses inside
-class ContainsBinaryOperatorWithIvarAssignment : public RecursiveASTVisitor<ContainsBinaryOperatorWithIvarAssignment>
+class ContainsBinaryOperatorWithIvarAssignment :
+    public RecursiveASTVisitor<ContainsBinaryOperatorWithIvarAssignment>
 {
 private:
     // Location to save found ivar accesses
     vector<ObjCIvarRefExpr*> _instances;
-
-    bool IsAssignOperator(BinaryOperatorKind kind) {
+    
+    // this has high cyclomatic complexity, due to the lots of cases
+    // but is easily the clearest way to do this
+    bool IsAssignOperator(BinaryOperatorKind kind)
+        __attribute__((annotate("oclint:suppress[high cyclomatic complexity]"))) {
         switch(kind) {
             case BO_Assign:
             case BO_MulAssign:
@@ -63,7 +67,11 @@ public:
             // So check for ivar references in the assignment part
             ContainsIvarFetch checker;
             checker.TraverseStmt(leftExpr);
-            _instances.insert(_instances.end(), checker.getInstances().begin(), checker.getInstances().end());
+            _instances.insert(
+                _instances.end(),
+                checker.getInstances().begin(),
+                checker.getInstances().end()
+            );
         }
 
         return true;
@@ -105,16 +113,22 @@ public:
         ContainsBinaryOperatorWithIvarAssignment checker;
         checker.TraverseDecl(decl);
 
-        // Now go through all the ivar accesses and see if they match the method name as a getter, setter, or init method
-        for (vector<ObjCIvarRefExpr*>::iterator it = checker.getInstances().begin(); it != checker.getInstances().end(); ++it) {
+        // Now go through all the ivar accesses and see
+        // if they match the method name as a getter, setter, or init method
+        for (vector<ObjCIvarRefExpr*>::iterator it = checker.getInstances().begin();
+            it != checker.getInstances().end();
+            ++it) {
             ObjCIvarRefExpr* access = *it;
             // ivarName is _foo or foo or foo_
             string ivarName = access->getDecl()->getNameAsString();
-            // getterName is foo. Note this won't work for properties that reassign getter= or setter=
+            // getterName is foo. Note this won't work for
+            // properties that reassign getter= or setter=
             string getterName = removeUnderscores(ivarName);
             // setterName is setFoo
             string setterName = "set" + capitalizeFirstLetter(getterName) + ":";
-            if((selectorName != getterName && selectorName != setterName) && selectorName.substr(0, 4) != "init") {
+            if((selectorName != getterName
+              && selectorName != setterName)
+              && selectorName.substr(0, 4) != "init") {
                 addViolation(*it, this);
             }
         }
@@ -124,5 +138,7 @@ public:
 };
 
 // Instantiate the rule
-RuleSet ObjCAssignIvarOutsideAccessorsRule::rules(new ObjCAssignIvarOutsideAccessorsRule());
+RuleSet ObjCAssignIvarOutsideAccessorsRule::rules(
+    new ObjCAssignIvarOutsideAccessorsRule()
+);
 
