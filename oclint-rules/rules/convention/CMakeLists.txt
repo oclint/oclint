@@ -5,6 +5,7 @@ SET(LIST_OF_RULES
     MissingBreakInSwitchStatement
     NonCaseLabelInSwitchStatement
     ParameterReassignment
+    PreferEarlyExit
     SwitchStatementsShouldHaveDefault
     TooFewBranchesInSwitchStatement
     )

@@ -90,3 +90,13 @@ const clang::Expr* ignoreCastExpr(const clang::Expr& expr)
     }
     return last;
 }
+
+int getLineCount(clang::SourceRange sourceRange, const clang::SourceManager& sourceManager)
+{
+    clang::SourceLocation startLocation = sourceRange.getBegin();
+    clang::SourceLocation endLocation = sourceRange.getEnd();
+
+    unsigned startLineNumber = sourceManager.getPresumedLineNumber(startLocation);
+    unsigned endLineNumber = sourceManager.getPresumedLineNumber(endLocation);
+    return endLineNumber - startLineNumber + 1;
+}

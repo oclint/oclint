@@ -1,6 +1,7 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
+#include "oclint/util/ASTUtil.h"
 #include "oclint/util/StdUtil.h"
 
 using namespace std;
@@ -14,20 +15,9 @@ private:
 
     int _threshold;
 
-    int getNumberOfLines(SourceRange sourceRange)
-    {
-        SourceLocation startLocation = sourceRange.getBegin();
-        SourceLocation endLocation = sourceRange.getEnd();
-        SourceManager *sourceManager = &_carrier->getSourceManager();
-
-        unsigned startLineNumber = sourceManager->getPresumedLineNumber(startLocation);
-        unsigned endLineNumber = sourceManager->getPresumedLineNumber(endLocation);
-        return endLineNumber - startLineNumber + 1;
-    }
-
     void applyDecl(Decl *decl, string descriptionPrefix)
     {
-        int length = getNumberOfLines(decl->getSourceRange());
+        int length = getLineCount(decl->getSourceRange(), _carrier->getSourceManager());
         if (length > _threshold)
         {
             string description = descriptionPrefix + " with " +

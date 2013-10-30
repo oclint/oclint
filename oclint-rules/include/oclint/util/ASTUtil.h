@@ -10,5 +10,6 @@ bool isCppMethodDeclLocatedInCppRecordDecl(clang::CXXMethodDecl *decl);
 bool isANullPointerExpr(const clang::Expr& expr);
 bool areSameExpr(clang::ASTContext& context, const clang::Expr& lhs, const clang::Expr& rhs);
 const clang::Expr* ignoreCastExpr(const clang::Expr& expr);
+int getLineCount(clang::SourceRange sourceRange, const clang::SourceManager& sourceManager);
 
 #endif
