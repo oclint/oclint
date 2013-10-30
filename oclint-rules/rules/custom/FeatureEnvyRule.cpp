@@ -104,22 +104,15 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
 
         ObjCInterfaceDecl *getGetterInterface(ObjCPropertyRefExpr *node)
         {
-            ObjCInterfaceDecl *result;
-
             if (node->isExplicitProperty())
             {
                 ObjCPropertyDecl *decl = node->getExplicitProperty();
-                result = decl->getGetterMethodDecl()->getClassInterface();
+                return decl->getGetterMethodDecl()->getClassInterface();
             }
-            else
-            {
-                result = node->getImplicitPropertyGetter()->getClassInterface();
-            }
-
-            return result;
+            return node->getImplicitPropertyGetter()->getClassInterface();
         }
 
-        void countClassName(string className)
+        void countClassName(const string& className)
         {
             ++_receiversCount[className];
         }
@@ -141,20 +134,16 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
 
         long self_messages(string selfname)
         {
-            long occurances = 0;
-            for (const auto& pair : _receiversCount)
-            {
-                if (pair.first == selfname)
-                    occurances = pair.second;
+            const auto& found = _receiversCount.find(selfname);
+            if (found == _receiversCount.end()) {
+                return 0;
             }
-
-            return occurances;
+            return found->second;
         }
 
         vector<string>enviedClasses(long selfMessages)
         {
             vector<string> enviedClasses;
-            enviedClasses.clear();
 
             for (const auto& pair : _receiversCount)
             {
