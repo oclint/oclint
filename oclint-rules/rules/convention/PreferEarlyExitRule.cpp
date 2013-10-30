@@ -1,6 +1,7 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
+#include "oclint/util/ASTUtil.h"
 
 using namespace std;
 using namespace clang;
@@ -13,17 +14,6 @@ private:
 
     int _threshold;
 
-    int getLineCount(const Stmt& stmt) const
-    {
-        SourceLocation startLocation = stmt.getLocStart();
-        SourceLocation endLocation = stmt.getLocEnd();
-        SourceManager* sourceManager = &_carrier->getSourceManager();
-
-        unsigned startLineNumber = sourceManager->getPresumedLineNumber(startLocation);
-        unsigned endLineNumber = sourceManager->getPresumedLineNumber(endLocation);
-        return endLineNumber - startLineNumber + 1;
-    }
-
     bool isLongIfWithoutElse(const Stmt* statement) const
     {
         if (auto ifStmt = dyn_cast_or_null<IfStmt>(statement))
@@ -32,7 +22,9 @@ private:
             {
                 return false;
             }
-            return getLineCount(*ifStmt) > _threshold;
+
+            const int lineCount = getLineCount(ifStmt->getSourceRange(), _carrier->getSourceManager());
+            return lineCount > _threshold;
         }
 
         return false;

@@ -58,3 +58,13 @@ bool isCppMethodDeclLocatedInCppRecordDecl(clang::CXXMethodDecl *decl)
     }
     return false;
 }
+
+int getLineCount(clang::SourceRange sourceRange, const clang::SourceManager& sourceManager)
+{
+    clang::SourceLocation startLocation = sourceRange.getBegin();
+    clang::SourceLocation endLocation = sourceRange.getEnd();
+
+    unsigned startLineNumber = sourceManager.getPresumedLineNumber(startLocation);
+    unsigned endLineNumber = sourceManager.getPresumedLineNumber(endLocation);
+    return endLineNumber - startLineNumber + 1;
+}
