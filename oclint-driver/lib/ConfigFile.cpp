@@ -79,14 +79,12 @@ oclint::option::ConfigFile::ConfigFile(const std::string &path)
     : _path(path), _maxP1(INT_MIN), _maxP2(INT_MIN), _maxP3(INT_MIN)
 {
     debug::emit("Reading config file: ");
-    debug::emit(path.c_str());
-    debug::emit("\n");
+    debug::emitLine(path.c_str());
 
     llvm::error_code errorCode = llvm::MemoryBuffer::getFile(path, _buffer);
     if (errorCode)
     {
-        debug::emit(errorCode.message().c_str());
-        debug::emit("\n");
+        debug::emitLine(errorCode.message().c_str());
     }
     else
     {
@@ -97,7 +95,7 @@ oclint::option::ConfigFile::ConfigFile(const std::string &path)
             // Config file is only whitespace.
             // Prevent LLVM crash:
             // http://lists.cs.uiuc.edu/pipermail/llvmbugs/2013-May/028254.html
-            debug::emit("Skip parsing empty config file\n");
+            debug::emitLine("Skip parsing empty config file");
             return;
         }
 
