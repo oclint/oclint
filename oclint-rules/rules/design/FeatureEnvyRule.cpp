@@ -83,24 +83,17 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
             _receiversCount.clear();
             TraverseDecl(decl);
 
-            return enviedClasses(self_messages(selfName));
+            return enviedClasses(selfMessages(selfName));
         }
 
         ObjCInterfaceDecl *getSetterInterface(ObjCPropertyRefExpr *node)
         {
-            ObjCInterfaceDecl *result;
-
             if (node->isExplicitProperty())
             {
                 ObjCPropertyDecl *decl = node->getExplicitProperty();
-                result = decl->getSetterMethodDecl()->getClassInterface();
+                return decl->getSetterMethodDecl()->getClassInterface();
             }
-            else
-            {
-                result = node->getImplicitPropertySetter()->getClassInterface();
-            }
-
-            return result;
+            return node->getImplicitPropertySetter()->getClassInterface();
         }
 
         ObjCInterfaceDecl *getGetterInterface(ObjCPropertyRefExpr *node)
@@ -133,7 +126,7 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
         //     countClassName(decl->getName());
         // }
 
-        long self_messages(string selfname)
+        long selfMessages(string selfname)
         {
             const auto& found = _receiversCount.find(selfname);
             if (found == _receiversCount.end()) {
@@ -142,7 +135,7 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
             return found->second;
         }
 
-        vector<string>enviedClasses(long selfMessages)
+        vector<string> enviedClasses(long selfMessages)
         {
             vector<string> enviedClasses;
 
@@ -186,9 +179,6 @@ public:
         return 3;
     }
 
-    virtual void setUp() {}
-    virtual void tearDown() {}
-    
     bool VisitObjCMethodDecl(ObjCMethodDecl *node)
     {
         MessageAnalyzer analyzer;
