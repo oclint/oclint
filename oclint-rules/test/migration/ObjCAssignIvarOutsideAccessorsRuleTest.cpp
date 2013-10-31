@@ -2,65 +2,81 @@
 
 #include "rules/migration/ObjCAssignIvarOutsideAccessorsRule.cpp"
 
-static std::string testCode = "\n\
+static std::string testPreamble = "\
+                                                        \n\
+#define nil ((id)0)                                     \n\
+                                                        \n\
 @interface NSObject\n@end                               \n\
                                                         \n\
 @interface Foo : NSObject                               \n\
-                                                        \n\
 @property (assign, nonatomic) int bar;                  \n\
-                                                        \n\
-@end                                                    \n\
-                                                        \n\
-                                                        \n\
-@implementation Foo                                     \n\
-                                                        \n\
-@synthesize bar=_bar;                                   \n\
-                                                        \n\
-- (void)doSomethingWithBar {                            \n\
-    _bar = 4;                                           \n\
-    self.bar = 5;                                       \n\
-}                                                       \n\
+@property (strong, nonatomic) Foo* foo;                 \n\
                                                         \n\
 @end                                                    \n\
 ";
 
-string testFalsePositive = "\n\
-@interface NSObject\n@end                               \n\
-                                                        \n\
-@interface Foo : NSObject                               \n\
-@property (assign, nonatomic) int bar;                  \n\
-@property (assign, nonatomic) Foo* foo;                 \n\
-                                                        \n\
-@end                                                    \n\
-                                                        \n\
-                                                        \n\
+static std::string testChangeInit = testPreamble + "\
 @implementation Foo                                     \n\
-                                                        \n\
-@synthesize bar=_bar;                                   \n\
-@synthesize foo=_foo;                                   \n\
                                                         \n\
 - (id)init {                                            \n\
     _bar = 3;                                           \n\
     return self;                                        \n\
 }                                                       \n\
+                                                        \n\
+@end                                                    \n\
+";
+
+static std::string testChangeInitWith = testPreamble + "\
+@implementation Foo                                     \n\
+                                                        \n\
 - (id)initWith {                                        \n\
     _bar = 3;                                           \n\
     return self;                                        \n\
 }                                                       \n\
                                                         \n\
-- (void)doSomethingWithBar {                            \n\
-    self.bar = 5;                                       \n\
-}                                                       \n\
-                                                        \n\
-- (void)setBar:(int)bar {                               \n\
-    _bar = bar;                                         \n\
-}                                                       \n\
+@end                                                    \n\
+";
+
+static std::string testChangeGetter = testPreamble + "\
+@implementation Foo                                     \n\
                                                         \n\
 - (int)bar {                                            \n\
-    _bar = 13;                                          \n\
-    _foo.bar = 12;                                      \n\
+    _bar = 3;                                           \n\
     return _bar;                                        \n\
 }                                                       \n\
+                                                        \n\
+@end                                                    \n\
+";
+
+static std::string testChangeSetter = testPreamble + "\
+@implementation Foo                                     \n\
+                                                        \n\
+- (void)setFoo:(id)foo {                                \n\
+    if(_foo == nil) {                                   \n\
+        _foo = foo;                                     \n\
+    }                                                   \n\
+}                                                       \n\
+                                                        \n\
+@end                                                    \n\
+";
+
+static std::string testOtherMethod = testPreamble + "\
+@implementation Foo                                     \n\
+                                                        \n\
+- (void)doSomething {                                   \n\
+    _bar = 3;                                           \n\
+}                                                       \n\
+                                                        \n\
+@end                                                    \n\
+";
+
+static std::string testChildPropertyAccess = testPreamble + "\
+@implementation Foo                                     \n\
+                                                        \n\
+- (void)doSomething {                                   \n\
+    _foo.bar = 3;                                       \n\
+}                                                       \n\
+                                                        \n\
 @end                                                    \n\
 ";
 
@@ -71,15 +87,47 @@ TEST(ObjCAssignIvarOutsideAccessorsRuleTest, PropertyTest)
     EXPECT_EQ("ivar assignment outside accessors or init", rule.name());
 }
 
-TEST(ObjCAssignIvarOutsideAccessorsRuleTest, ExternalAssignment)
+TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestInit)
 {
-    testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testCode, 0, 17, 5, 17, 5);
+    testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testChangeInit);
+}
+
+TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestInitWith)
+{
+    testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testChangeInitWith);
+}
+
+TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestChangeGetter)
+{
+    testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testChangeGetter);
+}
+
+TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestChangeSetter)
+{
+    testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testChangeSetter);
+}
+
+TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestOtherMethod)
+{
+    testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testOtherMethod, 0, 15, 5, 15, 5);
+}
+
+TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestChildPropertyAccess)
+{
+    testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testChildPropertyAccess);
+}
+/*
+
+TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestChangeGetter)
+{
+    testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testChangeGetter, 0, 17, 5, 17, 5);
 }
 
 TEST(ObjCAssignIvarOutsideAccessorsRuleTest, FalsePositive)
 {
     testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testFalsePositive);
 }
+*/
 
 int main(int argc, char **argv)
 {
