@@ -1,6 +1,6 @@
 #include "TestHeaders.h"
 
-#include "rules/custom/FeatureEnvyRule.cpp"
+#include "rules/design/FeatureEnvyRule.cpp"
 
 TEST(FeatureEnvyRuleTest, PropertyTest)
 {
