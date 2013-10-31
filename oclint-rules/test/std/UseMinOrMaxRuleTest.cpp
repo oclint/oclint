@@ -1,6 +1,6 @@
 #include "TestHeaders.h"
 
-#include "rules/replace/UseMinOrMaxRule.cpp"
+#include "rules/std/UseMinOrMaxRule.cpp"
 
 TEST(UseMinOrMaxRuleTest, PropertyTest)
 {
@@ -129,7 +129,6 @@ TEST(UseMinOrMaxRuleTest, CorrectCode)
         testRuleOnCXXCode(new UseMinOrMaxRule(), code);
     }
 }
-
 
 int main(int argc, char **argv)
 {

@@ -1,6 +1,6 @@
 #include "TestHeaders.h"
 
-#include "rules/replace/UseSwapRule.cpp"
+#include "rules/std/UseSwapRule.cpp"
 
 TEST(UseSwapRuleTest, PropertyTest)
 {
