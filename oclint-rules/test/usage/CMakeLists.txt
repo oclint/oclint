@@ -1,2 +1,0 @@
-
-BUILD_TEST(ObjCVerifyMustCallSuperRuleTest)
