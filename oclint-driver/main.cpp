@@ -81,6 +81,17 @@ void printErrorLine(const char *errorMessage)
     cerr << endl << "oclint: error: " << errorMessage << endl;
 }
 
+void printViolationsExceedThresholdError(const oclint::Results *results)
+{
+    printErrorLine("violations exceed threshold");
+    cerr << "P1=" << results->numberOfViolationsWithPriority(1)
+        << "[" << oclint::option::maxP1() << "] ";
+    cerr << "P2=" << results->numberOfViolationsWithPriority(2)
+        << "[" << oclint::option::maxP2() << "] ";
+    cerr << "P3=" << results->numberOfViolationsWithPriority(3)
+        << "[" << oclint::option::maxP3() << "] " <<endl;
+}
+
 enum ExitCode
 {
     SUCCESS,
@@ -163,6 +174,7 @@ int main(int argc, const char **argv)
 
     if (numberOfViolationsExceedThreshold(results))
     {
+        printViolationsExceedThresholdError(results);
         return VIOLATIONS_EXCEED_THRESHOLD;
     }
     return SUCCESS;
