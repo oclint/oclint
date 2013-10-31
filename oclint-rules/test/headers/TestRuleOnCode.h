@@ -26,7 +26,7 @@ void testRuleOnCode(const Twine &fileName,
         vector<Violation> violations = violationSet->getViolations();
         if (violationIndex < 0)
         {
-            EXPECT_THAT(violations.size(), Eq(0));
+            EXPECT_THAT(violations.size(), Eq(0u));
         }
         else
         {
