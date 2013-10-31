@@ -24,11 +24,11 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
             return analyzeCommon(selfName, decl);
         }
 
-        vector<string> analyzeCXX(CXXMethodDecl *decl)
-        {
-            string selfName = decl->getParent()->getName();
-            return analyzeCommon(selfName, decl);
-        }
+        // vector<string> analyzeCXX(CXXMethodDecl *decl)
+        // {
+        //     string selfName = decl->getParent()->getName();
+        //     return analyzeCommon(selfName, decl);
+        // }
 
         bool VisitObjCMessageExpr(ObjCMessageExpr *node)
         {
@@ -71,11 +71,11 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
             return true;
         }
 
-        bool VisitCXXMemberCallExpr(CXXMemberCallExpr *node)
-        {
-            countCXXRecord(node->getRecordDecl());
-            return true;
-        }
+        // bool VisitCXXMemberCallExpr(CXXMemberCallExpr *node)
+        // {
+        //     countCXXRecord(node->getRecordDecl());
+        //     return true;
+        // }
 
     private:
         vector<string> analyzeCommon(string selfName, Decl *decl)
@@ -128,10 +128,10 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
             countInterface(ivarDecl->getContainingInterface());
         }
 
-        void countCXXRecord(CXXRecordDecl *decl)
-        {
-            countClassName(decl->getName());
-        }
+        // void countCXXRecord(CXXRecordDecl *decl)
+        // {
+        //     countClassName(decl->getName());
+        // }
 
         long self_messages(string selfname)
         {
