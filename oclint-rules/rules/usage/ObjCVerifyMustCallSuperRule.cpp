@@ -53,11 +53,8 @@ private:
         {
             AnnotateAttr *annotate = dyn_cast<AnnotateAttr>(*attr);
 
-            std::ostringstream enforceBuffer;
-            enforceBuffer << "oclint:enforce[" << name() << "]";
-            std::string enforceString = enforceBuffer.str();
             // TODO add a mechanism to separate the annotation name from the rule name and use that
-            if (annotate && (annotate->getAnnotation() == enforceString))
+            if (annotate && (annotate->getAnnotation() == "oclint:enforce[must call super]"))
             {
                 return true;
             }
@@ -83,7 +80,9 @@ private:
         map<string, vector<string>>::iterator classNames = _libraryCases.find(selectorName);
         if(classNames != _libraryCases.end()) {
             vector<string> classes = classNames->second;
-            for(vector<string>::iterator it = classes.begin(), ite = classes.end(); it != ite; ++it) {
+            for(vector<string>::iterator it = classes.begin(), ite = classes.end();
+                it != ite;
+                ++it) {
                 bool isCase = DeclHasParentClassNamed(decl, *it);
                 if(isCase) {
                     return true;
@@ -102,7 +101,10 @@ private:
         if(decl->isOverriding()) {
             SmallVector<const ObjCMethodDecl*, 4> overridden;
             decl->getOverriddenMethods(overridden);
-            for(SmallVector<const ObjCMethodDecl*, 4>::iterator it=overridden.begin(), ite = overridden.end(); it != ite; ++it) {
+            for(SmallVector<const ObjCMethodDecl*, 4>::iterator it=overridden.begin(),
+                ite = overridden.end();
+                it != ite;
+                ++it) {
                 if(MarkedAsNeedsSuper(*it)) {
                     return true;
                 }
@@ -117,28 +119,28 @@ public:
     
     ObjCVerifyMustCallSuperRule() {
         // UIKit cases
-        _libraryCases.insert({"viewWillAppear:", {"UIViewController"}});
-        _libraryCases.insert({"viewDidAppear:", {"UIViewController"}});
-        _libraryCases.insert({"viewWillDisappear:", {"UIViewController"}});
-        _libraryCases.insert({"viewDidDisappear:", {"UIViewController"}});
-        _libraryCases.insert({"viewDidLayoutSubviews", {"UIViewController"}});
-        _libraryCases.insert({"layoutSubviews", {"UIView"}});
-        _libraryCases.insert({"updateConstraints", {"UIView"}});
-        _libraryCases.insert({"viewDidLoad", {"UIView"}});
-        _libraryCases.insert({"reset", {"UIGestureRecognizer"}});
-        _libraryCases.insert({"canPreventGestureRecognizer:", {"UIGestureRecognizer"}});
-        _libraryCases.insert({"canBePreventedByGestureRecognizer:", {"UIGestureRecognizer"}});
-        _libraryCases.insert({"shouldRequireFailureOfGestureRecognizer:", {"UIGestureRecognizer"}});
-        _libraryCases.insert({"shouldBeRequiredToFailByGestureRecognizer:", {"UIGestureRecognizer"}});
-        _libraryCases.insert({"touchesBegan:withEvent:", {"UIGestureRecognizer"}});
-        _libraryCases.insert({"touchesMoved:withEvent:", {"UIGestureRecognizer"}});
-        _libraryCases.insert({"touchesEnded:withEvent:", {"UIGestureRecognizer"}});
-        _libraryCases.insert({"touchesCancelled:withEvent:", {"UIGestureRecognizer"}});
+        _libraryCases["viewWillAppear:"] = {"UIViewController"};
+        _libraryCases["viewDidAppear:"] = {"UIViewController"};
+        _libraryCases["viewWillDisappear:"] = {"UIViewController"};
+        _libraryCases["viewDidDisappear:"] = {"UIViewController"};
+        _libraryCases["viewDidLayoutSubviews"] = {"UIViewController"};
+        _libraryCases["layoutSubviews"] = {"UIView"};
+        _libraryCases["updateConstraints"] = {"UIView"};
+        _libraryCases["viewDidLoad"] = {"UIView"};
+        _libraryCases["reset"] = {"UIGestureRecognizer"};
+        _libraryCases["canPreventGestureRecognizer:"] = {"UIGestureRecognizer"};
+        _libraryCases["canBePreventedByGestureRecognizer:"] = {"UIGestureRecognizer"};
+        _libraryCases["shouldRequireFailureOfGestureRecognizer:"] = {"UIGestureRecognizer"};
+        _libraryCases["shouldBeRequiredToFailByGestureRecognizer:"] = {"UIGestureRecognizer"};
+        _libraryCases["touchesBegan:withEvent:"] = {"UIGestureRecognizer"};
+        _libraryCases["touchesMoved:withEvent:"] = {"UIGestureRecognizer"};
+        _libraryCases["touchesEnded:withEvent:"] = {"UIViewController"};
+        _libraryCases["touchesCancelled:withEvent:"] = {"UIGestureRecognizer"};
     }
 
     virtual const string name() const
     {
-        return "overridden method must call super";
+        return "must call super";
     }
 
     virtual int priority() const
@@ -155,7 +157,7 @@ public:
             ContainsCallToSuperMethod checker(selectorName);
             checker.TraverseDecl(decl);
             if(!checker.foundSuperCall()) {
-                addViolation(decl, this);
+                addViolation(decl, this, "overridden method " + selectorName + " must call super");
             }
         }
 

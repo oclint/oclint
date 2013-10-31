@@ -38,9 +38,9 @@ typedef unsigned char BOOL;                                                     
 @interface SomeBaseClass : NSObject                                                            \n\
                                                                                                \n\
 - (void)viewWillAppear:(BOOL)animated                                                          \n\
-__attribute__((annotate(\"oclint:enforce[overridden method must call super]\")));              \n\
+__attribute__((annotate(\"oclint:enforce[must call super]\")));                                \n\
 - (void)viewDidAppear:(BOOL)animated                                                           \n\
-__attribute__((annotate(\"oclint:enforce[overridden method must call super]\")));              \n\
+__attribute__((annotate(\"oclint:enforce[must call super]\")));                                \n\
                                                                                                \n\
 @end                                                                                           \n\
                                                                                                \n\
@@ -56,7 +56,7 @@ __attribute__((annotate(\"oclint:enforce[overridden method must call super]\")))
 }                                                                                              \n\
                                                                                                \n\
 - (void)viewDidAppear:(BOOL)animated                                                           \n\
-    __attribute__((annotate(\"oclint:suppress[overridden method must call super]\")));         \n\
+    __attribute__((annotate(\"oclint:suppress[must call super]\")));                           \n\
 {                                                                                              \n\
     [super viewWillAppear:animated];                                                           \n\
 }                                                                                              \n\
@@ -73,9 +73,9 @@ typedef unsigned char BOOL;                                                     
 @interface SomeBaseClass : NSObject                                                            \n\
                                                                                                \n\
 - (void)viewWillAppear:(BOOL)animated                                                          \n\
-__attribute__((annotate(\"oclint:enforce[overridden method must call super]\")));              \n\
+__attribute__((annotate(\"oclint:enforce[must call super]\")));                                \n\
 - (void)viewDidAppear:(BOOL)animated                                                           \n\
-__attribute__((annotate(\"oclint:enforce[overridden method must call super]\")));              \n\
+__attribute__((annotate(\"oclint:enforce[must call super]\")));                                \n\
                                                                                                \n\
 @end                                                                                           \n\
                                                                                                \n\
@@ -142,17 +142,17 @@ TEST(ObjcVerifyMustCallSuperRuleTest, PropertyTest)
 {
     ObjCVerifyMustCallSuperRule rule;
     EXPECT_EQ(1, rule.priority());
-    EXPECT_EQ("overridden method must call super", rule.name());
+    EXPECT_EQ("must call super", rule.name());
 }
 
 TEST(ObjcVerifyMustCallSuperRuleTest, ViewControllerLibraryCase)
 {
-    testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(), testUIViewController, 0, 21, 1, 23, 1);
+    testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(), testUIViewController, 0, 21, 1, 23, 1, "overridden method viewDidAppear: must call super");
 }
 
 TEST(ObjcVerifyMustCallSuperRuleTest, AnnotationCase)
 {
-    testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(), testAnnotation, 0, 25, 1, 27, 1);
+    testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(), testAnnotation, 0, 25, 1, 27, 1, "overridden method viewDidAppear: must call super");
 }
 
 TEST(ObjcVerifyMustCallSuperRuleTest, SuppresionCase)
