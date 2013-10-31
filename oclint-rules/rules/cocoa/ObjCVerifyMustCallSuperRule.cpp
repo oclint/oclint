@@ -2,6 +2,7 @@
 
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
+#include "oclint/util/ASTUtil.h"
 
 using namespace std;
 using namespace clang;
@@ -63,24 +64,13 @@ private:
         return false;
     }
 
-    bool declHasParentClassNamed(const ObjCMethodDecl* decl, string className) {
-        const ObjCInterfaceDecl* interface = decl->getClassInterface();
-        while(interface->getSuperClass() != NULL) {
-            interface = interface->getSuperClass();
-            if(interface->getNameAsString() == className) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     bool isLibraryCase(const ObjCMethodDecl* decl) {
         string selectorName = decl->getSelector().getAsString();
         auto classNames = _libraryCases.find(selectorName);
         if(classNames != _libraryCases.end()) {
             auto classes = classNames->second;
             for(auto it = classes.begin(), ite = classes.end(); it != ite; ++it) {
-                if(declHasParentClassNamed(decl, *it)) {
+                if(isObjCMethodDeclInChildOfClass(decl, *it)) {
                     return true;
                 }
             }
