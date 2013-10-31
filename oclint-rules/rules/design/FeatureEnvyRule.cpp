@@ -1,8 +1,9 @@
+#include <sstream>
+#include <unordered_map>
+
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
-#include <unordered_map>
-#include <sstream>
 
 using namespace std;
 using namespace clang;
