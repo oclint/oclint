@@ -43,4 +43,42 @@ void AbstractASTRuleBase::addViolation(const clang::Stmt *stmt,
     }
 }
 
+int AbstractASTRuleBase::supportedLanguages()
+{
+    return LANG_C | LANG_CXX | LANG_OBJC;
+}
+
+bool AbstractASTRuleBase::supportsC()
+{
+    return LANG_C & supportedLanguages();
+}
+
+bool AbstractASTRuleBase::supportsCXX()
+{
+    return LANG_CXX & supportedLanguages();
+}
+
+bool AbstractASTRuleBase::supportsObjC()
+{
+    return LANG_OBJC & supportedLanguages();
+}
+
+bool AbstractASTRuleBase::isLanguageSupported()
+{
+    const auto &langOpts = _carrier->getASTContext()->getLangOpts();
+    if (langOpts.ObjC1)
+    {
+        return supportsObjC();
+    }
+    if (langOpts.CPlusPlus)
+    {
+        return supportsCXX();
+    }
+    if (langOpts.C99)
+    {
+        return supportsC();
+    }
+    return false;
+}
+
 } // end namespace oclint
