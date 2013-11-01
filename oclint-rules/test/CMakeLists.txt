@@ -41,6 +41,7 @@ add_custom_command(TARGET CanaryTest PRE_BUILD
 ENDIF()
 
 
+ADD_SUBDIRECTORY(abstract)
 ADD_SUBDIRECTORY(helper)
 
 ADD_SUBDIRECTORY(basic)

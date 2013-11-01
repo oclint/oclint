@@ -14,6 +14,11 @@ class AbstractASTVisitorRule : public AbstractASTRuleBase, public clang::Recursi
 protected:
     virtual void apply()
     {
+        if (!isLanguageSupported())
+        {
+            return;
+        }
+
         setUp();
         clang::SourceManager *sourceManager = &_carrier->getSourceManager();
         clang::DeclContext *decl = _carrier->getTranslationUnitDecl();
