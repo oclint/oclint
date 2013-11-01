@@ -1,6 +1,7 @@
 #include "TestHeaders.h"
 
 #include "oclint/AbstractASTVisitorRule.h"
+#include "oclint/AbstractASTMatcherRule.h"
 
 using namespace std;
 using namespace clang;
@@ -54,7 +55,7 @@ TEST(DefaultASTRuleTest, RunOnCXX11)
     testRuleOnCXX11Code(new DefaultASTRule(), "void a() {}", 0, 1, 1, 1, 11);
 }
 
-TEST(DefaultASTRuleTest, RunOnObjCC)
+TEST(DefaultASTRuleTest, RunOnObjC)
 {
     testRuleOnObjCCode(new DefaultASTRule(), "void a() {}", 0, 1, 1, 1, 11);
 }
@@ -112,7 +113,7 @@ TEST(COnlyASTRuleTest, RunOnCXX11)
     testRuleOnCXX11Code(new COnlyASTRule(), "void a() {}");
 }
 
-TEST(COnlyASTRuleTest, RunOnObjCC)
+TEST(COnlyASTRuleTest, RunOnObjC)
 {
     testRuleOnObjCCode(new COnlyASTRule(), "void a() {}");
 }
@@ -170,12 +171,12 @@ TEST(CXXOnlyASTRuleTest, RunOnCXX11)
     testRuleOnCXX11Code(new CXXOnlyASTRule(), "void a() {}", 0, 1, 1, 1, 11);
 }
 
-TEST(CXXOnlyASTRuleTest, RunOnObjCC)
+TEST(CXXOnlyASTRuleTest, RunOnObjC)
 {
     testRuleOnObjCCode(new CXXOnlyASTRule(), "void a() {}");
 }
 
-class ObjCCOnlyASTRule : public AbstractASTVisitorRule<ObjCCOnlyASTRule>
+class ObjCOnlyASTRule : public AbstractASTVisitorRule<ObjCOnlyASTRule>
 {
 public:
     virtual int supportedLanguages()
@@ -206,31 +207,89 @@ public:
     }
 };
 
-TEST(ObjCCOnlyASTRuleTest, PropertyTest)
+TEST(ObjCOnlyASTRuleTest, PropertyTest)
 {
-    ObjCCOnlyASTRule rule;
+    ObjCOnlyASTRule rule;
     EXPECT_EQ(0, rule.priority());
     EXPECT_EQ("objc only ast rule", rule.name());
 }
 
-TEST(ObjCCOnlyASTRuleTest, RunOnC)
+TEST(ObjCOnlyASTRuleTest, RunOnC)
 {
-    testRuleOnCode(new ObjCCOnlyASTRule(), "void a() {}");
+    testRuleOnCode(new ObjCOnlyASTRule(), "void a() {}");
 }
 
-TEST(ObjCCOnlyASTRuleTest, RunOnCXX)
+TEST(ObjCOnlyASTRuleTest, RunOnCXX)
 {
-    testRuleOnCXXCode(new ObjCCOnlyASTRule(), "void a() {}");
+    testRuleOnCXXCode(new ObjCOnlyASTRule(), "void a() {}");
 }
 
-TEST(ObjCCOnlyASTRuleTest, RunOnCXX11)
+TEST(ObjCOnlyASTRuleTest, RunOnCXX11)
 {
-    testRuleOnCXX11Code(new ObjCCOnlyASTRule(), "void a() {}");
+    testRuleOnCXX11Code(new ObjCOnlyASTRule(), "void a() {}");
 }
 
-TEST(ObjCCOnlyASTRuleTest, RunOnObjCC)
+TEST(ObjCOnlyASTRuleTest, RunOnObjC)
 {
-    testRuleOnObjCCode(new ObjCCOnlyASTRule(), "void a() {}", 0, 1, 1, 1, 11);
+    testRuleOnObjCCode(new ObjCOnlyASTRule(), "void a() {}", 0, 1, 1, 1, 11);
+}
+
+class MultipleLanguagesSupportASTRule : public AbstractASTMatcherRule
+{
+protected:
+    virtual int supportedLanguages()
+    {
+        return LANG_OBJC | LANG_C;
+    }
+
+public:
+
+    virtual const string name() const
+    {
+        return "multiple languages support ast rule";
+    }
+
+    virtual int priority() const
+    {
+        return 0;
+    }
+
+    virtual void callback(const clang::ast_matchers::MatchFinder::MatchResult &result)
+    {
+        addViolation(result.Nodes.getNodeAs<Decl>("testDecl"), this);
+    }
+
+    virtual void setUpMatcher()
+    {
+        addMatcher(clang::ast_matchers::decl().bind("testDecl"));
+    }
+};
+
+TEST(MultipleLanguagesSupportASTRuleTest, PropertyTest)
+{
+    MultipleLanguagesSupportASTRule rule;
+    EXPECT_EQ(0, rule.priority());
+    EXPECT_EQ("multiple languages support ast rule", rule.name());
+}
+
+TEST(MultipleLanguagesSupportASTRuleTest, RunOnC)
+{
+    testRuleOnCode(new MultipleLanguagesSupportASTRule(), "void a() {}", 0, 1, 1, 1, 11);
+}
+
+TEST(MultipleLanguagesSupportASTRuleTest, RunOnCXX)
+{
+    testRuleOnCXXCode(new MultipleLanguagesSupportASTRule(), "void a() {}");
+}
+
+TEST(MultipleLanguagesSupportASTRuleTest, RunOnCXX11)
+{
+    testRuleOnCXX11Code(new MultipleLanguagesSupportASTRule(), "void a() {}");
+}
+
+TEST(MultipleLanguagesSupportASTRuleTest, RunOnObjC)
+{
+    testRuleOnObjCCode(new MultipleLanguagesSupportASTRule(), "void a() {}", 0, 1, 1, 1, 11);
 }
 
 int main(int argc, char **argv)
