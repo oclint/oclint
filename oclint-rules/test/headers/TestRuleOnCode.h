@@ -1,3 +1,25 @@
+inline bool computeViolationSet(const Twine &fileName,
+                                RuleBase *rule,
+                                const std::string &code,
+                                const std::vector<std::string> &args,
+                                ViolationSet *violationSet)
+{
+    TestProcessor processor(rule, violationSet);
+    FrontendAction* action = new TestFrontendAction(&processor);
+    Twine twine(code);
+
+    const std::size_t randomPrefixLength = 6;
+    std::string randomPrefix(randomPrefixLength, 0);
+    const char randomChars[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const size_t randomCharSize = sizeof(randomChars) - 1;
+
+    std::generate_n(randomPrefix.begin(), randomPrefixLength,
+        [randomChars, randomCharSize]() -> char { return randomChars[rand() % randomCharSize]; });
+    return runToolOnCodeWithArgs(action, twine, args, randomPrefix + fileName);
+}
+
+#if 1 // Deprecated functions
+
 inline void testRuleOnCode(const Twine &fileName,
     RuleBase *rule,
     const string &code,
@@ -7,23 +29,25 @@ inline void testRuleOnCode(const Twine &fileName,
     int expectStartColumn,
     int expectEndLine,
     int expectEndColumn,
-    const string& expectMessage = "")
+    const string& expectMessage = "") __attribute__ ((deprecated));
+
+inline void testRuleOnCode(const Twine &fileName,
+    RuleBase *rule,
+    const string &code,
+    const std::vector<std::string> &args,
+    int violationIndex,
+    int expectStartLine,
+    int expectStartColumn,
+    int expectEndLine,
+    int expectEndColumn,
+    const string& expectMessage)
 {
-    ViolationSet *violationSet = new ViolationSet();
-    TestProcessor *processor = new TestProcessor(rule, violationSet);
-    FrontendAction *action = new TestFrontendAction(processor);
-    Twine twine(code);
+    ViolationSet violationSet;
 
-    const std::size_t randomPrefixLength = 6;
-    std::string randomPrefix(randomPrefixLength, 0);
-    const char randomChars[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    const size_t randomCharSize = sizeof(randomChars) - 1;
-    std::generate_n(randomPrefix.begin(), randomPrefixLength,
-        [randomChars, randomCharSize]() -> char { return randomChars[ rand() % randomCharSize ]; });
-
-    if (runToolOnCodeWithArgs(action, twine, args, randomPrefix + fileName))
+    if (computeViolationSet(fileName, rule, code, args, &violationSet))
     {
-        const vector<Violation>& violations = violationSet->getViolations();
+        const vector<Violation>& violations = violationSet.getViolations();
+
         if (violationIndex < 0)
         {
             EXPECT_THAT(violations.size(), Eq(0u));
@@ -55,7 +79,16 @@ inline void testRuleOnCode(RuleBase *rule,
     int expectStartColumn,
     int expectEndLine,
     int expectEndColumn,
-    const string& expectMessage = "")
+    const string& expectMessage = "") __attribute__ ((deprecated));
+
+inline void testRuleOnCode(RuleBase *rule,
+    const string &code,
+    int violationIndex,
+    int expectStartLine,
+    int expectStartColumn,
+    int expectEndLine,
+    int expectEndColumn,
+    const string& expectMessage)
 {
     testRuleOnCode("input.c", rule, code, {}, violationIndex,
         expectStartLine, expectStartColumn, expectEndLine, expectEndColumn, expectMessage);
@@ -68,7 +101,16 @@ inline void testRuleOnCXXCode(RuleBase *rule,
     int expectStartColumn,
     int expectEndLine,
     int expectEndColumn,
-    const string& expectMessage = "")
+    const string& expectMessage = "") __attribute__ ((deprecated));
+
+inline void testRuleOnCXXCode(RuleBase *rule,
+    const string &code,
+    int violationIndex,
+    int expectStartLine,
+    int expectStartColumn,
+    int expectEndLine,
+    int expectEndColumn,
+    const string& expectMessage)
 {
     testRuleOnCode("input.cpp", rule, code, {}, violationIndex,
         expectStartLine, expectStartColumn, expectEndLine, expectEndColumn, expectMessage);
@@ -81,7 +123,16 @@ inline void testRuleOnCXX11Code(RuleBase *rule,
     int expectStartColumn,
     int expectEndLine,
     int expectEndColumn,
-    const string& expectMessage = "")
+    const string& expectMessage = "") __attribute__ ((deprecated));
+
+inline void testRuleOnCXX11Code(RuleBase *rule,
+    const string &code,
+    int violationIndex,
+    int expectStartLine,
+    int expectStartColumn,
+    int expectEndLine,
+    int expectEndColumn,
+    const string& expectMessage)
 {
     testRuleOnCode("input.cpp", rule, code, {"-std=c++11"}, violationIndex,
         expectStartLine, expectStartColumn, expectEndLine, expectEndColumn, expectMessage);
@@ -94,31 +145,22 @@ inline void testRuleOnObjCCode(RuleBase *rule,
     int expectStartColumn,
     int expectEndLine,
     int expectEndColumn,
-    const string& expectMessage = "")
+    const string& expectMessage = "") __attribute__ ((deprecated));
+
+inline void testRuleOnObjCCode(RuleBase *rule,
+    const string &code,
+    int violationIndex,
+    int expectStartLine,
+    int expectStartColumn,
+    int expectEndLine,
+    int expectEndColumn,
+    const string& expectMessage)
 {
     testRuleOnCode("input.m", rule, code, {}, violationIndex,
         expectStartLine, expectStartColumn, expectEndLine, expectEndColumn, expectMessage);
 }
 
-inline void testRuleOnCode(RuleBase *rule, const string &code)
-{
-    testRuleOnCode(rule, code, -1, 0, 0, 0, 0);
-}
-
-inline void testRuleOnCXXCode(RuleBase *rule, const string &code)
-{
-    testRuleOnCXXCode(rule, code, -1, 0, 0, 0, 0);
-}
-
-inline void testRuleOnCXX11Code(RuleBase *rule, const string &code)
-{
-    testRuleOnCXX11Code(rule, code, -1, 0, 0, 0, 0);
-}
-
-inline void testRuleOnObjCCode(RuleBase *rule, const string &code)
-{
-    testRuleOnObjCCode(rule, code, -1, 0, 0, 0, 0);
-}
+#endif // Deprecated functions
 
 #define VIOLATION_START "/*VIOLATION_START*/"
 #define VIOLATION_END "/*VIOLATION_END*/"
@@ -142,7 +184,7 @@ inline void ComputeLocalisation(const std::string& s, size_t offset,
 }
 
 // {start/end offset} ordered by increasing end-location.
-inline std::vector<std::pair<size_t, size_t>> getViolationLocations(std::string& code)
+inline std::vector<std::pair<size_t, size_t>> extractViolationLocations(std::string& code)
 {
     size_t findOffset = 0;
     std::vector<size_t> startOffsets;
@@ -177,47 +219,59 @@ inline void testRuleOnCode(const Twine& filename,
                            std::string code,
                            const std::vector<std::string>& messages)
 {
-    const auto& rangeOffsets = getViolationLocations(code);
+    const auto& rangeOffsets = extractViolationLocations(code);
+    ViolationSet violationSet;
 
-    EXPECT_THAT(rangeOffsets.size(), Eq(messages.size()));
-
-    if (rangeOffsets.empty())
+    if (!computeViolationSet(filename, rule, code, args, &violationSet))
     {
-        testRuleOnCode(filename, rule, code, args, -1, 0, 0, 0, 0, "");
+        FAIL();
         return;
     }
+    const vector<Violation>& violations = violationSet.getViolations();
+
+    EXPECT_THAT(rangeOffsets.size(), Eq(violations.size()));
+
     for (size_t i = 0; i != rangeOffsets.size(); ++i)
     {
+        const Violation& violation = violations[i];
         const size_t startOffset = rangeOffsets[i].first;
         const size_t endOffset = rangeOffsets[i].second;
-        int startLine;
-        int startColumn;
-        int endLine;
-        int endColumn;
+        const std::string& expectedMessage = i < messages.size() ? messages[i] : "";
+        int expectedStartLine;
+        int expectedStartColumn;
+        int expectedEndLine;
+        int expectedEndColumn;
 
-        ComputeLocalisation(code, startOffset, &startLine, &startColumn);
-        ComputeLocalisation(code, endOffset, &endLine, &endColumn);
-        testRuleOnCode(filename, rule, code, args,
-                       i, startLine, startColumn, endLine, endColumn, messages[i]);
+        ComputeLocalisation(code, startOffset, &expectedStartLine, &expectedStartColumn);
+        ComputeLocalisation(code, endOffset, &expectedEndLine, &expectedEndColumn);
+        EXPECT_THAT(violation.startLine, Eq(expectedStartLine));
+        EXPECT_THAT(violation.startColumn, Eq(expectedStartColumn));
+        EXPECT_THAT(violation.endLine, Eq(expectedEndLine));
+        EXPECT_THAT(violation.endColumn, Eq(expectedEndColumn));
+        EXPECT_THAT(violation.message, StrEq(expectedMessage));
     }
 }
 
-inline void testRuleOnCode(RuleBase* rule, std::string code, const std::vector<std::string>& messages)
+inline void testRuleOnCode(RuleBase* rule, std::string code,
+                           const std::vector<std::string>& messages = {})
 {
     return testRuleOnCode("input.c", {}, rule, code, messages);
 }
 
-inline void testRuleOnCXXCode(RuleBase* rule, std::string code, const std::vector<std::string>& messages)
+inline void testRuleOnCXXCode(RuleBase* rule, std::string code,
+                              const std::vector<std::string>& messages = {})
 {
     return testRuleOnCode("input.cpp", {}, rule, code, messages);
 }
 
-inline void testRuleOnCXX11Code(RuleBase* rule, std::string code, const std::vector<std::string>& messages)
+inline void testRuleOnCXX11Code(RuleBase* rule, std::string code,
+                                const std::vector<std::string>& messages = {})
 {
     return testRuleOnCode("input.cpp", {"-std=c++11"}, rule, code, messages);
 }
 
-inline void testRuleOnObjCCode(RuleBase* rule, std::string code, const std::vector<std::string>& messages)
+inline void testRuleOnObjCCode(RuleBase* rule, std::string code,
+                               const std::vector<std::string>& messages = {})
 {
     return testRuleOnCode("input.m", {}, rule, code, messages);
 }
