@@ -6,6 +6,7 @@
 bool isObjCMethodDeclaredInSuperClass(clang::ObjCMethodDecl *decl);
 bool isObjCMethodDeclaredInProtocol(clang::ObjCMethodDecl *decl);
 bool isObjCMethodDeclLocatedInInterfaceContainer(clang::ObjCMethodDecl *decl);
+bool isObjCMethodDeclInChildOfClass(const clang::ObjCMethodDecl* decl, std::string& className);
 bool isCppMethodDeclLocatedInCppRecordDecl(clang::CXXMethodDecl *decl);
 bool isANullPointerExpr(const clang::Expr& expr);
 bool areSameExpr(clang::ASTContext& context, const clang::Expr& lhs, const clang::Expr& rhs);
