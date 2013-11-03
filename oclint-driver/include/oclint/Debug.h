@@ -6,6 +6,7 @@ namespace oclint
 namespace debug
 {
     void emit(const char *message);
+    void emitLine(const char *message);
 } // end namespace debug
 } // end namespace oclint
 

@@ -259,7 +259,7 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
         {
             debug::emit(" - Failed");
         }
-        debug::emit("\n");
+        debug::emitLine("");
     }
 }
 
@@ -295,7 +295,7 @@ static void invokeClangStaticAnalyzer(
         compiler->end();
         compiler->resetAndLeakFileManager();
         fileManager->clearStatCaches();
-        debug::emit("\n");
+        debug::emitLine("");
     }
 }
 

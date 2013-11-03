@@ -27,6 +27,6 @@ void RulesetBasedAnalyzer::analyze(std::vector<clang::ASTContext *> &contexts)
         }
         Results *results = Results::getInstance();
         results->add(violationSet);
-        debug::emit(" - Done\n");
+        debug::emitLine(" - Done");
     }
 }
