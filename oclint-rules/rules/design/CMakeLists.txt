@@ -1,3 +1,5 @@
+SET(LIST_OF_RULES
+    FeatureEnvy
+    )
 
-SET(BuildFeatureEnvyRule FeatureEnvy)
-BUILD_DYNAMIC_RULES("${BuildFeatureEnvyRule}")
+BUILD_DYNAMIC_RULES("${LIST_OF_RULES}")
