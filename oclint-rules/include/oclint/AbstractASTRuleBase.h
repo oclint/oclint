@@ -24,11 +24,13 @@ protected:
     void addViolation(const clang::Decl *decl, RuleBase *rule, const std::string& message = "");
     void addViolation(const clang::Stmt *stmt, RuleBase *rule, const std::string& message = "");
 
-protected:
-    virtual int supportedLanguages();
+private:
     bool supportsC();
     bool supportsCXX();
     bool supportsObjC();
+
+protected:
+    virtual const unsigned supportedLanguages();
     bool isLanguageSupported();
 
 public:
