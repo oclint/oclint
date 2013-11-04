@@ -63,7 +63,7 @@ TEST(DefaultASTRuleTest, RunOnObjC)
 class COnlyASTRule : public AbstractASTVisitorRule<COnlyASTRule>
 {
 public:
-    virtual int supportedLanguages()
+    virtual const unsigned supportedLanguages()
     {
         return LANG_C;
     }
@@ -121,7 +121,7 @@ TEST(COnlyASTRuleTest, RunOnObjC)
 class CXXOnlyASTRule : public AbstractASTVisitorRule<CXXOnlyASTRule>
 {
 public:
-    virtual int supportedLanguages()
+    virtual const unsigned supportedLanguages()
     {
         return LANG_CXX;
     }
@@ -179,7 +179,7 @@ TEST(CXXOnlyASTRuleTest, RunOnObjC)
 class ObjCOnlyASTRule : public AbstractASTVisitorRule<ObjCOnlyASTRule>
 {
 public:
-    virtual int supportedLanguages()
+    virtual const unsigned supportedLanguages()
     {
         return LANG_OBJC;
     }
@@ -237,7 +237,7 @@ TEST(ObjCOnlyASTRuleTest, RunOnObjC)
 class MultipleLanguagesSupportASTRule : public AbstractASTMatcherRule
 {
 protected:
-    virtual int supportedLanguages()
+    virtual const unsigned supportedLanguages()
     {
         return LANG_OBJC | LANG_C;
     }
