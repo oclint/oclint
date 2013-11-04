@@ -36,7 +36,7 @@ template <typename T>
 bool markedParentsAsSuppress(const T &node, clang::ASTContext &context, oclint::RuleBase *rule)
 {
     clang::ASTContext::ParentVector parentVector = context.getParents(node);
-    if (parentVector.size() <= 0)
+    if (parentVector.empty())
     {
         return false;
     }
