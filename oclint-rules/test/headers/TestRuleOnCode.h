@@ -29,7 +29,7 @@ inline void testRuleOnCode(const Twine &fileName,
     int expectStartColumn,
     int expectEndLine,
     int expectEndColumn,
-    const string& expectMessage = "") __attribute__ ((deprecated));
+    const string& expectMessage = "") /*__attribute__ ((deprecated))*/;
 
 inline void testRuleOnCode(const Twine &fileName,
     RuleBase *rule,
