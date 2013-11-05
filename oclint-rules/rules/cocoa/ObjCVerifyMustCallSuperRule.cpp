@@ -2,6 +2,7 @@
 
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
+#include "oclint/helper/AttributeHelper.h"
 #include "oclint/util/ASTUtil.h"
 
 using namespace std;
@@ -43,27 +44,6 @@ private:
 
     map<string, vector<string>> _libraryCases;
 
-    bool markedAsNeedsSuper(const ObjCMethodDecl *decl)
-    {
-        // Check if we have an attribute
-        for (auto attr = decl->specific_attr_begin<AnnotateAttr>(),
-            attrEnd = decl->specific_attr_end<AnnotateAttr>();
-            attr != attrEnd;
-            ++attr)
-        {
-            AnnotateAttr *annotate = dyn_cast<AnnotateAttr>(*attr);
-
-            // TODO add a mechanism to separate the annotation name from the rule name and use that
-            if (annotate && (annotate->getAnnotation() == "oclint:enforce[must call super]"))
-            {
-                return true;
-            }
-        }
-
-
-        return false;
-    }
-
     bool isLibraryCase(const ObjCMethodDecl* decl) {
         string selectorName = decl->getSelector().getAsString();
         auto classNames = _libraryCases.find(selectorName);
@@ -88,7 +68,7 @@ private:
             SmallVector<const ObjCMethodDecl*, 4> overridden;
             decl->getOverriddenMethods(overridden);
             for(auto it=overridden.begin(), ite = overridden.end(); it != ite; ++it) {
-                if(markedAsNeedsSuper(*it)) {
+                if(declHasEnforceAttribute(*it, this)) {
                     return true;
                 }
             }
