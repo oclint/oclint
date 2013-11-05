@@ -76,6 +76,11 @@ public:
         return 2;
     }
 
+    virtual const unsigned supportedLanguages()
+    {
+        return LANG_OBJC;
+    }
+
     bool VisitObjCAtFinallyStmt(ObjCAtFinallyStmt *finallyStmt)
     {
         vector<ObjCAtThrowStmt*> throws;

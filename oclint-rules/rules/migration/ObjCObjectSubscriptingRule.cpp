@@ -62,6 +62,11 @@ public:
         return 3;
     }
 
+    virtual const unsigned supportedLanguages()
+    {
+        return LANG_OBJC;
+    }
+
     bool VisitObjCMessageExpr(ObjCMessageExpr *objCMsgExpr)
     {
         Expr *receiverExpr = objCMsgExpr->getInstanceReceiver();
