@@ -51,6 +51,11 @@ public:
         return 3;
     }
 
+    virtual const unsigned supportedLanguages()
+    {
+        return LANG_OBJC;
+    }
+
     bool VisitBinaryOperator(BinaryOperator *binaryOperator)
     {
         if (isRedundantNilCheck(binaryOperator) && isSameVariableBroken(binaryOperator))
