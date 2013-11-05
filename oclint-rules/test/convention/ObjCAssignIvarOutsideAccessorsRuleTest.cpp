@@ -1,6 +1,6 @@
 #include "TestHeaders.h"
 
-#include "rules/migration/ObjCAssignIvarOutsideAccessorsRule.cpp"
+#include "rules/convention/ObjCAssignIvarOutsideAccessorsRule.cpp"
 
 static std::string testPreamble = "\
                                                         \n\

@@ -4,6 +4,7 @@ SET(LIST_OF_RULES
     InvertedLogic
     MissingBreakInSwitchStatement
     NonCaseLabelInSwitchStatement
+    ObjCAssignIvarOutsideAccessors
     ParameterReassignment
     SwitchStatementsShouldHaveDefault
     TooFewBranchesInSwitchStatement

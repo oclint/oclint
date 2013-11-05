@@ -1,5 +1,4 @@
 SET(LIST_OF_RULES
-    ObjCAssignIvarOutsideAccessors
     ObjCBoxedExpressions
     ObjCContainerLiterals
     ObjCNSNumberLiterals

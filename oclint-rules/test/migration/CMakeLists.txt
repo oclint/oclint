@@ -1,4 +1,3 @@
-BUILD_TEST(ObjCAssignIvarOutsideAccessorsRuleTest)
 BUILD_TEST(ObjCBoxedExpressionsRuleTest)
 BUILD_TEST(ObjCContainerLiteralsRuleTest)
 BUILD_TEST(ObjCNSNumberLiteralsRuleTest)
