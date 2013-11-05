@@ -27,7 +27,7 @@ bool declHasOCLintAttribute(const clang::Decl *decl, const std::string& attribut
 
 bool declHasActionAttribute(
     const clang::Decl *decl, const std::string& action, oclint::RuleBase* rule) {
-    return declHasOCLintAttribute(decl, action + "[" + rule->name() + "]");
+    return declHasOCLintAttribute(decl, action + "[" + rule->attributeName() + "]");
 }
 
 bool declHasEnforceAttribute(const clang::Decl *decl, oclint::RuleBase* rule) {
