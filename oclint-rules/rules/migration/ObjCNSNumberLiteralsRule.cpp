@@ -84,7 +84,7 @@ public:
         return 3;
     }
 
-    virtual const unsigned supportedLanguages()
+    virtual unsigned int supportedLanguages() const
     {
         return LANG_OBJC;
     }
