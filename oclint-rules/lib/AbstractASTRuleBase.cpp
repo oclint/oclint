@@ -43,7 +43,7 @@ void AbstractASTRuleBase::addViolation(const clang::Stmt *stmt,
     }
 }
 
-const unsigned AbstractASTRuleBase::supportedLanguages()
+unsigned int AbstractASTRuleBase::supportedLanguages() const
 {
     return LANG_C | LANG_CXX | LANG_OBJC;
 }

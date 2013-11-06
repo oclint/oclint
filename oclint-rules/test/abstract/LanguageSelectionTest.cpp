@@ -71,7 +71,7 @@ public:
         _supportedLanguages = languageOpts;
     }
 
-    virtual const unsigned supportedLanguages()
+    virtual unsigned int supportedLanguages() const
     {
         return _supportedLanguages;
     }

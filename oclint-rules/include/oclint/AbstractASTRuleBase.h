@@ -30,7 +30,7 @@ private:
     bool supportsObjC();
 
 protected:
-    virtual const unsigned supportedLanguages();
+    virtual unsigned int supportedLanguages() const;
     bool isLanguageSupported();
 
 public:
