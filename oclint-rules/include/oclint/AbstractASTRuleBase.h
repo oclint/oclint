@@ -25,13 +25,13 @@ protected:
     void addViolation(const clang::Stmt *stmt, RuleBase *rule, const std::string& message = "");
 
 private:
-    bool supportsC();
-    bool supportsCXX();
-    bool supportsObjC();
+    bool supportsC() const;
+    bool supportsCXX() const;
+    bool supportsObjC() const;
 
 protected:
     virtual unsigned int supportedLanguages() const;
-    bool isLanguageSupported();
+    bool isLanguageSupported() const;
 
 public:
     virtual ~AbstractASTRuleBase();
