@@ -1,3 +1,5 @@
+#include "oclint/helper/SuppressHelper.h"
+
 #include <set>
 #include <unordered_map>
 #include <utility>
@@ -7,7 +9,6 @@
 #include "oclint/RuleCarrier.h"
 
 #include "oclint/helper/AttributeHelper.h"
-#include "oclint/helper/SuppressHelper.h"
 
 bool markedAsSuppress(const clang::Decl *decl, oclint::RuleBase *rule)
 {

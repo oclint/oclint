@@ -2,7 +2,7 @@
 
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
-#include "oclint/helper/AttributeHelper.h"
+#include "oclint/helper/EnforceHelper.h"
 #include "oclint/util/ASTUtil.h"
 
 using namespace std;

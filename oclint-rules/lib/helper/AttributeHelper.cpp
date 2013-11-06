@@ -35,6 +35,3 @@ bool declHasActionAttribute(
     return declHasOCLintAttribute(decl, action + "[" + rule.attributeName() + "]");
 }
 
-bool declHasEnforceAttribute(const clang::Decl *decl, const oclint::RuleBase& rule) {
-    return declHasActionAttribute(decl, "enforce", rule);
-}
