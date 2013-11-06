@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include <string>
+#include <vector>
 
 template <typename T>
 std::string toString(T item)
@@ -17,5 +18,11 @@ bool vectorContains(T item, std::vector<T> &collection)
 {
     return std::find(collection.begin(), collection.end(), item) != collection.end();
 }
+
+bool isUnderscore(char c);
+
+std::string removeUnderscores(std::string s);
+
+std::string capitalizeFirstLetter(std::string s);
 
 #endif
