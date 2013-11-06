@@ -1,5 +1,10 @@
 #include "oclint/helper/AttributeHelper.h"
 
+#include <clang/AST/Attr.h>
+#include <clang/AST/AST.h>
+
+#include "oclint/RuleBase.h"
+
 bool declHasAttribute(const clang::Decl *decl, const std::string& attributeName) {
     if (!decl)
     {
@@ -26,10 +31,10 @@ bool declHasOCLintAttribute(const clang::Decl *decl, const std::string& attribut
 }
 
 bool declHasActionAttribute(
-    const clang::Decl *decl, const std::string& action, oclint::RuleBase* rule) {
+    const clang::Decl *decl, const std::string& action, const oclint::RuleBase* rule) {
     return declHasOCLintAttribute(decl, action + "[" + rule->attributeName() + "]");
 }
 
-bool declHasEnforceAttribute(const clang::Decl *decl, oclint::RuleBase* rule) {
+bool declHasEnforceAttribute(const clang::Decl *decl, const oclint::RuleBase* rule) {
     return declHasActionAttribute(decl, "enforce", rule);
 }
