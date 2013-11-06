@@ -48,22 +48,22 @@ unsigned int AbstractASTRuleBase::supportedLanguages() const
     return LANG_C | LANG_CXX | LANG_OBJC;
 }
 
-bool AbstractASTRuleBase::supportsC()
+bool AbstractASTRuleBase::supportsC() const
 {
     return LANG_C & supportedLanguages();
 }
 
-bool AbstractASTRuleBase::supportsCXX()
+bool AbstractASTRuleBase::supportsCXX() const
 {
     return LANG_CXX & supportedLanguages();
 }
 
-bool AbstractASTRuleBase::supportsObjC()
+bool AbstractASTRuleBase::supportsObjC() const
 {
     return LANG_OBJC & supportedLanguages();
 }
 
-bool AbstractASTRuleBase::isLanguageSupported()
+bool AbstractASTRuleBase::isLanguageSupported() const
 {
     const auto &langOpts = _carrier->getASTContext()->getLangOpts();
     if (langOpts.ObjC1)
