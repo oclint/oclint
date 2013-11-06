@@ -68,7 +68,7 @@ private:
             SmallVector<const ObjCMethodDecl*, 4> overridden;
             decl->getOverriddenMethods(overridden);
             for(auto it=overridden.begin(), ite = overridden.end(); it != ite; ++it) {
-                if(declHasEnforceAttribute(*it, this)) {
+                if(declHasEnforceAttribute(*it, *this)) {
                     return true;
                 }
             }

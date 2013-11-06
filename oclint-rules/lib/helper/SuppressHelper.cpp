@@ -11,8 +11,11 @@
 
 bool markedAsSuppress(const clang::Decl *decl, oclint::RuleBase *rule)
 {
-    return declHasOCLintAttribute(decl, "suppress")
-        || declHasActionAttribute(decl, "suppress", rule);
+    if(rule) {
+        return declHasOCLintAttribute(decl, "suppress")
+            || declHasActionAttribute(decl, "suppress", *rule);
+    }
+    return false;
 }
 
 template <typename T>
