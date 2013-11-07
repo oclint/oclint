@@ -1,34 +1,21 @@
+#include "oclint/helper/SuppressHelper.h"
+
 #include <set>
 #include <unordered_map>
 #include <utility>
 
-#include <clang/AST/Attr.h>
 #include <clang/AST/RecursiveASTVisitor.h>
 
 #include "oclint/RuleCarrier.h"
-#include "oclint/helper/SuppressHelper.h"
+
+#include "oclint/helper/AttributeHelper.h"
 
 bool markedAsSuppress(const clang::Decl *decl, oclint::RuleBase *rule)
 {
-    if (!decl)
-    {
-        return false;
+    if(rule) {
+        return declHasOCLintAttribute(decl, "suppress")
+            || declHasActionAttribute(decl, "suppress", *rule);
     }
-
-    for (clang::specific_attr_iterator<clang::AnnotateAttr> attr =
-        decl->specific_attr_begin<clang::AnnotateAttr>(),
-        attrEnd = decl->specific_attr_end<clang::AnnotateAttr>();
-        attr != attrEnd;
-        ++attr)
-    {
-        clang::AnnotateAttr *annotate = clang::dyn_cast<clang::AnnotateAttr>(*attr);
-        if (annotate && (annotate->getAnnotation() == "oclint:suppress" ||
-            annotate->getAnnotation() == "oclint:suppress[" + rule->name() + "]"))
-        {
-            return true;
-        }
-    }
-
     return false;
 }
 
