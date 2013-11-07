@@ -38,7 +38,7 @@ public:
             const bool needsImplementation = declHasEnforceAttribute(method, *this);
             if(needsImplementation) {
                 const auto selector = method->getSelector();
-                if(!implementation->getMethod(selector, method->IsInstanceMethod())) {
+                if(!implementation->getMethod(selector, method->isInstanceMethod())) {
                     const string className = parent->getNameAsString();
                     const string methodName = selector.getAsString();
                     addViolation(implementation, this,
