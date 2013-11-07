@@ -1,1 +1,2 @@
 BUILD_TEST(ObjCVerifyMustCallSuperRuleTest)
+BUILD_TEST(ObjCVerifySubclassMustImplementRuleTest)
