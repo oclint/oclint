@@ -2,6 +2,7 @@
 
 #include "rules/convention/ObjCAssignIvarOutsideAccessorsRule.cpp"
 
+#if defined(__APPLE__) || defined(__MACH__)
 static std::string testPreamble = "\
                                                         \n\
 #define nil ((id)0)                                     \n\
@@ -9,74 +10,79 @@ static std::string testPreamble = "\
 @interface NSObject\n@end                               \n\
                                                         \n\
 @interface Foo : NSObject                               \n\
+                                                        \n\
 @property (assign, nonatomic) int bar;                  \n\
 @property (strong, nonatomic) Foo* foo;                 \n\
                                                         \n\
 @end                                                    \n\
+                                                        \n\
+@implementation Foo                                     \n\
 ";
 
-static std::string testChangeInit = testPreamble + "\
+#else
+
+static std::string testPreamble = "\
+#define nil ((id)0)                                     \n\
+@interface NSObject\n@end                               \n\
+@interface Foo : NSObject                               \n\
+{                                                       \n\
+    int _bar;                                           \n\
+    Foo* _foo;                                          \n\
+}                                                       \n\
+@property (assign, nonatomic) int bar;                  \n\
+@property (strong, nonatomic) Foo* foo;                 \n\
+@end                                                    \n\
 @implementation Foo                                     \n\
-                                                        \n\
+@synthesize foo = _foo;                                 \n\
+@synthesize bar = _bar;                                 \n\
+";
+
+#endif
+
+static std::string testChangeInit = testPreamble + "\
 - (id)init {                                            \n\
     _bar = 3;                                           \n\
     return self;                                        \n\
 }                                                       \n\
-                                                        \n\
 @end                                                    \n\
 ";
 
 static std::string testChangeInitWith = testPreamble + "\
-@implementation Foo                                     \n\
-                                                        \n\
 - (id)initWith {                                        \n\
     _bar = 3;                                           \n\
     return self;                                        \n\
 }                                                       \n\
-                                                        \n\
 @end                                                    \n\
 ";
 
 static std::string testChangeGetter = testPreamble + "\
-@implementation Foo                                     \n\
-                                                        \n\
 - (int)bar {                                            \n\
     _bar = 3;                                           \n\
     return _bar;                                        \n\
 }                                                       \n\
-                                                        \n\
 @end                                                    \n\
 ";
 
 static std::string testChangeSetter = testPreamble + "\
-@implementation Foo                                     \n\
-                                                        \n\
 - (void)setFoo:(id)foo {                                \n\
     if(_foo == nil) {                                   \n\
         _foo = foo;                                     \n\
     }                                                   \n\
 }                                                       \n\
-                                                        \n\
 @end                                                    \n\
 ";
 
 static std::string testOtherMethod = testPreamble + "\
-@implementation Foo                                     \n\
-                                                        \n\
 - (void)doSomething {                                   \n\
     _bar = 3;                                           \n\
 }                                                       \n\
-                                                        \n\
 @end                                                    \n\
 ";
 
 static std::string testChildPropertyAccess = testPreamble + "\
-@implementation Foo                                     \n\
-                                                        \n\
 - (void)doSomething {                                   \n\
     _foo.bar = 3;                                       \n\
 }                                                       \n\
-                                                        \n\
 @end                                                    \n\
 ";
 
@@ -109,25 +115,13 @@ TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestChangeSetter)
 
 TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestOtherMethod)
 {
-    testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testOtherMethod, 0, 15, 5, 15, 5);
+    testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testOtherMethod, 0, 16, 5, 16, 5);
 }
 
 TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestChildPropertyAccess)
 {
     testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testChildPropertyAccess);
 }
-/*
-
-TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestChangeGetter)
-{
-    testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testChangeGetter, 0, 17, 5, 17, 5);
-}
-
-TEST(ObjCAssignIvarOutsideAccessorsRuleTest, FalsePositive)
-{
-    testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testFalsePositive);
-}
-*/
 
 int main(int argc, char **argv)
 {
