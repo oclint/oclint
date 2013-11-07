@@ -3,8 +3,8 @@
 #include "oclint/util/StdUtil.h"
 
 
-bool isUnderscore(char c) {
-    return c == '_';
+bool isUnderscore(char aChar) {
+    return aChar == '_';
 }
 
 std::string removeUnderscores(std::string str) {

@@ -19,10 +19,8 @@ bool vectorContains(T item, std::vector<T> &collection)
     return std::find(collection.begin(), collection.end(), item) != collection.end();
 }
 
-bool isUnderscore(char c);
-
-std::string removeUnderscores(std::string s);
-
-std::string capitalizeFirstLetter(std::string s);
+bool isUnderscore(char aChar);
+std::string removeUnderscores(std::string str);
+std::string capitalizeFirstLetter(std::string str);
 
 #endif
