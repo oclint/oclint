@@ -1,4 +1,4 @@
-SET(LIST_OF_RULES,
+SET(LIST_OF_RULES
     ObjCVerifyMustCallSuper
     )
 
