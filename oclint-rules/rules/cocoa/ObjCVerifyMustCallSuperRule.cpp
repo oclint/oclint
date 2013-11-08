@@ -18,7 +18,7 @@ private:
     bool _foundSuperCall;
 public:
 
-    explicit ContainsCallToSuperMethod (string s) : _selector(s)  {
+    explicit ContainsCallToSuperMethod (string selectorString) : _selector(selectorString)  {
         _foundSuperCall = false;
     }
 
@@ -67,7 +67,7 @@ private:
         if(decl->isOverriding()) {
             SmallVector<const ObjCMethodDecl*, 4> overridden;
             decl->getOverriddenMethods(overridden);
-            for(auto it=overridden.begin(), ite = overridden.end(); it != ite; ++it) {
+            for(auto it = overridden.begin(), ite = overridden.end(); it != ite; ++it) {
                 if(declHasEnforceAttribute(*it, *this)) {
                     return true;
                 }
@@ -79,7 +79,7 @@ private:
 
 
 public:
-    
+
     ObjCVerifyMustCallSuperRule() {
         // UIKit cases
         _libraryCases["viewWillAppear:"] = {"UIViewController"};
