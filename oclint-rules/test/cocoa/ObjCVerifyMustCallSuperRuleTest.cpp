@@ -24,23 +24,6 @@ static const string testDoesNotCall = "\
                                                     \n\
 ";
 
-static const string testLibraryBase = "\
-typedef unsigned char BOOL;                         \n\
-                                                    \n\
-@interface UIViewController                         \n\
-                                                    \n\
-- (void)viewWillAppear:(BOOL)animated;              \n\
-                                                    \n\
-@end                                                \n\
-                                                    \n\
-                                                    \n\
-@interface ChildViewController : UIViewController   \n\
-                                                    \n\
-@end                                                \n\
-";
-
-static const string testLibraryDoesCall = testLibraryBase + testDoesCall;
-static const string testLibraryDoesNotCall = testLibraryBase + testDoesNotCall;
 
 static const string testAnnotationBase = "\
 typedef unsigned char BOOL;                                                                    \n\
@@ -75,8 +58,7 @@ static const string testSuppression = "\
 ";
 
 
-static const string testAnnotationSuppression = testAnnotationBase + testSuppression;
-static const string testLibrarySuppression = testLibraryBase + testSuppression;
+static string testAnnotationSuppression = testAnnotationBase + testSuppression;
 
 static const string testNormalMethod = "\
 @interface NSObject                                 \n\
@@ -114,18 +96,6 @@ TEST(ObjcVerifyMustCallSuperRuleTest, PropertyTest)
     EXPECT_EQ("must call super", rule.name());
 }
 
-TEST(ObjcVerifyMustCallSuperRuleTest, LibraryDoesCall)
-{
-    testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(), testLibraryDoesCall);
-}
-
-TEST(ObjcVerifyMustCallSuperRuleTest, LibraryDoesNotCall)
-{
-    testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(),
-        testLibraryDoesNotCall, 0, 16, 1, 17, 1,
-        "overridden method viewWillAppear: must call super");
-}
-
 TEST(ObjcVerifyMustCallSuperRuleTest, AnnotationDoesCall)
 {
     testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(), testAnnotationDoesCall);
@@ -136,11 +106,6 @@ TEST(ObjcVerifyMustCallSuperRuleTest, AnnotationDoesNotCall)
     testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(),
         testAnnotationDoesNotCall, 0, 19, 1, 20, 1,
         "overridden method viewWillAppear: must call super");
-}
-
-TEST(ObjcVerifyMustCallSuperRuleTest, LibrarySuppression)
-{
-    testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(), testLibrarySuppression);
 }
 
 TEST(ObjcVerifyMustCallSuperRuleTest, AnnotationSuppression)
