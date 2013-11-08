@@ -33,10 +33,9 @@ public:
             return true;
         }
         // Look through the parent for marked methods
-        for(auto ite = parent->meth_begin(), end = parent->meth_end(); ite != end; ++ite) {
-            const auto method = *ite;
-            const bool needsImplementation = declHasEnforceAttribute(method, *this);
-            if(needsImplementation) {
+        for(auto it = parent->meth_begin(), end = parent->meth_end(); it != end; ++it) {
+            const auto method = *it;
+            if(declHasEnforceAttribute(method, *this)) {
                 const auto selector = method->getSelector();
                 if(!implementation->getMethod(selector, method->isInstanceMethod())) {
                     const string className = parent->getNameAsString();
