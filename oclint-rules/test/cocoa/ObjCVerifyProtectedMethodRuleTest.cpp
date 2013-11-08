@@ -18,7 +18,6 @@ string testBase = "\
 ";
 
 
-
 TEST(ObjCVerifyProtectedMethodRule, PropertyTest)
 {
     ObjCVerifyProtectedMethodRule rule;
@@ -51,7 +50,6 @@ TEST(ObjCVerifyProtectedMethodRule, InsideClassTest)
     }                                                                            \n\
     @end                                                                         \n\
     ";
-
     testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testInsideClass);
 }
 
