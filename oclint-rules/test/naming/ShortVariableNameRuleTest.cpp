@@ -108,9 +108,24 @@ TEST_F(ShortVariableNameRuleTest, IgnoreVariableInCXXForInit)
     testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { for(int i = 0;;){} }");
 }
 
+TEST_F(ShortVariableNameRuleTest, IgnoreVariableInCXXForEachInit)
+{
+    testRuleOnCXX11Code(new ShortVariableNameRule(), "void aMethod() { int anArray[100]; for(auto it : anArray){} }");
+}
+
 TEST_F(ShortVariableNameRuleTest, IgnoreVariableInObjCForInit)
 {
     testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { for(int i = 0;;){} }");
+}
+
+TEST_F(ShortVariableNameRuleTest, IgnoreVariableInObjCForEachInit)
+{
+    testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { id anArray; for(id it in anArray){} }");
+}
+
+TEST_F(ShortVariableNameRuleTest, IgnoreMultipleVariablesInCXXForInit)
+{
+    testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { for(int i = 0, ie = 1;;){} }");
 }
 
 TEST_F(ShortVariableNameRuleTest, IgnoreVariableInCXXException)
