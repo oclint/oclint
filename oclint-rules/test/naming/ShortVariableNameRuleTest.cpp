@@ -128,6 +128,16 @@ TEST_F(ShortVariableNameRuleTest, IgnoreMultipleVariablesInCXXForInit)
     testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { for(int i = 0, ie = 1;;){} }");
 }
 
+TEST_F(ShortVariableNameRuleTest, NestedForLoopForCXX)
+{
+    testRuleOnCXX11Code(new ShortVariableNameRule(), "void aMethod() { int anArray[100]; for(int i = 0;;){ for(int j = 0, je = 1;;){ for(int k : anArray){} } } }");
+}
+
+TEST_F(ShortVariableNameRuleTest, NestedForLoopForObjC)
+{
+    testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { id anArray; for(int i = 0;;){ for(int j = 0, je = 1;;){ for(id k in anArray){} } } }");
+}
+
 TEST_F(ShortVariableNameRuleTest, IgnoreVariableInCXXException)
 {
     testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { try {;} catch (int ex) {;} }");
