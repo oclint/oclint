@@ -66,7 +66,7 @@ private:
     unsigned _supportedLanguages;
 
 public:
-    LanguageSelectionASTRule(unsigned languageOpts)
+    explicit LanguageSelectionASTRule(unsigned languageOpts)
     {
         _supportedLanguages = languageOpts;
     }
