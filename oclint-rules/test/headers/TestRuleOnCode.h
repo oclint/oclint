@@ -229,7 +229,7 @@ inline void testRuleOnCode(const Twine& filename,
     }
     const vector<Violation>& violations = violationSet.getViolations();
 
-    EXPECT_THAT(rangeOffsets.size(), Eq(violations.size()));
+    ASSERT_THAT(rangeOffsets.size(), Eq(violations.size()));
 
     for (size_t i = 0; i != rangeOffsets.size(); ++i)
     {
