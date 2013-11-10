@@ -110,6 +110,11 @@ public:
         return 3;
     }
 
+    virtual unsigned int supportedLanguages() const
+    {
+        return LANG_CXX;
+    }
+
     bool VisitIfStmt(IfStmt* ifStmt)
     {
         if (ifStmt == nullptr || ifStmt->getElse() != nullptr)

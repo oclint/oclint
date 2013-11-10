@@ -69,6 +69,11 @@ public:
     {
         return 1;
     }
+
+    virtual unsigned int supportedLanguages() const
+    {
+        return LANG_C | LANG_CXX;
+    }
 };
 
 class MisplacedNilCheckRule : public MisplacedNullCheckBaseRule
@@ -92,6 +97,11 @@ public:
     virtual int priority() const
     {
         return 3;
+    }
+
+    virtual unsigned int supportedLanguages() const
+    {
+        return LANG_OBJC;
     }
 };
 
