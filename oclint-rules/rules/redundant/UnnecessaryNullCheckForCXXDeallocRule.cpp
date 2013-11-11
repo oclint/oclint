@@ -112,7 +112,7 @@ public:
 
     virtual unsigned int supportedLanguages() const
     {
-        return LANG_CXX;
+        return oclint::LANG_CXX;
     }
 
     bool VisitIfStmt(IfStmt* ifStmt)
