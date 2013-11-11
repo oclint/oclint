@@ -67,7 +67,8 @@ TEST(ObjCVerifyProtectedMethodRule, PropertyTest)
 
 TEST(ObjCVerifyProtectedMethodRule, ViolationTest)
 {
-    testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testViolation, 0, 19, 5, 19, 16);
+    testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testViolation, 0, 19, 5, 19, 16,
+        "calling protected method foo from outside A and its subclasses");
 }
 
 TEST(ObjCVerifyProtectedMethodRule, InsideClassTest)

@@ -16,7 +16,7 @@ namespace {
         private:
             ObjCInterfaceDecl& _container;
             AbstractASTRuleBase& _rule;
-            vector<Expr*> _violations;
+            vector<ObjCMessageExpr*> _violations;
 
         public:
             CheckMethodsInsideClass(ObjCInterfaceDecl& container, AbstractASTRuleBase& rule) :
@@ -45,7 +45,7 @@ namespace {
             return true;
         }
 
-        vector <Expr*> getViolations() {
+        const vector <ObjCMessageExpr*> getViolations() {
             return _violations;
         }
 
@@ -64,9 +64,15 @@ public:
         if(interface) {
             auto checker = CheckMethodsInsideClass(*interface, *this);
             checker.TraverseDecl(decl);
-            auto violations = checker.getViolations();
+            const auto violations = checker.getViolations();
             for(auto it = violations.begin(), end = violations.end(); it != end; ++it) {
-                addViolation(*it, this);
+                const auto expr = *it;
+                const auto calledInterface = expr->getReceiverInterface();
+
+                string description = "calling protected method " +
+                    expr->getSelector().getAsString() +
+                    " from outside " + calledInterface->getNameAsString() + " and its subclasses";
+                addViolation(*it, this, description);
             }
         }
         return true;
