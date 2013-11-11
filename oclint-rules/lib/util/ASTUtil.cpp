@@ -52,7 +52,8 @@ bool isObjCMethodDeclLocatedInInterfaceContainer(clang::ObjCMethodDecl *decl)
     return false;
 }
 
-bool isObjCMethodDeclInChildOfClass(const clang::ObjCMethodDecl* decl, const std::string& className) {
+bool isObjCMethodDeclInChildOfClass(
+    const clang::ObjCMethodDecl* decl, const std::string& className) {
     const clang::ObjCInterfaceDecl* interface = decl->getClassInterface();
     while(interface->getSuperClass() != NULL) {
         interface = interface->getSuperClass();
