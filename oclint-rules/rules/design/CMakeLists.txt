@@ -3,3 +3,6 @@ SET(LIST_OF_RULES
     )
 
 BUILD_DYNAMIC_RULES("${LIST_OF_RULES}")
+
+SET(BuildAvoidDefaultArgumentsOnVirtualMethodsRule AvoidDefaultArgumentsOnVirtualMethods)
+BUILD_DYNAMIC_RULES("${BuildAvoidDefaultArgumentsOnVirtualMethodsRule}")
