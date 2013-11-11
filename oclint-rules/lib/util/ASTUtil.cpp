@@ -52,7 +52,7 @@ bool isObjCMethodDeclLocatedInInterfaceContainer(clang::ObjCMethodDecl *decl)
     return false;
 }
 
-bool isObjCMethodDeclInChildOfClass(const clang::ObjCMethodDecl* decl, std::string& className) {
+bool isObjCMethodDeclInChildOfClass(const clang::ObjCMethodDecl* decl, const std::string& className) {
     const clang::ObjCInterfaceDecl* interface = decl->getClassInterface();
     while(interface->getSuperClass() != NULL) {
         interface = interface->getSuperClass();
@@ -61,6 +61,15 @@ bool isObjCMethodDeclInChildOfClass(const clang::ObjCMethodDecl* decl, std::stri
         }
     }
     return false;
+}
+
+bool isObjCInterfaceClassOrSubclass(
+    const clang::ObjCInterfaceDecl* decl, const std::string& className) {
+    bool insideChild = false;
+    for(auto current = decl; current != nullptr; current = current->getSuperClass()) {
+        insideChild = insideChild || (current->getNameAsString() == className);
+    }
+    return insideChild;
 }
 
 bool isCppMethodDeclLocatedInCppRecordDecl(clang::CXXMethodDecl *decl)

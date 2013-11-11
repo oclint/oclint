@@ -1,7 +1,7 @@
 #include "TestHeaders.h"
 #include "rules/cocoa/ObjCVerifyMustCallSuperRule.cpp"
 
-static string testDoesCall = "\
+static const string testDoesCall = "\
                                                     \n\
 @implementation ChildViewController                 \n\
                                                     \n\
@@ -13,7 +13,7 @@ static string testDoesCall = "\
                                                     \n\
 ";
 
-static string testDoesNotCall = "\
+static const string testDoesNotCall = "\
                                                     \n\
 @implementation ChildViewController                 \n\
                                                     \n\
@@ -24,7 +24,7 @@ static string testDoesNotCall = "\
                                                     \n\
 ";
 
-static string testLibraryBase = "\
+static const string testLibraryBase = "\
 typedef unsigned char BOOL;                         \n\
                                                     \n\
 @interface UIViewController                         \n\
@@ -39,10 +39,10 @@ typedef unsigned char BOOL;                         \n\
 @end                                                \n\
 ";
 
-static string testLibraryDoesCall = testLibraryBase + testDoesCall;
-static string testLibraryDoesNotCall = testLibraryBase + testDoesNotCall;
+static const string testLibraryDoesCall = testLibraryBase + testDoesCall;
+static const string testLibraryDoesNotCall = testLibraryBase + testDoesNotCall;
 
-static string testAnnotationBase = "\
+static const string testAnnotationBase = "\
 typedef unsigned char BOOL;                                                                    \n\
 @interface NSObject                                                                            \n\
 @end                                                                                           \n\
@@ -60,10 +60,10 @@ __attribute__((annotate(\"oclint:enforce[must call super]\")));                 
 @end                                                                                           \n\
 ";
 
-static string testAnnotationDoesCall = testAnnotationBase + testDoesCall;
-static string testAnnotationDoesNotCall = testAnnotationBase + testDoesNotCall;
+static const string testAnnotationDoesCall = testAnnotationBase + testDoesCall;
+static const string testAnnotationDoesNotCall = testAnnotationBase + testDoesNotCall;
 
-static string testSuppression = "\
+static const string testSuppression = "\
 @implementation ChildViewController                                             \n\
                                                                                 \n\
 - (void)viewWillAppear:(BOOL)animated                                           \n\
@@ -75,10 +75,10 @@ static string testSuppression = "\
 ";
 
 
-static string testAnnotationSuppression = testAnnotationBase + testSuppression;
-static string testLibrarySuppression = testLibraryBase + testSuppression;
+static const string testAnnotationSuppression = testAnnotationBase + testSuppression;
+static const string testLibrarySuppression = testLibraryBase + testSuppression;
 
-static string testNormalMethod = "\
+static const string testNormalMethod = "\
 @interface NSObject                                 \n\
 @end                                                \n\
                                                     \n\

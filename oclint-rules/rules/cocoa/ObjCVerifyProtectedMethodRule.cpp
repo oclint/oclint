@@ -34,18 +34,15 @@ namespace {
                 return true;
             }
 
-            bool insideChild = false;
-            for(auto current = interface; current != nullptr; current = current->getSuperClass()) {
-                insideChild = insideChild || current->getDeclName() == _container.getDeclName();
-            }
-            if(!insideChild) {
+            const auto containerName = _container.getNameAsString();
+            if(!isObjCInterfaceClassOrSubclass(interface, containerName)) {
                 _violations.push_back(expr);
             }
 
             return true;
         }
 
-        const vector <ObjCMessageExpr*> getViolations() {
+        const vector <ObjCMessageExpr*>& getViolations() {
             return _violations;
         }
 
@@ -65,14 +62,13 @@ public:
             auto checker = CheckMethodsInsideClass(*interface, *this);
             checker.TraverseDecl(decl);
             const auto violations = checker.getViolations();
-            for(auto it = violations.begin(), end = violations.end(); it != end; ++it) {
-                const auto expr = *it;
+            for(auto expr : violations) {
                 const auto calledInterface = expr->getReceiverInterface();
 
                 string description = "calling protected method " +
                     expr->getSelector().getAsString() +
                     " from outside " + calledInterface->getNameAsString() + " and its subclasses";
-                addViolation(*it, this, description);
+                addViolation(expr, this, description);
             }
         }
         return true;
