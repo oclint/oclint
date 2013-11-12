@@ -1,2 +1,2 @@
-BUILD_TEST(FeatureEnvyRuleTest)
 BUILD_TEST(AvoidDefaultArgumentsOnVirtualMethodsRuleTest)
+BUILD_TEST(FeatureEnvyRuleTest)
