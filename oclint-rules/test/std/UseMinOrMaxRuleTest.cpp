@@ -97,6 +97,7 @@ TEST(UseMinOrMaxRuleTest, IfElseAssign)
     }
 }
 
+// TODO: detect more patterns
 // Not yet supported
 TEST(UseMinOrMaxRuleTest, NotYetSupported)
 {

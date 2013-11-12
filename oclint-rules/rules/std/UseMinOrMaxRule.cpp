@@ -1,51 +1,52 @@
+#include <clang/AST/StmtVisitor.h>
+
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 #include "oclint/util/ASTUtil.h"
 
 using namespace clang;
 
-static std::string getMessage(const std::string& prefix, ASTContext& context,
-                              const Expr& lhs, const Expr& rhs)
+static std::string exprsToString(ASTContext& context, const Expr& lhs, const Expr& rhs)
 {
-    return prefix + exprToString(context, lhs) + ", " + exprToString(context, rhs) + ")";
+    return "(" + exprToString(context, lhs) + ", " + exprToString(context, rhs) + ")";
 }
 
-bool Test_BinOp(ASTContext& context,
-                const BinaryOperator& binop,
-                const Expr& expr1,
-                const Expr& expr2,
-                std::string& message)
+static bool canUseMinOrMax(ASTContext& context,
+                           const BinaryOperator& binop,
+                           const Expr& expr1, const Expr& expr2,
+                           std::string& message)
 {
-    if (binop.getOpcode() != clang::BO_LE && binop.getOpcode() != clang::BO_LT
-        && binop.getOpcode() != clang::BO_GE && binop.getOpcode() != clang::BO_GT)
+    if (!binop.isRelationalOp())
     {
         return false;
     }
-    const Expr* comp_lhs = ignoreCastExpr(*binop.getLHS());
-    const Expr* comp_rhs = ignoreCastExpr(*binop.getRHS());
+    const Expr* lhs = ignoreCastExpr(*binop.getLHS());
+    const Expr* rhs = ignoreCastExpr(*binop.getRHS());
 
     if (binop.getOpcode() == clang::BO_GE || binop.getOpcode() == clang::BO_GT)
     {
-        std::swap(comp_lhs, comp_rhs);
+        std::swap(lhs, rhs);
     }
-    if (areSameExpr(context, expr2, *comp_lhs)
-        && areSameExpr(context, expr1, *comp_rhs))
+    if (areSameExpr(context, expr1, *lhs) && areSameExpr(context, expr2, *rhs))
     {
-        // if (a < b) a = b -> a = std::max(a, b)
-        message += getMessage("std::max(", context, *comp_lhs, *comp_rhs);
+        // (a < b) ? a : b -> std::min(a, b)
+        message += "std::min" + exprsToString(context, *lhs, *rhs);
         return true;
     }
-    else if (areSameExpr(context, expr1, *comp_lhs)
-            && areSameExpr(context, expr2, *comp_rhs))
+    if (areSameExpr(context, expr2, *lhs) && areSameExpr(context, expr1, *rhs))
     {
-        // if (a < b) b = a -> b = std::min(a, b)
-        message += getMessage("std::min(", context, *comp_lhs, *comp_rhs);
+        // (a < b) ? b : a -> std::max(a, b)
+        message += "std::max" + exprsToString(context, *lhs, *rhs);
         return true;
     }
     return false;
 }
 
-bool Test_if_noElse(ASTContext& context, const IfStmt& ifStmt, std::string& message)
+// if (a < b) a = b -> a = std::max(a, b)
+// if (a < b) b = a -> b = std::min(a, b)
+static bool hasViolation_assignWithinIf(ASTContext& context,
+                                        const IfStmt& ifStmt,
+                                        std::string& message)
 {
     const BinaryOperator* binop = dyn_cast<BinaryOperator>(ifStmt.getCond());
     const Stmt* thenStmt = getSingleStmt(*ifStmt.getThen());
@@ -59,55 +60,83 @@ bool Test_if_noElse(ASTContext& context, const IfStmt& ifStmt, std::string& mess
     const Expr& assign_lhs = *ignoreCastExpr(*assignOp->getLHS());
     const Expr& assign_rhs = *ignoreCastExpr(*assignOp->getRHS());
 
-    message += exprToString(context, assign_lhs) + " = ";
-    // if (a < b) a = b -> a = std::max(a, b)
-    // if (a < b) b = a -> b = std::min(a, b)
-    if (Test_BinOp(context, *binop, assign_rhs, assign_lhs, message))
-    {
-        return true;
-    }
-    return false;
+    message = exprToString(context, assign_lhs) + " = ";
+    // Note that `assign_rhs`, `assign_lhs` are inverted on purpose.
+    return canUseMinOrMax(context, *binop, assign_rhs, assign_lhs, message);
 }
 
-// stmt1 and stmt2 should differ only by a single expr (which are extracted)
+// class to extract the expression which differ between 2 statements
 // currently only assignOp and return stat are supported
-bool ExtractDiffExpr(ASTContext& context,
-                     const Stmt& stmt1, const Stmt& stmt2,
-                     const Expr** expr1, const Expr** expr2,
-                     std::string& message)
+class DiffExprExtractor : public clang::ConstStmtVisitor<DiffExprExtractor, bool>
 {
-    if (stmt1.getStmtClass() != stmt2.getStmtClass()) return false;
-    // c = a; c = b -> a, b
-    const BinaryOperator* assignOp1 = dyn_cast<BinaryOperator>(&stmt1);
-    const BinaryOperator* assignOp2 = dyn_cast<BinaryOperator>(&stmt2);
-    if (assignOp1 != nullptr && assignOp2 != nullptr
-        && assignOp1->getOpcode() == assignOp2->getOpcode())
+public:
+    explicit DiffExprExtractor(ASTContext& context) :
+        context(context),
+        message(),
+        stmt2(nullptr),
+        expr1(nullptr),
+        expr2(nullptr)
     {
-        const Expr& lhs1 = *assignOp1->getLHS();
-        const Expr& lhs2 = *assignOp2->getLHS();
+    }
+
+    bool operator () (const Stmt& stmt1, const Stmt& stmt2)
+    {
+        if (stmt1.getStmtClass() != stmt2.getStmtClass())
+        {
+            return false;
+        }
+        this->stmt2 = &stmt2;
+        return Visit(&stmt1);
+    }
+
+    const std::string getCommonAsString() const { return message; }
+    const Expr* getDiff1() const { return expr1; }
+    const Expr* getDiff2() const { return expr2; }
+
+public: // Visitor methods
+
+    bool VisitBinaryOperator(const BinaryOperator* binOp1)
+    {
+        const auto binOp2 = dyn_cast<BinaryOperator>(stmt2);
+
+        if (binOp1->getOpcode() != binOp2->getOpcode())
+        {
+            return false;
+        }
+        const Expr& lhs1 = *binOp1->getLHS();
+        const Expr& lhs2 = *binOp2->getLHS();
         if (!areSameExpr(context, lhs1, lhs2))
         {
             return false;
         }
-        *expr1 = assignOp1->getRHS();
-        *expr2 = assignOp2->getRHS();
-        message += exprToString(context, lhs1) + " " + assignOp1->getOpcodeStr().str() + " ";
+        expr1 = binOp1->getRHS();
+        expr2 = binOp2->getRHS();
+        message = exprToString(context, lhs1) + " " + binOp1->getOpcodeStr().str() + " ";
         return true;
     }
-    // return a; return b; -> a, b
-    const ReturnStmt* returnStmt1 = dyn_cast<ReturnStmt>(&stmt1);
-    const ReturnStmt* returnStmt2 = dyn_cast<ReturnStmt>(&stmt2);
-    if (returnStmt1 != nullptr && returnStmt2 != nullptr)
-    {
-        *expr1 = returnStmt1->getRetValue();
-        *expr2 = returnStmt2->getRetValue();
-        message += "return ";
-        return true;
-    }
-    return false;
-}
 
-bool Test_if_else(ASTContext& context, const IfStmt& ifStmt, std::string& message)
+    bool VisitReturnStmt(const ReturnStmt* returnStmt1)
+    {
+        expr1 = returnStmt1->getRetValue();
+        expr2 = dyn_cast<ReturnStmt>(stmt2)->getRetValue();
+        message = "return ";
+        return true;
+    }
+
+    // TODO: support more statements
+
+private:
+    ASTContext& context;
+    string message;
+    const Stmt* stmt2;
+    const Expr* expr1;
+    const Expr* expr2;
+};
+
+// if (a < b) foo(a) else foo(b) -> foo(std::min(a, b))
+// if (a < b) foo(b) else foo(a) -> foo(std::max(a, b))
+// `foo` comes from `DiffExprExtractor`.
+bool hasViolation_ifWithElse(ASTContext& context, const IfStmt& ifStmt, std::string& message)
 {
     const BinaryOperator* binop = dyn_cast<BinaryOperator>(ifStmt.getCond());
     const Stmt* thenStmt = getSingleStmt(*ifStmt.getThen());
@@ -118,49 +147,34 @@ bool Test_if_else(ASTContext& context, const IfStmt& ifStmt, std::string& messag
     {
         return false;
     }
+    DiffExprExtractor diffExprExtractor(context);
 
-    const Expr* thenExpr = nullptr;
-    const Expr* elseExpr = nullptr;
-    ExtractDiffExpr(context, *thenStmt, *elseStmt, &thenExpr, &elseExpr, message);
+    if (!diffExprExtractor(*thenStmt, *elseStmt))
+    {
+        return false;
+    }
+    message = diffExprExtractor.getCommonAsString();
+    const Expr* thenExpr = ignoreCastExpr(*diffExprExtractor.getDiff1());
+    const Expr* elseExpr = ignoreCastExpr(*diffExprExtractor.getDiff2());
 
     if (thenExpr == nullptr || elseExpr == nullptr)
     {
         return false;
     }
-    thenExpr = ignoreCastExpr(*thenExpr);
-    elseExpr = ignoreCastExpr(*elseExpr);
-    if (thenExpr == nullptr || elseExpr == nullptr)
-    {
-        return false;
-    }
-    // if (a < b) foo(a) else foo(b) -> foo(std::min(a, b))
-    // if (a < b) foo(b) else foo(a) -> foo(std::max(a, b))
-    if (Test_BinOp(context, *binop, *thenExpr, *elseExpr, message))
-    {
-        return true;
-    }
-    return false;
+    return canUseMinOrMax(context, *binop, *thenExpr, *elseExpr, message);
 }
 
-static bool Test_condOp(ASTContext& context, const ConditionalOperator& condOp,
-                        std::string& message)
+// a < b ? a : b -> std::min(a, b)
+// a < b ? b : a -> std::max(a, b)
+static bool hasViolation_conditionalOperator(ASTContext& context,
+                                             const ConditionalOperator& condOp,
+                                             std::string& message)
 {
     const BinaryOperator* binop = dyn_cast<BinaryOperator>(condOp.getCond());
     const Expr& trueExpr = *ignoreCastExpr(*condOp.getTrueExpr());
     const Expr& falseExpr = *ignoreCastExpr(*condOp.getFalseExpr());
 
-    if (binop == nullptr)
-    {
-        return false;
-    }
-
-    // a < b ? a : b -> std::min(a, b)
-    // a < b ? b : a -> std::max(a, b)
-    if (Test_BinOp(context, *binop, trueExpr, falseExpr, message))
-    {
-        return true;
-    }
-    return false;
+    return binop && canUseMinOrMax(context, *binop, trueExpr, falseExpr, message);
 }
 
 class UseMinOrMaxRule : public oclint::AbstractASTVisitorRule<UseMinOrMaxRule>
@@ -188,9 +202,9 @@ public:
             return true;
         }
         std::string message;
-        if (Test_condOp(context, *condOp, message))
+        if (hasViolation_conditionalOperator(context, *condOp, message))
         {
-            addViolation(condOp, this, std::move(message));
+            addViolation(condOp, this, message);
         }
         return true;
     }
@@ -213,16 +227,16 @@ public:
         std::string message;
         if (ifStmt->getElse() == nullptr)
         {
-            if (Test_if_noElse(context, *ifStmt, message))
+            if (hasViolation_assignWithinIf(context, *ifStmt, message))
             {
-                addViolation(ifStmt, this, std::move(message));
+                addViolation(ifStmt, this, message);
             }
         }
         else
         {
-            if (Test_if_else(context, *ifStmt, message))
+            if (hasViolation_ifWithElse(context, *ifStmt, message))
             {
-                addViolation(ifStmt, this, std::move(message));
+                addViolation(ifStmt, this, message);
             }
         }
         return true;
