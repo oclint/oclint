@@ -9,7 +9,7 @@ TEST(UseSwapRuleTest, PropertyTest)
     EXPECT_EQ("use std::swap", rule.name());
 }
 
-TEST(UseSwapRuleTest, Sample1)
+TEST(UseSwapRuleTest, SwapAssignTmpInStmt)
 {
     const char* code =
         "void swap(int a, int b)\n"
@@ -24,38 +24,35 @@ TEST(UseSwapRuleTest, Sample1)
     testRuleOnCode(new UseSwapRule(), code, 0, 5, 5, 7, 9);
 }
 
-TEST(UseSwapRuleTest, Sample2)
+TEST(UseSwapRuleTest, SwapAssignTmpInDecl)
 {
     const char* code =
         "void swap(int& a, int& b)\n"
         "{\n"
         "    int tmp = a;\n"
         "\n"
-        "    tmp = a;\n"
         "    a = b;\n"
         "    b = tmp;\n"
         "}";
 
-    testRuleOnCXXCode(new UseSwapRule(), code, 0, 5, 5, 7, 9);
+    testRuleOnCXXCode(new UseSwapRule(), code, 0, 3, 9, 6, 9);
 }
 
-TEST(UseSwapRuleTest, Sample3)
+TEST(UseSwapRuleTest, SwapConstructTmpInDecl)
 {
     const char* code =
         "void swap(int& a, int& b)\n"
         "{\n"
         "    int tmp(a);\n"
         "\n"
-        "    tmp = a;\n"
         "    a = b;\n"
         "    b = tmp;\n"
         "}";
 
-    testRuleOnCXXCode(new UseSwapRule(), code, 0, 5, 5, 7, 9);
+    testRuleOnCXXCode(new UseSwapRule(), code, 0, 3, 9, 6, 9);
 }
 
-// Not yet supported
-TEST(UseSwapRuleTest, MultipleDeclarations_NotYetSupported)
+TEST(UseSwapRuleTest, MultipleDeclarationsLast)
 {
     const char* code =
         "void swap(int& a, int& b)\n"
@@ -66,11 +63,10 @@ TEST(UseSwapRuleTest, MultipleDeclarations_NotYetSupported)
         "    b = tmp;\n"
         "}";
 
-    testRuleOnCXXCode(new UseSwapRule(), code);
+    testRuleOnCXXCode(new UseSwapRule(), code, 0, 3, 16, 6, 9);
 }
 
-// Not yet supported
-TEST(UseSwapRuleTest, MultipleDeclarations2_NotYetSupported)
+TEST(UseSwapRuleTest, MultipleDeclarations)
 {
     const char* code =
         "void swap(int& a, int& b)\n"
@@ -81,24 +77,25 @@ TEST(UseSwapRuleTest, MultipleDeclarations2_NotYetSupported)
         "    b = tmp;\n"
         "}";
 
-    testRuleOnCXXCode(new UseSwapRule(), code);
+    testRuleOnCXXCode(new UseSwapRule(), code, 0, 3, 9, 6, 9);
 }
 
-// Not yet supported
-TEST(UseSwapRuleTest, MultipleDeclarations3_NotYetSupported)
+TEST(UseSwapRuleTest, MoveVersion)
 {
     const char* code =
         "void swap(int& a, int& b)\n"
         "{\n"
-        "    int tmp(a), other(b);\n"
+        "    int tmp;\n"
         "\n"
-        "    a = b;\n"
-        "    b = tmp;\n"
+        "    tmp = static_cast<int&&>(a);\n"
+        "    a = static_cast<int&&>(b);\n"
+        "    b = static_cast<int&&>(tmp);\n"
         "}";
 
-    testRuleOnCXXCode(new UseSwapRule(), code);
+    testRuleOnCXX11Code(new UseSwapRule(), code, 0, 5, 5, 7, 31);
 }
 
+// TODO: manage interleaved swap
 // Not yet supported
 TEST(UseSwapRuleTest, Interleaved_NotYetSupported)
 {
@@ -116,23 +113,6 @@ TEST(UseSwapRuleTest, Interleaved_NotYetSupported)
 
     testRuleOnCXXCode(new UseSwapRule(), code);
 }
-
-#if 0 // Not yet supported
-TEST(UseSwapRuleTest, MoveVersion_NotYetSupported)
-{
-    const char* code =
-        "void swap(int& a, int& b)\n"
-        "{\n"
-        "    int tmp;\n"
-        "\n"
-        "    tmp = std::move(a);\n"
-        "    a = std::move(b);\n"
-        "    b = std::move(tmp);\n"
-        "}";
-
-    testRuleOnCXX11Code(new UseSwapRule(), code);
-}
-#endif
 
 int main(int argc, char **argv)
 {
