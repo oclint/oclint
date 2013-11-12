@@ -1,7 +1,7 @@
 #include "TestHeaders.h"
 #include "rules/cocoa/ObjCVerifyProtectedMethodRule.cpp"
 
-string testAnnotationBase = "\
+string testBase = "\
 @interface NSObject                                                          \n\
                                                                              \n\
 @end                                                                         \n\
@@ -13,50 +13,11 @@ string testAnnotationBase = "\
 @end                                                                         \n\
                                                                              \n\
 @interface B : NSObject                                                      \n\
-                                                                             \n\
 @property (strong, nonatomic) A* a;                                          \n\
-                                                                             \n\
 @end                                                                         \n\
 ";
 
-string testViolation =  testAnnotationBase + "\
-@implementation B                                                            \n\
-                                                                             \n\
-- (void)bar {                                                                \n\
-    [self.a foo];                                                            \n\
-}                                                                            \n\
-                                                                             \n\
-@end                                                                         \n\
-";
 
-string testInsideClass = testAnnotationBase + "\
-@implementation A                                                            \n\
-                                                                             \n\
-- (void)foo {                                                                \n\
-}                                                                            \n\
-                                                                             \n\
-- (void)bar {                                                                \n\
-    [self foo];                                                              \n\
-}                                                                            \n\
-                                                                             \n\
-@end                                                                         \n\
-";
-
-string testInsideChild = testAnnotationBase + "\
-@interface C : A                                                             \n\
-                                                                             \n\
-- (void)bar;                                                                 \n\
-                                                                             \n\
-@end                                                                         \n\
-                                                                             \n\
-@implementation C                                                            \n\
-                                                                             \n\
-- (void)bar {                                                                \n\
-    [self foo];                                                              \n\
-}                                                                            \n\
-                                                                             \n\
-@end                                                                         \n\
-";
 
 TEST(ObjCVerifyProtectedMethodRule, PropertyTest)
 {
@@ -67,17 +28,44 @@ TEST(ObjCVerifyProtectedMethodRule, PropertyTest)
 
 TEST(ObjCVerifyProtectedMethodRule, ViolationTest)
 {
-    testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testViolation, 0, 19, 5, 19, 16,
+    const string testViolation = testBase + "\
+    @implementation B                                                            \n\
+    - (void)bar {                                                                \n\
+        [self.a foo];                                                            \n\
+    }                                                                            \n\
+    @end                                                                         \n\
+    ";
+
+    testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testViolation, 0, 16, 9, 16, 20,
         "calling protected method foo from outside A and its subclasses");
 }
 
 TEST(ObjCVerifyProtectedMethodRule, InsideClassTest)
 {
+    const string testInsideClass = testBase + "\
+    @implementation A                                                            \n\
+    - (void)foo {                                                                \n\
+    }                                                                            \n\
+    - (void)bar {                                                                \n\
+        [self foo];                                                              \n\
+    }                                                                            \n\
+    @end                                                                         \n\
+    ";
+
     testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testInsideClass);
 }
 
 TEST(ObjCVerifyProtectedMethodRule, InsideChildTest)
 {
+    const string testInsideChild = testBase + "\
+    @implementation A                                                            \n\
+    - (void)foo {                                                                \n\
+    }                                                                            \n\
+    - (void)bar {                                                                \n\
+        [self foo];                                                              \n\
+    }                                                                            \n\
+    @end                                                                         \n\
+    ";
     testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testInsideChild);
 }
 
