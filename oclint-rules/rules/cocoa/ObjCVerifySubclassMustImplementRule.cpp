@@ -17,7 +17,7 @@ private:
     static RuleSet rules;
 
 public:
-    
+
     virtual const string name() const
     {
         return "subclass must implement";
@@ -27,6 +27,12 @@ public:
     {
         return 1;
     }
+
+    virtual unsigned int supportedLanguages() const
+    {
+        return LANG_OBJC;
+    }
+
     bool VisitObjCImplementationDecl(ObjCImplementationDecl* implementation) {
         const auto parent = implementation->getClassInterface()->getSuperClass();
         if(!parent) {

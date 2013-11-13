@@ -1,7 +1,7 @@
 SET(LIST_OF_RULES
-    ObjCVerifySubclassMustImplement
     ObjCVerifyMustCallSuper
     ObjCVerifyProtectedMethod
+    ObjCVerifySubclassMustImplement
     )
 
 BUILD_DYNAMIC_RULES("${LIST_OF_RULES}")
