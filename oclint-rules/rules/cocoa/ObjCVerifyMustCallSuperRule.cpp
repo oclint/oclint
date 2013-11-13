@@ -110,6 +110,12 @@ public:
     {
         return 1;
     }
+
+    virtual unsigned int supportedLanguages() const
+    {
+        return LANG_OBJC;
+    }
+
     bool VisitObjCMethodDecl(ObjCMethodDecl* decl) {
         // Save the method name
         string selectorName = decl->getSelector().getAsString();
