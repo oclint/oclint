@@ -1,14 +1,16 @@
+SET (AbstractSource ) # Empty
+
 ADD_SUBDIRECTORY(helper)
 ADD_SUBDIRECTORY(util)
 
-SET (AbstractSource
+SET (AbstractSource ${AbstractSource}
     AbstractASTMatcherRule.cpp
     AbstractASTRuleBase.cpp
     AbstractSourceCodeReaderRule.cpp
 )
 
 IF (MINGW)
-    ADD_LIBRARY(OCLintAbstractRule SHARED ${AbstractSource} helper/SuppressHelper.cpp util/ASTUtil.cpp)
+    ADD_LIBRARY(OCLintAbstractRule SHARED ${AbstractSource} ${HelperSource} ${UtilSource})
     TARGET_LINK_LIBRARIES(OCLintAbstractRule
         OCLintCore
         OCLintRuleSet
