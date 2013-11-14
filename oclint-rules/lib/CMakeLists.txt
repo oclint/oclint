@@ -1,5 +1,3 @@
-SET (AbstractSource ) # Empty
-
 ADD_SUBDIRECTORY(helper)
 ADD_SUBDIRECTORY(util)
 
