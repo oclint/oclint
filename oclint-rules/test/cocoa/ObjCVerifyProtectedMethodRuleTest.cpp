@@ -23,7 +23,7 @@ TEST(ObjCVerifyProtectedMethodRule, PropertyTest)
 {
     ObjCVerifyProtectedMethodRule rule;
     EXPECT_EQ(1, rule.priority());
-    EXPECT_EQ("protected method", rule.name());
+    EXPECT_EQ("verify protected method", rule.name());
 }
 
 TEST(ObjCVerifyProtectedMethodRule, ViolationTest)
@@ -58,7 +58,10 @@ TEST(ObjCVerifyProtectedMethodRule, InsideClassTest)
 TEST(ObjCVerifyProtectedMethodRule, InsideChildTest)
 {
     const string testInsideChild = testBase + "\
-    @implementation A                                                            \n\
+    @interface C : A                                                             \n\
+    @end                                                                         \n\
+                                                                                 \n\
+    @implementation C                                                            \n\
     - (void)foo {                                                                \n\
     }                                                                            \n\
     - (void)bar {                                                                \n\

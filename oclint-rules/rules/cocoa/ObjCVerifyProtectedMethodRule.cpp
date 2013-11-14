@@ -24,8 +24,7 @@ namespace {
 
         bool VisitObjCMessageExpr(ObjCMessageExpr* expr) {
             const auto method = expr->getMethodDecl();
-            const bool isMarked = declHasEnforceAttribute(method, _rule);
-            if(!isMarked) {
+            if(!declHasEnforceAttribute(method, _rule)) {
                 return true;
             }
 
@@ -76,6 +75,10 @@ public:
 
     virtual const string name() const
     {
+        return "verify protected method";
+    }
+
+    virtual const string attributeName() const {
         return "protected method";
     }
 
