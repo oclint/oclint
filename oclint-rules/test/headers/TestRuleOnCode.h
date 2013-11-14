@@ -165,6 +165,14 @@ inline void testRuleOnObjCCode(RuleBase *rule,
 #define VIOLATION_START "/*VIOLATION_START*/"
 #define VIOLATION_END "/*VIOLATION_END*/"
 
+// Some aliases
+#define TAG_START VIOLATION_START
+#define TAG_END VIOLATION_END
+#define LOC_START VIOLATION_START
+#define LOC_END VIOLATION_END
+#define V_START VIOLATION_START
+#define V_END VIOLATION_END
+
 inline void ComputeLocalisation(const std::string& s, size_t offset,
                                 int* line, int* column)
 {
@@ -183,7 +191,7 @@ inline void ComputeLocalisation(const std::string& s, size_t offset,
     *column = c;
 }
 
-// {start/end offset} ordered by increasing end-location.
+// {start/end offset} ordered by increasing start-location then end-location.
 inline std::vector<std::pair<size_t, size_t>> extractViolationLocations(std::string& code)
 {
     size_t findOffset = 0;
@@ -197,6 +205,7 @@ inline std::vector<std::pair<size_t, size_t>> extractViolationLocations(std::str
         if (startOffset == std::string::npos && endOffset == std::string::npos)
         {
             assert(startOffsets.empty());
+            std::sort(rangeOffsets.begin(), rangeOffsets.end());
             return rangeOffsets;
         }
         if (startOffset < endOffset) {
@@ -213,6 +222,15 @@ inline std::vector<std::pair<size_t, size_t>> extractViolationLocations(std::str
     }
 }
 
+bool lessByLocation(const Violation& lhs, const Violation& rhs)
+{
+    if (lhs.startLine != rhs.startLine) return lhs.startLine < rhs.startLine;
+    if (lhs.startColumn != rhs.startColumn) return lhs.startColumn < rhs.startColumn;
+    if (lhs.endLine != rhs.endLine) return lhs.endLine < rhs.endLine;
+    if (lhs.endColumn != rhs.endColumn) return lhs.endColumn < rhs.endColumn;
+    return lhs.message < rhs.message;
+}
+
 inline void testRuleOnCode(const Twine& filename,
                            const std::vector<std::string>& args,
                            RuleBase* rule,
@@ -227,10 +245,11 @@ inline void testRuleOnCode(const Twine& filename,
         FAIL();
         return;
     }
-    const vector<Violation>& violations = violationSet.getViolations();
+    vector<Violation> violations = violationSet.getViolations();
 
     ASSERT_THAT(rangeOffsets.size(), Eq(violations.size()));
 
+    std::sort(violations.begin(), violations.end(), &lessByLocation);
     for (size_t i = 0; i != rangeOffsets.size(); ++i)
     {
         const Violation& violation = violations[i];

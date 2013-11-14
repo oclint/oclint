@@ -69,18 +69,9 @@ TEST(UnnecessaryElseStatementRuleTest, IfThenBlockContainsReturnNotLast)
 
 TEST(UnnecessaryElseStatementRuleTest, EmbeddedIfStatementsEndingWithReturn)
 {
-#if 0
-    // expect increasing order...
-    // but rule provide violation in descending order ?
     testRuleOnCode(new UnnecessaryElseStatementRule(),
-        "void m() { if (1) { if (0) { return; } else " VIOLATION_START "{ return;" VIOLATION_END
-        " } } else " VIOLATION_START "{ int i = 0; " VIOLATION_END "} }");
-#else
-    testRuleOnCode(new UnnecessaryElseStatementRule(), "void m() { if (1) { if (0) { return; } else { return; } } else { int i = 0; } }",
-        0, 1, 64, 1, 77);
-    testRuleOnCode(new UnnecessaryElseStatementRule(), "void m() { if (1) { if (0) { return; } else { return; } } else { int i = 0; } }",
-        1, 1, 45, 1, 55);
-#endif
+        "void m() { if (1) { if (0) { return; } else "
+        LOC_START "{ return; " LOC_END "} } else " LOC_START "{ int i = 0; " LOC_END "} }");
 }
 
 int main(int argc, char **argv)
