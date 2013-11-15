@@ -172,6 +172,29 @@ TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertySetterInside)
 }
 
 
+TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertyCategoryOutside)
+{
+    const string testCategory = testBase + "\
+    @interface C : NSObject                                                     \n\
+    -(void)setA:(A*)a; \n\
+    @end                                                                        \n\
+    @interface C (Additions)                                                    \n\
+    - (void)setA:(A*)a                                                          \n\
+        __attribute__((annotate(\"oclint:enforce[protected method]\")));        \n\
+    @end                                                                        \n\
+    @interface D : NSObject                                                     \n\
+    @property (strong) C* c;                                                    \n\
+    @end                                                                        \n\
+    @implementation D                                                           \n\
+    - (void)bar {                                                               \n\
+        [self.c setA: 0];                                                       \n\
+    }                                                                           \n\
+    @end                                                                        \n\
+    ";
+    testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testCategory, 0, 26, 9, 26, 24,
+        "calling protected method setA: from outside C and its subclasses");
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);

@@ -3,9 +3,12 @@
 
 #include <string>
 
-namespace clang { class Decl; }
+namespace clang { class Decl; class ObjCMethodDecl; }
 namespace oclint { class RuleBase; }
 
 bool declHasEnforceAttribute(const clang::Decl *decl, const oclint::RuleBase& rule);
+// Checks related properties and categories too
+bool ObjCMethodHasEnforceAttribute(const clang::ObjCMethodDecl *decl,
+    const oclint::RuleBase& rule);
 
 #endif

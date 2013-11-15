@@ -24,21 +24,15 @@ namespace {
 
         bool VisitObjCMessageExpr(ObjCMessageExpr* expr) {
             const auto method = expr->getMethodDecl();
-            cout << "method is " << method->getNameAsString() << endl;
-            if(!(declHasEnforceAttribute(method, _rule) || (method->isPropertyAccessor() && 
-               declHasEnforceAttribute(method->findPropertyDecl(), _rule)))) {
+            if(!ObjCMethodHasEnforceAttribute(method, _rule)) {
                 return true;
             }
-            cout << "has attribute" << endl;
 
             const auto interface = expr->getReceiverInterface();
             if(!interface) {
                 return true;
             }
 
-            cout << "interface is named " << interface->getNameAsString() << endl;
-
-            cout << "container is named " << _container.getNameAsString() << endl;
             if(!isObjCInterfaceClassOrSubclass(&_container, interface->getNameAsString())) {
                 _violations.push_back(expr);
             }

@@ -35,3 +35,36 @@ bool declHasActionAttribute(
     return declHasOCLintAttribute(decl, action + "[" + rule.attributeName() + "]");
 }
 
+bool ObjCMethodDeclHasActionAttribute(
+    const clang::ObjCMethodDecl *decl, const std::string& action, const oclint::RuleBase& rule) {
+    // Check the method directly
+    if(declHasActionAttribute(decl, action, rule)) {
+        return true;
+    }
+
+    // That failed, check if it has a property declaration and use that
+    if(decl->isPropertyAccessor() &&
+       declHasActionAttribute(decl->findPropertyDecl(), action, rule)) {
+        return true;
+    }
+
+    // That failed, check if it has a redeclaration in a cateogory and use that
+    const auto interface = decl->getClassInterface();
+    if(!interface) {
+        return false;
+    }
+    for(auto it = interface->visible_categories_begin(),
+             ite = interface->visible_categories_end();
+             it != ite;
+             ++it) {
+        clang::ObjCMethodDecl* categoryMethodDecl =
+            (*it)->getMethod(decl->getSelector(), decl->isInstanceMethod());
+        if(declHasActionAttribute(categoryMethodDecl, action, rule)) {
+            return true;
+        }
+    }
+    return false;
+
+}
+
+
