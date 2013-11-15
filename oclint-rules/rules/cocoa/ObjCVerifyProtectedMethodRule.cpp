@@ -24,17 +24,22 @@ namespace {
 
         bool VisitObjCMessageExpr(ObjCMessageExpr* expr) {
             const auto method = expr->getMethodDecl();
-            if(!declHasEnforceAttribute(method, _rule)) {
+            cout << "method is " << method->getNameAsString() << endl;
+            if(!(declHasEnforceAttribute(method, _rule) || (method->isPropertyAccessor() && 
+               declHasEnforceAttribute(method->findPropertyDecl(), _rule)))) {
                 return true;
             }
+            cout << "has attribute" << endl;
 
             const auto interface = expr->getReceiverInterface();
             if(!interface) {
                 return true;
             }
 
-            const auto containerName = _container.getNameAsString();
-            if(!isObjCInterfaceClassOrSubclass(interface, containerName)) {
+            cout << "interface is named " << interface->getNameAsString() << endl;
+
+            cout << "container is named " << _container.getNameAsString() << endl;
+            if(!isObjCInterfaceClassOrSubclass(&_container, interface->getNameAsString())) {
                 _violations.push_back(expr);
             }
 
@@ -62,11 +67,11 @@ public:
             checker.TraverseDecl(decl);
             const auto violations = checker.getViolations();
             for(auto expr : violations) {
-                const auto calledInterface = expr->getReceiverInterface();
+                const auto sourceClass = expr->getMethodDecl()->getClassInterface();
 
                 string description = "calling protected method " +
                     expr->getSelector().getAsString() +
-                    " from outside " + calledInterface->getNameAsString() + " and its subclasses";
+                    " from outside " + sourceClass->getNameAsString() + " and its subclasses";
                 addViolation(expr, this, description);
             }
         }
