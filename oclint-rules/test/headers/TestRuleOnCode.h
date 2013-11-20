@@ -247,7 +247,7 @@ inline void testRuleOnCode(const Twine& filename,
     }
     vector<Violation> violations = violationSet.getViolations();
 
-    ASSERT_THAT(rangeOffsets.size(), Eq(violations.size()));
+    ASSERT_THAT(violations.size(), Eq(rangeOffsets.size()));
 
     std::sort(violations.begin(), violations.end(), &lessByLocation);
     for (size_t i = 0; i != rangeOffsets.size(); ++i)
