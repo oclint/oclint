@@ -66,11 +66,12 @@ bool isObjCMethodDeclInChildOfClass(
 
 bool isObjCInterfaceClassOrSubclass(
     const clang::ObjCInterfaceDecl* decl, const std::string& className) {
-    bool insideChild = false;
     for(auto current = decl; current != nullptr; current = current->getSuperClass()) {
-        insideChild = insideChild || (current->getNameAsString() == className);
+        if(current->getNameAsString() == className) {
+            return true;
+        }
     }
-    return insideChild;
+    return false;
 }
 
 bool isCppMethodDeclLocatedInCppRecordDecl(clang::CXXMethodDecl *decl)

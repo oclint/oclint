@@ -40,7 +40,7 @@ namespace {
             return true;
         }
 
-        const vector <ObjCMessageExpr*>& getViolations() {
+        const vector <ObjCMessageExpr*>& getViolations() const {
             return _violations;
         }
 
@@ -84,6 +84,11 @@ public:
     virtual int priority() const
     {
         return 1;
+    }
+
+    virtual unsigned int supportedLanguages() const
+    {
+        return LANG_OBJC;
     }
 
 };

@@ -36,6 +36,10 @@ bool declHasActionAttribute(
 
 bool ObjCMethodDeclHasActionAttribute(
     const clang::ObjCMethodDecl *decl, const std::string& action, const oclint::RuleBase& rule) {
+    if(decl == nullptr) {
+        return false;
+    }
+
     // Check the method directly
     if(declHasActionAttribute(decl, action, rule)) {
         return true;
