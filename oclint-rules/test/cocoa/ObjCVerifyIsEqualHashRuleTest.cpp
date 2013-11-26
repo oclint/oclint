@@ -85,7 +85,10 @@ TEST(ObjCVerifyIsEqualHashRuleTest, HashMethod)
 
 TEST(ObjCVerifyIsEqualHashRuleTest, EqualMethod)
 {
-    testRuleOnObjCCode(new ObjCVerifyIsEqualHashRule(), testIsEqualOnly, 0, 11, 1, 17, 1, "If you override isEqual you must override hash too.");
+    testRuleOnObjCCode(new ObjCVerifyIsEqualHashRule(),
+		testIsEqualOnly,
+		0, 11, 1, 17, 1,
+		"If you override isEqual you must override hash too.");
 }
 
 int main(int argc, char **argv)
