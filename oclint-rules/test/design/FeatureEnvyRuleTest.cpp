@@ -235,6 +235,29 @@ TEST(FeatureEnvyRuleTest, ObjcMethodAccessesIvarOfAnotherClass)
       0, 11, 1, 14, 1, "Method f messages B more than self.");
 }
 
+#if defined(__APPLE__) || defined(__MACH__)
+
+TEST(FeatureEnvyRuleTest, MethodDeclaredInProtocol)
+{
+    testRuleOnObjCCode(new FeatureEnvyRule(),
+      "\n"
+"@protocol P\n"
+"-(void)protocolMethod;\n"
+"@end\n"
+"@interface A <P>\n@end\n"
+"@interface B\n@end\n"
+"@interface C : B\n@end\n"
+"@implementation C\n"
+"- (void)method:(A *)a\n"
+"{\n"
+"    [a protocolMethod];\n"
+"}\n"
+"@end",
+      0, 12, 1, 15, 1, "Method method: messages A more than self.");
+}
+
+#endif
+
 // TEST(FeatureEnvyRuleTest, CXXMemberCallsOther)
 // {
 //     testRuleOnCXXCode(new FeatureEnvyRule(),
@@ -242,7 +265,7 @@ TEST(FeatureEnvyRuleTest, ObjcMethodAccessesIvarOfAnotherClass)
 //       "public: \n"
 //       "    void f() {} \n"
 //       "}; \n"
-// 
+//
 //       "class A { \n"
 //       "    void f() { \n"
 //       "        B b; \n"
@@ -251,7 +274,7 @@ TEST(FeatureEnvyRuleTest, ObjcMethodAccessesIvarOfAnotherClass)
 //       "}; \n",
 //       0, 6, 5, 9, 5, "Method f messages B more than self.");
 // }
-// 
+//
 // TEST(FeatureEnvyRuleTest, CXXMemberCallsThis)
 // {
 //     testRuleOnCXXCode(new FeatureEnvyRule(),
@@ -259,14 +282,14 @@ TEST(FeatureEnvyRuleTest, ObjcMethodAccessesIvarOfAnotherClass)
 //       "public: \n"
 //       "    void f() {} \n"
 //       "}; \n"
-// 
+//
 //       "class A { \n"
 //       "    void f() { \n"
 //       "        this->f(); \n"
 //       "    } \n"
 //       "}; \n");
 // }
-// 
+//
 // TEST(FeatureEnvyRuleTest, CXXMemberCallsThisAndOtherEqually)
 // {
 //     testRuleOnCXXCode(new FeatureEnvyRule(),
@@ -274,7 +297,7 @@ TEST(FeatureEnvyRuleTest, ObjcMethodAccessesIvarOfAnotherClass)
 //       "public: \n"
 //       "    void f() {} \n"
 //       "}; \n"
-// 
+//
 //       "class A { \n"
 //       "    void f() { \n"
 //       "        B b; \n"
@@ -283,7 +306,7 @@ TEST(FeatureEnvyRuleTest, ObjcMethodAccessesIvarOfAnotherClass)
 //       "    } \n"
 //       "}; \n");
 // }
-// 
+//
 // TEST(FeatureEnvyRuleTest, CXXMemberCallsThisLessThanOther)
 // {
 //     testRuleOnCXXCode(new FeatureEnvyRule(),
@@ -291,7 +314,7 @@ TEST(FeatureEnvyRuleTest, ObjcMethodAccessesIvarOfAnotherClass)
 //       "public: \n"
 //       "    void f() {} \n"
 //       "}; \n"
-// 
+//
 //       "class A { \n"
 //       "    void f() { \n"
 //       "        B b; \n"
