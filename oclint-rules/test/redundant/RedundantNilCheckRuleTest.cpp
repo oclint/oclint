@@ -2,15 +2,15 @@
 
 #include "rules/redundant/RedundantNilCheckRule.cpp"
 
-string objcPrefix = "#define nil (id)0          \n\
-typedef signed char    BOOL;                    \n\
-#define YES             (BOOL)1                 \n\
-#define NO              (BOOL)0                 \n\
-@interface NSObject\n@end                       \n\
-@interface A : NSObject                         \n\
-- (BOOL)isEqualTo:(id)obj;                      \n\
-+ (void)compare:(A *)obj1 withOther:(A *)obj2;  \n\
-@end\n";
+string objcPrefix = "#define nil (id)0\n"
+    "typedef signed char BOOL;\n"
+    "#define YES (BOOL)1\n"
+    "#define NO  (BOOL)0\n"
+    "@interface NSObject\n@end\n"
+    "@interface A : NSObject\n"
+    "- (BOOL)isEqualTo:(id)obj;\n"
+    "+ (void)compare:(A *)obj1 withOther:(A *)obj2;\n"
+    "@end\n";
 
 TEST(RedundantNilCheckRuleTest, PropertyTest)
 {
@@ -22,122 +22,122 @@ TEST(RedundantNilCheckRuleTest, PropertyTest)
 TEST(RedundantNilCheckRuleTest, ObjC_CorrectNullEqCheck)
 {
     testRuleOnObjCCode(new RedundantNilCheckRule(), objcPrefix +
-"@implementation A\n\
-- (BOOL)isEqualTo:(id)obj { return YES; }       \n\
-+ (void)compare:(A *)obj1 withOther:(A *)obj2 { \n\
-    if ([obj1 isEqualTo:obj2]) { ; }            \n\
-}                                               \n\
-@end");
+        "@implementation A\n"
+        "- (BOOL)isEqualTo:(id)obj { return YES; }\n"
+        "+ (void)compare:(A *)obj1 withOther:(A *)obj2 {\n"
+        "    if ([obj1 isEqualTo:obj2]) { ; }\n"
+        "}\n"
+        "@end");
 }
 
 TEST(RedundantNilCheckRuleTest, ObjC_EzButRedundantNullEqCheck)
 {
     testRuleOnObjCCode(new RedundantNilCheckRule(), objcPrefix +
-"@implementation A\n\
-- (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
-+ (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
-    if (obj1 && [obj1 isEqualTo:obj2]) { ; }                    \n\
-}                                                               \n\
-@end", 0, 14, 9, 14, 37);
+        "@implementation A\n"
+        "- (BOOL)isEqualTo:(id)obj { return YES; }\n"
+        "+ (void)compare:(A *)obj1 withOther:(A *)obj2 {\n"
+        "    if (" VIOLATION_START "obj1 && [obj1 isEqualTo:obj2" VIOLATION_END "]) { ; }\n"
+        "}\n"
+        "@end");
 }
 
 TEST(RedundantNilCheckRuleTest, ObjC_ExplicitButRedundantNullEqCheck)
 {
     testRuleOnObjCCode(new RedundantNilCheckRule(), objcPrefix +
-"@implementation A\n\
-- (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
-+ (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
-    if (obj1 != nil && [obj1 isEqualTo:obj2]) { ; }             \n\
-}                                                               \n\
-@end", 0, 14, 9, 14, 44);
+        "@implementation A\n"
+        "- (BOOL)isEqualTo:(id)obj { return YES; }\n"
+        "+ (void)compare:(A *)obj1 withOther:(A *)obj2 {\n"
+        "    if (" VIOLATION_START "obj1 != nil && [obj1 isEqualTo:obj2" VIOLATION_END "]) { ; }\n"
+        "}\n"
+        "@end");
 }
 
 TEST(RedundantNilCheckRuleTest, ObjC_EzNullNeCheck)
 {
     testRuleOnObjCCode(new RedundantNilCheckRule(), objcPrefix +
-"@implementation A\n\
-- (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
-+ (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
-    if (obj1 && ![obj1 isEqualTo:obj2]) { ; }                   \n\
-}                                                               \n\
-@end");
+        "@implementation A\n"
+        "- (BOOL)isEqualTo:(id)obj { return YES; }\n"
+        "+ (void)compare:(A *)obj1 withOther:(A *)obj2 {\n"
+        "    if (obj1 && ![obj1 isEqualTo:obj2]) { ; }\n"
+        "}\n"
+        "@end");
 }
 
 TEST(RedundantNilCheckRuleTest, ObjC_ExplicitNullNeCheck)
 {
     testRuleOnObjCCode(new RedundantNilCheckRule(), objcPrefix +
-"@implementation A\n\
-- (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
-+ (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
-    if (obj1 != nil && ![obj1 isEqualTo:obj2]) { ; }            \n\
-}                                                               \n\
-@end");
+        "@implementation A\n"
+        "- (BOOL)isEqualTo:(id)obj { return YES; }\n"
+        "+ (void)compare:(A *)obj1 withOther:(A *)obj2 {\n"
+        "    if (obj1 != nil && ![obj1 isEqualTo:obj2]) { ; }\n"
+        "}\n"
+        "@end");
 }
 
 TEST(RedundantNilCheckRuleTest, ObjC_LogicOrEzNullEqCheck)
 {
     testRuleOnObjCCode(new RedundantNilCheckRule(), objcPrefix +
-"@implementation A\n\
-- (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
-+ (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
-    if (obj1 || [obj1 isEqualTo:obj2]) { ; }                    \n\
-}                                                               \n\
-@end");
+        "@implementation A\n"
+        "- (BOOL)isEqualTo:(id)obj { return YES; }\n"
+        "+ (void)compare:(A *)obj1 withOther:(A *)obj2 {\n"
+        "    if (obj1 || [obj1 isEqualTo:obj2]) { ; }\n"
+        "}\n"
+        "@end");
 }
 
 TEST(RedundantNilCheckRuleTest, ObjC_LogicOrExplicitNullEqCheck)
 {
     testRuleOnObjCCode(new RedundantNilCheckRule(), objcPrefix +
-"@implementation A\n\
-- (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
-+ (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
-    if (obj1 != nil || [obj1 isEqualTo:obj2]) { ; }             \n\
-}                                                               \n\
-@end");
+        "@implementation A\n"
+        "- (BOOL)isEqualTo:(id)obj { return YES; }\n"
+        "+ (void)compare:(A *)obj1 withOther:(A *)obj2 {\n"
+        "    if (obj1 != nil || [obj1 isEqualTo:obj2]) { ; }\n"
+        "}\n"
+        "@end");
 }
 
 TEST(RedundantNilCheckRuleTest, ObjC_LogicAndEzNullEqCheck)
 {
     testRuleOnObjCCode(new RedundantNilCheckRule(), objcPrefix +
-"@implementation A\n\
-- (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
-+ (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
-    if (!obj1 && [obj1 isEqualTo:obj2]) { ; }                   \n\
-}                                                               \n\
-@end");
+        "@implementation A\n"
+        "- (BOOL)isEqualTo:(id)obj { return YES; }\n"
+        "+ (void)compare:(A *)obj1 withOther:(A *)obj2 {\n"
+        "    if (!obj1 && [obj1 isEqualTo:obj2]) { ; }\n"
+        "}\n"
+        "@end");
 }
 
 TEST(RedundantNilCheckRuleTest, ObjC_LogicAndExplicitNullEqCheck)
 {
     testRuleOnObjCCode(new RedundantNilCheckRule(), objcPrefix +
-"@implementation A\n\
-- (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
-+ (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
-    if (obj1 == nil && [obj1 isEqualTo:obj2]) { ; }             \n\
-}                                                               \n\
-@end");
+        "@implementation A\n"
+        "- (BOOL)isEqualTo:(id)obj { return YES; }\n"
+        "+ (void)compare:(A *)obj1 withOther:(A *)obj2 {\n"
+        "    if (obj1 == nil && [obj1 isEqualTo:obj2]) { ; }\n"
+        "}\n"
+        "@end");
 }
 
 TEST(RedundantNilCheckRuleTest, ObjC_ShouldIgnoreDifferentIdentifers)
 {
     testRuleOnObjCCode(new RedundantNilCheckRule(), objcPrefix +
-"@implementation A\n\
-- (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
-+ (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
-    if (obj1 != nil && [obj2 isEqualTo:obj1]) { ; }             \n\
-}                                                               \n\
-@end");
+        "@implementation A\n"
+        "- (BOOL)isEqualTo:(id)obj { return YES; }\n"
+        "+ (void)compare:(A *)obj1 withOther:(A *)obj2 {\n"
+        "    if (obj1 != nil && [obj2 isEqualTo:obj1]) { ; }\n"
+        "}\n"
+        "@end");
 }
 
 TEST(RedundantNilCheckRuleTest, ObjC_MultipleMessageExpr)
 {
     testRuleOnObjCCode(new RedundantNilCheckRule(), objcPrefix +
-"@implementation A\n\
-- (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
-+ (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
-    if (obj1 != nil && ([obj2 isEqualTo:obj1] && [obj1 isEqualTo:obj2])) { ; }            \n\
-}                                                               \n\
-@end", 0, 14, 9, 14, 71);
+        "@implementation A\n"
+        "- (BOOL)isEqualTo:(id)obj { return YES; }\n"
+        "+ (void)compare:(A *)obj1 withOther:(A *)obj2 {\n"
+        "    if (" VIOLATION_START "obj1 != nil && ([obj2 isEqualTo:obj1] && [obj1 isEqualTo:obj2]" VIOLATION_END ")) { ; }\n"
+        "}\n"
+        "@end");
 }
 
 

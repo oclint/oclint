@@ -16,14 +16,14 @@ TEST(RedundantLocalVariableRuleTest, NoRedundantLocalVariable)
 
 TEST(RedundantLocalVariableRuleTest, DeclVarFollowedByReturnStmt)
 {
-    testRuleOnCode(new RedundantLocalVariableRule(), "int aMethod() { int i = 1; return i; }",
-        0, 1, 17, 1, 25);
+    testRuleOnCode(new RedundantLocalVariableRule(),
+        "int aMethod() { " VIOLATION_START "int i = " VIOLATION_END "1; return i; }");
 }
 
 TEST(RedundantLocalVariableRuleTest, DeclVarFollowedByReturnStmtInANestedCompoundStmt)
 {
-    testRuleOnCode(new RedundantLocalVariableRule(), "int aMethod() { if (1) { int i = 1; return i; } return 0; }",
-        0, 1, 26, 1, 34);
+    testRuleOnCode(new RedundantLocalVariableRule(),
+        "int aMethod() { if (1) { " VIOLATION_START "int i = " VIOLATION_END "1; return i; } return 0; }");
 }
 
 int main(int argc, char **argv)
