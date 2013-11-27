@@ -1,2 +1,3 @@
 BUILD_TEST(ObjCVerifyMustCallSuperRuleTest)
+BUILD_TEST(ObjcVerifyIsEqualHashRuleTest)
 BUILD_TEST(ObjCVerifySubclassMustImplementRuleTest)
