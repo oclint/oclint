@@ -35,7 +35,9 @@ public:
         bool foundHash = false;
         bool foundIsEqual = false;
         
-        for (auto it = implementation->instmeth_begin(), ite = implementation->instmeth_end(); it != ite; ++it) {
+        for (auto it = implementation->instmeth_begin(), ite = implementation->instmeth_end();
+			it != ite;
+			++it) {
             string name = (*it)->getNameAsString();
             if (name == "hash") {
                 foundHash = true;
@@ -47,7 +49,9 @@ public:
         }
         
         if (foundIsEqual && !foundHash) {
-            addViolation(implementation, this, "If you override isEqual you must override hash too.");
+            addViolation(implementation,
+				this,
+				"If you override isEqual you must override hash too.");
         }
         
         return true;
