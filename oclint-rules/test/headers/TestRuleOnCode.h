@@ -229,25 +229,25 @@ inline void testRuleOnCode(const Twine& filename,
 }
 
 inline void testRuleOnCode(RuleBase* rule, std::string code,
-                           const std::vector<std::string>& messages = {})
+    const std::vector<std::string>& messages = {})
 {
-    return testRuleOnCode("input.c", {}, rule, code, messages);
+    testRuleOnCode("input.c", {}, rule, code, messages);
 }
 
 inline void testRuleOnCXXCode(RuleBase* rule, std::string code,
-                              const std::vector<std::string>& messages = {})
+    const std::vector<std::string>& messages = {})
 {
-    return testRuleOnCode("input.cpp", {}, rule, code, messages);
+    testRuleOnCode("input.cpp", {}, rule, code, messages);
 }
 
 inline void testRuleOnCXX11Code(RuleBase* rule, std::string code,
-                                const std::vector<std::string>& messages = {})
+    const std::vector<std::string>& messages = {})
 {
-    return testRuleOnCode("input.cpp", {"-std=c++11"}, rule, code, messages);
+    testRuleOnCode("input.cpp", {"-std=c++11"}, rule, code, messages);
 }
 
 inline void testRuleOnObjCCode(RuleBase* rule, std::string code,
-                               const std::vector<std::string>& messages = {})
+    const std::vector<std::string>& messages = {})
 {
-    return testRuleOnCode("input.m", {}, rule, code, messages);
+    testRuleOnCode("input.m", {}, rule, code, messages);
 }
