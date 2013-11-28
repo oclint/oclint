@@ -20,8 +20,12 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
     public:
         vector<string> analyzeObjC(ObjCMethodDecl *decl)
         {
-            string selfName = decl->getClassInterface()->getNameAsString();
-            return analyzeCommon(selfName, decl);
+            ObjCInterfaceDecl *interface = getClassInterface(decl);
+            if (interface)
+            {
+                return analyzeCommon(interface->getNameAsString(), decl);
+            }
+            return vector<string>();
         }
 
         // vector<string> analyzeCXX(CXXMethodDecl *decl)
@@ -86,14 +90,23 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
             return enviedClasses(selfMessages(selfName));
         }
 
+        ObjCInterfaceDecl *getClassInterface(ObjCMethodDecl *decl)
+        {
+            if (isa<ObjCProtocolDecl>(decl->getDeclContext()))
+            {
+                return nullptr;
+            }
+            return decl->getClassInterface();
+        }
+
         ObjCInterfaceDecl *getSetterInterface(ObjCPropertyRefExpr *node)
         {
             if (node->isExplicitProperty())
             {
                 ObjCPropertyDecl *decl = node->getExplicitProperty();
-                return decl->getSetterMethodDecl()->getClassInterface();
+                return getClassInterface(decl->getSetterMethodDecl());
             }
-            return node->getImplicitPropertySetter()->getClassInterface();
+            return getClassInterface(node->getImplicitPropertySetter());
         }
 
         ObjCInterfaceDecl *getGetterInterface(ObjCPropertyRefExpr *node)
@@ -101,9 +114,9 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
             if (node->isExplicitProperty())
             {
                 ObjCPropertyDecl *decl = node->getExplicitProperty();
-                return decl->getGetterMethodDecl()->getClassInterface();
+                return getClassInterface(decl->getGetterMethodDecl());
             }
-            return node->getImplicitPropertyGetter()->getClassInterface();
+            return getClassInterface(node->getImplicitPropertyGetter());
         }
 
         void countClassName(const string& className)
@@ -113,7 +126,10 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
 
         void countInterface(const ObjCInterfaceDecl *interface)
         {
-            countClassName(interface->getNameAsString());
+            if (interface)
+            {
+                countClassName(interface->getNameAsString());
+            }
         }
 
         void countIvar(ObjCIvarDecl *ivarDecl)
