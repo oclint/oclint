@@ -34,26 +34,30 @@ public:
     bool VisitObjCImplementationDecl(ObjCImplementationDecl *implementation) {
         bool foundHash = false;
         bool foundIsEqual = false;
-        
+
         for (auto it = implementation->instmeth_begin(), ite = implementation->instmeth_end();
-			it != ite;
-			++it) {
+            it != ite;
+            ++it)
+        {
             string name = (*it)->getNameAsString();
-            if (name == "hash") {
+            if (name == "hash")
+            {
                 foundHash = true;
             }
-            
-            if (name == "isEqual:") {
+
+            if (name == "isEqual:")
+            {
                 foundIsEqual = true;
             }
         }
-        
-        if (foundIsEqual && !foundHash) {
+
+        if (foundIsEqual && !foundHash)
+        {
             addViolation(implementation,
-				this,
-				"If you override isEqual you must override hash too.");
+                this,
+                "If you override isEqual you must override hash too.");
         }
-        
+
         return true;
     }
 };
