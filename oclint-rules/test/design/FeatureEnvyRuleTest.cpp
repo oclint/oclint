@@ -235,28 +235,23 @@ TEST(FeatureEnvyRuleTest, ObjcMethodAccessesIvarOfAnotherClass)
       0, 11, 1, 14, 1, "Method f messages B more than self.");
 }
 
-#if defined(__APPLE__) || defined(__MACH__)
-
 TEST(FeatureEnvyRuleTest, MethodDeclaredInProtocol)
 {
     testRuleOnObjCCode(new FeatureEnvyRule(),
-      "\n"
-"@protocol P\n"
-"-(void)protocolMethod;\n"
-"@end\n"
-"@interface A <P>\n@end\n"
-"@interface B\n@end\n"
-"@interface C : B\n@end\n"
-"@implementation C\n"
-"- (void)method:(A *)a\n"
-"{\n"
-"    [a protocolMethod];\n"
-"}\n"
-"@end",
-      0, 12, 1, 15, 1, "Method method: messages A more than self.");
+        "@protocol P\n"
+        "-(void)protocolMethod;\n"
+        "@end\n"
+        "@interface A <P>\n@end\n"
+        "@interface B\n@end\n"
+        "@interface C : B\n@end\n"
+        "@implementation C\n"
+        "- (void)method:(A *)a\n"
+        "{\n"
+        "    [a protocolMethod];\n"
+        "}\n"
+        "@end",
+      0, 11, 1, 14, 1, "Method method: messages A more than self.");
 }
-
-#endif
 
 // TEST(FeatureEnvyRuleTest, CXXMemberCallsOther)
 // {
