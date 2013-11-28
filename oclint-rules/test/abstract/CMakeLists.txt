@@ -1,1 +1,2 @@
 BUILD_TEST(LanguageSelectionTest)
+BUILD_TEST(TagBasedViolationTest)

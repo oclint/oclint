@@ -16,28 +16,27 @@ TEST(UselessParenthesesRuleTest, NoParentheses)
 
 TEST(UselessParenthesesRuleTest, RedundantParenthesesInReturnStmt)
 {
-    testRuleOnCode(new UselessParenthesesRule(), "int m() { return (0); }",
-        0, 1, 18, 1 ,20);
+    testRuleOnCode(new UselessParenthesesRule(),
+        "int m() { return " VIOLATION_START "(0" VIOLATION_END "); }");
 }
 
 TEST(UselessParenthesesRuleTest, RedundantParenthesesInAssignment)
 {
-    testRuleOnCode(new UselessParenthesesRule(), "int m(int x) { int y = (x + 1); return y; }",
-        0, 1, 24, 1 ,30);
+    testRuleOnCode(new UselessParenthesesRule(),
+        "int m(int x) { int y = " VIOLATION_START "(x + 1" VIOLATION_END "); return y; }");
 }
 
 TEST(UselessParenthesesRuleTest, RedundantParenthesesInMultipleAssignments)
 {
-    testRuleOnCode(new UselessParenthesesRule(), "int m(int x) { int a, y = (x + 1), z = (x + 2); return y + z; }",
-        0, 1, 27, 1 ,33);
-    testRuleOnCode(new UselessParenthesesRule(), "int m(int x) { int a, y = (x + 1), z = (x + 2); return y + z; }",
-        1, 1, 40, 1 ,46);
+    testRuleOnCode(new UselessParenthesesRule(),
+        "int m(int x) { int a, y = " VIOLATION_START "(x + 1" VIOLATION_END "), "
+        "z = " VIOLATION_START "(x + 2" VIOLATION_END "); return y + z; }");
 }
 
 TEST(UselessParenthesesRuleTest, RedundantParenthesesInIfCondition)
 {
-    testRuleOnCode(new UselessParenthesesRule(), "int m(int x) { if ((x > 0)) { return x; } return 0; }",
-        0, 1, 20, 1 ,26);
+    testRuleOnCode(new UselessParenthesesRule(),
+        "void m(int x) { if (" VIOLATION_START "(x > 0" VIOLATION_END ")) { return; } }");
 }
 
 TEST(UselessParenthesesRuleTest, ParenthesesInArithmetic)
