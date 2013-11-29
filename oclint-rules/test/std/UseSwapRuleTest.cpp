@@ -11,88 +11,83 @@ TEST(UseSwapRuleTest, PropertyTest)
 
 TEST(UseSwapRuleTest, SwapAssignTmpInStmt)
 {
-    const char* code =
-        "void swap(int a, int b)\n"
+    testRuleOnCode(new UseSwapRule(),
+        "void swap(int* a, int* b)\n"
         "{\n"
         "    int tmp;\n"
         "\n"
-        "    tmp = a;\n"
-        "    a = b;\n"
-        "    b = tmp;\n"
-        "}";
-
-    testRuleOnCode(new UseSwapRule(), code, 0, 5, 5, 7, 9);
+        "    " LOC_START "tmp = *a;\n"
+        "    *a = *b;\n"
+        "    *b = " LOC_END "tmp;\n"
+        "}"
+    );
 }
 
 TEST(UseSwapRuleTest, SwapAssignTmpInDecl)
 {
-    const char* code =
+    testRuleOnCXXCode(new UseSwapRule(),
         "void swap(int& a, int& b)\n"
         "{\n"
-        "    int tmp = a;\n"
+        "    int " LOC_START "tmp = a;\n"
         "\n"
         "    a = b;\n"
-        "    b = tmp;\n"
-        "}";
-
-    testRuleOnCXXCode(new UseSwapRule(), code, 0, 3, 9, 6, 9);
+        "    b = " LOC_END "tmp;\n"
+        "}"
+    );
 }
 
 TEST(UseSwapRuleTest, SwapConstructTmpInDecl)
 {
-    const char* code =
+    testRuleOnCXXCode(new UseSwapRule(),
         "void swap(int& a, int& b)\n"
         "{\n"
-        "    int tmp(a);\n"
+        "    int " LOC_START "tmp(a);\n"
         "\n"
         "    a = b;\n"
-        "    b = tmp;\n"
-        "}";
-
-    testRuleOnCXXCode(new UseSwapRule(), code, 0, 3, 9, 6, 9);
+        "    b = " LOC_END "tmp;\n"
+        "}"
+    );
 }
 
 TEST(UseSwapRuleTest, MultipleDeclarationsLast)
 {
-    const char* code =
+    testRuleOnCXXCode(new UseSwapRule(),
         "void swap(int& a, int& b)\n"
         "{\n"
-        "    int other, tmp(a);\n"
+        "    int other, " LOC_START "tmp(a);\n"
         "\n"
         "    a = b;\n"
-        "    b = tmp;\n"
-        "}";
-
-    testRuleOnCXXCode(new UseSwapRule(), code, 0, 3, 16, 6, 9);
+        "    b = " LOC_END "tmp;\n"
+        "}"
+    );
 }
 
 TEST(UseSwapRuleTest, MultipleDeclarations)
 {
-    const char* code =
+    testRuleOnCXXCode(new UseSwapRule(),
         "void swap(int& a, int& b)\n"
         "{\n"
-        "    int tmp(a), other;\n"
+        "    int " LOC_START "tmp(a), other;\n"
         "\n"
         "    a = b;\n"
-        "    b = tmp;\n"
-        "}";
-
-    testRuleOnCXXCode(new UseSwapRule(), code, 0, 3, 9, 6, 9);
+        "    b = " LOC_END "tmp;\n"
+        "}"
+    );
 }
 
 TEST(UseSwapRuleTest, MoveVersion)
 {
-    const char* code =
+
+    testRuleOnCXX11Code(new UseSwapRule(),
         "void swap(int& a, int& b)\n"
         "{\n"
         "    int tmp;\n"
         "\n"
-        "    tmp = static_cast<int&&>(a);\n"
+        "    " LOC_START "tmp = static_cast<int&&>(a);\n"
         "    a = static_cast<int&&>(b);\n"
-        "    b = static_cast<int&&>(tmp);\n"
-        "}";
-
-    testRuleOnCXX11Code(new UseSwapRule(), code, 0, 5, 5, 7, 31);
+        "    b = static_cast<int&&>(tmp" LOC_END ");\n"
+        "}"
+    );
 }
 
 // TODO: manage interleaved swap
@@ -102,13 +97,13 @@ TEST(UseSwapRuleTest, Interleaved_NotYetSupported)
     const char* code =
         "void swap2(int& a1, int& b1, int& a2, int& b2)\n"
         "{\n"
-        "    int tmp1(a1);\n"
-        "    int tmp2(a2);\n"
+        "    int " /* LOC_START */ "tmp1(a1);\n"
+        "    int " /* LOC_START */ "tmp2(a2);\n"
         "\n"
         "    a1 = b1;\n"
         "    a2 = b2;\n"
-        "    b1 = tmp1;\n"
-        "    b2 = tmp2;\n"
+        "    b1 = " /* LOC_END */ "tmp1;\n"
+        "    b2 = " /* LOC_END */ "tmp2;\n"
         "}";
 
     testRuleOnCXXCode(new UseSwapRule(), code);
