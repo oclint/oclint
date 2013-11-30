@@ -8,6 +8,7 @@ SET(LIST_OF_RULES
     ParameterReassignment
     PreferEarlyExit
     SwitchStatementsShouldHaveDefault
+    CoveredSwitchStatementsDontNeedDefault
     TooFewBranchesInSwitchStatement
     )
 
