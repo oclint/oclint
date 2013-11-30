@@ -1,6 +1,7 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 #include "oclint/util/ASTUtil.h"
+#include <clang/AST/Attr.h>
 
 using namespace std;
 using namespace clang;
@@ -86,6 +87,30 @@ private:
         return varDecl->getNameAsString() != "";
     }
 
+    bool isObjCMethodWithIBActionAttribute(ParmVarDecl *decl)
+    {
+        DeclContext *lexicalContext = decl->getLexicalDeclContext();
+        while (lexicalContext)
+        {
+            if (isObjCMethodWithIBActionAttribute(lexicalContext))
+            {
+                return true;
+            }
+            lexicalContext = lexicalContext->getLexicalParent();
+        }
+        return false;
+    }
+    
+    bool isObjCMethodWithIBActionAttribute(DeclContext *context)
+    {
+        ObjCMethodDecl *decl = dyn_cast<ObjCMethodDecl>(context);
+        if (decl && decl->hasAttr<clang::IBActionAttr>())
+        {
+            return true;
+        }
+        return false;
+    }
+
 public:
     virtual const string name() const
     {
@@ -102,7 +127,8 @@ public:
         if (!varDecl->isUsed() &&
             hasVariableName(varDecl) &&
             isInNonTemplateFunction(varDecl) &&
-            !isExistingByContract(varDecl))
+            !isExistingByContract(varDecl) &&
+            !isObjCMethodWithIBActionAttribute(varDecl))
         {
             addViolation(varDecl, this);
         }
