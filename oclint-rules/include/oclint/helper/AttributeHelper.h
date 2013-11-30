@@ -9,7 +9,5 @@ namespace oclint { class RuleBase; }
 bool declHasOCLintAttribute(const clang::Decl *decl, const std::string& attributeName);
 bool declHasActionAttribute(
     const clang::Decl *decl, const std::string& action, const oclint::RuleBase& rule);
-bool ObjCMethodDeclHasActionAttribute(
-    const clang::ObjCMethodDecl *decl, const std::string& action, const oclint::RuleBase& rule);
 
 #endif

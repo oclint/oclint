@@ -6,7 +6,3 @@ bool declHasEnforceAttribute(const clang::Decl *decl, const oclint::RuleBase& ru
     return declHasActionAttribute(decl, "enforce", rule);
 }
 
-bool ObjCMethodHasEnforceAttribute(const clang::ObjCMethodDecl *decl,
-    const oclint::RuleBase& rule) {
-    return ObjCMethodDeclHasActionAttribute(decl, "enforce", rule);
-}

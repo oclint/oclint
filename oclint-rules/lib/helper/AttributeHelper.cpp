@@ -29,7 +29,7 @@ bool declHasOCLintAttribute(const clang::Decl *decl, const std::string& attribut
     return declHasAttribute(decl, "oclint:" + attributeName);
 }
 
-bool declHasActionAttribute(
+bool declHasActionAttributeImpl (
     const clang::Decl *decl, const std::string& action, const oclint::RuleBase& rule) {
     return declHasOCLintAttribute(decl, action + "[" + rule.attributeName() + "]");
 }
@@ -41,22 +41,23 @@ bool ObjCMethodDeclHasActionAttribute(
     }
 
     // Check the method directly
-    if(declHasActionAttribute(decl, action, rule)) {
+    if(declHasActionAttributeImpl(decl, action, rule)) {
         return true;
     }
 
     // That failed, check if it has a property declaration and use that
     if(decl->isPropertyAccessor() &&
-       declHasActionAttribute(decl->findPropertyDecl(), action, rule)) {
+       declHasActionAttributeImpl(decl->findPropertyDecl(), action, rule)) {
         return true;
     }
   
-     // Check if the method comes from a protocol, because then it doesn't have a class
-     // interface
-     const auto protocol = clang::dyn_cast<clang::ObjCProtocolDecl>(decl->getDeclContext());
-     if(protocol) {
-         return declHasActionAttribute(protocol->lookupMethod(decl->getSelector(), decl->isInstanceMethod()), action, rule);
-     }
+    // Check if the method comes from a protocol, because then it doesn't have a class
+    // interface
+    const auto protocol = clang::dyn_cast<clang::ObjCProtocolDecl>(decl->getDeclContext());
+    if(protocol) {
+       const auto method = protocol->lookupMethod(decl->getSelector(), decl->isInstanceMethod());
+       return declHasActionAttributeImpl(method, action, rule);
+    }
  
     // That failed, check if it has a redeclaration in a category and use that
     const auto interface = decl->getClassInterface();
@@ -70,7 +71,7 @@ bool ObjCMethodDeclHasActionAttribute(
              ++it) {
         clang::ObjCMethodDecl* categoryMethodDecl =
             (*it)->getMethod(decl->getSelector(), decl->isInstanceMethod());
-        if(declHasActionAttribute(categoryMethodDecl, action, rule)) {
+        if(declHasActionAttributeImpl(categoryMethodDecl, action, rule)) {
             return true;
         }
     }
@@ -78,4 +79,14 @@ bool ObjCMethodDeclHasActionAttribute(
 
 }
 
+bool declHasActionAttribute(
+    const clang::Decl *decl, const std::string& action, const oclint::RuleBase& rule) {
+    const clang::ObjCMethodDecl* method = clang::dyn_cast<clang::ObjCMethodDecl>(decl);
+    if(method) {
+        return ObjCMethodDeclHasActionAttribute(method, action, rule);
+    }
+    else {
+        return declHasActionAttributeImpl(decl, action, rule);
+    }
+}
 

@@ -24,7 +24,7 @@ namespace {
 
         bool VisitObjCMessageExpr(ObjCMessageExpr* expr) {
             const auto method = expr->getMethodDecl();
-            if(!ObjCMethodHasEnforceAttribute(method, _rule)) {
+            if(!declHasEnforceAttribute(method, _rule)) {
                 return true;
             }
 
