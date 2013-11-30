@@ -1,0 +1,50 @@
+#include "TestHeaders.h"
+
+#include "rules/convention/CoveredSwitchStatementsDontNeedDefaultRule.cpp"
+
+TEST(CoveredSwitchStatementsDontNeedDefaultRuleTest, PropertyTest)
+{
+    CoveredSwitchStatementsDontNeedDefaultRule rule;
+    EXPECT_EQ(3, rule.priority());
+    EXPECT_EQ("switch statements don't need default when fully covered", rule.name());
+}
+
+TEST(CoveredSwitchStatementsDontNeedDefaultRuleTest, SwitchHasDefaultButNotCovered)
+{
+    testRuleOnCode(new CoveredSwitchStatementsDontNeedDefaultRule(), "typedef enum { \n\
+value1 = 0,                               \n\
+value2 = 1,                               \n\
+value3 = 2                                \n\
+} eValues;                                \n\
+void aMethod(eValues a) { switch(a){      \n\
+case value1:                              \n\
+\tbreak;                                  \n\
+case value2:                              \n\
+\tbreak;                                  \n\
+default:                                  \n\
+\tbreak;                                  \n\
+} }");
+}
+
+TEST(CoveredSwitchStatementsDontNeedDefaultRuleTest, SwitchHasDefaultButCovered)
+{
+    testRuleOnCode(new CoveredSwitchStatementsDontNeedDefaultRule(), "typedef enum { \n\
+value1 = 0,                               \n\
+value2 = 1                                \n\
+} eValues;                                \n\
+void aMethod(eValues a) { switch(a){      \n\
+case value1:                              \n\
+\tbreak;                                  \n\
+case value2:                              \n\
+\tbreak;                                  \n\
+default:                                  \n\
+\tbreak;                                  \n\
+} }",
+        0, 5, 27, 12, 1);
+}
+
+int main(int argc, char **argv)
+{
+    ::testing::InitGoogleMock(&argc, argv);
+    return RUN_ALL_TESTS();
+}
