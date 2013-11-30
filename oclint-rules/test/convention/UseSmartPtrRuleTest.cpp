@@ -7,81 +7,73 @@ TEST(UseSmartPtrRuleTest, PropertyTest)
     UseSmartPtrRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("use smart pointer", rule.name());
+    EXPECT_EQ(LANG_CXX, rule.supportedLanguages());
 }
 
 TEST(UseSmartPtrRuleTest, GlobalDecl)
 {
     const char* codes[] = {
-    //            1         2
-    //   123456789012345678901234
-        "char* c = new char('*');",
-        "char* c = new         char;",
-        "char* c = new  char[42];",
+        LOC_START "char* c = new char('*'" LOC_END ");",
+        LOC_START "char* c = new " LOC_END "char;",
+        LOC_START "char* c = new char[42" LOC_END "];",
     };
 
     for (auto code : codes)
     {
-        testRuleOnCXXCode(new UseSmartPtrRule(), code, 0, 1, 1, 1, 23);
+        testRuleOnCXXCode(new UseSmartPtrRule(), code);
     }
 }
 
 TEST(UseSmartPtrRuleTest, LocalDecl)
 {
     const char* codes[] = {
-    //            1         2         3
-    //   1234567890123456789012345678901234
-        "void m() { char* c = new char('*'); }",
-        "void m() { char* c = new         char; }",
-        "void m() { char* c = new  char[42]; }",
+        "void m() { " LOC_START "char* c = new char('*'" LOC_END "); }",
+        "void m() { " LOC_START "char* c = new " LOC_END "char; }",
+        "void m() { " LOC_START "char* c = new char[42" LOC_END "]; }"
     };
 
     for (auto code : codes)
     {
-        testRuleOnCXXCode(new UseSmartPtrRule(), code, 0, 1, 12, 1, 34);
+        testRuleOnCXXCode(new UseSmartPtrRule(), code);
     }
 }
 
 TEST(UseSmartPtrRuleTest, Assign)
 {
     const char* codes[] = {
-    //            1         2         3
-    //   1234567890123456789012345678901234567
-        "void m() { char* c; c = new char('*'); }",
-        "void m() { char* c; c = new         char; }",
-        "void m() { char* c; c = new  char[42]; }",
+        "void m() { char* c; " LOC_START "c = new char('*'" LOC_END "); }",
+        "void m() { char* c; " LOC_START "c = new " LOC_END "char; }",
+        "void m() { char* c; " LOC_START "c = new char[42" LOC_END "]; }"
     };
 
     for (auto code : codes)
     {
-        testRuleOnCXXCode(new UseSmartPtrRule(), code, 0, 1, 21, 1, 37);
+        testRuleOnCXXCode(new UseSmartPtrRule(), code);
     }
 }
 
 TEST(UseSmartPtrRuleTest, Return)
 {
     const char* codes[] = {
-    //            1         2         3
-    //   1234567890123456789012345678901
-        "int* m() { return new int('*'); }",
-        "int* m() { return new        int; }",
-        "int* m() { return new  int[42]; }",
+        "int* m() { " LOC_START "return new int('*'" LOC_END "); }",
+        "int* m() { " LOC_START "return new " LOC_END "int; }",
+        "int* m() { " LOC_START "return new int[42" LOC_END "]; }"
     };
 
     for (auto code : codes)
     {
-        testRuleOnCXXCode(new UseSmartPtrRule(), code, 0, 1, 12, 1, 30);
+        testRuleOnCXXCode(new UseSmartPtrRule(), code);
     }
 }
 
 TEST(UseSmartPtrRuleTest, MySmartPtr)
 {
-    const std::string smartPtrCode =
+    testRuleOnCXXCode(new UseSmartPtrRule(),
         "template <typename T> struct my_auto_ptr {\n"
         "    my_auto_ptr(T*);\n"
         "    ~my_auto_ptr();\n"
         "    void operator=(T*);\n"
-        "};\n";
-    const char* code =
+        "};\n"
         "my_auto_ptr<char> global1(new char);\n"
         "my_auto_ptr<char> global2 = new char;\n"
         "void f()\n"
@@ -90,34 +82,28 @@ TEST(UseSmartPtrRuleTest, MySmartPtr)
         "    my_auto_ptr<char> autoptr2 = new char;\n"
         "    autoptr2 = new char;\n"
         "}\n"
-        "my_auto_ptr<char> foo_return_2() { return new char; }\n";
-
-    testRuleOnCXXCode(new UseSmartPtrRule(), smartPtrCode + code);
+        "my_auto_ptr<char> foo_return() { return new char; }\n"
+    );
 }
 
 TEST(UseSmartPtrRuleTest, MultipleDecl)
 {
-    const char* codes[] = {
-    //            1         2         3         4         5         6
-    //   12345678901234567890123456789012345678901234567890123456789012345
-        "           int *p1 = new int, *p2 = new int(42), *p3 = new int[42];",
-        "void f() { int *p1 = new int, *p2 = new int(42), *p3 = new int[42]; }"
-    };
-
-    for (auto code : codes)
-    {
-        testRuleOnCXXCode(new UseSmartPtrRule(), code, 0, 1, 12, 1, 26);
-        testRuleOnCXXCode(new UseSmartPtrRule(), code, 1, 1, 12, 1, 47);
-        testRuleOnCXXCode(new UseSmartPtrRule(), code, 2, 1, 12, 1, 66);
-    }
+    testRuleOnCXXCode(new UseSmartPtrRule(),
+        LOC_START LOC_START LOC_START "int *p1 = new " LOC_END
+        "int, *p2 = new int(42" LOC_END "), *p3 = new int[42" LOC_END "];"
+    );
+    testRuleOnCXXCode(new UseSmartPtrRule(),
+        "void f() { " LOC_START LOC_START LOC_START "int *p1 = new " LOC_END
+        "int, *p2 = new int(42" LOC_END "), *p3 = new int[42" LOC_END "]; }"
+    );
 }
 
-TEST(UseSmartPtrRuleTest, FunctionCall_UNSUPPORTED) // make_shared should be allow...
+TEST(UseSmartPtrRuleTest, FunctionCall)
 {
     const char* codes[] = {
-        "void f(int*); void f2() { f(new int); }",
-        "void f(int*); void f2() { f(new int(42)); }",
-        "void f(int*); void f2() { f(new int[42]); }",
+        "void f(int*); void f2() { " LOC_START "f(new int" LOC_END "); }",
+        "void f(int*); void f2() { " LOC_START "f(new int(42)" LOC_END "); }",
+        "void f(int*); void f2() { " LOC_START "f(new int[42]" LOC_END "); }",
     };
 
     for (auto code : codes)
@@ -142,25 +128,23 @@ TEST(UseSmartPtrRuleTest, MethodCall)
 
 TEST(UseSmartPtrRuleTest, TagNew)
 {
-    const char* code =
+    testRuleOnCXXCode(new UseSmartPtrRule(),
         "struct Tag {};\n"
         "struct C { void* operator new(unsigned size, Tag); };\n"
         "void f1(Tag tag) { C* c = new (tag) C; }\n"
-        "C* f2(Tag tag) { return new (tag) C; }";
-
-    testRuleOnCXXCode(new UseSmartPtrRule(), code);
+        "C* f2(Tag tag) { return new (tag) C; }"
+    );
 }
 
 TEST(UseSmartPtrRuleTest, PlacementNew)
 {
-    const char* code =
-        "void* operator new (unsigned size, void* where);\n" //"#include <memory>\n"
+    testRuleOnCXXCode(new UseSmartPtrRule(),
+        "void* operator new (unsigned size, void* where);\n"
         "void f() {\n"
         "    char buffer[sizeof(int)];\n"
         "    int *p = new (buffer) int(42);\n"
-        "}";
-
-    testRuleOnCXXCode(new UseSmartPtrRule(), code);
+        "}"
+    );
 }
 
 int main(int argc, char **argv)

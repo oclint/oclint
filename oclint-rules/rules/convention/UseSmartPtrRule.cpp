@@ -22,9 +22,16 @@ static bool isASimpleCXXNewExpr(const Expr& expr)
     return newExpr && newExpr->getNumPlacementArgs() == 0;
 }
 
-// TODO:
-// - function call: void foo(int*); f(new int);
-// - method call. But avoid to check constructor/operator= for custom smart ptr.
+static bool isAFunction(const CallExpr& callExpr)
+{
+    return !isa<CXXOperatorCallExpr>(&callExpr)
+        && !isa<CXXMemberCallExpr>(&callExpr)
+        && !isa<CUDAKernelCallExpr>(&callExpr)
+        && !isa<UserDefinedLiteral>(&callExpr);
+}
+
+// TODO: - method call (of no custom smart ptr classes).
+// TODO: How to differenciate 'smartPtr' class from normal class.
 
 class UseSmartPtrRule : public oclint::AbstractASTVisitorRule<UseSmartPtrRule>
 {
@@ -42,9 +49,14 @@ public:
         return 3;
     }
 
+    virtual unsigned int supportedLanguages() const
+    {
+        return LANG_CXX;
+    }
+
     //  T* a = new T;
     //  T* a(new T);
-    bool VisitVarDecl(VarDecl* varDecl)
+    bool VisitVarDecl(const VarDecl* varDecl)
     {
         if (varDecl == nullptr)
         {
@@ -65,7 +77,7 @@ public:
     }
 
     // (T* a;) a = new T;
-    bool VisitBinaryOperator(BinaryOperator* binOp)
+    bool VisitBinaryOperator(const BinaryOperator* binOp)
     {
         if (binOp == nullptr || binOp->getOpcode() != BO_Assign)
         {
@@ -86,8 +98,8 @@ public:
         return true;
     }
 
-    // (T* foo(...)) { return new T; }
-    bool VisitReturnStmt(ReturnStmt* returnStmt)
+    // (T* foo(..)) { return new T; }
+    bool VisitReturnStmt(const ReturnStmt* returnStmt)
     {
         if (returnStmt == nullptr)
         {
@@ -102,6 +114,31 @@ public:
         }
         return true;
     }
+
+    // void foo(int*); foo(new int);
+    bool VisitCallExpr(const CallExpr* callExpr)
+    {
+        if (callExpr == nullptr || !isAFunction(*callExpr))
+        {
+            return true;
+        }
+        for (auto it = callExpr->arg_begin(), ite = callExpr->arg_end(); it != ite; ++it)
+        {
+            const Expr* arg = *it;
+            if (arg == nullptr)
+            {
+                continue;
+            }
+            arg = ignoreCastExpr(*arg);
+            if (arg && isASimpleCXXNewExpr(*arg))
+            {
+                addViolation(callExpr, this);
+                break;
+            }
+        }
+        return true;
+    }
+
 };
 
 oclint::RuleSet UseSmartPtrRule::rules(new UseSmartPtrRule);
