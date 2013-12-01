@@ -44,4 +44,5 @@ public:
     }
 };
 
-RuleSet CoveredSwitchStatementsDontNeedDefaultRule::rules(new CoveredSwitchStatementsDontNeedDefaultRule());
+RuleSet CoveredSwitchStatementsDontNeedDefaultRule::rules(
+    new CoveredSwitchStatementsDontNeedDefaultRule());
