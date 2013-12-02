@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace clang { class Decl; class ObjCMethodDecl; }
+namespace clang { class Decl; }
 namespace oclint { class RuleBase; }
 
 bool declHasEnforceAttribute(const clang::Decl *decl, const oclint::RuleBase& rule);

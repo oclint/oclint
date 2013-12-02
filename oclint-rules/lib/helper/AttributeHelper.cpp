@@ -81,7 +81,7 @@ bool ObjCMethodDeclHasActionAttribute(
 
 bool declHasActionAttribute(
     const clang::Decl *decl, const std::string& action, const oclint::RuleBase& rule) {
-    const clang::ObjCMethodDecl* method = clang::dyn_cast<clang::ObjCMethodDecl>(decl);
+    const clang::ObjCMethodDecl* method = clang::dyn_cast_or_null<clang::ObjCMethodDecl>(decl);
     if(method) {
         return ObjCMethodDeclHasActionAttribute(method, action, rule);
     }

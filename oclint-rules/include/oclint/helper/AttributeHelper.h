@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace clang { class Decl; class ObjCMethodDecl; }
+namespace clang { class Decl; }
 namespace oclint { class RuleBase; }
 
 bool declHasOCLintAttribute(const clang::Decl *decl, const std::string& attributeName);
