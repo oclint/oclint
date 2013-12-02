@@ -194,7 +194,5 @@ void oclint::option::ConfigFile::mapping(llvm::yaml::IO& inputOutput)
     inputOutput.mapOptional("max-priority-1", _maxP1);
     inputOutput.mapOptional("max-priority-2", _maxP2);
     inputOutput.mapOptional("max-priority-3", _maxP3);
-    // Can't use bool here, because we need to detect the unset state.
-    // Optional<bool> does not work, either, because it doesn't support ==.
-    inputOutput.mapOptional("enable-clang-static-analyzer", _clangChecker, TriState::UNDEFINED);
+    inputOutput.mapOptional("enable-clang-static-analyzer", _clangChecker);
 }
