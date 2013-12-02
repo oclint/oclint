@@ -89,6 +89,10 @@ private:
 
     bool isObjCMethodWithIBActionAttribute(ParmVarDecl *decl)
     {
+        if (!decl)
+        {
+            return false;
+        }
         DeclContext *lexicalContext = decl->getLexicalDeclContext();
         while (lexicalContext)
         {
