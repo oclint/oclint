@@ -4,6 +4,8 @@
 #include <clang/AST/Attr.h>
 #include "oclint/RuleBase.h"
 
+#include <iostream>
+
 bool declHasAttribute(const clang::Decl *decl, const std::string& attributeName) {
     if (!decl)
     {
@@ -59,7 +61,12 @@ bool ObjCMethodDeclHasActionAttribute(
        return declHasActionAttributeImpl(method, action, rule);
     }
  
-    // That failed, check if it has a redeclaration in a category and use that
+    // If we're already in a category, we're done.
+    if(clang::dyn_cast<clang::ObjCCategoryDecl>(decl->getDeclContext())) {
+        return false;
+    }
+
+    // But if we're not, check if it has a redeclaration in a category and use that
     const auto interface = decl->getClassInterface();
     if(!interface) {
         return false;
@@ -71,7 +78,7 @@ bool ObjCMethodDeclHasActionAttribute(
              ++it) {
         clang::ObjCMethodDecl* categoryMethodDecl =
             (*it)->getMethod(decl->getSelector(), decl->isInstanceMethod());
-        if(declHasActionAttributeImpl(categoryMethodDecl, action, rule)) {
+        if(declHasActionAttribute(categoryMethodDecl, action, rule)) {
             return true;
         }
     }
