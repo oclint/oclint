@@ -25,7 +25,7 @@ public:
 
     unsigned int supportedLanguages() const
     {
-        return LANG_CXX;
+        return oclint::LANG_CXX;
     }
 
     bool VisitCXXRecordDecl(const CXXRecordDecl* cxxRecordDecl)
@@ -42,7 +42,8 @@ public:
 private:
     static std::string getMessageViolation(const CXXRecordDecl& cxxRecordDecl)
     {
-        return "~" + cxxRecordDecl.getNameAsString() + "() should be virtual";
+        const std::string& className = cxxRecordDecl.getNameAsString();
+        return "class " + className + " should have a virtual destructor ~" + className + "()";
     }
 
 private:

@@ -26,14 +26,14 @@ TEST(DestructorOfVirtualClassRuleTest, NonVirtualDestructor)
 {
     testRuleOnCXXCode(new DestructorOfVirtualClassRule(),
         VIOLATION_START "class C { public: ~C(); virtual void f(); " VIOLATION_END "};",
-        {"~C() should be virtual"});
+        {"class C should have a virtual destructor ~C()"});
 }
 
 TEST(DestructorOfVirtualClassRuleTest, NoDestructor)
 {
     testRuleOnCXXCode(new DestructorOfVirtualClassRule(),
         VIOLATION_START "class C { public: virtual void f(); " VIOLATION_END "};",
-        {"~C() should be virtual"});
+        {"class C should have a virtual destructor ~C()"});
 }
 
 TEST(DestructorOfVirtualClassRuleTest, BrokenDerivatedFromBrokenVirtualClass)
@@ -41,8 +41,8 @@ TEST(DestructorOfVirtualClassRuleTest, BrokenDerivatedFromBrokenVirtualClass)
     testRuleOnCXXCode(new DestructorOfVirtualClassRule(),
         VIOLATION_START "class Base { public: virtual void f(); " VIOLATION_END "};\n"
         VIOLATION_START "class C : public Base { public: ~C(); " VIOLATION_END "};",
-        {"~Base() should be virtual",
-         "~C() should be virtual"});
+        {"class Base should have a virtual destructor ~Base()",
+         "class C should have a virtual destructor ~C()"});
 }
 
 TEST(DestructorOfVirtualClassRuleTest, FixedDerivatedFromBrokenVirtualClass)
@@ -50,7 +50,7 @@ TEST(DestructorOfVirtualClassRuleTest, FixedDerivatedFromBrokenVirtualClass)
     testRuleOnCXXCode(new DestructorOfVirtualClassRule(),
         VIOLATION_START "class Base { public: virtual void f(); " VIOLATION_END "};\n"
         "class C : public Base { public: virtual ~C(); };",
-        {"~Base() should be virtual"});
+        {"class Base should have a virtual destructor ~Base()"});
 }
 
 TEST(DestructorOfVirtualClassRuleTest, ImplicitVirtualDestructor)
