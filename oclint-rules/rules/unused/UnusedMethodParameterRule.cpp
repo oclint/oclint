@@ -103,16 +103,14 @@ private:
             lexicalContext = lexicalContext->getLexicalParent();
         }
         return false;
+        // TODO: this pattern appears at various places in our codebase
+        // we might be able to remove the duplications by leverage C++11 lambda
     }
-    
+
     bool isObjCMethodWithIBActionAttribute(DeclContext *context)
     {
         ObjCMethodDecl *decl = dyn_cast<ObjCMethodDecl>(context);
-        if (decl && decl->hasAttr<clang::IBActionAttr>())
-        {
-            return true;
-        }
-        return false;
+        return decl && decl->hasAttr<clang::IBActionAttr>();
     }
 
 public:
