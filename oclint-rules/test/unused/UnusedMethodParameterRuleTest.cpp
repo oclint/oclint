@@ -183,6 +183,33 @@ TEST(UnusedMethodParameterRuleTest, ObjCMethodImplementedForProtocolShouldBeIgno
 @implementation AnInterface\n- (void)aMethod:(int)a {}\n@end");
 }
 
+TEST(UnusedMethodParameterRuleTest, ObjCMethodWithIBActionAttribute)
+{
+    testRuleOnObjCCode(new UnusedMethodParameterRule(), "@interface AnInterface\n\
+@end                               \n\
+@interface AClass : AnInterface    \n\
+- (IBAction)aMethod:(id)sender;    \n\
+@end                               \n\
+@implementation AClass             \n\
+- (IBAction)aMethod:(id)sender {}  \n\
+@end");
+}
+
+TEST(UnusedMethodParameterRuleTest, ObjCMethodWithIBActionAttributeMixed)
+{
+    testRuleOnObjCCode(new UnusedMethodParameterRule(), "@interface AnInterface\n\
+@end                               \n\
+@interface AClass : AnInterface    \n\
+- (IBAction)aMethod:(id)sender;    \n\
+- (void)bMethod:(int)a;         \n\
+@end                               \n\
+@implementation AClass             \n\
+- (IBAction)aMethod:(id)sender {}  \n\
+- (void)bMethod:(int)a {}       \n\
+@end",
+        0, 9, 18, 9, 22);
+}
+
 #if defined(__APPLE__) || defined(__MACH__)
 TEST(UnusedMethodParameterRuleTest, BlockDeclarationShouldBeIgnored)
 {
