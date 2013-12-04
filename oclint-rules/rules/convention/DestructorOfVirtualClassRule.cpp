@@ -10,7 +10,8 @@ static bool hasVirtualDestructor(const CXXRecordDecl& cxxRecordDecl)
     return cxxDestructorDecl != nullptr && cxxDestructorDecl->isVirtual();
 }
 
-class DestructorOfVirtualClassRule : public oclint::AbstractASTVisitorRule<DestructorOfVirtualClassRule>
+class DestructorOfVirtualClassRule :
+    public oclint::AbstractASTVisitorRule<DestructorOfVirtualClassRule>
 {
 public:
     virtual const std::string name() const
