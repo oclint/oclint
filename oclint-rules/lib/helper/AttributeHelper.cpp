@@ -29,25 +29,25 @@ bool declHasOCLintAttribute(const clang::Decl *decl, const std::string& attribut
     return declHasAttribute(decl, "oclint:" + attributeName);
 }
 
-bool declHasActionAttributeImpl (
+bool baseDeclHasActionAttributeImpl (
     const clang::Decl *decl, const std::string& action, const oclint::RuleBase& rule) {
     return declHasOCLintAttribute(decl, action + "[" + rule.attributeName() + "]");
 }
 
-bool ObjCMethodDeclHasActionAttribute(
+bool objCMethodDeclHasActionAttributeImpl(
     const clang::ObjCMethodDecl *decl, const std::string& action, const oclint::RuleBase& rule) {
     if(decl == nullptr) {
         return false;
     }
 
     // Check the method directly
-    if(declHasActionAttributeImpl(decl, action, rule)) {
+    if(baseDeclHasActionAttributeImpl(decl, action, rule)) {
         return true;
     }
 
     // That failed, check if it has a property declaration and use that
     if(decl->isPropertyAccessor() &&
-       declHasActionAttributeImpl(decl->findPropertyDecl(), action, rule)) {
+       baseDeclHasActionAttributeImpl(decl->findPropertyDecl(), action, rule)) {
         return true;
     }
   
@@ -56,7 +56,7 @@ bool ObjCMethodDeclHasActionAttribute(
     const auto protocol = clang::dyn_cast<clang::ObjCProtocolDecl>(decl->getDeclContext());
     if(protocol) {
        const auto method = protocol->lookupMethod(decl->getSelector(), decl->isInstanceMethod());
-       return declHasActionAttributeImpl(method, action, rule);
+       return baseDeclHasActionAttributeImpl(method, action, rule);
     }
  
     // If we're already in a category, we're done.
@@ -88,10 +88,10 @@ bool declHasActionAttribute(
     const clang::Decl *decl, const std::string& action, const oclint::RuleBase& rule) {
     const clang::ObjCMethodDecl* method = clang::dyn_cast_or_null<clang::ObjCMethodDecl>(decl);
     if(method) {
-        return ObjCMethodDeclHasActionAttribute(method, action, rule);
+        return objCMethodDeclHasActionAttributeImpl(method, action, rule);
     }
     else {
-        return declHasActionAttributeImpl(decl, action, rule);
+        return baseDeclHasActionAttributeImpl(decl, action, rule);
     }
 }
 
