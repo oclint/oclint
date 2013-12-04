@@ -1,5 +1,6 @@
 BUILD_TEST(AvoidBranchingStatementAsLastInLoopRuleTest)
 BUILD_TEST(DefaultLabelNotLastInSwitchStatementRuleTest)
+BUILD_TEST(DestructorOfVirtualClassRuleTest)
 BUILD_TEST(InvertedLogicRuleTest)
 BUILD_TEST(MissingBreakInSwitchStatementRuleTest)
 BUILD_TEST(NonCaseLabelInSwitchStatementRuleTest)
