@@ -4,8 +4,6 @@
 #include <clang/AST/Attr.h>
 #include "oclint/RuleBase.h"
 
-#include <iostream>
-
 bool declHasAttribute(const clang::Decl *decl, const std::string& attributeName) {
     if (!decl)
     {
