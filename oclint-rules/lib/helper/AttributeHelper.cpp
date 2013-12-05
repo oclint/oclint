@@ -34,6 +34,32 @@ bool baseDeclHasActionAttributeImpl (
     return declHasOCLintAttribute(decl, action + "[" + rule.attributeName() + "]");
 }
 
+bool objCMethodDeclHasAttributeFromCategory(
+    const clang::ObjCMethodDecl *decl, const std::string& action, const oclint::RuleBase& rule) {
+    // If the method is already from a category, we don't need to traverse any other categories
+    if(clang::dyn_cast<clang::ObjCCategoryDecl>(decl->getDeclContext())) {
+        return false;
+    }
+
+    // But if we're not, check if it has a redeclaration in a category and use that
+    const auto interface = decl->getClassInterface();
+    if(!interface) {
+        return false;
+    }
+
+    for(auto it = interface->visible_categories_begin(),
+             ite = interface->visible_categories_end();
+             it != ite;
+             ++it) {
+        clang::ObjCMethodDecl* categoryMethodDecl =
+            (*it)->getMethod(decl->getSelector(), decl->isInstanceMethod());
+        if(declHasActionAttribute(categoryMethodDecl, action, rule)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool objCMethodDeclHasActionAttributeImpl(
     const clang::ObjCMethodDecl *decl, const std::string& action, const oclint::RuleBase& rule) {
     if(decl == nullptr) {
@@ -59,28 +85,7 @@ bool objCMethodDeclHasActionAttributeImpl(
        return baseDeclHasActionAttributeImpl(method, action, rule);
     }
  
-    // If we're already in a category, we're done.
-    if(clang::dyn_cast<clang::ObjCCategoryDecl>(decl->getDeclContext())) {
-        return false;
-    }
-
-    // But if we're not, check if it has a redeclaration in a category and use that
-    const auto interface = decl->getClassInterface();
-    if(!interface) {
-        return false;
-    }
-
-    for(auto it = interface->visible_categories_begin(),
-             ite = interface->visible_categories_end();
-             it != ite;
-             ++it) {
-        clang::ObjCMethodDecl* categoryMethodDecl =
-            (*it)->getMethod(decl->getSelector(), decl->isInstanceMethod());
-        if(declHasActionAttribute(categoryMethodDecl, action, rule)) {
-            return true;
-        }
-    }
-    return false;
+    return objCMethodDeclHasAttributeFromCategory(decl, action, rule);
 
 }
 
@@ -90,8 +95,6 @@ bool declHasActionAttribute(
     if(method) {
         return objCMethodDeclHasActionAttributeImpl(method, action, rule);
     }
-    else {
-        return baseDeclHasActionAttributeImpl(decl, action, rule);
-    }
+    return baseDeclHasActionAttributeImpl(decl, action, rule);
 }
 
