@@ -1,5 +1,6 @@
 SET(LIST_OF_RULES
     AvoidBranchingStatementAsLastInLoop
+    BaseClassDestructorShouldBeVirtualOrProtected
     DefaultLabelNotLastInSwitchStatement
     DestructorOfVirtualClass
     InvertedLogic
