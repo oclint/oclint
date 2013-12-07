@@ -17,13 +17,13 @@ TEST(UnusedLocalVariableRuleTest, UsedLocalVariable)
 TEST(UnusedLocalVariableRuleTest, UnusedLocalVariable)
 {
     testRuleOnCode(new UnusedLocalVariableRule(), "void aMethod() { int a; }",
-        0, 1, 18, 1, 22);
+        0, 1, 18, 1, 22, "The local variable 'a' is unused.");
 }
 
 TEST(UnusedLocalVariableRuleTest, UnusedLocalVariableWithIntialAssignment)
 {
     testRuleOnCode(new UnusedLocalVariableRule(), "void aMethod() { int a = 1; }",
-        0, 1, 18, 1, 26);
+        0, 1, 18, 1, 26, "The local variable 'a' is unused.");
 }
 
 TEST(UnusedLocalVariableRuleTest, DeclarationOutsideMethodShouldBeIgnored)
@@ -88,7 +88,7 @@ VarDecl 0x7f8fe18611d0 <input.cpp:21:50, col:76> lock 'lock_guard<class std::mut
 TEST(UnusedLocalVariableRuleTest, RAIITechniqueWhitelistDifferentNumOfParameters)
 {
     testRuleOnCXXCode(new UnusedLocalVariableRule(), stdMutexHeader + "int m() { static std::mutex mutex; std::lock_guard<std::mutex> lock(mutex, std::adopt_lock); return 1; }",
-        0, 21, 36, 21, 91);
+        0, 21, 36, 21, 91, "The local variable 'lock' is unused.");
 /*
 VarDecl 0x7f8fe18610b0 <input.cpp:21:36, col:91> lock 'std::lock_guard<std::mutex>':'class std::lock_guard<class std::mutex>'
 `-CXXConstructExpr 0x7f8fe18635a0 <col:64, col:91> 'std::lock_guard<std::mutex>':'class std::lock_guard<class std::mutex>' 'void (mutex_type &, struct std::adopt_lock_t)'
