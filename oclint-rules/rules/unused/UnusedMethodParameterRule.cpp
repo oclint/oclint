@@ -1,3 +1,4 @@
+#include <sstream>
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 #include "oclint/util/ASTUtil.h"
@@ -113,6 +114,13 @@ private:
         return decl && decl->hasAttr<clang::IBActionAttr>();
     }
 
+    string description(string unusedParam)
+    {
+        ostringstream stream;
+        stream << "The parameter '" << unusedParam << "' is unused.";
+        return stream.str();
+    }
+
 public:
     virtual const string name() const
     {
@@ -132,7 +140,7 @@ public:
             !isExistingByContract(varDecl) &&
             !isObjCMethodWithIBActionAttribute(varDecl))
         {
-            addViolation(varDecl, this);
+            addViolation(varDecl, this, description(varDecl->getNameAsString()));
         }
 
         return true;
