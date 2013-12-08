@@ -50,10 +50,10 @@ private:
             isInNonTemplateFunction(varDecl);
     }
 
-    string description(string unusedVariable)
+    string description(const string& unusedVariableName)
     {
         ostringstream stream;
-        stream << "The local variable '" << unusedVariable << "' is unused.";
+        stream << "The local variable '" << unusedVariableName << "' is unused.";
         return stream.str();
     }
 

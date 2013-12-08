@@ -114,7 +114,7 @@ private:
         return decl && decl->hasAttr<clang::IBActionAttr>();
     }
 
-    string description(string unusedParam)
+    string description(const string& unusedParam)
     {
         ostringstream stream;
         stream << "The parameter '" << unusedParam << "' is unused.";
