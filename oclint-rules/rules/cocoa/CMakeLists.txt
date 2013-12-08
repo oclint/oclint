@@ -1,6 +1,7 @@
 SET(LIST_OF_RULES
     ObjCVerifyIsEqualHash
     ObjCVerifyMustCallSuper
+    ObjCVerifyProtectedMethod
     ObjCVerifySubclassMustImplement
     )
 
