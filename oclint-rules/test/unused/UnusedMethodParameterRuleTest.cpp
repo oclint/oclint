@@ -17,7 +17,7 @@ TEST(UnusedMethodParameterRuleTest, MethodWithUsedParameter)
 TEST(UnusedMethodParameterRuleTest, MethodWithUnusedParameter)
 {
     testRuleOnCode(new UnusedMethodParameterRule(), "void aMethod(int a) { }",
-        0, 1, 14, 1, 18);
+        0, 1, 14, 1, 18, "The parameter 'a' is unused.");
 }
 
 TEST(UnusedMethodParameterRuleTest, MethodWithUnusedParameterSuppressThisRule)
@@ -45,7 +45,7 @@ TEST(UnusedMethodParameterRuleTest, ObjCMethodWithUnusedParameter)
 @implementation AClass          \n\
 - (void)aMethod:(int)a {}       \n\
 @end",
-        0, 7, 18, 7, 22);
+        0, 7, 18, 7, 22, "The parameter 'a' is unused.");
 }
 
 TEST(UnusedMethodParameterRuleTest, ObjCMethodWithUnusedParameterSuppressThisRule)
@@ -106,7 +106,7 @@ TEST(UnusedMethodParameterRuleTest, ObjCMethodWithUnusedParameterSupressOther)
 @implementation AClass          \n\
 - (void)aMethod:(int) __attribute__((annotate(\"oclint:suppress[rule2]\"))) a {}       \n\
 @end",
-        0, 7, 18, 7, 75);
+        0, 7, 18, 7, 75, "The parameter 'a' is unused.");
 }
 
 TEST(UnusedMethodParameterRuleTest, FunctionDeclarationWithoutDefincationShouldBeIgnored)
@@ -118,14 +118,14 @@ TEST(UnusedMethodParameterRuleTest, FunctionDefinationWithUnusedParameterDeclara
 {
     testRuleOnCode(new UnusedMethodParameterRule(), "int aMethod(int a);\n\
 int aMethod(int a) { return 1; }",
-        0, 2, 13, 2, 17);
+        0, 2, 13, 2, 17, "The parameter 'a' is unused.");
 }
 
 TEST(UnusedMethodParameterRuleTest, CppMethodDeclarationWithoutDefinationShouldBeIgnored)
 {
     testRuleOnCXXCode(new UnusedMethodParameterRule(), "class AClass { int aMethod(int a); };\n\
 int AClass::aMethod(int a) { return 0; }",
-        0, 2, 21, 2, 25);
+        0, 2, 21, 2, 25, "The parameter 'a' is unused.");
 }
 
 TEST(UnusedMethodParameterRuleTest, CppMethodInheritanceFromBaseClassShouldBeIgnored)
@@ -142,7 +142,7 @@ TEST(UnusedMethodParameterRuleTest, CppMethodWithoutVirtualInBaseClassIsAViolati
 class BaseClass {public:\n int aMethod(int a); };                   \n\
 class SubClass : public BaseClass {public:\n int aMethod(int a); }; \n\
 int SubClass::aMethod(int a) { return 0; }",
-        0, 5, 23, 5, 27);
+        0, 5, 23, 5, 27, "The parameter 'a' is unused.");
 }
 
 TEST(UnusedMethodParameterRuleTest, StaticFunctionShouldBeIgnored)
@@ -207,7 +207,7 @@ TEST(UnusedMethodParameterRuleTest, ObjCMethodWithIBActionAttributeMixed)
 - (IBAction)aMethod:(id)sender {}  \n\
 - (void)bMethod:(int)a {}       \n\
 @end",
-        0, 9, 18, 9, 22);
+        0, 9, 18, 9, 22, "The parameter 'a' is unused.");
 }
 
 #if defined(__APPLE__) || defined(__MACH__)
