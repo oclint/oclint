@@ -90,6 +90,52 @@ TEST(UseSwapRuleTest, MoveVersion)
     );
 }
 
+// TODO: Support swap o class.
+TEST(UseSwapRuleTest, SwapObjectWithConstruct_NotSupported)
+{
+    testRuleOnCXXCode(new UseSwapRule(),
+        "class C {};\n"
+        "void swap(C& a, C& b)\n"
+        "{\n"
+        "    C " /*LOC_START*/ "tmp(a);\n"
+        "\n"
+        "    a = b;\n"
+        "    b = " /*LOC_END*/ "tmp;\n"
+        "}"
+    );
+}
+
+// TODO: Support swap o class.
+TEST(UseSwapRuleTest, SwapObjectWithAssignation_NotSupported)
+{
+    testRuleOnCXXCode(new UseSwapRule(),
+        "class C {};\n"
+        "void swap(C& a, C& b)\n"
+        "{\n"
+        "    C tmp;\n"
+        "\n"
+        "    " /*LOC_START*/ "tmp = a;\n"
+        "    a = b;\n"
+        "    b = " /*LOC_END*/ "tmp;\n"
+        "}"
+    );
+}
+
+TEST(UseSwapRuleTest, NotASwap)
+{
+    testRuleOnCXXCode(new UseSwapRule(),
+        "void swap(int& a, int& b, int& c)\n"
+        "{\n"
+        "    int tmp;\n"
+        "\n"
+        "    tmp = a;\n"
+        "    a = b;\n"
+        "    b = c;\n"
+        "    c = tmp;\n"
+        "}"
+    );
+}
+
 // TODO: manage interleaved swap
 // Not yet supported
 TEST(UseSwapRuleTest, Interleaved_NotYetSupported)

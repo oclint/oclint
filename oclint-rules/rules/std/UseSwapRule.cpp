@@ -7,11 +7,12 @@ using namespace clang;
 static bool extractAFromBinaryOp(ASTContext& context,
                                  const BinaryOperator& binOpAssignsAToTmp,
                                  const Expr& expectedTmp,
-                                 SourceLocation* sourceLocation, const Expr*& a)
+                                 SourceLocation* sourceLocation,
+                                 const Expr*& a)
 {
     const Expr* tmp1 = ignoreCastExpr(*binOpAssignsAToTmp.getLHS());
 
-    if (areSameExpr(context, *tmp1, expectedTmp) == false)
+    if (!areSameExpr(context, *tmp1, expectedTmp))
     {
         return false;
     }
@@ -22,7 +23,8 @@ static bool extractAFromBinaryOp(ASTContext& context,
 
 static bool extractAFromSingleVarDecl(const VarDecl* declTempFromA,
                                       const Expr& expectedTmp,
-                                      SourceLocation* sourceLocation, const Expr*& a)
+                                      SourceLocation* sourceLocation,
+                                      const Expr*& a)
 {
     if (declTempFromA == nullptr)
     {
@@ -46,7 +48,8 @@ static bool extractAFromSingleVarDecl(const VarDecl* declTempFromA,
 
 static bool extractAFromMultipleVarDecl(const DeclStmt& declTempFromA,
                                         const Expr& expectedTmp,
-                                        SourceLocation* sourceLocation, const Expr*& a)
+                                        SourceLocation* sourceLocation,
+                                        const Expr*& a)
 {
     for (auto it = declTempFromA.decl_begin(), end = declTempFromA.decl_end();
          it != end; ++it)
@@ -59,8 +62,11 @@ static bool extractAFromMultipleVarDecl(const DeclStmt& declTempFromA,
     return false;
 }
 
-static bool extractA(ASTContext& context, const Stmt& assignsAToTmp, const Expr& expectedTmp,
-                     SourceLocation* sourceLocation, const Expr*& a)
+static bool extractA(ASTContext& context,
+                     const Stmt& assignsAToTmp,
+                     const Expr& expectedTmp,
+                     SourceLocation* sourceLocation,
+                     const Expr*& a)
 {
     const BinaryOperator* const binOpAssignsAToTmp = dyn_cast<BinaryOperator>(&assignsAToTmp);
 
@@ -133,7 +139,7 @@ public:
         return 3;
     }
 
-    bool VisitCompoundStmt(CompoundStmt* stmts)
+    bool VisitCompoundStmt(const CompoundStmt* stmts)
     {
         ASTContext* context = _carrier->getASTContext();
 
@@ -144,10 +150,11 @@ public:
         for (CompoundStmt::const_body_iterator s1 = stmts->body_begin(), s2 = s1 + 1, s3 = s2 + 1;
              s3 != stmts->body_end();
              ++s1, ++s2, ++s3) {
-            const BinaryOperator* binOp1 = dyn_cast<BinaryOperator>(*s2);
-            const BinaryOperator* binOp2 = dyn_cast<BinaryOperator>(*s3);
-            if (IsASwap(*context, **s1, binOp1, binOp2, &sourceLocation) == true) {
-                addViolation(sourceLocation, binOp2->getRHS()->getLocEnd(), this);
+            const BinaryOperator* binOp1 = dyn_cast_or_null<BinaryOperator>(*s2);
+            const BinaryOperator* binOp2 = dyn_cast_or_null<BinaryOperator>(*s3);
+
+            if (IsASwap(*context, **s1, binOp1, binOp2, &sourceLocation)) {
+                addViolation(sourceLocation, (*s3)->getLocEnd(), this);
             }
         }
         return true;

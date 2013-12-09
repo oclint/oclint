@@ -23,7 +23,7 @@ bool isObjCMethodDeclaredInProtocol(clang::ObjCMethodDecl *decl)
     {
         return false;
     }
-    
+
     clang::Selector selector = decl->getSelector();
     clang::ObjCInterfaceDecl *interfaceDecl = decl->getClassInterface();
     if (interfaceDecl)
@@ -79,7 +79,7 @@ bool isANullPointerExpr(const clang::Expr& expr)
 {
     for (const clang::CastExpr* castExpr = clang::dyn_cast<clang::CastExpr>(&expr);
          castExpr;
-         castExpr = clang::dyn_cast<clang::CastExpr>(castExpr->getSubExpr()))
+         castExpr = clang::dyn_cast_or_null<clang::CastExpr>(castExpr->getSubExpr()))
     {
         if (castExpr->getCastKind() == clang::CK_NullToPointer)
         {
