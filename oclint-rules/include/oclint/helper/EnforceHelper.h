@@ -6,6 +6,9 @@
 namespace clang { class Decl; }
 namespace oclint { class RuleBase; }
 
-bool declHasEnforceAttribute(const clang::Decl *decl, const oclint::RuleBase& rule);
+bool declHasEnforceAttribute(
+    const clang::Decl *decl,
+    const oclint::RuleBase& rule,
+    std::string* comment = nullptr);
 
 #endif

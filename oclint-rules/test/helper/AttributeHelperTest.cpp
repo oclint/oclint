@@ -43,6 +43,37 @@ public:
     }
 };
 
+class AttributeHelperTestCallCommentRule : public AbstractASTVisitorRule<AttributeHelperTestCallCommentRule>
+{
+public:
+    virtual const string name() const
+    {
+        return "test ast rule";
+    }
+
+    virtual const string attributeName() const {
+        return "test attribute";
+    }
+
+    virtual int priority() const
+    {
+        return 0;
+    }
+    bool VisitCallExpr(CallExpr* expr)
+    {
+        std::string comment;
+        if(declHasActionAttribute(expr->getCalleeDecl(), "enforce", *this, &comment)) {
+            if(!comment.empty()) {
+                addViolation(expr, this, comment);
+            }
+            else {
+                addViolation(expr, this, "no comment");
+            }
+        }
+        return true;
+    }
+};
+
 TEST(AttributeHelperTestCallRuleTest, PropertyTest)
 {
     AttributeHelperTestCallRule rule;
@@ -289,6 +320,85 @@ TEST(AttributeHelperTestCallRuleTest, CategoryPropertyRedeclaredAttribute)
         )END",
     0, 13, 22, 13, 22);
 }
+
+TEST(AttributeHelperTestCallRuleTest, CorrectComment)
+{
+    AttributeHelperTestCallCommentRule rule;
+    testRuleOnCode(&rule,
+        R"END(
+            void a() __attribute__((annotate("oclint:enforce[test attribute][foo]")));
+            void b() {
+                a();
+            }
+        )END"
+    , 0, 4, 17, 4, 19, "foo");
+}
+
+TEST(AttributeHelperTestCallRuleTest, MissingClose)
+{
+    AttributeHelperTestCallCommentRule rule;
+    testRuleOnCode(&rule,
+        R"END(
+            void a() __attribute__((annotate("oclint:enforce[test attribute][foo")));
+            void b() {
+                a();
+            }
+        )END"
+    , 0, 4, 17, 4, 19, "no comment");
+}
+
+TEST(AttributeHelperTestCallRuleTest, ExtraClose)
+{
+    AttributeHelperTestCallCommentRule rule;
+    testRuleOnCode(&rule,
+        R"END(
+            void a() __attribute__((annotate("oclint:enforce[test attribute][foo]]")));
+            void b() {
+                a();
+            }
+        )END"
+    , 0, 4, 17, 4, 19, "foo]");
+}
+
+TEST(AttributeHelperTestCallRuleTest, NoComment)
+{
+    AttributeHelperTestCallCommentRule rule;
+    testRuleOnCode(&rule,
+        R"END(
+            void a() __attribute__((annotate("oclint:enforce[test attribute]")));
+            void b() {
+                a();
+            }
+        )END"
+    , 0, 4, 17, 4, 19, "no comment");
+}
+
+TEST(AttributeHelperTestCallRuleTest, ParensComment)
+{
+    AttributeHelperTestCallCommentRule rule;
+    testRuleOnCode(&rule,
+        R"END(
+            void a() __attribute__((annotate("oclint:enforce[test attribute](comment)")));
+            void b() {
+                a();
+            }
+        )END"
+    , 0, 4, 17, 4, 19, "no comment");
+}
+
+TEST(AttributeHelperTestCallRuleTest, ExtraJunk)
+{
+    AttributeHelperTestCallCommentRule rule;
+    testRuleOnCode(&rule,
+        R"END(
+            void a() __attribute__((annotate("oclint:enforce[test attribute]sdkjfl")));
+            void b() {
+                a();
+            }
+        )END"
+    , 0, 4, 17, 4, 19, "no comment");
+}
+
 
 int main(int argc, char **argv)
 {
