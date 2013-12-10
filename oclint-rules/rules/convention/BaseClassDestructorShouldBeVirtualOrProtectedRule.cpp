@@ -58,11 +58,12 @@ private:
     typedef CXXRecordDecl::base_class_const_iterator base_class_const_iterator;
 
     void check(const CXXRecordDecl& childClass,
-               base_class_const_iterator begin, base_class_const_iterator end)
+               base_class_const_iterator begin,
+               base_class_const_iterator end)
     {
         for (auto it = begin; it != end; ++it)
         {
-            if (it->getAccessSpecifier() == AS_private)
+            if (it->getAccessSpecifier() != AS_public)
             {
                 continue;
             }

@@ -9,8 +9,9 @@ namespace oclint
 {
 
 template<typename T>
-class AbstractASTVisitorRule : public AbstractASTRuleBase, public clang::RecursiveASTVisitor<T>
+class AbstractASTVisitorRule : public AbstractASTRuleBase, protected clang::RecursiveASTVisitor<T>
 {
+    friend class clang::RecursiveASTVisitor<T>;
 protected:
     virtual void apply()
     {

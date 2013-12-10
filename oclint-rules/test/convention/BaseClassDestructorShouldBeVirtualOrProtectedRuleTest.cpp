@@ -106,10 +106,10 @@ TEST(BaseClassDestructorShouldBeVirtualOrProtectedRuleTest, MultipleKindBaseClas
 {
     testRuleOnCXXCode(new BaseClassDestructorShouldBeVirtualOrProtectedRule(),
         VIOLATION_START "class PublicBase {" VIOLATION_END "};\n"
-        VIOLATION_START "class ProtectedBase {" VIOLATION_END "};\n"
+        "class ProtectedBase {};\n"
         "class PrivatedBase {};\n"
         VIOLATION_START "class PublicVBase {" VIOLATION_END "};\n"
-        VIOLATION_START "class ProtectedVBase {" VIOLATION_END "};\n"
+        "class ProtectedVBase {};\n"
         "class PrivatedVBase {};\n"
         "class C : public PublicBase, protected ProtectedBase, private PrivatedBase,\n"
         "          public virtual PublicVBase,\n"
@@ -118,9 +118,7 @@ TEST(BaseClassDestructorShouldBeVirtualOrProtectedRuleTest, MultipleKindBaseClas
         "{ virtual ~C(); };",
         {
             "~PublicBase() should be protected or virtual according to class C",
-            "~ProtectedBase() should be protected or virtual according to class C",
-            "~PublicVBase() should be protected or virtual according to class C",
-            "~ProtectedVBase() should be protected or virtual according to class C"
+            "~PublicVBase() should be protected or virtual according to class C"
         }
     );
 }
