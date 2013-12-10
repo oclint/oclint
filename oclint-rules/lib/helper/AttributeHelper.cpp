@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "oclint/helper/AttributeHelper.h"
 
 #include <clang/AST/AST.h>
