@@ -26,6 +26,12 @@ TEST(UnusedLocalVariableRuleTest, UnusedLocalVariableWithIntialAssignment)
         0, 1, 18, 1, 26, "The local variable 'a' is unused.");
 }
 
+TEST(UnusedLocalVariableRuleTest, UsedConstLocalVariable)
+{
+    testRuleOnCXX11Code(new UnusedLocalVariableRule(),
+        "void f(int dummy) { const int a = 1; f(a);}");
+}
+
 TEST(UnusedLocalVariableRuleTest, DeclarationOutsideMethodShouldBeIgnored)
 {
     testRuleOnCode(new UnusedLocalVariableRule(), "int i = 1;");
