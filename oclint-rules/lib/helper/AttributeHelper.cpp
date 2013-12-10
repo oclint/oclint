@@ -5,6 +5,36 @@
 
 #include "oclint/RuleBase.h"
 
+bool attributeHasAnnotation(
+    const std::string& annotation,
+    const std::string& attributeName,
+    std::string* comment) {
+    // Unqualified actions must compare directly e.g. we don't want to return a match for 
+    // for 'oclint:suppress' when the annotation is 'oclint::suppress[foo]'
+    bool noQualifier = attributeName.find('[') == std::string::npos;
+    if(noQualifier) {
+        return attributeName == annotation;
+    }
+    
+    // Otherwise, check if the attributeName is a prefix of the annotation
+    // We need to check prefix and not equality in case there's a comment
+    if(annotation.length() < attributeName.length() ||
+        !std::equal(attributeName.begin(), attributeName.end(), annotation.begin())) {
+        return false;
+    }
+    // The attributes match.
+    // Try to pick out a comment if we need to
+    if(comment != nullptr) {
+        const auto commentStart = annotation.find('[', attributeName.length());
+    
+        if(commentStart != std::string::npos && annotation.back() == ']') {
+            *comment =
+               annotation.substr(commentStart + 1, annotation.length() - commentStart - 2);
+        }
+    }
+    return true;
+}
+
 bool declHasAttribute(
     const clang::Decl *decl,
     const std::string& attributeName,
@@ -20,50 +50,23 @@ bool declHasAttribute(
         ++attr)
     {
         const clang::AnnotateAttr *annotate = clang::dyn_cast<clang::AnnotateAttr>(*attr);
-        if (!annotate)
-        {
+        if (!annotate) {
             continue;
         }
         
         const std::string annotation = annotate->getAnnotation();
- 
-        // Unqualified actions must compare directly e.g. we don't want to return a match for 
-        // for 'oclint:suppress' when the annotation is 'oclint::suppress[foo]'
-        bool noQualifier = attributeName.find('[') == std::string::npos;
-        if(noQualifier) {
-            if(attributeName == annotation) {
-                return true;
-            }
-            else {
-                continue;
-            }
+        if(attributeHasAnnotation(annotation, attributeName, comment)) {
+            return true;
         }
-        
-        // Otherwise, check if the attributeName is a prefix of the annotation
-        // We need to check prefix and not equality in case there's a comment
-        if(annotation.length() < attributeName.length() ||
-            !std::equal(attributeName.begin(), attributeName.end(), annotation.begin())) {
-            continue;
-        }
-
-        // The attributes match.
-        // Try to pick out a comment if we need to
-        if(comment != nullptr) {
-            const auto commentStart = annotation.find('[', attributeName.length());
-        
-            if(commentStart != std::string::npos && annotation.back() == ']') {
-                *comment =
-                   annotation.substr(commentStart + 1, annotation.length() - commentStart - 2);
-            }
-        }
-        return true;
-        
     }
 
     return false;
 }
 
-bool declHasOCLintAttribute(const clang::Decl *decl, const std::string& attributeName, std::string* comment) {
+bool declHasOCLintAttribute(
+    const clang::Decl *decl,
+    const std::string& attributeName,
+    std::string* comment) {
     return declHasAttribute(decl, "oclint:" + attributeName, comment);
 }
 
@@ -105,7 +108,10 @@ bool objCMethodDeclHasAttributeFromCategory(
 }
 
 bool objCMethodDeclHasActionAttributeImpl(
-    const clang::ObjCMethodDecl *decl, const std::string& action, const oclint::RuleBase& rule, std::string* comment) {
+    const clang::ObjCMethodDecl *decl,
+    const std::string& action,
+    const oclint::RuleBase& rule,
+    std::string* comment) {
     if(decl == nullptr) {
         return false;
     }
