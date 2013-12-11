@@ -11,8 +11,7 @@ bool attributeHasAnnotation(
     std::string* comment) {
     // Unqualified actions must compare directly e.g. we don't want to return a match for 
     // for 'oclint:suppress' when the annotation is 'oclint::suppress[foo]'
-    bool noQualifier = attributeName.find('[') == std::string::npos;
-    if(noQualifier) {
+    if(attributeName.find('[') == std::string::npos) {
         return attributeName == annotation;
     }
     

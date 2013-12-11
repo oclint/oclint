@@ -15,7 +15,7 @@ private:
     static RuleSet rules;
 
 public:
-    bool VisitCallExpr(CallExpr* call) {
+    bool VisitCallExpr(const CallExpr* call) {
         const auto function = call->getDirectCallee();
         string comment;
         if(declHasEnforceAttribute(function, *this, &comment)) {
@@ -28,7 +28,7 @@ public:
         return true;
     }
 
-    bool VisitObjCMessageExpr(ObjCMessageExpr* expr) {
+    bool VisitObjCMessageExpr(const ObjCMessageExpr* expr) {
         const auto method = expr->getMethodDecl();
         string comment;
         if(declHasEnforceAttribute(method, *this, &comment)) {
