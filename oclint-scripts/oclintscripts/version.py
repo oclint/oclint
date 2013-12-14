@@ -17,4 +17,4 @@ def oclint_dev_version():
     return oclint_version() + '.dev.' + git_hash()
 
 def llvm_branches():
-    return ['trunk', 'branches/release_33', 'tags/RELEASE_33/final', 'branches/release_32', 'tags/RELEASE_32/final']
+    return ['trunk', 'branches/release_34', 'tags/RELEASE_34/final', 'branches/release_33', 'tags/RELEASE_33/final', 'branches/release_32', 'tags/RELEASE_32/final']
