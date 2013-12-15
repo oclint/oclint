@@ -131,9 +131,11 @@ int prepare()
     return SUCCESS;
 }
 
+extern llvm::cl::OptionCategory OCLintOptionCategory;
+
 int main(int argc, const char **argv)
 {
-    CommonOptionsParser optionsParser(argc, argv);
+    CommonOptionsParser optionsParser(argc, argv, OCLintOptionCategory);
     oclint::option::process(argv[0]);
 
     int prepareStatus = prepare();
