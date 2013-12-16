@@ -1,7 +1,7 @@
 ADD_SUBDIRECTORY(helper)
 ADD_SUBDIRECTORY(util)
 
-SET (AbstractSource ${AbstractSource}
+SET (AbstractSource
     AbstractASTMatcherRule.cpp
     AbstractASTRuleBase.cpp
     AbstractSourceCodeReaderRule.cpp
