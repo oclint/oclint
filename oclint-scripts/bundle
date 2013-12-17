@@ -19,6 +19,7 @@ bundle_lib_oclint_dir = os.path.join(bundle_lib_dir, 'oclint')
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('-archive', '--archive', action='store_true')
 arg_parser.add_argument('-release', '--release', action='store_true')
+arg_parser.add_argument('-llvm-root', '--llvm-root', default=path.build.clang_install_dir)
 args = arg_parser.parse_args()
 
 def clean_module(module_name):
@@ -65,8 +66,8 @@ def install_reporters():
     reporters_dst_path = os.path.join(bundle_lib_oclint_dir, 'reporters')
     path.cp_r(reporters_src_path, reporters_dst_path)
 
-def install_clang_headers():
-    clang_headers_src_path = os.path.join(path.build.clang_install_dir, 'lib', 'clang')
+def install_clang_headers(llvm_root):
+    clang_headers_src_path = os.path.join(llvm_root, 'lib', 'clang')
     clang_headers_dst_path = os.path.join(bundle_lib_dir, 'clang')
     path.cp_r(clang_headers_src_path, clang_headers_dst_path)
 
@@ -115,7 +116,7 @@ install_licenses()
 install_binary()
 install_rules()
 install_reporters()
-install_clang_headers()
+install_clang_headers(args.llvm_root)
 install_json_compilation_database()
 install_xcodebuild()
 
