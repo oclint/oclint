@@ -28,7 +28,7 @@ private:
 
     bool isUnused(VarDecl *varDecl)
     {
-        return !varDecl->isUsed();
+        return !varDecl->isUsed() && !varDecl.isReferenced();
     }
 
     bool hasName(VarDecl *varDecl)
