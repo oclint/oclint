@@ -1,3 +1,4 @@
+#include <sstream>
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
@@ -27,7 +28,7 @@ private:
 
     bool isUnused(VarDecl *varDecl)
     {
-        return !varDecl->isUsed();
+        return !varDecl->isUsed() && !varDecl->isReferenced();
     }
 
     bool hasName(VarDecl *varDecl)
@@ -49,6 +50,13 @@ private:
             isInNonTemplateFunction(varDecl);
     }
 
+    string description(const string& unusedVariableName)
+    {
+        ostringstream stream;
+        stream << "The local variable '" << unusedVariableName << "' is unused.";
+        return stream.str();
+    }
+
 public:
     virtual const string name() const
     {
@@ -64,7 +72,7 @@ public:
     {
         if (isUnusedLocalVariable(varDecl))
         {
-            addViolation(varDecl, this);
+            addViolation(varDecl, this, description(varDecl->getNameAsString()));
         }
         return true;
     }

@@ -1,6 +1,8 @@
+#include <sstream>
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 #include "oclint/util/ASTUtil.h"
+#include <clang/AST/Attr.h>
 
 using namespace std;
 using namespace clang;
@@ -86,6 +88,39 @@ private:
         return varDecl->getNameAsString() != "";
     }
 
+    bool isObjCMethodWithIBActionAttribute(ParmVarDecl *decl)
+    {
+        if (!decl)
+        {
+            return false;
+        }
+        DeclContext *lexicalContext = decl->getLexicalDeclContext();
+        while (lexicalContext)
+        {
+            if (isObjCMethodWithIBActionAttribute(lexicalContext))
+            {
+                return true;
+            }
+            lexicalContext = lexicalContext->getLexicalParent();
+        }
+        return false;
+        // TODO: this pattern appears at various places in our codebase
+        // we might be able to remove the duplications by leverage C++11 lambda
+    }
+
+    bool isObjCMethodWithIBActionAttribute(DeclContext *context)
+    {
+        ObjCMethodDecl *decl = dyn_cast<ObjCMethodDecl>(context);
+        return decl && decl->hasAttr<clang::IBActionAttr>();
+    }
+
+    string description(const string& unusedParam)
+    {
+        ostringstream stream;
+        stream << "The parameter '" << unusedParam << "' is unused.";
+        return stream.str();
+    }
+
 public:
     virtual const string name() const
     {
@@ -102,9 +137,10 @@ public:
         if (!varDecl->isUsed() &&
             hasVariableName(varDecl) &&
             isInNonTemplateFunction(varDecl) &&
-            !isExistingByContract(varDecl))
+            !isExistingByContract(varDecl) &&
+            !isObjCMethodWithIBActionAttribute(varDecl))
         {
-            addViolation(varDecl, this);
+            addViolation(varDecl, this, description(varDecl->getNameAsString()));
         }
 
         return true;

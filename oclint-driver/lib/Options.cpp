@@ -16,6 +16,8 @@
 
 using namespace oclint;
 
+llvm::cl::OptionCategory OCLintOptionCategory("OCLint options");
+
 /* ----------------
    input and output
    ---------------- */
@@ -23,7 +25,8 @@ using namespace oclint;
 static llvm::cl::opt<std::string> argOutput("o",
     llvm::cl::desc("Write output to <path>"),
     llvm::cl::value_desc("path"),
-    llvm::cl::init("-"));
+    llvm::cl::init("-"),
+    llvm::cl::cat(OCLintOptionCategory));
 
 /* --------------------
    oclint configuration
@@ -32,46 +35,57 @@ static llvm::cl::opt<std::string> argOutput("o",
 static llvm::cl::opt<std::string> argReportType("report-type",
     llvm::cl::desc("Change output report type"),
     llvm::cl::value_desc("name"),
-    llvm::cl::init("text"));
+    llvm::cl::init("text"),
+    llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::list<std::string> argRulesPath("R",
     llvm::cl::Prefix,
     llvm::cl::desc("Add directory to rule loading path"),
     llvm::cl::value_desc("directory"),
-    llvm::cl::ZeroOrMore);
+    llvm::cl::ZeroOrMore,
+    llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::list<std::string> argRuleConfiguration("rc",
     llvm::cl::desc("Override the default behavior of rules"),
     llvm::cl::value_desc("parameter>=<value"),
-    llvm::cl::ZeroOrMore);
+    llvm::cl::ZeroOrMore,
+    llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::list<std::string> argEnabledRules("rule",
     llvm::cl::desc("Explicitly pick rules"),
     llvm::cl::value_desc("rule name"),
-    llvm::cl::ZeroOrMore);
+    llvm::cl::ZeroOrMore,
+    llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::list<std::string> argDisabledRules("disable-rule",
     llvm::cl::desc("Disable rules"),
     llvm::cl::value_desc("rule name"),
-    llvm::cl::ZeroOrMore);
+    llvm::cl::ZeroOrMore,
+    llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<bool> argListEnabledRules("list-enabled-rules",
     llvm::cl::desc("List enabled rules"),
-    llvm::cl::init(false));
+    llvm::cl::init(false),
+    llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<int> argMaxP1("max-priority-1",
     llvm::cl::desc("The max allowed number of priority 1 violations"),
     llvm::cl::value_desc("threshold"),
-    llvm::cl::init(0));
+    llvm::cl::init(0),
+    llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<int> argMaxP2("max-priority-2",
     llvm::cl::desc("The max allowed number of priority 2 violations"),
     llvm::cl::value_desc("threshold"),
-    llvm::cl::init(10));
+    llvm::cl::init(10),
+    llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<int> argMaxP3("max-priority-3",
     llvm::cl::desc("The max allowed number of priority 3 violations"),
     llvm::cl::value_desc("threshold"),
-    llvm::cl::init(20));
+    llvm::cl::init(20),
+    llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<bool> argGlobalAnalysis("enable-global-analysis",
     llvm::cl::desc("Compile every source, and analyze across global contexts "
         "(depends on number of source files, could results in high memory load)"),
-    llvm::cl::init(false));
+    llvm::cl::init(false),
+    llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<bool> argClangChecker("enable-clang-static-analyzer",
     llvm::cl::desc("Enable Clang Static Analyzer, and integrate results into OCLint report"),
-    llvm::cl::init(false));
+    llvm::cl::init(false),
+    llvm::cl::cat(OCLintOptionCategory));
 
 /* -------------
    libTooling cl

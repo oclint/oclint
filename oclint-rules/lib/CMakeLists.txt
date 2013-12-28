@@ -8,7 +8,13 @@ SET (AbstractSource
 )
 
 IF (MINGW)
-    ADD_LIBRARY(OCLintAbstractRule SHARED ${AbstractSource} helper/SuppressHelper.cpp util/ASTUtil.cpp)
+    ADD_LIBRARY(OCLintAbstractRule SHARED
+        ${AbstractSource}
+        helper/AttributeHelper.cpp
+        helper/EnforceHelper.cpp
+        helper/SuppressHelper.cpp
+        util/ASTUtil.cpp
+        util/StdUtil.cpp)
     TARGET_LINK_LIBRARIES(OCLintAbstractRule
         OCLintCore
         OCLintRuleSet

@@ -42,28 +42,7 @@ class ObjCVerifyMustCallSuperRule : public AbstractASTVisitorRule<ObjCVerifyMust
 private:
     static RuleSet rules;
 
-    map<string, vector<string>> _libraryCases;
-
-    bool isLibraryCase(const ObjCMethodDecl* decl) {
-        string selectorName = decl->getSelector().getAsString();
-        auto classNames = _libraryCases.find(selectorName);
-        if(classNames != _libraryCases.end()) {
-            auto classes = classNames->second;
-            for(auto it = classes.begin(), ite = classes.end(); it != ite; ++it) {
-                if(isObjCMethodDeclInChildOfClass(decl, *it)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     bool declRequiresSuperCall(ObjCMethodDecl* decl) {
-        if(isLibraryCase(decl)) {
-            return true;
-        }
-
         if(decl->isOverriding()) {
             SmallVector<const ObjCMethodDecl*, 4> overridden;
             decl->getOverriddenMethods(overridden);
@@ -76,31 +55,7 @@ private:
         return false;
     }
 
-
-
 public:
-
-    ObjCVerifyMustCallSuperRule() {
-        // UIKit cases
-        _libraryCases["viewWillAppear:"] = {"UIViewController"};
-        _libraryCases["viewDidAppear:"] = {"UIViewController"};
-        _libraryCases["viewWillDisappear:"] = {"UIViewController"};
-        _libraryCases["viewDidDisappear:"] = {"UIViewController"};
-        _libraryCases["viewDidLayoutSubviews"] = {"UIViewController"};
-        _libraryCases["layoutSubviews"] = {"UIView"};
-        _libraryCases["updateConstraints"] = {"UIView"};
-        _libraryCases["viewDidLoad"] = {"UIView"};
-        _libraryCases["reset"] = {"UIGestureRecognizer"};
-        _libraryCases["canPreventGestureRecognizer:"] = {"UIGestureRecognizer"};
-        _libraryCases["canBePreventedByGestureRecognizer:"] = {"UIGestureRecognizer"};
-        _libraryCases["shouldRequireFailureOfGestureRecognizer:"] = {"UIGestureRecognizer"};
-        _libraryCases["shouldBeRequiredToFailByGestureRecognizer:"] = {"UIGestureRecognizer"};
-        _libraryCases["touchesBegan:withEvent:"] = {"UIGestureRecognizer"};
-        _libraryCases["touchesMoved:withEvent:"] = {"UIGestureRecognizer"};
-        _libraryCases["touchesEnded:withEvent:"] = {"UIViewController"};
-        _libraryCases["touchesCancelled:withEvent:"] = {"UIGestureRecognizer"};
-    }
-
     virtual const string name() const
     {
         return "must call super";
@@ -110,6 +65,12 @@ public:
     {
         return 1;
     }
+
+    virtual unsigned int supportedLanguages() const
+    {
+        return LANG_OBJC;
+    }
+
     bool VisitObjCMethodDecl(ObjCMethodDecl* decl) {
         // Save the method name
         string selectorName = decl->getSelector().getAsString();
