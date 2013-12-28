@@ -28,6 +28,11 @@ public:
         return 3;
     }
 
+    virtual unsigned int supportedLanguages() const
+    {
+        return LANG_CXX;
+    }
+
     virtual void callback(const MatchFinder::MatchResult &result)
     {
         const CXXMethodDecl *method = result.Nodes.getNodeAs<CXXMethodDecl>("method");
