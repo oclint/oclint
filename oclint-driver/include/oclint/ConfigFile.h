@@ -41,7 +41,7 @@ private:
     int _maxP1;
     int _maxP2;
     int _maxP3;
-    TriState _clangChecker;
+    TriState _clangChecker = UNDEFINED;
 
 public:
     explicit ConfigFile(const std::string &path);

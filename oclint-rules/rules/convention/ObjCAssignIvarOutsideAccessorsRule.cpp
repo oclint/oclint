@@ -10,7 +10,7 @@ using namespace oclint;
 // Traversal for ivar accesses
 class ContainsIvarFetch : public RecursiveASTVisitor<ContainsIvarFetch>
 {
-public: 
+public:
     // Location to save found ivar accesses
     vector<ObjCIvarRefExpr*> _instances;
 
@@ -33,36 +33,13 @@ class ContainsBinaryOperatorWithIvarAssignment :
 private:
     // Location to save found ivar accesses
     vector<ObjCIvarRefExpr*> _instances;
-    
-    // this has high cyclomatic complexity, due to the lots of cases
-    // but is easily the clearest way to do this
-    bool IsAssignOperator(BinaryOperatorKind kind)
-        __attribute__((annotate("oclint:suppress[high cyclomatic complexity]"))) {
-        switch(kind) {
-            case BO_Assign:
-            case BO_MulAssign:
-            case BO_DivAssign:
-            case BO_RemAssign:
-            case BO_AddAssign:
-            case BO_SubAssign:
-            case BO_ShlAssign:
-            case BO_ShrAssign:
-            case BO_AndAssign:
-            case BO_XorAssign:
-            case BO_OrAssign:
-                return true;
-            default:
-                return false;
-        }
-    }
 
 public:
-
     bool VisitBinaryOperator(BinaryOperator *binaryOperator)
     {
         // Found an operator
         Expr *leftExpr = binaryOperator->getLHS();
-        if (IsAssignOperator(binaryOperator->getOpcode()))
+        if (binaryOperator->isAssignmentOp())
         {
             // So check for ivar references in the assignment part
             ContainsIvarFetch checker;
@@ -81,7 +58,7 @@ public:
         return _instances;
     }
 };
-    
+
 
 
 // Main rule implementation.

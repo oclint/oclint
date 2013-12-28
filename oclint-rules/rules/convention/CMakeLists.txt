@@ -1,6 +1,7 @@
 SET(LIST_OF_RULES
     AvoidBranchingStatementAsLastInLoop
     DefaultLabelNotLastInSwitchStatement
+    DestructorOfVirtualClass
     InvertedLogic
     MissingBreakInSwitchStatement
     NonCaseLabelInSwitchStatement
@@ -8,6 +9,7 @@ SET(LIST_OF_RULES
     ParameterReassignment
     PreferEarlyExit
     SwitchStatementsShouldHaveDefault
+    CoveredSwitchStatementsDontNeedDefault
     TooFewBranchesInSwitchStatement
     )
 

@@ -12,45 +12,36 @@ TEST(UnnecessaryNullCheckForCXXDeallocRuleTest, PropertyTest)
 TEST(UnnecessaryNullCheckForCXXDeallocRuleTest, IfDelete)
 {
     testRuleOnCXXCode(new UnnecessaryNullCheckForCXXDeallocRule(),
-    //            1         2         3
-    //   123456789012345678901234567890123456
-        "void m(char* c) { if (c) delete c; }",
-        0, 1, 19, 1, 33);
+        "void m(char* c) { " VIOLATION_START "if (c) delete " VIOLATION_END "c; }");
 }
 
 TEST(UnnecessaryNullCheckForCXXDeallocRuleTest, Comparator)
 {
-    //                            1         2         3         4
-    //                   12345678901234567890123456789012345678901234567
-    const char* code1 = "void m(char* c) { if (c != 0)        delete c; }";
-    const char* code2 = "void m(char* c) { if (c != nullptr)  delete c; }";
-    const char* code3 = "void m(char* c) { if (c != (void*)0) delete c; }";
+    const char* code1 = "void m(char* c) { " VIOLATION_START "if (c != 0) delete " VIOLATION_END "c; }";
+    const char* code2 = "void m(char* c) { " VIOLATION_START "if (c != (void*)0) delete " VIOLATION_END "c; }";
+    const char* code3 = "void m(char* c) { " VIOLATION_START "if (c != nullptr) delete " VIOLATION_END "c; }";
 
-    testRuleOnCXXCode(new UnnecessaryNullCheckForCXXDeallocRule(), code1, 0, 1, 19, 1, 45);
-    testRuleOnCXX11Code(new UnnecessaryNullCheckForCXXDeallocRule(), code2, 0, 1, 19, 1, 45);
-    testRuleOnCXXCode(new UnnecessaryNullCheckForCXXDeallocRule(), code3, 0, 1, 19, 1, 45);
+    testRuleOnCXXCode(new UnnecessaryNullCheckForCXXDeallocRule(), code1);
+    testRuleOnCXXCode(new UnnecessaryNullCheckForCXXDeallocRule(), code2);
+    testRuleOnCXX11Code(new UnnecessaryNullCheckForCXXDeallocRule(), code3);
 }
 
 TEST(UnnecessaryNullCheckForCXXDeallocRuleTest, ResetDeleteBlock)
 {
-    //                            1         2         3         4         5
-    //                   12345678901234567890123456789012345678901234567890
-    const char* code1 = "void m(char* c) { if (c) { delete c; c = 0;       } }";
-    const char* code2 = "void m(char* c) { if (c) { delete c; c = nullptr; } }";
+    const char* code1 = "void m(char* c) { " VIOLATION_START "if (c) { delete c; c = 0; " VIOLATION_END "} }";
+    const char* code2 = "void m(char* c) { " VIOLATION_START "if (c) { delete c; c = nullptr; " VIOLATION_END "} }";
 
-    testRuleOnCXXCode(new UnnecessaryNullCheckForCXXDeallocRule(), code1, 0, 1, 19, 1, 51);
-    testRuleOnCXX11Code(new UnnecessaryNullCheckForCXXDeallocRule(), code2, 0, 1, 19, 1, 51);
+    testRuleOnCXXCode(new UnnecessaryNullCheckForCXXDeallocRule(), code1);
+    testRuleOnCXX11Code(new UnnecessaryNullCheckForCXXDeallocRule(), code2);
 }
 
 TEST(UnnecessaryNullCheckForCXXDeallocRuleTest, DeleteArray)
 {
-    //                            1         2         3         4
-    //                   12345678901234567890123456789012345678901234567
-    const char* code1 = "void m(char* c) { if (c != 0) delete [] c; }";
-    const char* code2 = "struct S {~S();}; void m(S* s) {if (s) delete[]s;}";
+    const char* code1 = "void m(char* c) { " VIOLATION_START "if (c != 0) delete [] " VIOLATION_END "c; }";
+    const char* code2 = "struct S {~S();}; void m(S* s) { " VIOLATION_START "if (s) delete[]" VIOLATION_END "s;}";
 
-    testRuleOnCXXCode(new UnnecessaryNullCheckForCXXDeallocRule(), code1, 0, 1, 19, 1, 41);
-    testRuleOnCXXCode(new UnnecessaryNullCheckForCXXDeallocRule(), code2, 0, 1, 33, 1, 48);
+    testRuleOnCXXCode(new UnnecessaryNullCheckForCXXDeallocRule(), code1);
+    testRuleOnCXXCode(new UnnecessaryNullCheckForCXXDeallocRule(), code2);
 }
 
 TEST(UnnecessaryNullCheckForCXXDeallocRuleTest, CorrectCode)

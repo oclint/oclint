@@ -5,8 +5,8 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class SwitchStatementsShouldHaveDefaultRule :
-    public AbstractASTVisitorRule<SwitchStatementsShouldHaveDefaultRule>
+class CoveredSwitchStatementsDontNeedDefaultRule :
+    public AbstractASTVisitorRule<CoveredSwitchStatementsDontNeedDefaultRule>
 {
 private:
     static RuleSet rules;
@@ -14,7 +14,7 @@ private:
 public:
     virtual const string name() const
     {
-        return "switch statements should have default";
+        return "switch statements don't need default when fully covered";
     }
 
     virtual int priority() const
@@ -24,11 +24,6 @@ public:
 
     bool VisitSwitchStmt(SwitchStmt *switchStmt)
     {
-        if (switchStmt->isAllEnumCasesCovered())
-        {
-            return true;
-        }
-        
         SwitchCase *currentSwitchCase = switchStmt->getSwitchCaseList();
         bool hasDefault = false;
         while (currentSwitchCase)
@@ -40,7 +35,7 @@ public:
             }
             currentSwitchCase = currentSwitchCase->getNextSwitchCase();
         }
-        if (!hasDefault)
+        if (hasDefault && switchStmt->isAllEnumCasesCovered())
         {
             addViolation(switchStmt, this);
         }
@@ -49,4 +44,5 @@ public:
     }
 };
 
-RuleSet SwitchStatementsShouldHaveDefaultRule::rules(new SwitchStatementsShouldHaveDefaultRule());
+RuleSet CoveredSwitchStatementsDontNeedDefaultRule::rules(
+    new CoveredSwitchStatementsDontNeedDefaultRule());

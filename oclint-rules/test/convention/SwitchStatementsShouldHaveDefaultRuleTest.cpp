@@ -30,6 +30,36 @@ case 2:     \n\
         0, 1, 23, 6, 1);
 }
 
+TEST(SwitchStatementsShouldHaveDefaultRuleTest, SwitchNoDefaultButCovered)
+{
+    testRuleOnCode(new SwitchStatementsShouldHaveDefaultRule(), "typedef enum { \n\
+value1 = 0,                               \n\
+value2 = 1                                \n\
+} eValues;                                \n\
+void aMethod(eValues a) { switch(a){      \n\
+case value1:                              \n\
+\tbreak;                                  \n\
+case value2:                              \n\
+\tbreak;                                  \n\
+} }");
+}
+
+TEST(SwitchStatementsShouldHaveDefaultRuleTest, SwitchNoDefaultAndNotCovered)
+{
+    testRuleOnCode(new SwitchStatementsShouldHaveDefaultRule(), "typedef enum { \n\
+value1 = 0,                               \n\
+value2 = 1,                               \n\
+value3 = 2                                \n\
+} eValues;                                \n\
+void aMethod(eValues a) { switch(a){      \n\
+case value1:                              \n\
+\tbreak;                                  \n\
+case value2:                              \n\
+\tbreak;                                  \n\
+} }",
+        0, 6, 27, 11, 1);
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);

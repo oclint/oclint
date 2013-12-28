@@ -18,23 +18,24 @@ arg_parser.add_argument('module_name', nargs='?', choices=['all'] + OCLINT_MODUL
 arg_parser.add_argument('-release', '--release', action="store_true")
 arg_parser.add_argument('-clean', '--clean', action="store_true")
 arg_parser.add_argument('-j', type=int, default=0)
+arg_parser.add_argument('-llvm-root', '--llvm-root', default=path.build.clang_install_dir)
 args = arg_parser.parse_args()
 
 def clean_module(module_name):
     build_path = path.oclint_module_build_dir(module_name)
     path.rm_f(build_path)
 
-def build_command(is_release, module_extras, source_path):
+def build_command(llvm_root, is_release, module_extras, source_path):
     cmd_build = cmake.builder(source_path)
     if is_release:
         cmd_build.release_build()
     if environment.is_unix():
         cmd_build.use_clang_compiler()
-    extras = {'LLVM_ROOT': path.build.clang_install_dir}
+    extras = {'LLVM_ROOT': llvm_root}
     extras.update(module_extras)
     return cmd_build.append_dict(extras).str()
 
-def build_module(module_name, is_release, multiple_thread):
+def build_module(module_name, llvm_root, is_release, multiple_thread):
     build_path = path.oclint_module_build_dir(module_name)
     source_path = path.oclint_module_source_dir(module_name)
 
@@ -46,7 +47,7 @@ def build_module(module_name, is_release, multiple_thread):
         module_extras['OCLINT_METRICS_SOURCE_DIR'] = path.source.metrics_dir
         module_extras['OCLINT_METRICS_BUILD_DIR'] = path.build.metrics_build_dir
 
-    command = build_command(is_release, module_extras, source_path)
+    command = build_command(llvm_root, is_release, module_extras, source_path)
 
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
@@ -72,4 +73,4 @@ if not args.j is 0:
     multiple_thread = args.j
 
 for module in build_modules:
-    build_module(module, args.release, str(multiple_thread))
+    build_module(module, args.llvm_root, args.release, str(multiple_thread))
