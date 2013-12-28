@@ -1,0 +1,4 @@
+#! /bin/sh -e
+
+./build -llvm-root=$1 -release -clean
+./bundle -llvm-root=$1 -release -clean
