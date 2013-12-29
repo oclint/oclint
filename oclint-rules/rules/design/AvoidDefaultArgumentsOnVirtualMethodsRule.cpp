@@ -18,28 +18,28 @@ AST_MATCHER(ParmVarDecl, hasDefaultArg)
 class AvoidDefaultArgumentsOnVirtualMethodsRule : public AbstractASTMatcherRule
 {
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "avoid default arguments on virtual methods";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 3;
     }
 
-    virtual unsigned int supportedLanguages() const
+    virtual unsigned int supportedLanguages() const override
     {
         return LANG_CXX;
     }
 
-    virtual void callback(const MatchFinder::MatchResult &result)
+    virtual void callback(const MatchFinder::MatchResult &result) override
     {
         const CXXMethodDecl *method = result.Nodes.getNodeAs<CXXMethodDecl>("method");
         addViolation(method, this);
     }
 
-    virtual void setUpMatcher()
+    virtual void setUpMatcher() override
     {
         addMatcher(
             methodDecl(isVirtual(), hasAnyParameter(hasDefaultArg()))
