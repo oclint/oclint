@@ -1,1 +1,2 @@
+BUILD_TEST(AvoidPrivateStaticMembersRuleTest)
 BUILD_TEST(FeatureEnvyRuleTest)
