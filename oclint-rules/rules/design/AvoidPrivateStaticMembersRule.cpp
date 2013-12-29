@@ -23,17 +23,17 @@ AST_MATCHER(CXXMethodDecl, isStatic)
 class AvoidPrivateStaticMembersRule : public AbstractASTMatcherRule
 {
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "avoid private static members";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 3;
     }
 
-    virtual void callback(const MatchFinder::MatchResult &result)
+    virtual void callback(const MatchFinder::MatchResult &result) override
     {
         if (auto field = result.Nodes.getNodeAs<VarDecl>("field"))
         {
@@ -45,7 +45,7 @@ public:
         }
     }
 
-    virtual void setUpMatcher()
+    virtual void setUpMatcher() override
     {
         addMatcher(varDecl(isPrivate(), isStaticDataMember()).bind("field"));
         addMatcher(methodDecl(isPrivate(), isStatic()).bind("method"));
