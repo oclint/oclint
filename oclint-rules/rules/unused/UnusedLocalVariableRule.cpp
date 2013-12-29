@@ -58,12 +58,12 @@ private:
     }
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "unused local variable";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 3;
     }

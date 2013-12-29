@@ -92,12 +92,12 @@ private:
     static RuleSet rules;
 
 public:
-    virtual const std::string name() const
+    virtual const std::string name() const override
     {
         return "dead code";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 2;
     }

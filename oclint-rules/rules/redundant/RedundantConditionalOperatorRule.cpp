@@ -19,7 +19,7 @@ private:
         {
             return dyn_cast_or_null<nodeType>(implicitCastExpr->getSubExpr());
         }
-        return NULL;
+        return nullptr;
     }
 
     bool isCXXBoolNotEquals(Expr *trueExpr, Expr *falseExpr)
@@ -147,12 +147,12 @@ private:
     }
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "redundant conditional operator";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 3;
     }

@@ -8,12 +8,12 @@ using namespace oclint;
 class TextReporter : public Reporter
 {
 public:
-    virtual const std::string name() const
+    virtual const std::string name() const override
     {
         return "text";
     }
 
-    virtual void report(Results *results, std::ostream &out)
+    virtual void report(Results* results, std::ostream& out) override
     {
         if (results->hasErrors())
         {

@@ -13,7 +13,7 @@ private:
     bool isParenExprBox(Expr *expr,
         string &selectorString, map<string, string> &methodArgTypeMap)
     {
-        map<string, string>::iterator selectedSelector = methodArgTypeMap.find(selectorString);
+        auto selectedSelector = methodArgTypeMap.find(selectorString);
         return expr && isa<ParenExpr>(expr) &&
             selectedSelector != methodArgTypeMap.end() &&
             selectedSelector->second == dyn_cast<ParenExpr>(expr)->getType().getAsString();
@@ -80,17 +80,17 @@ private:
     }
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "replace with boxed expression";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 3;
     }
 
-    virtual unsigned int supportedLanguages() const
+    virtual unsigned int supportedLanguages() const override
     {
         return LANG_OBJC;
     }

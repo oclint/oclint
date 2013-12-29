@@ -5,11 +5,12 @@
 #include "oclint/RuleSet.h"
 #include "oclint/RulesetBasedAnalyzer.h"
 #include "oclint/ViolationSet.h"
+#include <utility>
 
 using namespace oclint;
 
-RulesetBasedAnalyzer::RulesetBasedAnalyzer(std::vector<RuleBase *> filteredRules)
-    : _filteredRules(filteredRules)
+RulesetBasedAnalyzer::RulesetBasedAnalyzer(std::vector<RuleBase*> filteredRules)
+    : _filteredRules(std::move(filteredRules))
 {
 }
 
@@ -18,8 +19,8 @@ void RulesetBasedAnalyzer::analyze(std::vector<clang::ASTContext *> &contexts)
     for (const auto& context : contexts)
     {
         debug::emit("Analyzing ");
-        ViolationSet *violationSet = new ViolationSet();
-        RuleCarrier *carrier = new RuleCarrier(context, violationSet);
+        auto violationSet = new ViolationSet();
+        auto carrier = new RuleCarrier(context, violationSet);
         debug::emit(carrier->getMainFilePath().c_str());
         for (RuleBase *rule : _filteredRules)
         {

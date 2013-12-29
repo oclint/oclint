@@ -7,14 +7,14 @@
 
 #include "reporters.h"
 
-static oclint::Reporter *selectedReporter = NULL;
+static oclint::Reporter* selectedReporter = nullptr;
 
 void loadReporter()
 {
-    selectedReporter = NULL;
+    selectedReporter = nullptr;
     std::string reportDirPath = oclint::option::reporterPath();
     DIR *pDir = opendir(reportDirPath.c_str());
-    if (pDir != NULL)
+    if (pDir != nullptr)
     {
         struct dirent *dirp;
         while ((dirp = readdir(pDir)))
@@ -25,7 +25,7 @@ void loadReporter()
             }
             std::string reporterPath = reportDirPath + "/" + std::string(dirp->d_name);
             void *reporterHandle = dlopen(reporterPath.c_str(), RTLD_LAZY);
-            if (reporterHandle == NULL)
+            if (reporterHandle == nullptr)
             {
                 std::cerr << dlerror() << std::endl;
                 closedir(pDir);
@@ -42,7 +42,7 @@ void loadReporter()
         }
         closedir(pDir);
     }
-    if (selectedReporter == NULL)
+    if (selectedReporter == nullptr)
     {
         throw oclint::GenericException(
             "cannot find dynamic library for report type: " + oclint::option::reportType());

@@ -11,12 +11,12 @@ using namespace oclint;
 class XMLReporter : public Reporter
 {
 public:
-    virtual const std::string name() const
+    virtual const std::string name() const override
     {
         return "xml";
     }
 
-    virtual void report(Results *results, std::ostream &out)
+    virtual void report(Results* results, std::ostream& out) override
     {
         writeHeader(out, Version::identifier());
         writeDatetime(out);
@@ -39,7 +39,7 @@ public:
 
     void writeDatetime(std::ostream &out)
     {
-        time_t now = time(0);
+        time_t now = time(nullptr);
         struct tm *tmNow = gmtime(&now);
         char charNow[20];
         sprintf(charNow,

@@ -12,17 +12,17 @@ private:
     static RuleSet rules;
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "long line";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 3;
     }
 
-    virtual void eachLine(int lineNumber, string line)
+    virtual void eachLine(int lineNumber, string line) override
     {
         int threshold = RuleConfiguration::intForKey("LONG_LINE", 100);
         int currentLineSize = line.size();

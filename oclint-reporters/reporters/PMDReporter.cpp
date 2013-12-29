@@ -8,12 +8,12 @@ using namespace oclint;
 class PMDReporter : public Reporter
 {
 public:
-    virtual const std::string name() const
+    virtual const std::string name() const override
     {
         return "pmd";
     }
 
-    virtual void report(Results *results, std::ostream &out)
+    virtual void report(Results* results, std::ostream& out) override
     {
         writeHeader(out, Version::identifier());
         for (const auto& violation : results->allViolations())

@@ -18,22 +18,22 @@ private:
     static RuleSet rules;
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "goto statement";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 3;
     }
 
-    virtual void callback(const MatchFinder::MatchResult &result)
+    virtual void callback(const MatchFinder::MatchResult& result) override
     {
         addViolation(result.Nodes.getNodeAs<GotoStmt>("gotoStmt"), this);
     }
 
-    virtual void setUpMatcher()
+    virtual void setUpMatcher() override
     {
         addMatcher(gotoStmt().bind("gotoStmt"));
     }

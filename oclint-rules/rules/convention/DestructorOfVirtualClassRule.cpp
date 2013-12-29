@@ -14,17 +14,17 @@ class DestructorOfVirtualClassRule :
     public oclint::AbstractASTVisitorRule<DestructorOfVirtualClassRule>
 {
 public:
-    virtual const std::string name() const
+    virtual const std::string name() const override
     {
         return "destructor of virtual class";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 2;
     }
 
-    unsigned int supportedLanguages() const
+    unsigned int supportedLanguages() const override
     {
         return oclint::LANG_CXX;
     }

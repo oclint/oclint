@@ -15,17 +15,17 @@ private:
     int _threshold;
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "too many fields";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 3;
     }
 
-    virtual void setUp()
+    virtual void setUp() override
     {
         _threshold = RuleConfiguration::intForKey("TOO_MANY_FIELDS", 20);
     }

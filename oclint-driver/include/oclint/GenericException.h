@@ -10,9 +10,9 @@ namespace oclint
 class GenericException : public std::exception
 {
 public:
-    GenericException(const std::string& desc);
+    explicit GenericException(std::string desc);
     virtual ~GenericException() throw() {}
-    virtual const char *what() const throw();
+    virtual const char* what() const throw() override;
 
 private:
     std::string description;

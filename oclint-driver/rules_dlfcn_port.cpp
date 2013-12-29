@@ -9,7 +9,7 @@
 void dynamicLoadRules(std::string ruleDirPath)
 {
     DIR *pDir = opendir(ruleDirPath.c_str());
-    if (pDir != NULL)
+    if (pDir != nullptr)
     {
         struct dirent *dirp;
         while ((dirp = readdir(pDir)))
@@ -19,7 +19,7 @@ void dynamicLoadRules(std::string ruleDirPath)
                 continue;
             }
             std::string rulePath = ruleDirPath + "/" + std::string(dirp->d_name);
-            if (dlopen(rulePath.c_str(), RTLD_LAZY) == NULL)
+            if (dlopen(rulePath.c_str(), RTLD_LAZY) == nullptr)
             {
                 std::cerr << dlerror() << std::endl;
                 closedir(pDir);

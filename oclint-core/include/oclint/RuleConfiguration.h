@@ -2,16 +2,12 @@
 #define OCLINT_RULECONFIGURATION_H
 
 #include <string>
-#include <map>
 
 namespace oclint
 {
 
 class RuleConfiguration
 {
-private:
-    static std::map<std::string, std::string>* _configurations;
-
 public:
     static void addConfiguration(std::string key, std::string value);
     static bool hasKey(std::string key);

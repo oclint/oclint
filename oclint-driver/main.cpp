@@ -50,7 +50,7 @@ ostream* outStream()
         return &cout;
     }
     string output = oclint::option::outputPath();
-    ofstream *out = new ofstream(output.c_str());
+    auto out = new ofstream(output.c_str());
     if (!out->is_open())
     {
         throw oclint::GenericException("cannot open report output file " + output);

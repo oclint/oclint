@@ -12,12 +12,12 @@ private:
     static RuleSet rules;
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "default label not last in switch statement";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 3;
     }

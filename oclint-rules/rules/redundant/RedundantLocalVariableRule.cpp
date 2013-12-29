@@ -29,7 +29,7 @@ private:
 
             }
         }
-        return NULL;
+        return nullptr;
     }
 
     NamedDecl *extractNamedDecl(CompoundStmt *compoundStmt)
@@ -40,16 +40,16 @@ private:
         {
             return dyn_cast<NamedDecl>(declStmt->getSingleDecl());
         }
-        return NULL;
+        return nullptr;
     }
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "redundant local variable";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 3;
     }

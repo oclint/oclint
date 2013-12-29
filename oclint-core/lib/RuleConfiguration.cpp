@@ -1,14 +1,15 @@
-#include <cstdlib>
-
 #include "oclint/RuleConfiguration.h"
+
+#include <cstdlib>
+#include <map>
 
 using namespace oclint;
 
-std::map<std::string, std::string>* RuleConfiguration::_configurations = NULL;
+static std::map<std::string, std::string>* _configurations = nullptr;
 
 void RuleConfiguration::addConfiguration(std::string key, std::string value)
 {
-    if (_configurations == NULL)
+    if (_configurations == nullptr)
     {
         _configurations = new std::map<std::string, std::string>();
     }
@@ -18,7 +19,8 @@ void RuleConfiguration::addConfiguration(std::string key, std::string value)
 
 bool RuleConfiguration::hasKey(std::string key)
 {
-    return _configurations != NULL && _configurations->find(key) != _configurations->end();
+    return _configurations != nullptr &&
+           _configurations->find(key) != _configurations->end();
 }
 
 std::string RuleConfiguration::valueForKey(std::string key)
@@ -28,9 +30,9 @@ std::string RuleConfiguration::valueForKey(std::string key)
 
 void RuleConfiguration::removeAll()
 {
-    if (_configurations != NULL)
+    if (_configurations != nullptr)
     {
-        _configurations = NULL;
+        _configurations = nullptr;
     }
 }
 

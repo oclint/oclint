@@ -10,12 +10,12 @@ using namespace oclint;
 class HTMLReporter : public Reporter
 {
 public:
-    virtual const std::string name() const
+    virtual const std::string name() const override
     {
         return "html";
     }
 
-    virtual void report(Results *results, std::ostream &out)
+    virtual void report(Results* results, std::ostream& out) override
     {
         out << "<!DOCTYPE html>";
         out << "<html>";
@@ -54,7 +54,7 @@ public:
 
     void writeFooter(std::ostream &out, std::string version)
     {
-        time_t now = time(0);
+        time_t now = time(nullptr);
         out << "<p>" << ctime(&now)
             << "| Generated with <a href='http://oclint.org'>OCLint v" << version << "</a>.</p>";
     }
@@ -88,9 +88,8 @@ public:
 
     void writeCheckerBugs(std::ostream &out, std::vector<Violation> violations)
     {
-        for (int index = 0, total = violations.size(); index < total; index++)
+        for (const auto& violation : violations)
         {
-            Violation violation = violations.at(index);
             out << "<tr><td>" << violation.path << "</td><td>" << violation.startLine
                 << ":" << violation.startColumn << "</td>";
             out << "<td>clang static analyzer</td><td class='checker-bug'>"

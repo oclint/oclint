@@ -30,7 +30,7 @@ private:
                 return dyn_cast<IfStmt>(*(compoundStmt->body_begin()));
             }
         }
-        return NULL;
+        return nullptr;
     }
 
     bool checkElseBranch(IfStmt *outerIf, IfStmt *innerIf)
@@ -39,12 +39,12 @@ private:
     }
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "collapsible if statements";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 3;
     }

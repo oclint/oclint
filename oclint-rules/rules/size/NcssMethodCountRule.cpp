@@ -26,12 +26,12 @@ private:
     }
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "high ncss method";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 2;
     }
