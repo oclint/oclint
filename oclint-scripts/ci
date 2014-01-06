@@ -14,7 +14,7 @@ from oclintscripts import version
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('-reset', '--reset', action="store_true")
 arg_parser.add_argument('-setup', '--setup', action="store_true")
-arg_parser.add_argument('-llvm-branch', '--llvm-branch', nargs='?', choices=version.llvm_branches(), default='trunk')
+arg_parser.add_argument('-llvm-branch', '--llvm-branch', nargs='?', choices=version.llvm_branches(), default=version.llvm_default_branch())
 arg_parser.add_argument('-release', '--release', action="store_true")
 arg_parser.add_argument('-jenkins', '--jenkins', action="store_true")
 arg_parser.add_argument('-archive', '--archive', action="store_true")

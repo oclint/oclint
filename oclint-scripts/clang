@@ -14,7 +14,7 @@ from oclintscripts import version
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('task_name', choices=['checkout', 'co', 'update', 'up', 'build'])
-arg_parser.add_argument('-branch', '--branch', nargs='?', choices=version.llvm_branches(), default='trunk')
+arg_parser.add_argument('-branch', '--branch', nargs='?', choices=version.llvm_branches(), default=version.llvm_default_branch())
 arg_parser.add_argument('-rev', '--rev')
 arg_parser.add_argument('-clean', '--clean', action="store_true")
 arg_parser.add_argument('-release', '--release', action="store_true")
