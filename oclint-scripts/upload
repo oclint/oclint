@@ -19,9 +19,9 @@ def build_root_dir():
 
 def archive_file_name():
     distribution_name = version.oclint_dev_version() + '-' + environment.dist_env()
-    if environment.is_darwin() or environment.is_mingw32():
+    if environment.is_mingw32():
         return 'oclint-' + distribution_name + '.zip'
-    elif environment.is_linux():
+    elif environment.is_darwin() or environment.is_linux():
         return 'oclint-' + distribution_name + '.tar.gz'
     else:
         sys.exit("Error: this environment is not supported yet.")
