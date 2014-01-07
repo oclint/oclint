@@ -1,4 +1,7 @@
 #! /bin/sh -e
 
+# Build OCLint against an existing LLVM installation outside this repository.
+# The path of the LLVM build needs to be absolute.
+
 ./build -llvm-root=$1 -release -clean
 ./bundle -llvm-root=$1 -release -clean

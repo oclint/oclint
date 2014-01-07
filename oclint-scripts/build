@@ -30,7 +30,7 @@ def build_command(llvm_root, is_release, module_extras, source_path):
     if is_release:
         cmd_build.release_build()
     if environment.is_unix():
-        cmd_build.use_clang_compiler()
+        cmd_build.use_clang_compiler(llvm_root)
     extras = {'LLVM_ROOT': llvm_root}
     extras.update(module_extras)
     return cmd_build.append_dict(extras).str()

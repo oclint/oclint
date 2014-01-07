@@ -36,8 +36,8 @@ class builder:
     def test_build(self):
         return self.append('TEST_BUILD', '1')
 
-    def use_clang_compiler(self):
-        clang_bin_path = os.path.join(path.build.clang_install_dir, 'bin', 'clang')
+    def use_clang_compiler(self, llvm_root = path.build.clang_install_dir):
+        clang_bin_path = os.path.join(llvm_root, 'bin', 'clang')
         return self.append('CMAKE_CXX_COMPILER', clang_bin_path + '++').append('CMAKE_C_COMPILER', clang_bin_path)
 
     def append_dict(self, dict):
