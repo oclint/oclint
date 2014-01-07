@@ -106,9 +106,9 @@ def archive(is_release):
     archive_dir = path.oclint_module_build_dir(full_version)
     path.mv(bundle_root_dir, archive_dir)
     archive_file_name = path.oclint_module_build_dir(distribution_name)
-    if environment.is_darwin() or environment.is_mingw32():
+    if environment.is_mingw32():
         shutil.make_archive(archive_file_name, 'zip', path.build_root, 'oclint-' + full_version)
-    if environment.is_linux():
+    if environment.is_darwin() or environment.is_linux():
         shutil.make_archive(archive_file_name, 'gztar', path.build_root, 'oclint-' + full_version)
 
 setup_release_dir()
