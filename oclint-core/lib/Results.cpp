@@ -5,11 +5,11 @@
 
 using namespace oclint;
 
-Results* Results::_singleton = NULL;
+Results* Results::_singleton = nullptr;
 
 Results* Results::getInstance()
 {
-    if (_singleton == NULL)
+    if (_singleton == nullptr)
     {
         _singleton = new Results();
     }
@@ -26,11 +26,11 @@ Results::Results()
 Results::~Results()
 {
     delete _compilerErrorSet;
-    _compilerErrorSet = NULL;
+    _compilerErrorSet = nullptr;
     delete _compilerWarningSet;
-    _compilerWarningSet = NULL;
+    _compilerWarningSet = nullptr;
     delete _clangStaticCheckerBugSet;
-    _clangStaticCheckerBugSet = NULL;
+    _clangStaticCheckerBugSet = nullptr;
 }
 
 void Results::add(ViolationSet *violationSet)

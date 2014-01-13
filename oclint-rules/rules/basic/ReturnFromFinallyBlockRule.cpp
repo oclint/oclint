@@ -30,12 +30,12 @@ private:
     static RuleSet rules;
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "return from finally block";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 2;
     }

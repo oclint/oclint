@@ -106,7 +106,7 @@ public:
 
 std::string getMainFilePath(clang::ASTContext &context)
 {
-    oclint::RuleCarrier ruleCarrier(&context, 0);
+    oclint::RuleCarrier ruleCarrier(&context, nullptr);
     return ruleCarrier.getMainFilePath();
 }
 
@@ -116,17 +116,16 @@ static LineMap singleLineMapping;
 bool lineBasedShouldSuppress(int beginLine, clang::ASTContext &context)
 {
     std::string filePath = getMainFilePath(context);
-    LineMap::iterator commentLinesIt = singleLineMapping.find(filePath);
+    auto commentLinesIt = singleLineMapping.find(filePath);
     std::set<int> commentLines;
     if (commentLinesIt == singleLineMapping.end())
     {
         clang::RawCommentList commentList = context.getRawCommentList();
         clang::ArrayRef<clang::RawComment *> commentArray = commentList.getComments();
 
-        for (clang::ArrayRef<clang::RawComment *>::iterator commentIt = commentArray.begin(),
-            itEnd = commentArray.end(); commentIt != itEnd; ++commentIt)
+        for (auto comment : commentArray)
         {
-            clang::RawComment *comment = *commentIt;
+
             if (std::string::npos !=
                 comment->getRawText(context.getSourceManager()).find("//!OCLINT"))
             {
@@ -152,7 +151,7 @@ static RangeMap rangeMapping;
 bool rangeBasedShouldSuppress(int beginLine, clang::ASTContext &context, oclint::RuleBase *rule)
 {
     std::string filePath = getMainFilePath(context);
-    RangeMap::iterator commentRangesIt = rangeMapping.find(filePath);
+    auto commentRangesIt = rangeMapping.find(filePath);
     RangeSet commentRanges;
     if (commentRangesIt == rangeMapping.end())
     {

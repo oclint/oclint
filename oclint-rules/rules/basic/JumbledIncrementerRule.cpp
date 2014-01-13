@@ -17,7 +17,7 @@ private:
         {
             return dyn_cast_or_null<VarDecl>(declStmt->getSingleDecl());
         }
-        return NULL;
+        return nullptr;
     }
 
     ValueDecl *valueDeclFromIncExpr(Expr *incExpr)
@@ -32,7 +32,7 @@ private:
                 return declRefExpr->getDecl();
             }
         }
-        return NULL;
+        return nullptr;
     }
 
     bool isInnerIncMatchingOuterInit(Expr *incExpr, Stmt *initStmt)
@@ -43,12 +43,12 @@ private:
     }
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "jumbled incrementer";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 2;
     }

@@ -100,17 +100,17 @@ private:
     static oclint::RuleSet rules;
 
 public:
-    virtual const std::string name() const
+    virtual const std::string name() const override
     {
         return "unnecessary null check for cxxdealloc";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 3;
     }
 
-    virtual unsigned int supportedLanguages() const
+    virtual unsigned int supportedLanguages() const override
     {
         return oclint::LANG_CXX;
     }

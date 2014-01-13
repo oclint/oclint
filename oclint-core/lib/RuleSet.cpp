@@ -1,13 +1,15 @@
-#include "oclint/RuleBase.h"
 #include "oclint/RuleSet.h"
+#include "oclint/RuleBase.h"
+
+#include <vector>
 
 using namespace oclint;
 
-std::vector<RuleBase*>* RuleSet::_rules = NULL;
+static std::vector<RuleBase*>* _rules = nullptr;
 
 RuleSet::RuleSet(RuleBase* rule)
 {
-    if (_rules == NULL)
+    if (_rules == nullptr)
     {
         _rules = new std::vector<RuleBase*>();
     }
@@ -16,14 +18,14 @@ RuleSet::RuleSet(RuleBase* rule)
 
 int RuleSet::numberOfRules()
 {
-    return _rules == NULL ? 0 : _rules->size();
+    return _rules == nullptr ? 0 : _rules->size();
 }
 
 RuleBase* RuleSet::getRuleAtIndex(int index)
 {
     if (index >= numberOfRules())
     {
-        return NULL; // Better throwing an exception
+        return nullptr; // Better throwing an exception
     }
     return _rules->at(index);
 }

@@ -53,24 +53,25 @@ private:
     static RuleSet rules;
 
 protected:
-    virtual bool hasVariableInExpr(string variableOfInterest, Expr *expr)
+    virtual bool hasVariableInExpr(string variableOfInterest, Expr* expr)
+        override
     {
         VariableOfInterestInMemberExpr seekingVariable;
         return seekingVariable.hasVariableInExpr(variableOfInterest, expr, this);
     }
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "broken null check";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 1;
     }
 
-    virtual unsigned int supportedLanguages() const
+    virtual unsigned int supportedLanguages() const override
     {
         return LANG_C | LANG_CXX;
     }
@@ -82,24 +83,25 @@ private:
     static RuleSet rules;
 
 protected:
-    virtual bool hasVariableInExpr(string variableOfInterest, Expr *expr)
+    virtual bool hasVariableInExpr(string variableOfInterest, Expr* expr)
+        override
     {
         VariableOfInterestInObjCMessageExpr seekingVariable;
         return seekingVariable.hasVariableInExpr(variableOfInterest, expr, this);
     }
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "broken nil check";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 2;
     }
 
-    virtual unsigned int supportedLanguages() const
+    virtual unsigned int supportedLanguages() const override
     {
         return LANG_OBJC;
     }

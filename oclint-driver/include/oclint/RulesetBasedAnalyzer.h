@@ -12,9 +12,9 @@ private:
     std::vector<RuleBase *> _filteredRules;
 
 public:
-    RulesetBasedAnalyzer(std::vector<RuleBase *> filteredRules);
+    explicit RulesetBasedAnalyzer(std::vector<RuleBase *> filteredRules);
 
-    virtual void analyze(std::vector<clang::ASTContext *> &contexts);
+    virtual void analyze(std::vector<clang::ASTContext*>& contexts) override;
 };
 
 } // end namespace oclint

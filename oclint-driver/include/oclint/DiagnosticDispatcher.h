@@ -12,9 +12,9 @@ private:
     bool _isCheckerCustomer;
 
 public:
-    DiagnosticDispatcher(bool runClangChecker);
+    explicit DiagnosticDispatcher(bool runClangChecker);
     void HandleDiagnostic(clang::DiagnosticsEngine::Level diagnosticLevel,
-        const clang::Diagnostic &diagnosticInfo);
+                          const clang::Diagnostic& diagnosticInfo) override;
 };
 
 } // end namespace oclint

@@ -66,17 +66,17 @@ private:
     static RuleSet rules;
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "throw exception from finally block";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 2;
     }
 
-    virtual unsigned int supportedLanguages() const
+    virtual unsigned int supportedLanguages() const override
     {
         return LANG_OBJC;
     }

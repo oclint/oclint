@@ -16,17 +16,17 @@ private:
     static RuleSet rules;
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "must override hash with isEqual";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 1;
     }
 
-    virtual unsigned int supportedLanguages() const
+    virtual unsigned int supportedLanguages() const override
     {
         return LANG_OBJC;
     }

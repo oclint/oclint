@@ -29,7 +29,8 @@ void DiagnosticDispatcher::HandleDiagnostic(clang::DiagnosticsEngine::Level diag
     clang::SmallString<100> diagnosticMessage;
     diagnosticInfo.FormatDiagnostic(diagnosticMessage);
 
-    Violation violation(0, filename.str(), line, column, 0, 0, diagnosticMessage.str().str());
+    Violation violation(nullptr, filename.str(), line, column, 0, 0,
+                        diagnosticMessage.str().str());
 
     Results *results = Results::getInstance();
     if (_isCheckerCustomer)

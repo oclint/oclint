@@ -17,7 +17,8 @@ private:
     clang::ast_matchers::MatchFinder *_finder;
 
 protected:
-    virtual void run(const clang::ast_matchers::MatchFinder::MatchResult &result);
+    virtual void
+    run(const clang::ast_matchers::MatchFinder::MatchResult& result) override;
 
     template<typename T>
     void addMatcher(const T &nodeMatch)
@@ -26,13 +27,13 @@ protected:
     }
 
 public:
-    virtual void setUp();
+    virtual void setUp() override;
 
     bool VisitDecl(clang::Decl *decl);
 
     bool VisitStmt(clang::Stmt *stmt);
 
-    virtual void tearDown();
+    virtual void tearDown() override;
 
 public:
     virtual ~AbstractASTMatcherRule();

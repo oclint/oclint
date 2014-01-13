@@ -9,7 +9,7 @@ namespace oclint
 class AbstractSourceCodeReaderRule : public RuleBase
 {
 protected:
-    virtual void apply();
+    virtual void apply() override;
 
     void addViolation(int startLine, int startColumn,
         int endLine, int endColumn, RuleBase *rule, const std::string& message = "");

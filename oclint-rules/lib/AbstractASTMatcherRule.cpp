@@ -35,7 +35,7 @@ bool AbstractASTMatcherRule::VisitStmt(clang::Stmt *stmt)
 void AbstractASTMatcherRule::tearDown()
 {
     delete _finder;
-    _finder = NULL;
+    _finder = nullptr;
 }
 
 } // end namespace oclint

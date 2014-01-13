@@ -11,18 +11,18 @@ private:
     static RuleSet rules;
 
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "{{RULE_NAME}}";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return {{RULE_PRIORITY}};
     }
 
-    virtual void setUp() {}
-    virtual void tearDown() {}
+    virtual void setUp() override {}
+    virtual void tearDown() override {}
 
     {{VISIT_AST_NODE_BLOCK}}
 };

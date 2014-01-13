@@ -118,7 +118,7 @@ static clang::CompilerInvocation *newInvocation(clang::DiagnosticsEngine *diagno
     const llvm::opt::ArgStringList &argStringList)
 {
     assert(!argStringList.empty() && "Must at least contain the program name!");
-    clang::CompilerInvocation *invocation = new clang::CompilerInvocation;
+    auto invocation = new clang::CompilerInvocation;
     clang::CompilerInvocation::CreateFromArgs(*invocation,
         argStringList.data() + 1, argStringList.data() + argStringList.size(), *diagnostics);
     invocation->getFrontendOpts().DisableFree = false;
@@ -212,7 +212,7 @@ static clang::FileManager *newFileManager()
 static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *compilerInvocation,
     clang::FileManager *fileManager, bool runClangChecker = false)
 {
-    oclint::CompilerInstance *compilerInstance = new oclint::CompilerInstance();
+    auto compilerInstance = new oclint::CompilerInstance();
     compilerInstance->setInvocation(compilerInvocation);
     compilerInstance->setFileManager(fileManager);
     compilerInstance->createDiagnostics(new DiagnosticDispatcher(runClangChecker));
