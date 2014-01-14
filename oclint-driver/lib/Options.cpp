@@ -1,3 +1,5 @@
+#include "oclint/Options.h"
+
 #include <unistd.h>
 
 #include <llvm/Option/OptTable.h>
@@ -11,7 +13,6 @@
 
 #include "oclint/ConfigFile.h"
 #include "oclint/Debug.h"
-#include "oclint/Options.h"
 #include "oclint/RuleConfiguration.h"
 
 using namespace oclint;

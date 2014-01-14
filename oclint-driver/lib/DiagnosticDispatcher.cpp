@@ -1,10 +1,10 @@
+#include "oclint/DiagnosticDispatcher.h"
 
 #include <llvm/ADT/SmallString.h>
 #include <llvm/ADT/StringRef.h>
 #include <clang/Basic/SourceLocation.h>
 #include <clang/Basic/SourceManager.h>
 
-#include "oclint/DiagnosticDispatcher.h"
 #include "oclint/Results.h"
 #include "oclint/Violation.h"
 

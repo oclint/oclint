@@ -44,6 +44,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE
  * SOFTWARE.
  */
+#include "oclint/Driver.h"
 
 #include <unistd.h>
 
@@ -66,10 +67,9 @@
 #include <clang/Tooling/CompilationDatabase.h>
 #include <clang/Tooling/Tooling.h>
 
-#include "oclint/DiagnosticDispatcher.h"
 #include "oclint/CompilerInstance.h"
 #include "oclint/Debug.h"
-#include "oclint/Driver.h"
+#include "oclint/DiagnosticDispatcher.h"
 #include "oclint/GenericException.h"
 #include "oclint/Options.h"
 #include "oclint/ViolationSet.h"

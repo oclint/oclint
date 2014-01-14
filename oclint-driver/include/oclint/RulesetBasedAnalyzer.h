@@ -3,6 +3,8 @@
 
 #include "oclint/Analyzer.h"
 
+#include "oclint/RuleBase.h"
+
 namespace oclint
 {
 
