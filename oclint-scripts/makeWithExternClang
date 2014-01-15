@@ -9,7 +9,7 @@ fi
 
 LLVM_PATH=$1
 
-if test ! -f $LLVM_PATH; then
+if test ! -s $LLVM_PATH; then
     echo "Could not find directory $LLVM_PATH"
     exit 2
 fi
