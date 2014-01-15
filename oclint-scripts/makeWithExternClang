@@ -1,5 +1,12 @@
 #! /bin/sh -e
 
+if test $# -ne 1; then
+    echo "Build with external LLVM/clang."
+    echo "Expected:"
+    echo "$0 <path to LLVM>"
+    exit 1
+fi
+
 # Build OCLint against an existing LLVM installation outside this repository.
 # The path of the LLVM build needs to be absolute.
 
