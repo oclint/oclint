@@ -1,7 +1,21 @@
 #! /bin/sh -e
 
+if test $# -ne 1; then
+    echo "Build with external LLVM/clang."
+    echo "Expected:"
+    echo "$0 <path to LLVM>"
+    exit 1
+fi
+
+LLVM_PATH=$1
+
+if test ! -s $LLVM_PATH; then
+    echo "Could not find directory $LLVM_PATH"
+    exit 2
+fi
+
 # Build OCLint against an existing LLVM installation outside this repository.
 # The path of the LLVM build needs to be absolute.
 
-./build -llvm-root=$1 -release -clean
-./bundle -llvm-root=$1 -release -clean
+./build -llvm-root=$LLVM_PATH -release -clean
+./bundle -llvm-root=$LLVM_PATH -release -clean
