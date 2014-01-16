@@ -1,6 +1,8 @@
-#include "oclint/RuleBase.h"
 #include "oclint/Violation.h"
+
 #include <utility>
+
+#include "oclint/RuleBase.h"
 
 using namespace oclint;
 

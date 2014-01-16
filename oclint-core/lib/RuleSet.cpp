@@ -1,7 +1,8 @@
 #include "oclint/RuleSet.h"
-#include "oclint/RuleBase.h"
 
 #include <vector>
+
+#include "oclint/RuleBase.h"
 
 using namespace oclint;
 

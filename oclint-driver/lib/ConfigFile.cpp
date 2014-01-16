@@ -1,7 +1,8 @@
-#include <llvm/Support/YAMLParser.h>
-#include <llvm/Support/SourceMgr.h>
-
 #include "oclint/ConfigFile.h"
+
+#include <llvm/Support/SourceMgr.h>
+#include <llvm/Support/YAMLParser.h>
+
 #include "oclint/Debug.h"
 
 using namespace oclint;

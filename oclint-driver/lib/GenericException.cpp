@@ -1,4 +1,5 @@
 #include "oclint/GenericException.h"
+
 #include <utility>
 
 using namespace oclint;
