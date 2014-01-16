@@ -92,7 +92,7 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
 
         ObjCInterfaceDecl *getClassInterface(ObjCMethodDecl *decl)
         {
-            if (isa<ObjCProtocolDecl>(decl->getDeclContext()))
+            if (!decl || isa<ObjCProtocolDecl>(decl->getDeclContext()))
             {
                 return nullptr;
             }
