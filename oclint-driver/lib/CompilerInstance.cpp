@@ -44,13 +44,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE
  * SOFTWARE.
  */
+#include "oclint/CompilerInstance.h"
 
-#include <clang/Frontend/FrontendActions.h>
 #include <clang/Basic/TargetInfo.h>
-
+#include <clang/Frontend/FrontendActions.h>
 #include <clang/StaticAnalyzer/Frontend/FrontendActions.h>
 
-#include "oclint/CompilerInstance.h"
 #include "oclint/Options.h"
 
 using namespace oclint;

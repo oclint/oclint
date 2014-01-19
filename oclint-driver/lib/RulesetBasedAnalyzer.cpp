@@ -1,11 +1,13 @@
+#include "oclint/RulesetBasedAnalyzer.h"
+
+#include <utility>
+
 #include "oclint/Debug.h"
 #include "oclint/Results.h"
 #include "oclint/RuleBase.h"
 #include "oclint/RuleCarrier.h"
 #include "oclint/RuleSet.h"
-#include "oclint/RulesetBasedAnalyzer.h"
 #include "oclint/ViolationSet.h"
-#include <utility>
 
 using namespace oclint;
 

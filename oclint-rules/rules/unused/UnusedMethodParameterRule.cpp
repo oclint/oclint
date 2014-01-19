@@ -1,8 +1,10 @@
 #include <sstream>
+
+#include <clang/AST/Attr.h>
+
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 #include "oclint/util/ASTUtil.h"
-#include <clang/AST/Attr.h>
 
 using namespace std;
 using namespace clang;

@@ -1,6 +1,7 @@
+#include "oclint/RulesetFilter.h"
+
 #include <algorithm>
 
-#include "oclint/RulesetFilter.h"
 #include "oclint/RuleSet.h"
 
 using namespace oclint;

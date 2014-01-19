@@ -1,7 +1,6 @@
-#include <algorithm>
-
 #include "oclint/util/StdUtil.h"
 
+#include <algorithm>
 
 bool isUnderscore(char aChar) {
     return aChar == '_';
