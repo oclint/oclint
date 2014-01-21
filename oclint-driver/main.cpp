@@ -17,6 +17,7 @@
 #include "oclint/RuleSet.h"
 #include "oclint/RulesetFilter.h"
 #include "oclint/RulesetBasedAnalyzer.h"
+#include "oclint/Version.h"
 #include "oclint/ViolationSet.h"
 #include "oclint/Violation.h"
 
@@ -131,10 +132,18 @@ int prepare()
     return SUCCESS;
 }
 
+static void oclintVersionPrinter()
+{
+    cout << "OCLint (http://oclint.org/):\n";
+    cout << "  OCLint version " << oclint::Version::identifier() << ".\n";
+    cout << "  Built " << __DATE__ << " (" << __TIME__ << ").\n";
+}
+
 extern llvm::cl::OptionCategory OCLintOptionCategory;
 
 int main(int argc, const char **argv)
 {
+    llvm::cl::AddExtraVersionPrinter(&oclintVersionPrinter);
     CommonOptionsParser optionsParser(argc, argv, OCLintOptionCategory);
     oclint::option::process(argv[0]);
 
