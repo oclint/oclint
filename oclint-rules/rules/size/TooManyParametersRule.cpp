@@ -10,8 +10,6 @@ using namespace oclint;
 class TooManyParametersRule : public AbstractASTVisitorRule<TooManyParametersRule>
 {
 private:
-    static RuleSet rules;
-
     unsigned int _threshold;
 
     template <typename T>
@@ -57,4 +55,4 @@ public:
     }
 };
 
-RuleSet TooManyParametersRule::rules(new TooManyParametersRule());
+static RuleSet rules(new TooManyParametersRule());

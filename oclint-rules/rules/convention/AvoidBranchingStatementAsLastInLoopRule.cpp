@@ -9,8 +9,6 @@ class AvoidBranchingStatementAsLastInLoopRule :
     public AbstractASTVisitorRule<AvoidBranchingStatementAsLastInLoopRule>
 {
 private:
-    static RuleSet rules;
-
     bool isBranchingStatement(Stmt *stmt)
     {
         return stmt && (isa<BreakStmt>(stmt) || isa<ContinueStmt>(stmt) || isa<ReturnStmt>(stmt));
@@ -75,5 +73,4 @@ public:
     }
 };
 
-RuleSet AvoidBranchingStatementAsLastInLoopRule::rules(
-    new AvoidBranchingStatementAsLastInLoopRule());
+static RuleSet rules(new AvoidBranchingStatementAsLastInLoopRule());

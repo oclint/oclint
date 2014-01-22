@@ -9,8 +9,6 @@ class RedundantConditionalOperatorRule :
     public AbstractASTVisitorRule<RedundantConditionalOperatorRule>
 {
 private:
-    static RuleSet rules;
-
     template<typename nodeType>
     nodeType* extractFromImplicitCastExpr(Expr *fromExpr)
     {
@@ -179,4 +177,4 @@ public:
     }
 };
 
-RuleSet RedundantConditionalOperatorRule::rules(new RedundantConditionalOperatorRule());
+static RuleSet rules(new RedundantConditionalOperatorRule());

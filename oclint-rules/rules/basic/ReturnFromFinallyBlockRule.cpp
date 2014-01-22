@@ -26,9 +26,6 @@ class ReturnFromFinallyBlockRule : public AbstractASTVisitorRule<ReturnFromFinal
         }
     };
 
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -54,4 +51,4 @@ public:
     }
 };
 
-RuleSet ReturnFromFinallyBlockRule::rules(new ReturnFromFinallyBlockRule());
+static RuleSet rules(new ReturnFromFinallyBlockRule());

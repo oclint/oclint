@@ -13,9 +13,6 @@ using namespace oclint;
 class ObjCVerifySubclassMustImplementRule : public
     AbstractASTVisitorRule<ObjCVerifySubclassMustImplementRule>
 {
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -56,4 +53,4 @@ public:
 };
 
 
-RuleSet ObjCVerifySubclassMustImplementRule::rules(new ObjCVerifySubclassMustImplementRule());
+static RuleSet rules(new ObjCVerifySubclassMustImplementRule());

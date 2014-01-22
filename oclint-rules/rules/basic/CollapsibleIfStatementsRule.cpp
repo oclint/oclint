@@ -8,8 +8,6 @@ using namespace oclint;
 class CollapsibleIfStatementsRule : public AbstractASTVisitorRule<CollapsibleIfStatementsRule>
 {
 private:
-    static RuleSet rules;
-
     bool compoundStmtContainsOnlyOneIfStmt(CompoundStmt *compoundStmt)
     {
         return compoundStmt->size() == 1 && isa<IfStmt>(*(compoundStmt->body_begin()));
@@ -61,4 +59,4 @@ public:
     }
 };
 
-RuleSet CollapsibleIfStatementsRule::rules(new CollapsibleIfStatementsRule());
+static RuleSet rules(new CollapsibleIfStatementsRule());

@@ -9,9 +9,6 @@ using namespace oclint;
 
 class EmptyWhileStatementRule : public AbstractEmptyBlockStmtRule<EmptyWhileStatementRule>
 {
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -29,4 +26,4 @@ public:
     }
 };
 
-RuleSet EmptyWhileStatementRule::rules(new EmptyWhileStatementRule());
+static RuleSet rules(new EmptyWhileStatementRule());

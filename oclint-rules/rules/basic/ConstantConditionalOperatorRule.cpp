@@ -8,9 +8,6 @@ using namespace oclint;
 class ConstantConditionalOperatorRule :
     public AbstractASTVisitorRule<ConstantConditionalOperatorRule>
 {
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -36,4 +33,4 @@ public:
     }
 };
 
-RuleSet ConstantConditionalOperatorRule::rules(new ConstantConditionalOperatorRule());
+static RuleSet rules(new ConstantConditionalOperatorRule());

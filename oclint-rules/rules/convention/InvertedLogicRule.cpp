@@ -8,8 +8,6 @@ using namespace oclint;
 class InvertedLogicRule : public AbstractASTVisitorRule<InvertedLogicRule>
 {
 private:
-    static RuleSet rules;
-
     bool isInvertedLogic(Expr *condExpr)
     {
         BinaryOperator *binaryOperator = dyn_cast_or_null<BinaryOperator>(condExpr);
@@ -50,4 +48,4 @@ public:
     }
 };
 
-RuleSet InvertedLogicRule::rules(new InvertedLogicRule());
+static RuleSet rules(new InvertedLogicRule());

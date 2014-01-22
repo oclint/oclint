@@ -9,8 +9,6 @@ class RedundantIfStatementRule :
     public AbstractASTVisitorRule<RedundantIfStatementRule>
 {
 private:
-    static RuleSet rules;
-
     template<typename nodeType>
     nodeType* extractStmt(Stmt *fromStmt)
     {
@@ -103,4 +101,4 @@ public:
     }
 };
 
-RuleSet RedundantIfStatementRule::rules(new RedundantIfStatementRule());
+static RuleSet rules(new RedundantIfStatementRule());

@@ -9,8 +9,6 @@ using namespace oclint;
 class UnusedLocalVariableRule : public AbstractASTVisitorRule<UnusedLocalVariableRule>
 {
 private:
-    static RuleSet rules;
-
     bool isInNonTemplateFunction(Decl *varDecl)
     {
         FunctionDecl *decl = dyn_cast_or_null<FunctionDecl>(varDecl->getLexicalDeclContext());
@@ -78,4 +76,4 @@ public:
     }
 };
 
-RuleSet UnusedLocalVariableRule::rules(new UnusedLocalVariableRule());
+static RuleSet rules(new UnusedLocalVariableRule());

@@ -11,8 +11,6 @@ using namespace oclint;
 class LongMethodRule : public AbstractASTVisitorRule<LongMethodRule>
 {
 private:
-    static RuleSet rules;
-
     void applyDecl(Decl *decl)
     {
         if (decl->hasBody() &&
@@ -54,4 +52,4 @@ public:
     }
 };
 
-RuleSet LongMethodRule::rules(new LongMethodRule());
+static RuleSet rules(new LongMethodRule());

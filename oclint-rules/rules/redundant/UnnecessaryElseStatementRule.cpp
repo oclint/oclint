@@ -8,8 +8,6 @@ using namespace oclint;
 class UnnecessaryElseStatementRule : public AbstractASTVisitorRule<UnnecessaryElseStatementRule>
 {
 private:
-    static RuleSet rules;
-
     bool areAllBranchesReturn(CompoundStmt *compoundStmt)
     {
         for (CompoundStmt::body_iterator body = compoundStmt->body_begin(),
@@ -95,7 +93,7 @@ public:
         {
             return true;
         }
-        
+
         vector<IfStmt *> ifStmts;
         Stmt* lastElseStmt = nullptr;
         bool stopSign = false;
@@ -128,4 +126,4 @@ public:
     }
 };
 
-RuleSet UnnecessaryElseStatementRule::rules(new UnnecessaryElseStatementRule());
+static RuleSet rules(new UnnecessaryElseStatementRule());

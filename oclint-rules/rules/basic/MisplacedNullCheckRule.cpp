@@ -49,9 +49,6 @@ public:
 
 class MisplacedNullCheckRule : public MisplacedNullCheckBaseRule
 {
-private:
-    static RuleSet rules;
-
 protected:
     virtual bool hasVariableInExpr(string variableOfInterest, Expr* expr)
         override
@@ -79,9 +76,6 @@ public:
 
 class MisplacedNilCheckRule : public MisplacedNullCheckBaseRule
 {
-private:
-    static RuleSet rules;
-
 protected:
     virtual bool hasVariableInExpr(string variableOfInterest, Expr* expr)
         override
@@ -107,5 +101,5 @@ public:
     }
 };
 
-RuleSet MisplacedNullCheckRule::rules(new MisplacedNullCheckRule());
-RuleSet MisplacedNilCheckRule::rules(new MisplacedNilCheckRule());
+static RuleSet rulesMisplacedNull(new MisplacedNullCheckRule());
+static RuleSet rulesMisplacedNil(new MisplacedNilCheckRule());

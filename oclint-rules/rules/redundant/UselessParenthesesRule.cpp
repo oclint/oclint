@@ -8,8 +8,6 @@ using namespace oclint;
 class UselessParenthesesRule : public AbstractASTVisitorRule<UselessParenthesesRule>
 {
 private:
-    static RuleSet rules;
-
     void addParenExprToViolation(Expr *expr)
     {
         if (expr && isa<ParenExpr>(expr))
@@ -51,4 +49,4 @@ public:
     }
 };
 
-RuleSet UselessParenthesesRule::rules(new UselessParenthesesRule());
+static RuleSet rules(new UselessParenthesesRule());

@@ -49,9 +49,6 @@ namespace {
 
 class ObjCVerifyProtectedMethodRule : public AbstractASTVisitorRule<ObjCVerifyProtectedMethodRule>
 {
-private:
-    static RuleSet rules;
-
 public:
     bool VisitObjCImplementationDecl(ObjCImplementationDecl* decl) {
         const auto interface = decl->getClassInterface();
@@ -95,4 +92,4 @@ public:
 };
 
 
-RuleSet ObjCVerifyProtectedMethodRule::rules(new ObjCVerifyProtectedMethodRule());
+static RuleSet rules(new ObjCVerifyProtectedMethodRule());

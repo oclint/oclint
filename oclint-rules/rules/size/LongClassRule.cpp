@@ -11,8 +11,6 @@ using namespace oclint;
 class LongClassRule : public AbstractASTVisitorRule<LongClassRule>
 {
 private:
-    static RuleSet rules;
-
     int _threshold;
 
     void applyDecl(Decl *decl, string descriptionPrefix)
@@ -78,4 +76,4 @@ public:
     }
 };
 
-RuleSet LongClassRule::rules(new LongClassRule());
+static RuleSet rules(new LongClassRule());

@@ -41,8 +41,6 @@ public:
 class ObjCVerifyMustCallSuperRule : public AbstractASTVisitorRule<ObjCVerifyMustCallSuperRule>
 {
 private:
-    static RuleSet rules;
-
     bool declRequiresSuperCall(ObjCMethodDecl* decl) {
         if(decl->isOverriding()) {
             SmallVector<const ObjCMethodDecl*, 4> overridden;
@@ -95,4 +93,4 @@ public:
 };
 
 
-RuleSet ObjCVerifyMustCallSuperRule::rules(new ObjCVerifyMustCallSuperRule());
+static RuleSet rules(new ObjCVerifyMustCallSuperRule());

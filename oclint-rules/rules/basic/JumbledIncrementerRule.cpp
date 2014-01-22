@@ -8,8 +8,6 @@ using namespace oclint;
 class JumbledIncrementerRule : public AbstractASTVisitorRule<JumbledIncrementerRule>
 {
 private:
-    static RuleSet rules;
-
     VarDecl *varDeclFromInitStmt(Stmt *initStmt)
     {
         DeclStmt *declStmt = dyn_cast_or_null<DeclStmt>(initStmt);
@@ -76,4 +74,4 @@ public:
     }
 };
 
-RuleSet JumbledIncrementerRule::rules(new JumbledIncrementerRule());
+static RuleSet rules(new JumbledIncrementerRule());

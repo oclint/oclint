@@ -29,9 +29,6 @@ class TooFewBranchesInSwitchStatementRule :
         }
     };
 
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -57,4 +54,4 @@ public:
     }
 };
 
-RuleSet TooFewBranchesInSwitchStatementRule::rules(new TooFewBranchesInSwitchStatementRule());
+static RuleSet rules(new TooFewBranchesInSwitchStatementRule());

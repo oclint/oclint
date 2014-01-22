@@ -9,9 +9,6 @@ using namespace oclint;
 
 class LongVariableNameRule : public AbstractASTVisitorRule<LongVariableNameRule>
 {
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -38,4 +35,4 @@ public:
     }
 };
 
-RuleSet LongVariableNameRule::rules(new LongVariableNameRule());
+static RuleSet rules(new LongVariableNameRule());

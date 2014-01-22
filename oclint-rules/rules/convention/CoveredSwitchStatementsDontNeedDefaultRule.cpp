@@ -8,9 +8,6 @@ using namespace oclint;
 class CoveredSwitchStatementsDontNeedDefaultRule :
     public AbstractASTVisitorRule<CoveredSwitchStatementsDontNeedDefaultRule>
 {
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -44,5 +41,4 @@ public:
     }
 };
 
-RuleSet CoveredSwitchStatementsDontNeedDefaultRule::rules(
-    new CoveredSwitchStatementsDontNeedDefaultRule());
+static RuleSet rules(new CoveredSwitchStatementsDontNeedDefaultRule());

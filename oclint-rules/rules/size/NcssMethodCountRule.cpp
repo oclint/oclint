@@ -11,8 +11,6 @@ using namespace oclint;
 class NcssMethodCountRule : public AbstractASTVisitorRule<NcssMethodCountRule>
 {
 private:
-    static RuleSet rules;
-
     void applyDecl(Decl *decl)
     {
         int ncss = getNcssCount(decl);
@@ -49,4 +47,4 @@ public:
     }
 };
 
-RuleSet NcssMethodCountRule::rules(new NcssMethodCountRule());
+static RuleSet rules(new NcssMethodCountRule());

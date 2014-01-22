@@ -8,9 +8,6 @@ using namespace oclint;
 
 class LongLineRule : public AbstractSourceCodeReaderRule
 {
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -35,4 +32,4 @@ public:
     }
 };
 
-RuleSet LongLineRule::rules(new LongLineRule());
+static RuleSet rules(new LongLineRule());

@@ -8,8 +8,6 @@ using namespace oclint;
 class DoubleNegativeRule : public AbstractASTVisitorRule<DoubleNegativeRule>
 {
 private:
-    static RuleSet rules;
-
     bool bothUOLNot(UnaryOperator *outerOp, UnaryOperator *innerOp)
     {
         return outerOp->getOpcode() == UO_LNot && innerOp->getOpcode() == UO_LNot;
@@ -53,4 +51,4 @@ public:
     }
 };
 
-RuleSet DoubleNegativeRule::rules(new DoubleNegativeRule());
+static RuleSet rules(new DoubleNegativeRule());

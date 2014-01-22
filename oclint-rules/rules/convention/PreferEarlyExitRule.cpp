@@ -10,8 +10,6 @@ using namespace oclint;
 class PreferEarlyExitRule : public AbstractASTVisitorRule<PreferEarlyExitRule>
 {
 private:
-    static RuleSet rules;
-
     int _threshold;
 
     bool isLongIfWithoutElse(const Stmt* statement) const
@@ -23,7 +21,7 @@ private:
                 return false;
             }
 
-            const int lineCount = 
+            const int lineCount =
                 getLineCount(ifStmt->getSourceRange(), _carrier->getSourceManager());
             return lineCount > _threshold;
         }
@@ -119,4 +117,4 @@ public:
     }
 };
 
-RuleSet PreferEarlyExitRule::rules(new PreferEarlyExitRule());
+static RuleSet rules(new PreferEarlyExitRule());

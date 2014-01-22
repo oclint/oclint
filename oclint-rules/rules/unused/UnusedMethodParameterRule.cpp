@@ -13,8 +13,6 @@ using namespace oclint;
 class UnusedMethodParameterRule : public AbstractASTVisitorRule<UnusedMethodParameterRule>
 {
 private:
-    static RuleSet rules;
-
     bool isInNonTemplateFunction(Decl *varDecl)
     {
         FunctionDecl *decl = dyn_cast_or_null<FunctionDecl>(varDecl->getLexicalDeclContext());
@@ -149,4 +147,4 @@ public:
     }
 };
 
-RuleSet UnusedMethodParameterRule::rules(new UnusedMethodParameterRule());
+static RuleSet rules(new UnusedMethodParameterRule());

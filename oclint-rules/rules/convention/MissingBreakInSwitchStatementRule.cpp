@@ -37,9 +37,6 @@ class MissingBreakInSwitchStatementRule :
         }
     };
 
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -101,4 +98,4 @@ public:
     }
 };
 
-RuleSet MissingBreakInSwitchStatementRule::rules(new MissingBreakInSwitchStatementRule());
+static RuleSet rules(new MissingBreakInSwitchStatementRule());

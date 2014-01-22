@@ -10,8 +10,6 @@ using namespace oclint;
 class RedundantNilCheckRule : public AbstractNullCheckRule<RedundantNilCheckRule>
 {
 private:
-    static RuleSet rules;
-
     bool isRedundantNilCheck(BinaryOperator *binaryOperator)
     {
         if(binaryOperator->getOpcode() == BO_LAnd && isNeNullCheck(binaryOperator->getLHS()))
@@ -67,4 +65,4 @@ public:
     }
 };
 
-RuleSet RedundantNilCheckRule::rules(new RedundantNilCheckRule());
+static RuleSet rules(new RedundantNilCheckRule());

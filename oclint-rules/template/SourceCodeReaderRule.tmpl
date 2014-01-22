@@ -6,9 +6,6 @@ using namespace oclint;
 
 class {{RULE_CLASS_NAME}}Rule : public AbstractSourceCodeReaderRule
 {
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -25,4 +22,4 @@ public:
     }
 };
 
-RuleSet {{RULE_CLASS_NAME}}Rule::rules(new {{RULE_CLASS_NAME}}Rule());
+static RuleSet rules(new {{RULE_CLASS_NAME}}Rule());

@@ -12,9 +12,6 @@ using namespace oclint;
 
 class ObjCVerifyIsEqualHashRule : public AbstractASTVisitorRule<ObjCVerifyIsEqualHashRule>
 {
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -63,4 +60,4 @@ public:
 };
 
 
-RuleSet ObjCVerifyIsEqualHashRule::rules(new ObjCVerifyIsEqualHashRule());
+static RuleSet rules(new ObjCVerifyIsEqualHashRule());

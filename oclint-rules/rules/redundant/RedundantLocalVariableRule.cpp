@@ -8,8 +8,6 @@ using namespace oclint;
 class RedundantLocalVariableRule : public AbstractASTVisitorRule<RedundantLocalVariableRule>
 {
 private:
-    static RuleSet rules;
-
     NamedDecl *extractReturnDeclRef(CompoundStmt *compoundStmt)
     {
         Stmt *lastStmt = (Stmt *)*(compoundStmt->body_end() - 1);
@@ -70,4 +68,4 @@ public:
     }
 };
 
-RuleSet RedundantLocalVariableRule::rules(new RedundantLocalVariableRule());
+static RuleSet rules(new RedundantLocalVariableRule());

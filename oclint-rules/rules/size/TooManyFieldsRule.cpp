@@ -10,8 +10,6 @@ using namespace oclint;
 class TooManyFieldsRule : public AbstractASTVisitorRule<TooManyFieldsRule>
 {
 private:
-    static RuleSet rules;
-
     int _threshold;
 
 public:
@@ -55,4 +53,4 @@ public:
     }
 };
 
-RuleSet TooManyFieldsRule::rules(new TooManyFieldsRule());
+static RuleSet rules(new TooManyFieldsRule());

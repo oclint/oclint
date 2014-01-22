@@ -166,8 +166,6 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
     };
 
 private:
-    static RuleSet rules;
-
     string description(string methodName, string enviedClass)
     {
         ostringstream stream;
@@ -213,4 +211,4 @@ public:
     // }
 };
 
-RuleSet FeatureEnvyRule::rules(new FeatureEnvyRule());
+static RuleSet rules(new FeatureEnvyRule());

@@ -66,10 +66,6 @@ public:
 class ObjCAssignIvarOutsideAccessorsRule:
     public AbstractASTVisitorRule<ObjCAssignIvarOutsideAccessorsRule>
 {
-
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -113,7 +109,5 @@ public:
 };
 
 // Instantiate the rule
-RuleSet ObjCAssignIvarOutsideAccessorsRule::rules(
-    new ObjCAssignIvarOutsideAccessorsRule()
-);
+static RuleSet rules(new ObjCAssignIvarOutsideAccessorsRule());
 

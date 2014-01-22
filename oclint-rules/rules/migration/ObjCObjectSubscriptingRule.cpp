@@ -9,8 +9,6 @@ using namespace oclint;
 class ObjCObjectSubscriptingRule : public AbstractASTVisitorRule<ObjCObjectSubscriptingRule>
 {
 private:
-    static RuleSet rules;
-
     bool isArrayGetSelector(Expr *expr, string &selectorString)
     {
         vector<string> arrayGetSelectors;
@@ -86,4 +84,4 @@ public:
 
 };
 
-RuleSet ObjCObjectSubscriptingRule::rules(new ObjCObjectSubscriptingRule());
+static RuleSet rules(new ObjCObjectSubscriptingRule());

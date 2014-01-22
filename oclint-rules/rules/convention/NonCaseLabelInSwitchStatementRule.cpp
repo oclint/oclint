@@ -27,9 +27,6 @@ class NonCaseLabelInSwitchStatementRule :
         }
     };
 
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -55,4 +52,4 @@ public:
     }
 };
 
-RuleSet NonCaseLabelInSwitchStatementRule::rules(new NonCaseLabelInSwitchStatementRule());
+static RuleSet rules(new NonCaseLabelInSwitchStatementRule());

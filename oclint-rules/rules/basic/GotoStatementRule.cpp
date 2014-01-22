@@ -14,9 +14,6 @@ using namespace oclint;
 
 class GotoStatementRule : public AbstractASTMatcherRule
 {
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -39,4 +36,4 @@ public:
     }
 };
 
-RuleSet GotoStatementRule::rules(new GotoStatementRule());
+static RuleSet rules(new GotoStatementRule());

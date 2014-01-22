@@ -7,9 +7,6 @@ using namespace oclint;
 
 class {{RULE_CLASS_NAME}}Rule : public AbstractASTVisitorRule<{{RULE_CLASS_NAME}}Rule>
 {
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -27,4 +24,4 @@ public:
     {{VISIT_AST_NODE_BLOCK}}
 };
 
-RuleSet {{RULE_CLASS_NAME}}Rule::rules(new {{RULE_CLASS_NAME}}Rule());
+static RuleSet rules(new {{RULE_CLASS_NAME}}Rule());

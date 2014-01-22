@@ -49,9 +49,6 @@ public:
 
 class BrokenNullCheckRule : public BrokenNullCheckBaseRule
 {
-private:
-    static RuleSet rules;
-
 protected:
     virtual bool hasVariableInExpr(string variableOfInterest, Expr* expr)
         override
@@ -79,9 +76,6 @@ public:
 
 class BrokenNilCheckRule : public BrokenNullCheckBaseRule
 {
-private:
-    static RuleSet rules;
-
 protected:
     virtual bool hasVariableInExpr(string variableOfInterest, Expr* expr)
         override
@@ -107,5 +101,5 @@ public:
     }
 };
 
-RuleSet BrokenNullCheckRule::rules(new BrokenNullCheckRule());
-RuleSet BrokenNilCheckRule::rules(new BrokenNilCheckRule());
+static RuleSet rulesForBrokenNull(new BrokenNullCheckRule());
+static RuleSet rulesForBrokenNil(new BrokenNilCheckRule());

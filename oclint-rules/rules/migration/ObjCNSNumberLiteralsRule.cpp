@@ -8,8 +8,6 @@ using namespace oclint;
 class ObjCNSNumberLiteralsRule : public AbstractASTVisitorRule<ObjCNSNumberLiteralsRule>
 {
 private:
-    static RuleSet rules;
-
     bool isCharLiteral(Expr *expr, string &selectorString)
     {
         if (selectorString == "numberWithChar:" && expr && isa<ImplicitCastExpr>(expr))
@@ -103,4 +101,4 @@ public:
 
 };
 
-RuleSet ObjCNSNumberLiteralsRule::rules(new ObjCNSNumberLiteralsRule());
+static RuleSet rules(new ObjCNSNumberLiteralsRule());

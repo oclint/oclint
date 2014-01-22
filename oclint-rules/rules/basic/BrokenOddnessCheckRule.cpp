@@ -8,8 +8,6 @@ using namespace oclint;
 class BrokenOddnessCheckRule : public AbstractASTVisitorRule<BrokenOddnessCheckRule>
 {
 private:
-    static RuleSet rules;
-
     bool isIntegerLiteral(Expr *expr, int value)
     {
         IntegerLiteral *integerLiteral = dyn_cast_or_null<IntegerLiteral>(expr);
@@ -53,4 +51,4 @@ public:
     }
 };
 
-RuleSet BrokenOddnessCheckRule::rules(new BrokenOddnessCheckRule());
+static RuleSet rules(new BrokenOddnessCheckRule());

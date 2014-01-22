@@ -10,8 +10,6 @@ using namespace oclint;
 class TooManyMethodsRule : public AbstractASTVisitorRule<TooManyMethodsRule>
 {
 private:
-    static RuleSet rules;
-
     int _threshold;
 
 public:
@@ -55,4 +53,4 @@ public:
     }
 };
 
-RuleSet TooManyMethodsRule::rules(new TooManyMethodsRule());
+static RuleSet rules(new TooManyMethodsRule());

@@ -8,10 +8,6 @@ using namespace oclint;
 
 class BitwiseOperatorInConditionalRule : public AbstractASTMatcherRule
 {
-
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -80,4 +76,4 @@ public:
 
 };
 
-RuleSet BitwiseOperatorInConditionalRule::rules(new BitwiseOperatorInConditionalRule());
+static RuleSet rules(new BitwiseOperatorInConditionalRule());

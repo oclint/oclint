@@ -10,6 +10,12 @@ static bool hasVirtualDestructor(const CXXRecordDecl& cxxRecordDecl)
     return cxxDestructorDecl != nullptr && cxxDestructorDecl->isVirtual();
 }
 
+static std::string getMessageViolation(const CXXRecordDecl& cxxRecordDecl)
+{
+    const std::string& className = cxxRecordDecl.getNameAsString();
+    return "class " + className + " should have a virtual destructor ~" + className + "()";
+}
+
 class DestructorOfVirtualClassRule :
     public oclint::AbstractASTVisitorRule<DestructorOfVirtualClassRule>
 {
@@ -39,16 +45,6 @@ public:
         }
         return true;
     }
-
-private:
-    static std::string getMessageViolation(const CXXRecordDecl& cxxRecordDecl)
-    {
-        const std::string& className = cxxRecordDecl.getNameAsString();
-        return "class " + className + " should have a virtual destructor ~" + className + "()";
-    }
-
-private:
-    static oclint::RuleSet rules;
 };
 
-oclint::RuleSet DestructorOfVirtualClassRule::rules(new DestructorOfVirtualClassRule());
+static oclint::RuleSet rules(new DestructorOfVirtualClassRule());

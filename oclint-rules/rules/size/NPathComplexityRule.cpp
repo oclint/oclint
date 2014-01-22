@@ -17,8 +17,6 @@ using namespace oclint;
 class NPathComplexityRule : public AbstractASTVisitorRule<NPathComplexityRule>
 {
 private:
-    static RuleSet rules;
-
     void applyDecl(Decl *decl)
     {
         if (decl->hasBody())
@@ -63,4 +61,4 @@ public:
     }
 };
 
-RuleSet NPathComplexityRule::rules(new NPathComplexityRule());
+static RuleSet rules(new NPathComplexityRule());

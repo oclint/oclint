@@ -11,9 +11,6 @@ using namespace oclint;
 
 class ObjCVerifyProhibitedCallRule : public AbstractASTVisitorRule<ObjCVerifyProhibitedCallRule>
 {
-private:
-    static RuleSet rules;
-
 public:
     bool VisitCallExpr(const CallExpr* call) {
         const auto function = call->getDirectCallee();
@@ -58,4 +55,4 @@ public:
 };
 
 
-RuleSet ObjCVerifyProhibitedCallRule::rules(new ObjCVerifyProhibitedCallRule());
+static RuleSet rules(new ObjCVerifyProhibitedCallRule());

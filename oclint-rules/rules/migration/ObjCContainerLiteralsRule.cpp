@@ -8,9 +8,6 @@ using namespace oclint;
 
 class ObjCContainerLiteralsRule : public AbstractASTVisitorRule<ObjCContainerLiteralsRule>
 {
-private:
-    static RuleSet rules;
-
 public:
     virtual const string name() const override
     {
@@ -58,4 +55,4 @@ public:
     }
 };
 
-RuleSet ObjCContainerLiteralsRule::rules(new ObjCContainerLiteralsRule());
+static RuleSet rules(new ObjCContainerLiteralsRule());

@@ -8,8 +8,6 @@ using namespace oclint;
 class MultipleUnaryOperatorRule : public AbstractASTVisitorRule<MultipleUnaryOperatorRule>
 {
 private:
-    static RuleSet rules;
-
     bool isTargetUnaryOperator(UnaryOperator *unaryOperator)
     {
         return unaryOperator->getOpcode() == UO_LNot ||
@@ -50,4 +48,4 @@ public:
     }
 };
 
-RuleSet MultipleUnaryOperatorRule::rules(new MultipleUnaryOperatorRule());
+static RuleSet rules(new MultipleUnaryOperatorRule());

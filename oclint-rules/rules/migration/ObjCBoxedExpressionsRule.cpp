@@ -8,8 +8,6 @@ using namespace oclint;
 class ObjCBoxedExpressionsRule : public AbstractASTVisitorRule<ObjCBoxedExpressionsRule>
 {
 private:
-    static RuleSet rules;
-
     bool isParenExprBox(Expr *expr,
         string &selectorString, map<string, string> &methodArgTypeMap)
     {
@@ -110,4 +108,4 @@ public:
 
 };
 
-RuleSet ObjCBoxedExpressionsRule::rules(new ObjCBoxedExpressionsRule());
+static RuleSet rules(new ObjCBoxedExpressionsRule());
