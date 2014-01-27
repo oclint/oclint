@@ -17,6 +17,7 @@
 #include "oclint/RuleSet.h"
 #include "oclint/RulesetFilter.h"
 #include "oclint/RulesetBasedAnalyzer.h"
+#include "oclint/UniqueResults.h"
 #include "oclint/Version.h"
 #include "oclint/ViolationSet.h"
 #include "oclint/Violation.h"
@@ -170,6 +171,11 @@ int main(int argc, const char **argv)
         return ERROR_WHILE_PROCESSING;
     }
     oclint::ReportableResults *results = oclint::Results::getInstance();
+
+    if (!oclint::option::allowDuplicatedViolations())
+    {
+        results = new oclint::UniqueResults(*oclint::Results::getInstance());
+    }
 
     try
     {

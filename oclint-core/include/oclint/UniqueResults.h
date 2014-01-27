@@ -1,29 +1,21 @@
-#ifndef OCLINT_RESULTS_H
-#define OCLINT_RESULTS_H
+#ifndef OCLINT_UNIQUERESULTS_H
+#define OCLINT_UNIQUERESULTS_H
 
 #include "oclint/ReportableResults.h"
 
 namespace oclint
 {
 
-class Results :public ReportableResults
+class Results;
+
+class UniqueResults :public ReportableResults
 {
-protected:
-    static Results *_singleton;
-    Results();
-    ~Results();
+private:
+    const Results& _results;
+    mutable std::vector<Violation> _violations;
 
 public:
-    static Results* getInstance();
-
-protected:
-    std::vector<ViolationSet*> _collection;
-    ViolationSet *_compilerErrorSet;
-    ViolationSet *_compilerWarningSet;
-    ViolationSet *_clangStaticCheckerBugSet;
-
-public:
-    void add(ViolationSet *violationSet);
+    explicit UniqueResults(Results& results);
 
     std::vector<Violation> allViolations() const override;
 
@@ -32,17 +24,14 @@ public:
     int numberOfFiles() const override;
     int numberOfFilesWithViolations() const override;
 
-    void addError(const Violation& violation);
     int numberOfErrors() const override;
     bool hasErrors() const override;
     const std::vector<Violation>& allErrors() const override;
 
-    void addWarning(const Violation& violation);
     int numberOfWarnings() const override;
     bool hasWarnings() const override;
     const std::vector<Violation>& allWarnings() const override;
 
-    void addCheckerBug(const Violation& violation);
     int numberOfCheckerBugs() const override;
     bool hasCheckerBugs() const override;
     const std::vector<Violation>& allCheckerBugs() const override;
