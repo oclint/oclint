@@ -42,6 +42,7 @@ private:
     int _maxP2;
     int _maxP3;
     TriState _clangChecker = UNDEFINED;
+    TriState _allowDuplicatedViolations = UNDEFINED;
 
 public:
     explicit ConfigFile(const std::string &path);
@@ -57,6 +58,7 @@ public:
     llvm::Optional<int> maxP2() const;
     llvm::Optional<int> maxP3() const;
     llvm::Optional<bool> clangChecker() const;
+    llvm::Optional<bool> allowDuplicatedViolations() const;
 
     void mapping(llvm::yaml::IO& io);
 };

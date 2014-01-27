@@ -183,6 +183,10 @@ llvm::Optional<bool> oclint::option::ConfigFile::clangChecker() const
 {
     return createOptionalBool(_clangChecker);
 }
+llvm::Optional<bool> oclint::option::ConfigFile::allowDuplicatedViolations() const
+{
+    return createOptionalBool(_allowDuplicatedViolations);
+}
 
 void oclint::option::ConfigFile::mapping(llvm::yaml::IO& inputOutput)
 {
@@ -196,4 +200,5 @@ void oclint::option::ConfigFile::mapping(llvm::yaml::IO& inputOutput)
     inputOutput.mapOptional("max-priority-2", _maxP2);
     inputOutput.mapOptional("max-priority-3", _maxP3);
     inputOutput.mapOptional("enable-clang-static-analyzer", _clangChecker);
+    inputOutput.mapOptional("allow-duplicated-violations", _allowDuplicatedViolations);
 }
