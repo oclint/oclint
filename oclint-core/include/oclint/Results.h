@@ -34,23 +34,23 @@ public:
 
     int numberOfViolations() const override;
     int numberOfViolationsWithPriority(int priority) const override;
-    int numberOfFiles() const;
-    int numberOfFilesWithViolations() const;
+    int numberOfFiles() const override;
+    int numberOfFilesWithViolations() const override;
 
     void addError(const Violation& violation);
-    int numberOfErrors() const;
-    bool hasErrors() const;
-    const std::vector<Violation>& allErrors() const;
+    int numberOfErrors() const override;
+    bool hasErrors() const override;
+    const std::vector<Violation>& allErrors() const override;
 
     void addWarning(const Violation& violation);
-    int numberOfWarnings() const;
-    bool hasWarnings() const;
-    const std::vector<Violation>& allWarnings() const;
+    int numberOfWarnings() const override;
+    bool hasWarnings() const override;
+    const std::vector<Violation>& allWarnings() const override;
 
     void addCheckerBug(const Violation& violation);
-    int numberOfCheckerBugs() const;
-    bool hasCheckerBugs() const;
-    const std::vector<Violation>& allCheckerBugs() const;
+    int numberOfCheckerBugs() const override;
+    bool hasCheckerBugs() const override;
+    const std::vector<Violation>& allCheckerBugs() const override;
 };
 
 } // end namespace oclint
