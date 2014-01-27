@@ -1,5 +1,6 @@
 #include <ctime>
 
+#include "oclint/ReportableResults.h"
 #include "oclint/Reporter.h"
 #include "oclint/RuleBase.h"
 #include "oclint/Version.h"
@@ -15,7 +16,7 @@ public:
         return "html";
     }
 
-    virtual void report(Results* results, std::ostream& out) override
+    virtual void report(ReportableResults* results, std::ostream& out) override
     {
         out << "<!DOCTYPE html>";
         out << "<html>";
@@ -97,7 +98,7 @@ public:
         }
     }
 
-    void writeSummaryTable(std::ostream &out, Results &results)
+    void writeSummaryTable(std::ostream &out, ReportableResults &results)
     {
         out << "<table><thead><tr><th>Total Files</th><th>Files with Violations</th>"
             << "<th>Priority 1</th><th>Priority 2</th><th>Priority 3</th>"

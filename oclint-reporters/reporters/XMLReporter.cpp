@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <ctime>
 
+#include "oclint/ReportableResults.h"
 #include "oclint/Reporter.h"
 #include "oclint/RuleBase.h"
 #include "oclint/Version.h"
@@ -16,7 +17,7 @@ public:
         return "xml";
     }
 
-    virtual void report(Results* results, std::ostream& out) override
+    virtual void report(ReportableResults* results, std::ostream& out) override
     {
         writeHeader(out, Version::identifier());
         writeDatetime(out);
@@ -79,7 +80,7 @@ public:
         out << " " << key << "=\"" << value << "\"";
     }
 
-    void writeSummary(std::ostream &out, Results &results)
+    void writeSummary(std::ostream &out, ReportableResults &results)
     {
         out << "<summary>";
         writeSummaryProperty(out, "number of files", results.numberOfFiles());

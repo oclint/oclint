@@ -1,3 +1,4 @@
+#include "oclint/ReportableResults.h"
 #include "oclint/Reporter.h"
 #include "oclint/RuleBase.h"
 #include "oclint/Version.h"
@@ -38,7 +39,7 @@ public:
 class UniqueResults
 {
 public:
-  explicit UniqueResults(Results* results)
+  explicit UniqueResults(ReportableResults* results)
     : _results(results)
   {}
 
@@ -64,7 +65,7 @@ public:
     return violations;
   }
   private:
-  Results *_results;
+  ReportableResults *_results;
 };
 
 class PMDReporter : public Reporter
@@ -75,7 +76,7 @@ public:
         return "pmd";
     }
 
-    virtual void report(Results* results, std::ostream& out) override
+    virtual void report(ReportableResults* results, std::ostream& out) override
     {
         UniqueResults uniqueResults(results);
         writeHeader(out, Version::identifier());

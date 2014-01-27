@@ -1,3 +1,4 @@
+#include "oclint/ReportableResults.h"
 #include "oclint/Reporter.h"
 #include "oclint/RuleBase.h"
 #include "oclint/Version.h"
@@ -13,7 +14,7 @@ public:
         return "text";
     }
 
-    virtual void report(Results* results, std::ostream& out) override
+    virtual void report(ReportableResults* results, std::ostream& out) override
     {
         if (results->hasErrors())
         {
@@ -51,7 +52,7 @@ public:
         out << "[OCLint (http://oclint.org) v" << version << "]";
     }
 
-    void writeSummary(std::ostream &out, Results &results)
+    void writeSummary(std::ostream &out, ReportableResults &results)
     {
         out << "Summary: TotalFiles=" << results.numberOfFiles() << " ";
         out << "FilesWithViolations=" << results.numberOfFilesWithViolations() << " ";

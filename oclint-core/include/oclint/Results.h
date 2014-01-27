@@ -3,13 +3,15 @@
 
 #include <vector>
 
+#include "oclint/ReportableResults.h"
+
 namespace oclint
 {
 
 class Violation;
 class ViolationSet;
 
-class Results
+class Results :public ReportableResults
 {
 protected:
     static Results *_singleton;
@@ -28,10 +30,10 @@ protected:
 public:
     void add(ViolationSet *violationSet);
 
-    std::vector<Violation> allViolations() const;
+    std::vector<Violation> allViolations() const override;
 
-    int numberOfViolations() const;
-    int numberOfViolationsWithPriority(int priority) const;
+    int numberOfViolations() const override;
+    int numberOfViolationsWithPriority(int priority) const override;
     int numberOfFiles() const;
     int numberOfFilesWithViolations() const;
 

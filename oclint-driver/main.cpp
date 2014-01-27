@@ -37,7 +37,7 @@ void consumeArgRulesPath()
     }
 }
 
-bool numberOfViolationsExceedThreshold(oclint::Results *results)
+bool numberOfViolationsExceedThreshold(oclint::ReportableResults *results)
 {
     return results->numberOfViolationsWithPriority(1) > oclint::option::maxP1() ||
         results->numberOfViolationsWithPriority(2) > oclint::option::maxP2() ||
@@ -82,7 +82,7 @@ void printErrorLine(const char *errorMessage)
     cerr << endl << "oclint: error: " << errorMessage << endl;
 }
 
-void printViolationsExceedThresholdError(const oclint::Results *results)
+void printViolationsExceedThresholdError(const oclint::ReportableResults *results)
 {
     printErrorLine("violations exceed threshold");
     cerr << "P1=" << results->numberOfViolationsWithPriority(1)
@@ -169,7 +169,7 @@ int main(int argc, const char **argv)
         printErrorLine(e.what());
         return ERROR_WHILE_PROCESSING;
     }
-    oclint::Results *results = oclint::Results::getInstance();
+    oclint::ReportableResults *results = oclint::Results::getInstance();
 
     try
     {
