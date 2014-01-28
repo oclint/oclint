@@ -1,11 +1,10 @@
 #include "oclint/UniqueResults.h"
 
+#include <unordered_set>
+
 #include "oclint/Results.h"
 #include "oclint/RuleBase.h"
 #include "oclint/Violation.h"
-
-#include <unordered_set>
-
 
 namespace
 {

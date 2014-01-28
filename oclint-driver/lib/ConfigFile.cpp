@@ -183,6 +183,7 @@ llvm::Optional<bool> oclint::option::ConfigFile::clangChecker() const
 {
     return createOptionalBool(_clangChecker);
 }
+
 llvm::Optional<bool> oclint::option::ConfigFile::allowDuplicatedViolations() const
 {
     return createOptionalBool(_allowDuplicatedViolations);

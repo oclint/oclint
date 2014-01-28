@@ -6,7 +6,6 @@
 
 using namespace oclint;
 
-
 class PMDReporter : public Reporter
 {
 public:
