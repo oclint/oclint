@@ -3,6 +3,7 @@
 #include <fstream>
 #include <ctime>
 #include <string>
+#include <memory>
 
 #include <clang/Tooling/CommonOptionsParser.h>
 
@@ -170,17 +171,22 @@ int main(int argc, const char **argv)
         printErrorLine(e.what());
         return ERROR_WHILE_PROCESSING;
     }
-    oclint::ReportableResults *results = oclint::Results::getInstance();
 
-    if (!oclint::option::allowDuplicatedViolations())
+    std::unique_ptr<oclint::ReportableResults> results;
+
+    if (oclint::option::allowDuplicatedViolations())
     {
-        results = new oclint::UniqueResults(*oclint::Results::getInstance());
+        results.reset(oclint::Results::getInstance());
+    }
+    else
+    {
+        results.reset(new oclint::UniqueResults(*oclint::Results::getInstance()));
     }
 
     try
     {
         ostream *out = outStream();
-        reporter()->report(results, *out);
+        reporter()->report(results.get(), *out);
         disposeOutStream(out);
     }
     catch (const exception& e)
@@ -189,9 +195,9 @@ int main(int argc, const char **argv)
         return ERROR_WHILE_REPORTING;
     }
 
-    if (numberOfViolationsExceedThreshold(results))
+    if (numberOfViolationsExceedThreshold(results.get()))
     {
-        printViolationsExceedThresholdError(results);
+        printViolationsExceedThresholdError(results.get());
         return VIOLATIONS_EXCEED_THRESHOLD;
     }
     return SUCCESS;
