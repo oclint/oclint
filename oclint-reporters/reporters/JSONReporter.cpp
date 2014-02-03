@@ -1,6 +1,6 @@
 #include <ctime>
 
-#include "oclint/ReportableResults.h"
+#include "oclint/Results.h"
 #include "oclint/Reporter.h"
 #include "oclint/RuleBase.h"
 #include "oclint/Version.h"
@@ -16,7 +16,7 @@ public:
         return "json";
     }
 
-    virtual void report(ReportableResults* results, std::ostream& out) override
+    virtual void report(Results* results, std::ostream& out) override
     {
         out << "{";
         writeHeader(out, Version::identifier());
@@ -88,7 +88,7 @@ public:
         out << "}";
     }
 
-    void writePriority(std::ostream &out, ReportableResults &results, int priority)
+    void writePriority(std::ostream &out, Results &results, int priority)
     {
         out << "{";
         writeKeyValue(out, "priority", priority);
@@ -96,7 +96,7 @@ public:
         out << "}";
     }
 
-    void writeSummary(std::ostream &out, ReportableResults &results)
+    void writeSummary(std::ostream &out, Results &results)
     {
         writeKey(out, "summary");
         out << "{";

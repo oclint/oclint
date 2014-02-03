@@ -12,8 +12,9 @@
 #include "oclint/Driver.h"
 #include "oclint/GenericException.h"
 #include "oclint/Options.h"
+#include "oclint/RawResults.h"
 #include "oclint/Reporter.h"
-#include "oclint/Results.h"
+#include "oclint/ResultCollector.h"
 #include "oclint/RuleBase.h"
 #include "oclint/RuleSet.h"
 #include "oclint/RulesetFilter.h"
@@ -39,7 +40,7 @@ void consumeArgRulesPath()
     }
 }
 
-bool numberOfViolationsExceedThreshold(oclint::ReportableResults *results)
+bool numberOfViolationsExceedThreshold(oclint::Results *results)
 {
     return results->numberOfViolationsWithPriority(1) > oclint::option::maxP1() ||
         results->numberOfViolationsWithPriority(2) > oclint::option::maxP2() ||
@@ -84,7 +85,7 @@ void printErrorLine(const char *errorMessage)
     cerr << endl << "oclint: error: " << errorMessage << endl;
 }
 
-void printViolationsExceedThresholdError(const oclint::ReportableResults *results)
+void printViolationsExceedThresholdError(const oclint::Results *results)
 {
     printErrorLine("violations exceed threshold");
     cerr << "P1=" << results->numberOfViolationsWithPriority(1)
@@ -172,15 +173,15 @@ int main(int argc, const char **argv)
         return ERROR_WHILE_PROCESSING;
     }
 
-    std::unique_ptr<oclint::ReportableResults> results;
+    std::unique_ptr<oclint::Results> results;
 
     if (oclint::option::allowDuplicatedViolations())
     {
-        results.reset(oclint::Results::getInstance());
+        results.reset(new oclint::RawResults(*oclint::ResultCollector::getInstance()));
     }
     else
     {
-        results.reset(new oclint::UniqueResults(*oclint::Results::getInstance()));
+        results.reset(new oclint::UniqueResults(*oclint::ResultCollector::getInstance()));
     }
 
     try

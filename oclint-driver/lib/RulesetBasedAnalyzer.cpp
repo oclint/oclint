@@ -3,7 +3,7 @@
 #include <utility>
 
 #include "oclint/Debug.h"
-#include "oclint/Results.h"
+#include "oclint/ResultCollector.h"
 #include "oclint/RuleBase.h"
 #include "oclint/RuleCarrier.h"
 #include "oclint/RuleSet.h"
@@ -28,7 +28,7 @@ void RulesetBasedAnalyzer::analyze(std::vector<clang::ASTContext *> &contexts)
         {
             rule->takeoff(carrier);
         }
-        Results *results = Results::getInstance();
+        ResultCollector *results = ResultCollector::getInstance();
         results->add(violationSet);
         debug::emitLine(" - Done");
     }

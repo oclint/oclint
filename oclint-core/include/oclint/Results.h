@@ -1,51 +1,39 @@
 #ifndef OCLINT_RESULTS_H
 #define OCLINT_RESULTS_H
 
-#include "oclint/ReportableResults.h"
+#include <vector>
 
 namespace oclint
 {
 
-class Results :public ReportableResults
+class Violation;
+class ViolationSet;
+
+class Results
 {
-protected:
-    static Results *_singleton;
-    Results();
-    ~Results();
-
 public:
-    static Results* getInstance();
 
-protected:
-    std::vector<ViolationSet*> _collection;
-    ViolationSet *_compilerErrorSet;
-    ViolationSet *_compilerWarningSet;
-    ViolationSet *_clangStaticCheckerBugSet;
+    virtual ~Results() = default;
 
-public:
-    void add(ViolationSet *violationSet);
+    virtual std::vector<Violation> allViolations() const = 0;
 
-    std::vector<Violation> allViolations() const override;
+    virtual int numberOfViolations() const = 0;
+    virtual int numberOfViolationsWithPriority(int priority) const = 0;
 
-    int numberOfViolations() const override;
-    int numberOfViolationsWithPriority(int priority) const override;
-    int numberOfFiles() const override;
-    int numberOfFilesWithViolations() const override;
+    virtual int numberOfFiles() const = 0;
+    virtual int numberOfFilesWithViolations() const = 0;
 
-    void addError(const Violation& violation);
-    int numberOfErrors() const override;
-    bool hasErrors() const override;
-    const std::vector<Violation>& allErrors() const override;
+    virtual int numberOfErrors() const = 0;
+    virtual bool hasErrors() const = 0;
+    virtual const std::vector<Violation>& allErrors() const = 0;
 
-    void addWarning(const Violation& violation);
-    int numberOfWarnings() const override;
-    bool hasWarnings() const override;
-    const std::vector<Violation>& allWarnings() const override;
+    virtual int numberOfWarnings() const = 0;
+    virtual bool hasWarnings() const = 0;
+    virtual const std::vector<Violation>& allWarnings() const = 0;
 
-    void addCheckerBug(const Violation& violation);
-    int numberOfCheckerBugs() const override;
-    bool hasCheckerBugs() const override;
-    const std::vector<Violation>& allCheckerBugs() const override;
+    virtual int numberOfCheckerBugs() const = 0;
+    virtual bool hasCheckerBugs() const = 0;
+    virtual const std::vector<Violation>& allCheckerBugs() const = 0;
 };
 
 } // end namespace oclint
