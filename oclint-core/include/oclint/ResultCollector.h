@@ -15,6 +15,8 @@ class ResultCollector
 {
 private:
     static ResultCollector *_singleton;
+
+protected:
     ResultCollector();
     ~ResultCollector();
 
@@ -40,9 +42,6 @@ public:
 
     void addCheckerBug(const Violation& violation);
     ViolationSet* getClangStaticCheckerBugSet() const;
-    //int numberOfCheckerBugs() const;
-    //bool hasCheckerBugs() const;
-    //const std::vector<Violation>& allCheckerBugs() const;
 };
 
 } // end namespace oclint

@@ -31,7 +31,7 @@ public:
         return 2;
     }
 };
-
+#if 0
 class ResultsTest_ResultsStub : public Results
 {
 public:
@@ -208,7 +208,7 @@ TEST(ResultsTest, CheckerBugs)
     EXPECT_FALSE(results->hasErrors());
     EXPECT_FALSE(results->hasWarnings());
 }
-
+#endif
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);
