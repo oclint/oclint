@@ -83,6 +83,12 @@ private:
         return false;
     }
 
+    bool hasAttributeUnused(ParmVarDecl* varDecl)
+    {
+        VarDecl *decl = dyn_cast<VarDecl>(varDecl);
+        return decl ? decl->hasAttr<clang::UnusedAttr>() : false;
+    }
+
     bool hasVariableName(ParmVarDecl *varDecl)
     {
         return varDecl->getNameAsString() != "";
@@ -135,6 +141,7 @@ public:
     bool VisitParmVarDecl(ParmVarDecl *varDecl)
     {
         if (!varDecl->isUsed() &&
+            !hasAttributeUnused(varDecl) &&
             hasVariableName(varDecl) &&
             isInNonTemplateFunction(varDecl) &&
             !isExistingByContract(varDecl) &&
