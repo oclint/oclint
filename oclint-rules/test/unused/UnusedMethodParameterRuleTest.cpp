@@ -233,6 +233,13 @@ TEST(UnusedMethodParameterRuleTest, UnusedLocalVariableShouldBeIgnoredInThisRule
     testRuleOnCode(new UnusedMethodParameterRule(), "int aMethod() { int a; return 0; }");
 }
 
+TEST(UnusedMethodParameterRuleTest, AttributeUnusedSupressesRule)
+{
+    testRuleOnCode(new UnusedMethodParameterRule(), "int aMethod(int a, int b);\n\
+int aMethod(int a, int __attribute__((unused)) b) { return 1; }",
+        0, 2, 13, 2, 17, "The parameter 'a' is unused.");
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);
