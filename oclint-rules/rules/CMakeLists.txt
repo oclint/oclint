@@ -19,7 +19,6 @@ MACRO(build_dynamic_rule name)
         TARGET_LINK_LIBRARIES(${name}Rule OCLintAbstractRule)
 
         TARGET_LINK_LIBRARIES(${name}Rule
-            LLVMSupport
             clangASTMatchers
         ) # TODO: might be redundant
 
