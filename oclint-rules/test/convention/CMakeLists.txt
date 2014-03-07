@@ -1,4 +1,5 @@
 BUILD_TEST(AvoidBranchingStatementAsLastInLoopRuleTest)
+BUILD_TEST(BaseClassDestructorShouldBeVirtualOrProtectedRuleTest)
 BUILD_TEST(DefaultLabelNotLastInSwitchStatementRuleTest)
 BUILD_TEST(DestructorOfVirtualClassRuleTest)
 BUILD_TEST(InvertedLogicRuleTest)
