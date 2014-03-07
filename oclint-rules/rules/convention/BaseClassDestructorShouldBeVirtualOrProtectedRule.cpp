@@ -15,6 +15,12 @@ static bool hasVirtualOrProtectedDestructor(const CXXRecordDecl& cxxRecordDecl)
         || cxxDestructorDecl->getAccess() == AS_protected;
 }
 
+static std::string getMessageViolation(const CXXRecordDecl& base, const CXXRecordDecl& child)
+{
+    return "~" + base.getNameAsString() + "() should be protected or virtual"
+        " according to class " + child.getNameAsString();
+}
+
 /*
  * Base class destructor should be protected or virtual
  * to avoid memory leak by calling base class destructor
@@ -75,8 +81,7 @@ private:
             }
             if (!hasVirtualOrProtectedDestructor(*baseClass))
             {
-                addViolation(baseClass, this,
-                             getMessageViolation(*baseClass, childClass));
+                addViolation(baseClass, this, getMessageViolation(*baseClass, childClass));
             }
             // Avoid to have duplicated violation from linked parents
             if (!baseClass->isPolymorphic())
@@ -85,17 +90,6 @@ private:
             }
         }
     }
-
-    static std::string getMessageViolation(const CXXRecordDecl& base,
-                                           const CXXRecordDecl& child)
-    {
-        return "~" + base.getNameAsString() + "() should be protected or virtual"
-            " according to class " + child.getNameAsString();
-    }
-
-private:
-    static oclint::RuleSet rules;
 };
 
-oclint::RuleSet BaseClassDestructorShouldBeVirtualOrProtectedRule::rules(
-    new BaseClassDestructorShouldBeVirtualOrProtectedRule());
+static oclint::RuleSet rules(new BaseClassDestructorShouldBeVirtualOrProtectedRule());
