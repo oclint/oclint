@@ -2,7 +2,8 @@
 #include <gmock/gmock.h>
 
 #include "oclint/RuleBase.h"
-#include "oclint/Results.h"
+#include "oclint/ResultCollector.h"
+#include "oclint/UniqueResults.h"
 #include "oclint/Violation.h"
 
 using namespace ::testing;
@@ -31,108 +32,178 @@ public:
         return 2;
     }
 };
-#if 0
-class ResultsTest_ResultsStub : public Results
+
+class ResultsTest_ResultsStub : public ResultCollector
 {
 public:
-    ResultsTest_ResultsStub() : Results() {}
+    ResultsTest_ResultsStub() : ResultCollector() {}
+
+    ~ResultsTest_ResultsStub() {}
 };
 
-TEST(ResultsTest, EmptyResults)
+class UniqueResultsTest : public ::testing::Test
 {
-    Results *results = Results::getInstance();
-    EXPECT_THAT(results->numberOfViolations(), Eq(0));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(0), Eq(0));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(0));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(2), Eq(0));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(3), Eq(0));
-    EXPECT_THAT(results->numberOfFiles(), Eq(0));
-    EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(0));
-    EXPECT_THAT(results->numberOfErrors(), Eq(0));
-    EXPECT_THAT(results->numberOfWarnings(), Eq(0));
-    EXPECT_FALSE(results->hasErrors());
-    EXPECT_FALSE(results->hasWarnings());
-    EXPECT_FALSE(results->hasCheckerBugs());
+protected:
+    virtual void SetUp()
+    {
+        ruleOne = new MockRuleBaseOne;
+        ruleTwo = new MockRuleBaseTwo;
+    }
+
+    virtual void TearDown()
+    {
+        delete ruleOne;
+        delete ruleTwo;
+    }
+
+    RuleBase* ruleOne;
+    RuleBase* ruleTwo;
+};
+
+
+TEST_F(UniqueResultsTest, EmptyResults)
+{
+    ResultsTest_ResultsStub collector;
+    UniqueResults results(collector);
+    EXPECT_THAT(results.numberOfViolations(), Eq(0));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(0), Eq(0));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(1), Eq(0));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(2), Eq(0));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(3), Eq(0));
+    EXPECT_THAT(results.numberOfFiles(), Eq(0));
+    EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(0));
+    EXPECT_THAT(results.numberOfErrors(), Eq(0));
+    EXPECT_THAT(results.numberOfWarnings(), Eq(0));
+    EXPECT_FALSE(results.hasErrors());
+    EXPECT_FALSE(results.hasWarnings());
+    EXPECT_FALSE(results.hasCheckerBugs());
 }
 
-TEST(ResultsTest, NumberOfFiles)
+TEST_F(UniqueResultsTest, NumberOfFiles)
 {
-    Results *results = new ResultsTest_ResultsStub();
-    results->add(new ViolationSet());
-    EXPECT_THAT(results->numberOfFiles(), Eq(1));
-    results->add(new ViolationSet());
-    EXPECT_THAT(results->numberOfFiles(), Eq(2));
-    EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(0));
+    ResultsTest_ResultsStub collector;
+    UniqueResults results(collector);
+    collector.add(new ViolationSet());
+    EXPECT_THAT(results.numberOfFiles(), Eq(1));
+    collector.add(new ViolationSet());
+    EXPECT_THAT(results.numberOfFiles(), Eq(2));
+    EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(0));
 }
 
-TEST(ResultsTest, NumberOfFilesWithViolations)
+TEST_F(UniqueResultsTest, NumberOfFilesWithViolations)
 {
-    Results *results = new ResultsTest_ResultsStub();
+    ResultsTest_ResultsStub collector;
+    UniqueResults results(collector);
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
-    Violation violation1(new MockRuleBaseOne(), "", 1, 2, 3, 4);
+    Violation violation1(ruleOne, "", 1, 2, 3, 4);
     violationSetWithOneViolation->addViolation(violation1);
-    results->add(violationSetWithOneViolation);
-    EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(1));
-    results->add(new ViolationSet());
-    EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(1));
+    collector.add(violationSetWithOneViolation);
+    EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(1));
+    collector.add(new ViolationSet());
+    EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(1));
     ViolationSet *violationSetWithTwoViolations = new ViolationSet();
-    Violation violation2(new MockRuleBaseOne(), "", 1, 2, 3, 4);
-    Violation violation3(new MockRuleBaseTwo(), "", 1, 2, 3, 4);
+    Violation violation2(ruleOne, "", 1, 2, 3, 4);
+    Violation violation3(ruleTwo, "", 1, 2, 3, 4);
     violationSetWithTwoViolations->addViolation(violation2);
     violationSetWithTwoViolations->addViolation(violation3);
-    results->add(violationSetWithTwoViolations);
-    EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(2));
+    collector.add(violationSetWithTwoViolations);
+    EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(2));
 }
 
-TEST(ResultsTest, NumberOfViolations)
+TEST_F(UniqueResultsTest, NumberOfViolations1)
 {
-    Results *results = new ResultsTest_ResultsStub();
+    ResultsTest_ResultsStub collector;
+    UniqueResults results(collector);
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
-    Violation violation1(new MockRuleBaseOne(), "", 1, 2, 3, 4);
+    Violation violation1(ruleOne, "", 1, 2, 3, 4);
     violationSetWithOneViolation->addViolation(violation1);
-    results->add(violationSetWithOneViolation);
-    EXPECT_THAT(results->numberOfViolations(), Eq(1));
-    results->add(new ViolationSet());
-    EXPECT_THAT(results->numberOfViolations(), Eq(1));
+    collector.add(violationSetWithOneViolation);
+    EXPECT_THAT(results.numberOfViolations(), Eq(1));
+}
+
+TEST_F(UniqueResultsTest, NumberOfViolations2)
+{
+    ResultsTest_ResultsStub collector;
+    UniqueResults results(collector);
+    ViolationSet *violationSetWithOneViolation = new ViolationSet();
+    Violation violation1(ruleOne, "", 1, 2, 3, 4);
+    violationSetWithOneViolation->addViolation(violation1);
+    collector.add(violationSetWithOneViolation);
+    collector.add(new ViolationSet());
+    EXPECT_THAT(results.numberOfViolations(), Eq(1));
+}
+
+TEST_F(UniqueResultsTest, NumberOfViolations3)
+{
+    ResultsTest_ResultsStub collector;
+    UniqueResults results(collector);
+    ViolationSet *violationSetWithOneViolation = new ViolationSet();
+    Violation violation1(ruleOne, "", 1, 2, 3, 4);
+    violationSetWithOneViolation->addViolation(violation1);
+    collector.add(violationSetWithOneViolation);
+    collector.add(new ViolationSet());
     ViolationSet *violationSetWithTwoViolations = new ViolationSet();
-    Violation violation2(new MockRuleBaseOne(), "", 1, 2, 3, 4);
-    Violation violation3(new MockRuleBaseTwo(), "", 1, 2, 3, 4);
+    Violation violation2(ruleOne, "", 1, 2, 3, 4);
+    Violation violation3(ruleTwo, "", 1, 2, 3, 4);
     violationSetWithTwoViolations->addViolation(violation2);
     violationSetWithTwoViolations->addViolation(violation3);
-    results->add(violationSetWithTwoViolations);
-    EXPECT_THAT(results->numberOfViolations(), Eq(3));
+    collector.add(violationSetWithTwoViolations);
+    EXPECT_THAT(results.numberOfViolations(), Eq(2));
 }
 
-TEST(ResultsTest, NumberOfViolationsWithPrioerity)
+TEST_F(UniqueResultsTest, NumberOfViolationsWithPriority1)
 {
-    Results *results = new ResultsTest_ResultsStub();
+    ResultsTest_ResultsStub collector;
+    UniqueResults results(collector);
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
-    Violation violation1(new MockRuleBaseOne(), "", 1, 2, 3, 4);
+    Violation violation1(ruleOne, "", 1, 2, 3, 4);
     violationSetWithOneViolation->addViolation(violation1);
-    results->add(violationSetWithOneViolation);
-    EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(1));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(2), Eq(0));
-    results->add(new ViolationSet());
-    EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(1));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(2), Eq(0));
+    collector.add(violationSetWithOneViolation);
+    EXPECT_THAT(results.numberOfViolationsWithPriority(1), Eq(1));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(2), Eq(0));
+}
+
+TEST_F(UniqueResultsTest, NumberOfViolationsWithPriority2)
+{
+    ResultsTest_ResultsStub collector;
+    UniqueResults results(collector);
+    ViolationSet *violationSetWithOneViolation = new ViolationSet();
+    Violation violation1(ruleOne, "", 1, 2, 3, 4);
+    violationSetWithOneViolation->addViolation(violation1);
+    collector.add(violationSetWithOneViolation);
+    collector.add(new ViolationSet());
+    EXPECT_THAT(results.numberOfViolationsWithPriority(1), Eq(1));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(2), Eq(0));
+}
+
+TEST_F(UniqueResultsTest, NumberOfViolationsWithPriority3)
+{
+    ResultsTest_ResultsStub collector;
+    UniqueResults results(collector);
+    ViolationSet *violationSetWithOneViolation = new ViolationSet();
+    Violation violation1(ruleOne, "", 1, 2, 3, 4);
+    violationSetWithOneViolation->addViolation(violation1);
+    collector.add(violationSetWithOneViolation);
+    collector.add(new ViolationSet());
     ViolationSet *violationSetWithTwoViolations = new ViolationSet();
-    Violation violation2(new MockRuleBaseOne(), "", 1, 2, 3, 4);
-    Violation violation3(new MockRuleBaseTwo(), "", 1, 2, 3, 4);
+    Violation violation2(ruleOne, "", 1, 2, 3, 4);
+    Violation violation3(ruleTwo, "", 1, 2, 3, 4);
     violationSetWithTwoViolations->addViolation(violation2);
     violationSetWithTwoViolations->addViolation(violation3);
-    results->add(violationSetWithTwoViolations);
-    EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(2));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(2), Eq(1));
+    collector.add(violationSetWithTwoViolations);
+    EXPECT_THAT(results.numberOfViolationsWithPriority(1), Eq(1));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(2), Eq(1));
 }
 
-TEST(ResultsTest, CompilerErrors)
+TEST_F(UniqueResultsTest, CompilerErrors)
 {
-    Results *results = new ResultsTest_ResultsStub();
+    ResultsTest_ResultsStub collector;
+    UniqueResults results(collector);
     Violation violation(0, "test error path", 1, 2, 0, 0, "test error message");
-    results->addError(violation);
-    EXPECT_TRUE(results->hasErrors());
-    EXPECT_THAT(results->numberOfErrors(), Eq(1));
-    Violation compareViolation = results->allErrors().at(0);
+    collector.addError(violation);
+    EXPECT_TRUE(results.hasErrors());
+    EXPECT_THAT(results.numberOfErrors(), Eq(1));
+    Violation compareViolation = results.allErrors().at(0);
     EXPECT_THAT(compareViolation.path, StrEq("test error path"));
     EXPECT_THAT(compareViolation.message, StrEq("test error message"));
     EXPECT_THAT(compareViolation.rule, IsNull());
@@ -141,26 +212,27 @@ TEST(ResultsTest, CompilerErrors)
     EXPECT_THAT(compareViolation.endLine, Eq(0));
     EXPECT_THAT(compareViolation.endColumn, Eq(0));
 
-    EXPECT_THAT(results->numberOfViolations(), Eq(0));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(0), Eq(0));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(0));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(2), Eq(0));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(3), Eq(0));
-    EXPECT_THAT(results->numberOfFiles(), Eq(0));
-    EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(0));
-    EXPECT_THAT(results->numberOfWarnings(), Eq(0));
-    EXPECT_FALSE(results->hasWarnings());
-    EXPECT_FALSE(results->hasCheckerBugs());
+    EXPECT_THAT(results.numberOfViolations(), Eq(0));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(0), Eq(0));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(1), Eq(0));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(2), Eq(0));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(3), Eq(0));
+    EXPECT_THAT(results.numberOfFiles(), Eq(0));
+    EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(0));
+    EXPECT_THAT(results.numberOfWarnings(), Eq(0));
+    EXPECT_FALSE(results.hasWarnings());
+    EXPECT_FALSE(results.hasCheckerBugs());
 }
 
-TEST(ResultsTest, CompilerWarnings)
+TEST_F(UniqueResultsTest, CompilerWarnings)
 {
-    Results *results = new ResultsTest_ResultsStub();
+    ResultsTest_ResultsStub collector;
+    UniqueResults results(collector);
     Violation violation(0, "test warning path", 1, 2, 0, 0, "test warning message");
-    results->addWarning(violation);
-    EXPECT_TRUE(results->hasWarnings());
-    EXPECT_THAT(results->numberOfWarnings(), Eq(1));
-    Violation compareViolation = results->allWarnings().at(0);
+    collector.addWarning(violation);
+    EXPECT_TRUE(results.hasWarnings());
+    EXPECT_THAT(results.numberOfWarnings(), Eq(1));
+    Violation compareViolation = results.allWarnings().at(0);
     EXPECT_THAT(compareViolation.path, StrEq("test warning path"));
     EXPECT_THAT(compareViolation.message, StrEq("test warning message"));
     EXPECT_THAT(compareViolation.rule, IsNull());
@@ -169,26 +241,27 @@ TEST(ResultsTest, CompilerWarnings)
     EXPECT_THAT(compareViolation.endLine, Eq(0));
     EXPECT_THAT(compareViolation.endColumn, Eq(0));
 
-    EXPECT_THAT(results->numberOfViolations(), Eq(0));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(0), Eq(0));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(0));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(2), Eq(0));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(3), Eq(0));
-    EXPECT_THAT(results->numberOfFiles(), Eq(0));
-    EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(0));
-    EXPECT_THAT(results->numberOfErrors(), Eq(0));
-    EXPECT_FALSE(results->hasErrors());
-    EXPECT_FALSE(results->hasCheckerBugs());
+    EXPECT_THAT(results.numberOfViolations(), Eq(0));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(0), Eq(0));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(1), Eq(0));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(2), Eq(0));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(3), Eq(0));
+    EXPECT_THAT(results.numberOfFiles(), Eq(0));
+    EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(0));
+    EXPECT_THAT(results.numberOfErrors(), Eq(0));
+    EXPECT_FALSE(results.hasErrors());
+    EXPECT_FALSE(results.hasCheckerBugs());
 }
 
-TEST(ResultsTest, CheckerBugs)
+TEST_F(UniqueResultsTest, CheckerBugs)
 {
-    Results *results = new ResultsTest_ResultsStub();
+    ResultsTest_ResultsStub collector;
+    UniqueResults results(collector);
     Violation violation(0, "test checker bug path", 1, 2, 0, 0, "test checker bug message");
-    results->addCheckerBug(violation);
-    EXPECT_TRUE(results->hasCheckerBugs());
-    EXPECT_THAT(results->numberOfCheckerBugs(), Eq(1));
-    Violation compareViolation = results->allCheckerBugs().at(0);
+    collector.addCheckerBug(violation);
+    EXPECT_TRUE(results.hasCheckerBugs());
+    EXPECT_THAT(results.numberOfCheckerBugs(), Eq(1));
+    Violation compareViolation = results.allCheckerBugs().at(0);
     EXPECT_THAT(compareViolation.path, StrEq("test checker bug path"));
     EXPECT_THAT(compareViolation.message, StrEq("test checker bug message"));
     EXPECT_THAT(compareViolation.rule, IsNull());
@@ -197,18 +270,18 @@ TEST(ResultsTest, CheckerBugs)
     EXPECT_THAT(compareViolation.endLine, Eq(0));
     EXPECT_THAT(compareViolation.endColumn, Eq(0));
 
-    EXPECT_THAT(results->numberOfViolations(), Eq(0));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(0), Eq(0));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(1), Eq(0));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(2), Eq(0));
-    EXPECT_THAT(results->numberOfViolationsWithPriority(3), Eq(0));
-    EXPECT_THAT(results->numberOfFiles(), Eq(0));
-    EXPECT_THAT(results->numberOfFilesWithViolations(), Eq(0));
-    EXPECT_THAT(results->numberOfErrors(), Eq(0));
-    EXPECT_FALSE(results->hasErrors());
-    EXPECT_FALSE(results->hasWarnings());
+    EXPECT_THAT(results.numberOfViolations(), Eq(0));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(0), Eq(0));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(1), Eq(0));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(2), Eq(0));
+    EXPECT_THAT(results.numberOfViolationsWithPriority(3), Eq(0));
+    EXPECT_THAT(results.numberOfFiles(), Eq(0));
+    EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(0));
+    EXPECT_THAT(results.numberOfErrors(), Eq(0));
+    EXPECT_FALSE(results.hasErrors());
+    EXPECT_FALSE(results.hasWarnings());
 }
-#endif
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);
