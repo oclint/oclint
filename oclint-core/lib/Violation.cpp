@@ -18,3 +18,14 @@ Violation::Violation(RuleBase* violatedRule, std::string violationFilePath,
     endLine = violationEndLine;
     endColumn = violationEndColumn;
 }
+
+bool Violation::operator==(const oclint::Violation &rhs) const
+{
+    return (rule == rhs.rule)
+            && (path == rhs.path)
+            && (startLine == rhs.startLine)
+            && (startColumn == rhs.startColumn)
+            && (endLine == rhs.endLine)
+            && (endColumn == rhs.endColumn)
+            && (message == rhs.message);
+}

@@ -5,7 +5,7 @@
 #include <clang/Basic/SourceLocation.h>
 #include <clang/Basic/SourceManager.h>
 
-#include "oclint/Results.h"
+#include "oclint/ResultCollector.h"
 #include "oclint/Violation.h"
 
 using namespace oclint;
@@ -32,7 +32,7 @@ void DiagnosticDispatcher::HandleDiagnostic(clang::DiagnosticsEngine::Level diag
     Violation violation(nullptr, filename.str(), line, column, 0, 0,
                         diagnosticMessage.str().str());
 
-    Results *results = Results::getInstance();
+    ResultCollector *results = ResultCollector::getInstance();
     if (_isCheckerCustomer)
     {
         results->addCheckerBug(violation);

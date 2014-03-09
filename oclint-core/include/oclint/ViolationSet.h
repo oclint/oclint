@@ -18,6 +18,8 @@ public:
     int numberOfViolations() const;
     const std::vector<Violation>& getViolations() const;
 
+    bool operator==(const ViolationSet& rhs) const;
+
     // TODO: getViolation(int index)
 };
 

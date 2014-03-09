@@ -16,3 +16,9 @@ const std::vector<Violation>& ViolationSet::getViolations() const
 {
     return _violations;
 }
+
+
+bool ViolationSet::operator==(const ViolationSet& rhs) const
+{
+    return _violations == rhs._violations;
+}

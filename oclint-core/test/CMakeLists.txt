@@ -14,10 +14,12 @@ MACRO(build_test name)
 ENDMACRO(build_test)
 
 BUILD_TEST(CanaryTest)
-BUILD_TEST(ResultsTest)
+BUILD_TEST(RawResultsTest)
+BUILD_TEST(ResultCollectorTest)
 BUILD_TEST(RuleCarrierTest)
 BUILD_TEST(RuleConfigurationTest)
 BUILD_TEST(RuleSetTest)
+BUILD_TEST(UniqueResultsTest)
 TARGET_LINK_LIBRARIES(RuleSetTest OCLintRuleSet)
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Win")

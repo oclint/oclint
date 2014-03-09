@@ -23,6 +23,8 @@ public:
               int violationStartLine, int violationStartColumn,
               int violationEndLine, int violationEndColumn,
               std::string violationMessage = "");
+
+    bool operator==(const oclint::Violation &rhs) const;
 };
 
 } // end namespace oclint
