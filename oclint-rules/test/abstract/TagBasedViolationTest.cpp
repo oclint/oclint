@@ -12,7 +12,7 @@ private:
     int _counter;
 
 public:
-    virtual void setUp()
+    virtual void setUp() override
     {
         _counter = 0;
     }

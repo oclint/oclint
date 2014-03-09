@@ -19,11 +19,6 @@ public:
 class PMDReporterTest : public ::testing::Test
 {
 protected:
-    virtual void setUp()
-    {
-        PMDReporter reporter;
-    }
-
     PMDReporter reporter;
 };
 

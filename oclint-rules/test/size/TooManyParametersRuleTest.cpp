@@ -4,12 +4,12 @@
 
 class TooManyParametersRuleTest : public ::testing::Test {
 protected:
-    virtual void SetUp()
+    virtual void SetUp() override
     {
         RuleConfiguration::addConfiguration("TOO_MANY_PARAMETERS", "1");
     }
 
-    virtual void TearDown()
+    virtual void TearDown() override
     {
         RuleConfiguration::removeAll();
     }
