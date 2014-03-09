@@ -17,20 +17,14 @@ ResultCollector* ResultCollector::getInstance()
 }
 
 ResultCollector::ResultCollector()
+    : _compilerErrorSet(new ViolationSet)
+    , _compilerWarningSet(new ViolationSet)
+    , _clangStaticCheckerBugSet(new ViolationSet)
 {
-    _compilerErrorSet = new ViolationSet();
-    _compilerWarningSet = new ViolationSet();
-    _clangStaticCheckerBugSet = new ViolationSet();
 }
 
 ResultCollector::~ResultCollector()
 {
-    delete _compilerErrorSet;
-    _compilerErrorSet = nullptr;
-    delete _compilerWarningSet;
-    _compilerWarningSet = nullptr;
-    delete _clangStaticCheckerBugSet;
-    _clangStaticCheckerBugSet = nullptr;
 }
 
 void ResultCollector::add(ViolationSet *violationSet)
@@ -50,7 +44,7 @@ void ResultCollector::addError(const Violation& violation)
 
 ViolationSet* ResultCollector::getCompilerErrorSet() const
 {
-    return _compilerErrorSet;
+    return _compilerErrorSet.get();
 }
 
 void ResultCollector::addWarning(const Violation& violation)
@@ -60,7 +54,7 @@ void ResultCollector::addWarning(const Violation& violation)
 
 ViolationSet* ResultCollector::getCompilerWarningSet() const
 {
-    return _compilerWarningSet;
+    return _compilerWarningSet.get();
 }
 
 void ResultCollector::addCheckerBug(const Violation& violation)
@@ -70,7 +64,7 @@ void ResultCollector::addCheckerBug(const Violation& violation)
 
 ViolationSet* ResultCollector::getClangStaticCheckerBugSet() const
 {
-    return _clangStaticCheckerBugSet;
+    return _clangStaticCheckerBugSet.get();
 }
 
 } // end namespace oclint

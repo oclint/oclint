@@ -4,6 +4,7 @@
 #include "oclint/Violation.h"
 
 #include <vector>
+#include <memory>
 
 namespace oclint
 {
@@ -25,9 +26,9 @@ public:
 
 private:
     std::vector<ViolationSet*> _collection;
-    ViolationSet *_compilerErrorSet;
-    ViolationSet *_compilerWarningSet;
-    ViolationSet *_clangStaticCheckerBugSet;
+    std::unique_ptr<ViolationSet> _compilerErrorSet;
+    std::unique_ptr<ViolationSet> _compilerWarningSet;
+    std::unique_ptr<ViolationSet> _clangStaticCheckerBugSet;
 
 public:
     void add(ViolationSet *violationSet);
