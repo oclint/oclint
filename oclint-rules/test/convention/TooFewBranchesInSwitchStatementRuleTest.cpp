@@ -4,12 +4,12 @@
 
 class TooFewBranchesInSwitchStatementRuleTest : public ::testing::Test {
 protected:
-    virtual void SetUp()
+    virtual void SetUp() override
     {
         RuleConfiguration::addConfiguration("MINIMUM_CASES_IN_SWITCH", "3");
     }
 
-    virtual void TearDown()
+    virtual void TearDown() override
     {
         RuleConfiguration::removeAll();
     }

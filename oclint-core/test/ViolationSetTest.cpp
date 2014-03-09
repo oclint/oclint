@@ -18,7 +18,7 @@ public:
 class ViolationSetTest : public ::testing::Test
 {
 protected:
-    virtual void setUp()
+    virtual void SetUp() override
     {
         ViolationSet ViolationSetTest_violationSet;
     }
