@@ -3,10 +3,10 @@
 
 #include <ostream>
 
-#include "oclint/Results.h"
-
 namespace oclint
 {
+
+class Results;
 
 class Reporter
 {

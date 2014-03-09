@@ -3,6 +3,7 @@
 #include <fstream>
 #include <ctime>
 #include <string>
+#include <memory>
 
 #include <clang/Tooling/CommonOptionsParser.h>
 
@@ -11,12 +12,14 @@
 #include "oclint/Driver.h"
 #include "oclint/GenericException.h"
 #include "oclint/Options.h"
+#include "oclint/RawResults.h"
 #include "oclint/Reporter.h"
-#include "oclint/Results.h"
+#include "oclint/ResultCollector.h"
 #include "oclint/RuleBase.h"
 #include "oclint/RuleSet.h"
 #include "oclint/RulesetFilter.h"
 #include "oclint/RulesetBasedAnalyzer.h"
+#include "oclint/UniqueResults.h"
 #include "oclint/Version.h"
 #include "oclint/ViolationSet.h"
 #include "oclint/Violation.h"
@@ -169,12 +172,22 @@ int main(int argc, const char **argv)
         printErrorLine(e.what());
         return ERROR_WHILE_PROCESSING;
     }
-    oclint::Results *results = oclint::Results::getInstance();
+
+    std::unique_ptr<oclint::Results> results;
+
+    if (oclint::option::allowDuplicatedViolations())
+    {
+        results.reset(new oclint::RawResults(*oclint::ResultCollector::getInstance()));
+    }
+    else
+    {
+        results.reset(new oclint::UniqueResults(*oclint::ResultCollector::getInstance()));
+    }
 
     try
     {
         ostream *out = outStream();
-        reporter()->report(results, *out);
+        reporter()->report(results.get(), *out);
         disposeOutStream(out);
     }
     catch (const exception& e)
@@ -183,9 +196,9 @@ int main(int argc, const char **argv)
         return ERROR_WHILE_REPORTING;
     }
 
-    if (numberOfViolationsExceedThreshold(results))
+    if (numberOfViolationsExceedThreshold(results.get()))
     {
-        printViolationsExceedThresholdError(results);
+        printViolationsExceedThresholdError(results.get());
         return VIOLATIONS_EXCEED_THRESHOLD;
     }
     return SUCCESS;
