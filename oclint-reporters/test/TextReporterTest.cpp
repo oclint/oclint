@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+#include "ReportTestResults.h"
 #include "TextReporter.cpp"
 
 using namespace ::testing;
@@ -48,7 +49,7 @@ TEST_F(TextReporterTest, WriteFooter)
 
 TEST_F(TextReporterTest, WriteSummary)
 {
-    Results *restults = Results::getInstance();
+    Results *restults = getTestResults();
     std::ostringstream oss;
     reporter.writeSummary(oss, *restults);
     EXPECT_THAT(oss.str(), StartsWith("Summary:"));

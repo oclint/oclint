@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+#include "ReportTestResults.h"
 #include "JSONReporter.cpp"
 
 using namespace ::testing;
@@ -90,7 +91,7 @@ TEST_F(JSONReporterTest, writeTailKeyStringValue)
 
 TEST_F(JSONReporterTest, WriteSummary)
 {
-    Results *restults = Results::getInstance();
+    Results *restults = getTestResults();
     std::ostringstream oss;
     reporter.writeSummary(oss, *restults);
     EXPECT_THAT(oss.str(), StartsWith("\"summary\":"));
