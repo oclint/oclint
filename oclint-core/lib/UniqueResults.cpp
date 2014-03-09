@@ -22,21 +22,6 @@ public:
     }
 };
 
-class ViolationEqualTo
-{
-public:
-    constexpr bool operator()(const oclint::Violation &lhs, const oclint::Violation &rhs) const
-    {
-        return (lhs.rule == rhs.rule)
-                && (lhs.path == rhs.path)
-                && (lhs.startLine == rhs.startLine)
-                && (lhs.startColumn == rhs.startColumn)
-                && (lhs.endLine == rhs.endLine)
-                && (lhs.endColumn == rhs.endColumn)
-                && (lhs.message == rhs.message);
-    }
-};
-
 } // end namespace
 
 
@@ -55,7 +40,7 @@ std::vector<oclint::Violation> UniqueResults::allViolations() const
         return _violations;
     }
 
-    std::unordered_set<oclint::Violation, ViolationHash, ViolationEqualTo> set;
+    std::unordered_set<oclint::Violation, ViolationHash> set;
 
     for (const auto& violationSet : _resultCollector.getCollection())
     {
