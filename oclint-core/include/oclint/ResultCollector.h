@@ -32,7 +32,7 @@ private:
 public:
     void add(ViolationSet *violationSet);
 
-    std::vector<ViolationSet*> getCollection() const;
+    const std::vector<ViolationSet*>& getCollection() const;
 
     void addError(const Violation& violation);
     ViolationSet* getCompilerErrorSet() const;

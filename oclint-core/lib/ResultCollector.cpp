@@ -38,7 +38,7 @@ void ResultCollector::add(ViolationSet *violationSet)
     _collection.push_back(violationSet);
 }
 
-std::vector<ViolationSet*> ResultCollector::getCollection() const
+const std::vector<ViolationSet*>& ResultCollector::getCollection() const
 {
     return _collection;
 }
