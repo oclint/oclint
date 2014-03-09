@@ -19,11 +19,6 @@ public:
 class HTMLReporterTest : public ::testing::Test
 {
 protected:
-    virtual void setUp()
-    {
-        HTMLReporter reporter;
-    }
-
     HTMLReporter reporter;
 };
 

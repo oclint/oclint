@@ -19,11 +19,6 @@ public:
 class TextReporterTest : public ::testing::Test
 {
 protected:
-    virtual void setUp()
-    {
-        TextReporter reporter;
-    }
-
     TextReporter reporter;
 };
 
