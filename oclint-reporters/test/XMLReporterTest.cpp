@@ -20,11 +20,6 @@ public:
 class XMLReporterTest : public ::testing::Test
 {
 protected:
-    virtual void setUp()
-    {
-        XMLReporter reporter;
-    }
-
     XMLReporter reporter;
 };
 

@@ -4,12 +4,12 @@
 
 class NPathComplexityRuleTest : public ::testing::Test {
 protected:
-    virtual void SetUp()
+    virtual void SetUp() override
     {
         RuleConfiguration::addConfiguration("NPATH_COMPLEXITY", "1");
     }
 
-    virtual void TearDown()
+    virtual void TearDown() override
     {
         RuleConfiguration::removeAll();
     }

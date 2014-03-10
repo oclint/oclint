@@ -4,12 +4,12 @@
 
 class LongMethodRuleTest : public ::testing::Test {
 protected:
-    virtual void SetUp()
+    virtual void SetUp() override
     {
         RuleConfiguration::addConfiguration("LONG_METHOD", "0");
     }
 
-    virtual void TearDown()
+    virtual void TearDown() override
     {
         RuleConfiguration::removeAll();
     }

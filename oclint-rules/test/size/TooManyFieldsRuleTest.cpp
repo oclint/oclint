@@ -4,12 +4,12 @@
 
 class TooManyFieldsRuleTest : public ::testing::Test {
 protected:
-    virtual void SetUp()
+    virtual void SetUp() override
     {
         RuleConfiguration::addConfiguration("TOO_MANY_FIELDS", "2");
     }
 
-    virtual void TearDown()
+    virtual void TearDown() override
     {
         RuleConfiguration::removeAll();
     }

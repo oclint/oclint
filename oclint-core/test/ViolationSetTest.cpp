@@ -18,13 +18,13 @@ public:
 class ViolationSetTest : public ::testing::Test
 {
 protected:
-    virtual void SetUp()
+    virtual void SetUp() override
     {
         ViolationSet ViolationSetTest_violationSet;
         rule = new MockRuleBase();
     }
 
-    virtual void TearDown()
+    virtual void TearDown() override
     {
         delete rule;
     }

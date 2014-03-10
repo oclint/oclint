@@ -44,13 +44,13 @@ public:
 class UniqueResultsTest : public ::testing::Test
 {
 protected:
-    virtual void SetUp()
+    virtual void SetUp() override
     {
         ruleOne = new MockRuleBaseOne;
         ruleTwo = new MockRuleBaseTwo;
     }
 
-    virtual void TearDown()
+    virtual void TearDown() override
     {
         delete ruleOne;
         delete ruleTwo;

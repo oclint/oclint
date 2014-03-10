@@ -20,11 +20,6 @@ public:
 class JSONReporterTest : public ::testing::Test
 {
 protected:
-    virtual void setUp()
-    {
-        JSONReporter reporter;
-    }
-
     JSONReporter reporter;
 };
 
