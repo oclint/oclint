@@ -161,7 +161,7 @@ static clang::CompilerInvocation *newCompilerInvocation(std::string &mainExecuta
     std::vector<std::string> &unadjustedCmdLine, bool runClangChecker = false)
 {
     // Prepare for command lines, and convert to old-school argv
-    llvm::OwningPtr<clang::tooling::ArgumentsAdjuster> argumentsAdjusterPtr(
+    std::unique_ptr<clang::tooling::ArgumentsAdjuster> argumentsAdjusterPtr(
         new clang::tooling::ClangSyntaxOnlyAdjuster());
     std::vector<std::string> commandLine = argumentsAdjusterPtr->Adjust(unadjustedCmdLine);
     assert(!commandLine.empty());
@@ -192,12 +192,12 @@ static clang::CompilerInvocation *newCompilerInvocation(std::string &mainExecuta
 
     // create driver
     const char *const mainBinaryPath = argv[0];
-    const llvm::OwningPtr<clang::driver::Driver> driver(
+    const std::unique_ptr<clang::driver::Driver> driver(
         newDriver(&diagnosticsEngine, mainBinaryPath));
     driver->setCheckInputsExist(false);
 
     // create compilation invocation
-    const llvm::OwningPtr<clang::driver::Compilation> compilation(
+    const std::unique_ptr<clang::driver::Compilation> compilation(
         driver->BuildCompilation(llvm::makeArrayRef(argv)));
     const llvm::opt::ArgStringList *const cc1Args = getCC1Arguments(compilation.get());
     return newInvocation(&diagnosticsEngine, *cc1Args);
