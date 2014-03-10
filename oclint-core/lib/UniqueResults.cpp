@@ -14,11 +14,14 @@ class ViolationHash
 public:
     std::size_t operator()(const oclint::Violation& violation) const
     {
-        std::size_t h1 = std::hash<const oclint::RuleBase*>()(violation.rule);
-        std::size_t h2 = std::hash<std::string>()(violation.path);
-        std::size_t h3 = std::hash<std::string>()(violation.message);
-        std::size_t h4 = violation.startLine ^ (violation.startColumn << 2) ^ (violation.endLine << 4) ^ (violation.endColumn << 8);
-        return h1 ^ (h2 << 1) ^ (h2 << 2) ^ (h3 << 3) ^ (h4 << 4);
+        std::size_t hash1 = std::hash<const oclint::RuleBase*>()(violation.rule);
+        std::size_t hash2 = std::hash<std::string>()(violation.path);
+        std::size_t hash3 = std::hash<std::string>()(violation.message);
+        std::size_t hash4 = violation.startLine
+            ^ (violation.startColumn << 2)
+            ^ (violation.endLine << 4)
+            ^ (violation.endColumn << 8);
+        return hash1 ^ (hash2 << 1) ^ (hash2 << 2) ^ (hash3 << 3) ^ (hash4 << 4);
     }
 };
 

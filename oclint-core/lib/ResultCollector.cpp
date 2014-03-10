@@ -3,9 +3,9 @@
 #include "oclint/Violation.h"
 #include "oclint/ViolationSet.h"
 
-namespace oclint {
+static oclint::ResultCollector *_singleton = nullptr;
 
-ResultCollector* ResultCollector::_singleton = nullptr;
+namespace oclint {
 
 ResultCollector* ResultCollector::getInstance()
 {

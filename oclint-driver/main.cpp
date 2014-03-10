@@ -96,6 +96,20 @@ void printViolationsExceedThresholdError(const oclint::Results *results)
         << "[" << oclint::option::maxP3() << "] " <<endl;
 }
 
+std::unique_ptr<oclint::Results> getResults()
+{
+    std::unique_ptr<oclint::Results> results;
+    if (oclint::option::allowDuplicatedViolations())
+    {
+        results.reset(new oclint::RawResults(*oclint::ResultCollector::getInstance()));
+    }
+    else
+    {
+        results.reset(new oclint::UniqueResults(*oclint::ResultCollector::getInstance()));
+    }
+    return results;
+}
+
 enum ExitCode
 {
     SUCCESS,
@@ -173,16 +187,7 @@ int main(int argc, const char **argv)
         return ERROR_WHILE_PROCESSING;
     }
 
-    std::unique_ptr<oclint::Results> results;
-
-    if (oclint::option::allowDuplicatedViolations())
-    {
-        results.reset(new oclint::RawResults(*oclint::ResultCollector::getInstance()));
-    }
-    else
-    {
-        results.reset(new oclint::UniqueResults(*oclint::ResultCollector::getInstance()));
-    }
+    std::unique_ptr<oclint::Results> results(std::move(getResults()));
 
     try
     {

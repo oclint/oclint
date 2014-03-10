@@ -14,10 +14,8 @@ protected:
     const ResultCollector& _resultCollector;
 
 public:
-
     explicit AbstractResults(const ResultCollector& resultCollector);
     virtual ~AbstractResults() = default;
-
 
     virtual int numberOfViolations() const override;
     virtual int numberOfViolationsWithPriority(int priority) const override;

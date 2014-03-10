@@ -87,7 +87,7 @@ static llvm::cl::opt<bool> argClangChecker("enable-clang-static-analyzer",
     llvm::cl::desc("Enable Clang Static Analyzer, and integrate results into OCLint report"),
     llvm::cl::init(false),
     llvm::cl::cat(OCLintOptionCategory));
-static llvm::cl::opt<bool> argAllowDuplicatedViolations("allow-duplicated-violations",
+static llvm::cl::opt<bool> argDuplications("allow-duplicated-violations",
     llvm::cl::desc("Allow duplicated violations in the OCLint report"),
     llvm::cl::init(false),
     llvm::cl::cat(OCLintOptionCategory));
@@ -150,7 +150,7 @@ static void processConfigFile(const std::string &path)
     updateArgIfSet(argMaxP2, config.maxP2());
     updateArgIfSet(argMaxP3, config.maxP3());
     updateArgIfSet(argClangChecker, config.clangChecker());
-    updateArgIfSet(argAllowDuplicatedViolations, config.allowDuplicatedViolations());
+    updateArgIfSet(argDuplications, config.allowDuplicatedViolations());
 }
 
 static void processConfigFiles()
@@ -304,5 +304,5 @@ bool oclint::option::enableClangChecker()
 
 bool oclint::option::allowDuplicatedViolations()
 {
-    return argAllowDuplicatedViolations;
+    return argDuplications;
 }

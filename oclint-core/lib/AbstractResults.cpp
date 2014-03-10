@@ -27,7 +27,6 @@ int AbstractResults::numberOfFilesWithViolations() const
     return numFiles;
 }
 
-
 int AbstractResults::numberOfViolations() const
 {
     return allViolations().size();

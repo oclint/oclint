@@ -11,12 +11,8 @@ namespace oclint
 
 class ViolationSet;
 
-
 class ResultCollector
 {
-private:
-    static ResultCollector *_singleton;
-
 protected:
     ResultCollector();
     ~ResultCollector();
