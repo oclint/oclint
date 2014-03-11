@@ -180,6 +180,7 @@ static clang::CompilerInvocation *newCompilerInvocation(std::string &mainExecuta
     {
         argv.push_back(commandLine[cmdIndex].c_str());
     }
+    argv.push_back("-D__OCLINT__");
 
     // create diagnostic engine
     llvm::IntrusiveRefCntPtr<clang::DiagnosticOptions> diagOpts =
