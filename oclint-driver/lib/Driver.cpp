@@ -228,6 +228,23 @@ static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *
     return compilerInstance;
 }
 
+static void printCompileCommandDebugInfo(
+    std::pair<std::string, clang::tooling::CompileCommand> &compileCommand)
+{
+    debug::emitLine("-----------------------");
+    debug::emit("File: ");
+    debug::emitLine(compileCommand.first.c_str());
+    debug::emit("Directory: ");
+    debug::emitLine(compileCommand.second.Directory.c_str());
+    debug::emit("Command: ");
+    for (auto& flag : compileCommand.second.CommandLine)
+    {
+        debug::emit(flag.c_str());
+        debug::emit(" ");
+    }
+    debug::emitLine("");
+}
+
 static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstance *> &compilers,
     std::vector<clang::FileManager *> &fileManagers,
     CompileCommandPairs &compileCommands,
@@ -235,6 +252,8 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
 {
     for (auto &compileCommand : compileCommands)
     {
+        printCompileCommandDebugInfo(compileCommand);
+
         debug::emit("Compiling ");
         debug::emit(compileCommand.first.c_str());
         if (chdir(compileCommand.second.Directory.c_str()))
