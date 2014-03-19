@@ -255,8 +255,8 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
     {
         printCompileCommandDebugInfo(compileCommand);
 
-        LOG_DEBUG("Compiling ");
-        LOG_DEBUG(compileCommand.first.c_str());
+        LOG_VERBOSE("Compiling ");
+        LOG_VERBOSE(compileCommand.first.c_str());
         if (chdir(compileCommand.second.Directory.c_str()))
         {
             throw oclint::GenericException("Cannot change dictionary into \"" +
@@ -271,15 +271,15 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
         compiler->start();
         if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
         {
-            LOG_DEBUG(" - Success");
+            LOG_VERBOSE(" - Success");
             compilers.push_back(compiler);
             fileManagers.push_back(fileManager);
         }
         else
         {
-            LOG_DEBUG(" - Failed");
+            LOG_VERBOSE(" - Failed");
         }
-        LOG_DEBUG_LINE("");
+        LOG_VERBOSE_LINE("");
     }
 }
 
@@ -289,8 +289,8 @@ static void invokeClangStaticAnalyzer(
 {
     for (auto &compileCommand : compileCommands)
     {
-        LOG_DEBUG("Clang Static Analyzer ");
-        LOG_DEBUG(compileCommand.first.c_str());
+        LOG_VERBOSE("Clang Static Analyzer ");
+        LOG_VERBOSE(compileCommand.first.c_str());
         if (chdir(compileCommand.second.Directory.c_str()))
         {
             throw oclint::GenericException("Cannot change dictionary into \"" +
@@ -306,16 +306,16 @@ static void invokeClangStaticAnalyzer(
         compiler->start();
         if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
         {
-            LOG_DEBUG(" - Done");
+            LOG_VERBOSE(" - Done");
         }
         else
         {
-            LOG_DEBUG(" - Finished with Failure");
+            LOG_VERBOSE(" - Finished with Failure");
         }
         compiler->end();
         compiler->resetAndLeakFileManager();
         fileManager->clearStatCaches();
-        LOG_DEBUG_LINE("");
+        LOG_VERBOSE_LINE("");
     }
 }
 

@@ -4,6 +4,7 @@ ADD_LIBRARY(OCLintDriver
     DiagnosticDispatcher.cpp
     Driver.cpp
     GenericException.cpp
+    Logger.cpp
     Options.cpp
     RulesetBasedAnalyzer.cpp
     RulesetFilter.cpp

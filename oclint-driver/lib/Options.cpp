@@ -90,6 +90,11 @@ static llvm::cl::opt<bool> argDuplications("allow-duplicated-violations",
     llvm::cl::desc("Allow duplicated violations in the OCLint report"),
     llvm::cl::init(false),
     llvm::cl::cat(OCLintOptionCategory));
+static llvm::cl::opt<bool> argEnableVerbose("verbose",
+    llvm::cl::desc("Enable verbose output"),
+    llvm::cl::init(false),
+    llvm::cl::Hidden,
+    llvm::cl::cat(OCLintOptionCategory));
 
 /* -------------
    libTooling cl
@@ -304,4 +309,9 @@ bool oclint::option::enableClangChecker()
 bool oclint::option::allowDuplicatedViolations()
 {
     return argDuplications;
+}
+
+bool oclint::option::enableVerbose()
+{
+    return argEnableVerbose;
 }
