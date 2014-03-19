@@ -12,7 +12,6 @@
 #include <clang/Tooling/CommonOptionsParser.h>
 
 #include "oclint/ConfigFile.h"
-#include "oclint/Debug.h"
 #include "oclint/RuleConfiguration.h"
 
 using namespace oclint;
