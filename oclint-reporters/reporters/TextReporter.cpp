@@ -19,8 +19,8 @@ public:
         if (results->hasErrors())
         {
             writeCompilerDiagnostics(out, results->allErrors(),
-                "Compiler Errors:\n(please aware that these errors "
-                "will prevent OCLint from analyzing those source code)");
+                "Compiler Errors:\n(please be aware that these errors "
+                "will prevent OCLint from analyzing this source code)");
         }
         if (results->hasWarnings())
         {
