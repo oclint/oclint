@@ -1,10 +1,10 @@
 ADD_LIBRARY(OCLintDriver
     CompilerInstance.cpp
     ConfigFile.cpp
-    Debug.cpp
     DiagnosticDispatcher.cpp
     Driver.cpp
     GenericException.cpp
+    Logger.cpp
     Options.cpp
     RulesetBasedAnalyzer.cpp
     RulesetFilter.cpp

@@ -68,9 +68,9 @@
 #include <clang/Tooling/Tooling.h>
 
 #include "oclint/CompilerInstance.h"
-#include "oclint/Debug.h"
 #include "oclint/DiagnosticDispatcher.h"
 #include "oclint/GenericException.h"
+#include "oclint/Logger.h"
 #include "oclint/Options.h"
 #include "oclint/ViolationSet.h"
 
@@ -232,18 +232,18 @@ static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *
 static void printCompileCommandDebugInfo(
     std::pair<std::string, clang::tooling::CompileCommand> &compileCommand)
 {
-    debug::emitLine("-----------------------");
-    debug::emit("File: ");
-    debug::emitLine(compileCommand.first.c_str());
-    debug::emit("Directory: ");
-    debug::emitLine(compileCommand.second.Directory.c_str());
-    debug::emit("Command: ");
+    LOG_DEBUG_LINE("-----------------------");
+    LOG_DEBUG("File: ");
+    LOG_DEBUG_LINE(compileCommand.first.c_str());
+    LOG_DEBUG("Directory: ");
+    LOG_DEBUG_LINE(compileCommand.second.Directory.c_str());
+    LOG_DEBUG("Command: ");
     for (auto& flag : compileCommand.second.CommandLine)
     {
-        debug::emit(flag.c_str());
-        debug::emit(" ");
+        LOG_DEBUG(flag.c_str());
+        LOG_DEBUG(" ");
     }
-    debug::emitLine("");
+    LOG_DEBUG_LINE("");
 }
 
 static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstance *> &compilers,
@@ -255,8 +255,8 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
     {
         printCompileCommandDebugInfo(compileCommand);
 
-        debug::emit("Compiling ");
-        debug::emit(compileCommand.first.c_str());
+        LOG_VERBOSE("Compiling ");
+        LOG_VERBOSE(compileCommand.first.c_str());
         if (chdir(compileCommand.second.Directory.c_str()))
         {
             throw oclint::GenericException("Cannot change dictionary into \"" +
@@ -271,15 +271,15 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
         compiler->start();
         if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
         {
-            debug::emit(" - Success");
+            LOG_VERBOSE(" - Success");
             compilers.push_back(compiler);
             fileManagers.push_back(fileManager);
         }
         else
         {
-            debug::emit(" - Failed");
+            LOG_VERBOSE(" - Failed");
         }
-        debug::emitLine("");
+        LOG_VERBOSE_LINE("");
     }
 }
 
@@ -289,8 +289,8 @@ static void invokeClangStaticAnalyzer(
 {
     for (auto &compileCommand : compileCommands)
     {
-        debug::emit("Clang Static Analyzer ");
-        debug::emit(compileCommand.first.c_str());
+        LOG_VERBOSE("Clang Static Analyzer ");
+        LOG_VERBOSE(compileCommand.first.c_str());
         if (chdir(compileCommand.second.Directory.c_str()))
         {
             throw oclint::GenericException("Cannot change dictionary into \"" +
@@ -306,16 +306,16 @@ static void invokeClangStaticAnalyzer(
         compiler->start();
         if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
         {
-            debug::emit(" - Done");
+            LOG_VERBOSE(" - Done");
         }
         else
         {
-            debug::emit(" - Finished with Failure");
+            LOG_VERBOSE(" - Finished with Failure");
         }
         compiler->end();
         compiler->resetAndLeakFileManager();
         fileManager->clearStatCaches();
-        debug::emitLine("");
+        LOG_VERBOSE_LINE("");
     }
 }
 

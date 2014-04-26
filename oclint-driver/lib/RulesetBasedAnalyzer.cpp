@@ -2,7 +2,7 @@
 
 #include <utility>
 
-#include "oclint/Debug.h"
+#include "oclint/Logger.h"
 #include "oclint/ResultCollector.h"
 #include "oclint/RuleBase.h"
 #include "oclint/RuleCarrier.h"
@@ -20,16 +20,16 @@ void RulesetBasedAnalyzer::analyze(std::vector<clang::ASTContext *> &contexts)
 {
     for (const auto& context : contexts)
     {
-        debug::emit("Analyzing ");
+        LOG_VERBOSE("Analyzing ");
         auto violationSet = new ViolationSet();
         auto carrier = new RuleCarrier(context, violationSet);
-        debug::emit(carrier->getMainFilePath().c_str());
+        LOG_VERBOSE(carrier->getMainFilePath().c_str());
         for (RuleBase *rule : _filteredRules)
         {
             rule->takeoff(carrier);
         }
         ResultCollector *results = ResultCollector::getInstance();
         results->add(violationSet);
-        debug::emitLine(" - Done");
+        LOG_VERBOSE_LINE(" - Done");
     }
 }
