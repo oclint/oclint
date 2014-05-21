@@ -81,9 +81,8 @@ typedef std::vector<std::pair<std::string, clang::tooling::CompileCommand>> Comp
 static clang::driver::Driver *newDriver(clang::DiagnosticsEngine *diagnostics,
     const char *binaryName)
 {
-    const std::string defaultOutputName = "a.out";
-    clang::driver::Driver *driver = new clang::driver::Driver(binaryName,
-        llvm::sys::getDefaultTargetTriple(), defaultOutputName, *diagnostics);
+    clang::driver::Driver *driver =
+        new clang::driver::Driver(binaryName, llvm::sys::getDefaultTargetTriple(), *diagnostics);
     driver->setTitle("OCLint");
     return driver;
 }
