@@ -1,7 +1,7 @@
 SET(LIST_OF_RULES
     AvoidDefaultArgumentsOnVirtualMethods
     AvoidPrivateStaticMembers
-    FeatureEnvy
+    #FeatureEnvy
     )
 
 BUILD_DYNAMIC_RULES("${LIST_OF_RULES}")
