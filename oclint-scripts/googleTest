@@ -47,6 +47,9 @@ def checkout_googletest():
     current_dir = os.getcwd()
     path.cd(path.root_dir)
     process.call('svn checkout ' + path.url.googletest + ' googletest')
+    # temporary fix for gmock r477 by updating gtest to the latest r686
+    path.cd('googletest/gtest')
+    process.call('svn up -r 686')
     path.cd(current_dir)
 
 def update_googletest():
