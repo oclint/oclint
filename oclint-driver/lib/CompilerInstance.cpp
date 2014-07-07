@@ -69,13 +69,13 @@ void CompilerInstance::start()
     assert(!getFrontendOpts().ShowHelp && "Client must handle '-help'!");
     assert(!getFrontendOpts().ShowVersion && "Client must handle '-version'!");
 
-    setTarget(clang::TargetInfo::CreateTargetInfo(getDiagnostics(), &getTargetOpts()));
+    setTarget(clang::TargetInfo::CreateTargetInfo(getDiagnostics(), getInvocation().TargetOpts));
     if (!hasTarget())
     {
         return;// false;
     }
 
-    getTarget().setForcedLangOptions(getLangOpts());
+    getTarget().adjust(getLangOpts());
 
     for (const auto& input : getFrontendOpts().Inputs)
     {

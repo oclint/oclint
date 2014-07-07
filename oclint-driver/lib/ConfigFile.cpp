@@ -82,14 +82,11 @@ oclint::option::ConfigFile::ConfigFile(const std::string &path)
     LOG_DEBUG("Reading config file: ");
     LOG_DEBUG_LINE(path.c_str());
 
-    std::error_code errorCode = llvm::MemoryBuffer::getFile(path, _buffer);
-    if (errorCode)
+    llvm::ErrorOr<std::unique_ptr<llvm::MemoryBuffer>> buffer =
+        llvm::MemoryBuffer::getFile(path);
+    if (buffer)
     {
-        LOG_DEBUG_LINE(errorCode.message().c_str());
-    }
-    else
-    {
-        const llvm::StringRef &content = _buffer->getBuffer();
+        const llvm::StringRef &content = buffer.get()->getBuffer();
 
         const std::string whitespace(" \t\f\v\n\r");
         if (content.str().find_last_not_of(whitespace) == std::string::npos) {
@@ -102,6 +99,10 @@ oclint::option::ConfigFile::ConfigFile(const std::string &path)
 
         llvm::yaml::Input yin(content);
         yin >> *this;
+    }
+    else
+    {
+        LOG_DEBUG_LINE(buffer.getError().message().c_str());
     }
 }
 

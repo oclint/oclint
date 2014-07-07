@@ -31,7 +31,6 @@ class ConfigFile
 {
 private:
     std::string _path;
-    std::unique_ptr<llvm::MemoryBuffer> _buffer;
     std::vector<llvm::StringRef> _rules;
     std::vector<llvm::StringRef> _disableRules;
     std::vector<llvm::StringRef> _rulePaths;
