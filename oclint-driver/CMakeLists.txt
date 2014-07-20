@@ -41,7 +41,7 @@ TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
     clangStaticAnalyzerCheckers
     clangStaticAnalyzerCore
     clangRewriteFrontend
-    clangRewriteCore
+    clangRewrite
     ${CLANG_LIBRARIES}
     ${REQ_LLVM_LIBRARIES}
     ${CMAKE_DL_LIBS}
