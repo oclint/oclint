@@ -29,7 +29,8 @@ public:
         _finder = &finder;
     }
 
-    clang::ASTConsumer *CreateASTConsumer(clang::CompilerInstance &, llvm::StringRef)
+    std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(
+        clang::CompilerInstance &, llvm::StringRef) override
     {
         return _finder->newASTConsumer();
     }

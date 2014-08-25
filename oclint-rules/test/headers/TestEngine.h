@@ -11,7 +11,7 @@ public:
         _violationSet = violationSet;
     }
 
-    virtual void HandleTranslationUnit(ASTContext &astContext)
+    virtual void HandleTranslationUnit(ASTContext &astContext) override
     {
         RuleCarrier *carrier = new RuleCarrier(&astContext, _violationSet);
         _rule->takeoff(carrier);
@@ -21,16 +21,19 @@ public:
 class TestFrontendAction : public clang::ASTFrontendAction
 {
 private:
-    TestProcessor* _processor;
+    RuleBase* _rule;
+    ViolationSet *_violationSet;
 
 public:
-    TestFrontendAction(TestProcessor* processor)
+    TestFrontendAction(RuleBase *rule, ViolationSet *violationSet)
     {
-        _processor = processor;
+        _rule = rule;
+        _violationSet = violationSet;
     }
 
-    clang::ASTConsumer *CreateASTConsumer(clang::CompilerInstance &, llvm::StringRef)
+    std::unique_ptr<clang::ASTConsumer>
+        CreateASTConsumer(clang::CompilerInstance &, llvm::StringRef) override
     {
-        return _processor;
+        return llvm::make_unique<TestProcessor>(_rule, _violationSet);
     }
 };

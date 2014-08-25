@@ -4,8 +4,7 @@ inline bool computeViolationSet(const Twine &fileName,
     const std::vector<std::string> &args,
     ViolationSet *violationSet)
 {
-    TestProcessor *processor = new TestProcessor(rule, violationSet);
-    FrontendAction* action = new TestFrontendAction(processor);
+    FrontendAction* action = new TestFrontendAction(rule, violationSet);
     Twine twine(code);
 
     const std::size_t randomPrefixLength = 6;

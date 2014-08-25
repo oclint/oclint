@@ -10,7 +10,7 @@ SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -fno-rtti")
 
 IF(APPLE)
     SET(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
-    INCLUDE_DIRECTORIES(${OSX_DEVELOPER_ROOT}/Toolchains/XcodeDefault.xctoolchain/usr/lib/c++/v1)
+    INCLUDE_DIRECTORIES(${OSX_DEVELOPER_ROOT}/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1)
 ELSEIF(MINGW)
     SET(CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
 ELSE()
@@ -50,7 +50,7 @@ INCLUDE_DIRECTORIES( ${LLVM_INCLUDE_DIRS} )
 LINK_DIRECTORIES( ${LLVM_LIBRARY_DIRS} )
 ADD_DEFINITIONS( ${LLVM_DEFINITIONS} )
 
-LLVM_MAP_COMPONENTS_TO_LIBRARIES(REQ_LLVM_LIBRARIES asmparser bitreader instrumentation mcparser option)
+LLVM_MAP_COMPONENTS_TO_LIBNAMES(REQ_LLVM_LIBRARIES asmparser bitreader instrumentation mcparser option)
 
 SET(CLANG_LIBRARIES
     clangTooling
