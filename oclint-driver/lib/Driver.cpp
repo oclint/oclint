@@ -98,19 +98,19 @@ static std::string compilationJobsToString(const clang::driver::Job &job)
 static const llvm::opt::ArgStringList *getCC1Arguments(clang::driver::Compilation *compilation)
 {
     const clang::driver::JobList &jobList = compilation->getJobs();
-    if (jobList.size() != 1 || !clang::isa<clang::driver::Command>(*jobList.begin()))
+    if (jobList.size() != 1 || !clang::isa<clang::driver::Command>(**jobList.begin()))
     {
         throw oclint::GenericException("one compiler command contains multiple jobs:\n" +
             compilationJobsToString(jobList) + "\n");
     }
 
-    const clang::driver::Command *cmd = clang::cast<clang::driver::Command>(*jobList.begin());
-    if (llvm::StringRef(cmd->getCreator().getName()) != "clang")
+    const clang::driver::Command &cmd = clang::cast<clang::driver::Command>(**jobList.begin());
+    if (llvm::StringRef(cmd.getCreator().getName()) != "clang")
     {
         throw oclint::GenericException("expected a clang compiler command");
     }
 
-    return &cmd->getArguments();
+    return &cmd.getArguments();
 }
 
 static clang::CompilerInvocation *newInvocation(clang::DiagnosticsEngine *diagnostics,
