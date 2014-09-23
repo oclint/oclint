@@ -11,6 +11,9 @@ void AbstractASTRuleBase::addViolation(clang::SourceLocation startLocation,
     clang::SourceLocation endLocation, RuleBase *rule, const std::string& message)
 {
     clang::SourceManager *sourceManager = &_carrier->getSourceManager();
+    /* handle macro locations : */
+    startLocation = sourceManager->getFileLoc(startLocation);
+    endLocation = sourceManager->getFileLoc(endLocation);
     int beginLine = sourceManager->getPresumedLineNumber(startLocation);
     if (!shouldSuppress(beginLine, *_carrier->getASTContext()))
     {
