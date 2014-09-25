@@ -11,18 +11,18 @@ void AbstractASTRuleBase::addViolation(clang::SourceLocation startLocation,
     clang::SourceLocation endLocation, RuleBase *rule, const std::string& message)
 {
     clang::SourceManager *sourceManager = &_carrier->getSourceManager();
-    /* handle macro locations : */
-    startLocation = sourceManager->getFileLoc(startLocation);
-    endLocation = sourceManager->getFileLoc(endLocation);
-    int beginLine = sourceManager->getPresumedLineNumber(startLocation);
+    /* if it is a macro location return the expansion location or the spelling location */
+    clang::SourceLocation startFileLoc = sourceManager->getFileLoc(startLocation);
+    clang::SourceLocation endFileLoc = sourceManager->getFileLoc(endLocation);
+    int beginLine = sourceManager->getPresumedLineNumber(startFileLoc);
     if (!shouldSuppress(beginLine, *_carrier->getASTContext()))
     {
-        llvm::StringRef filename = sourceManager->getFilename(startLocation);
+        llvm::StringRef filename = sourceManager->getFilename(startFileLoc);
         _carrier->addViolation(filename.str(),
             beginLine,
-            sourceManager->getPresumedColumnNumber(startLocation),
-            sourceManager->getPresumedLineNumber(endLocation),
-            sourceManager->getPresumedColumnNumber(endLocation),
+            sourceManager->getPresumedColumnNumber(startFileLoc),
+            sourceManager->getPresumedLineNumber(endFileLoc),
+            sourceManager->getPresumedColumnNumber(endFileLoc),
             rule,
             message);
     }

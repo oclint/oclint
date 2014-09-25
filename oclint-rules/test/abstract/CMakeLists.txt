@@ -1,2 +1,3 @@
 BUILD_TEST(LanguageSelectionTest)
 BUILD_TEST(TagBasedViolationTest)
+BUILD_TEST(MacroLocationTest)
