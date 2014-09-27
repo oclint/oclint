@@ -129,41 +129,27 @@ static void constructCompileCommands(
     const clang::tooling::CompilationDatabase &compilationDatabase,
     llvm::ArrayRef<std::string> sourcePaths)
 {
-    for (unsigned pathIndex = 0, pathEnd = sourcePaths.size(); pathIndex != pathEnd; pathIndex++)
+    for (const auto &sourcePath : sourcePaths)
     {
-        llvm::SmallString<1024> filePath(clang::tooling::getAbsolutePath(sourcePaths[pathIndex]));
-
+        std::string filePath(clang::tooling::getAbsolutePath(sourcePath));
         std::vector<clang::tooling::CompileCommand> compileCmdsForFile =
-            compilationDatabase.getCompileCommands(filePath.str());
-        if (!compileCmdsForFile.empty())
+            compilationDatabase.getCompileCommands(filePath);
+        if (compileCmdsForFile.empty())
         {
-            for (int commandsIndex = 0, commandsEnd = compileCmdsForFile.size();
-                commandsIndex != commandsEnd; commandsIndex++)
-            {
-                compileCommands.push_back(
-                    std::make_pair(filePath.str(), compileCmdsForFile[commandsIndex]));
-            }
+            llvm::errs() << "Skipping " << filePath << ". Compile command not found.\n";
+            continue;
         }
-        /* - this needs to be collected and the gathered information will be printed eventually
-           - not here
-        else
+        for (auto &compileCommand : compileCmdsForFile)
         {
-            DEBUG({
-                llvm::dbgs() << "Skipping " << filePath << ". Command line not found.\n";
-            });
+            compileCommands.push_back(std::make_pair(filePath, compileCommand));
         }
-        */
     }
 }
 
 static clang::CompilerInvocation *newCompilerInvocation(std::string &mainExecutable,
-    std::vector<std::string> &unadjustedCmdLine, bool runClangChecker = false)
+    std::vector<std::string> &commandLine, bool runClangChecker = false)
 {
-    // Prepare for command lines, and convert to old-school argv
-    std::unique_ptr<clang::tooling::ArgumentsAdjuster> argumentsAdjusterPtr(
-        new clang::tooling::ClangSyntaxOnlyAdjuster());
-    std::vector<std::string> commandLine = argumentsAdjusterPtr->Adjust(unadjustedCmdLine);
-    assert(!commandLine.empty());
+    assert(!commandLine.empty() && "Command line must not be empty!");
     commandLine[0] = mainExecutable;
 
     std::vector<const char*> argv;
@@ -228,8 +214,10 @@ static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *
     return compilerInstance;
 }
 
+#ifndef NDEBUG
 static void printCompileCommandDebugInfo(
-    std::pair<std::string, clang::tooling::CompileCommand> &compileCommand)
+    std::pair<std::string, clang::tooling::CompileCommand> &compileCommand,
+    std::vector<std::string> &commandLine)
 {
     LOG_DEBUG_LINE("-----------------------");
     LOG_DEBUG("File: ");
@@ -243,6 +231,24 @@ static void printCompileCommandDebugInfo(
         LOG_DEBUG(" ");
     }
     LOG_DEBUG_LINE("");
+    LOG_DEBUG("Adjusted Command: ");
+    for (auto& cmd : commandLine)
+    {
+        LOG_DEBUG(cmd.c_str());
+        LOG_DEBUG(" ");
+    }
+    LOG_DEBUG_LINE("");
+}
+#endif
+
+static std::vector<std::string> adjustArguments(std::vector<std::string> &unadjustedCmdLine)
+{
+    std::unique_ptr<clang::tooling::ArgumentsAdjuster> stripOutputAdjuster(
+        new clang::tooling::ClangStripOutputAdjuster());
+    std::vector<std::string> commandLine = stripOutputAdjuster->Adjust(unadjustedCmdLine);
+    std::unique_ptr<clang::tooling::ArgumentsAdjuster> syntaxOnlyAdjuster(
+        new clang::tooling::ClangSyntaxOnlyAdjuster());
+    return syntaxOnlyAdjuster->Adjust(commandLine);
 }
 
 static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstance *> &compilers,
@@ -252,7 +258,12 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
 {
     for (auto &compileCommand : compileCommands)
     {
-        printCompileCommandDebugInfo(compileCommand);
+        std::vector<std::string> adjustedCmdLine =
+            adjustArguments(compileCommand.second.CommandLine);
+
+#ifndef NDEBUG
+        printCompileCommandDebugInfo(compileCommand, adjustedCmdLine);
+#endif
 
         LOG_VERBOSE("Compiling ");
         LOG_VERBOSE(compileCommand.first.c_str());
@@ -262,8 +273,8 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
                 compileCommand.second.Directory + "\", "
                 "please make sure the directory exists and you have permission to access!");
         }
-        clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(mainExecutable,
-            compileCommand.second.CommandLine);
+        clang::CompilerInvocation *compilerInvocation =
+            newCompilerInvocation(mainExecutable, adjustedCmdLine);
         clang::FileManager *fileManager = newFileManager();
         oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation, fileManager);
 
@@ -296,8 +307,10 @@ static void invokeClangStaticAnalyzer(
                 compileCommand.second.Directory + "\", "
                 "please make sure the directory exists and you have permission to access!");
         }
-        clang::CompilerInvocation *compilerInvocation = newCompilerInvocation(mainExecutable,
-            compileCommand.second.CommandLine, true);
+        std::vector<std::string> adjustedArguments =
+            adjustArguments(compileCommand.second.CommandLine);
+        clang::CompilerInvocation *compilerInvocation =
+            newCompilerInvocation(mainExecutable, adjustedArguments, true);
         clang::FileManager *fileManager = newFileManager();
         oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation,
             fileManager, true);
