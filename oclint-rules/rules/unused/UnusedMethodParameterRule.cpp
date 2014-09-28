@@ -83,10 +83,10 @@ private:
         return false;
     }
 
-    bool hasAttributeUnused(ParmVarDecl* varDecl)
+    bool hasAttributeUnused(const ParmVarDecl* varDecl)
     {
-        VarDecl *decl = dyn_cast<VarDecl>(varDecl);
-        return decl ? decl->hasAttr<clang::UnusedAttr>() : false;
+        const VarDecl *decl = dyn_cast<VarDecl>(varDecl);
+        return decl && decl->hasAttr<clang::UnusedAttr>();
     }
 
     bool hasVariableName(ParmVarDecl *varDecl)

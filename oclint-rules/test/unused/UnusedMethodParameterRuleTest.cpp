@@ -233,11 +233,24 @@ TEST(UnusedMethodParameterRuleTest, UnusedLocalVariableShouldBeIgnoredInThisRule
     testRuleOnCode(new UnusedMethodParameterRule(), "int aMethod() { int a; return 0; }");
 }
 
-TEST(UnusedMethodParameterRuleTest, AttributeUnusedSupressesRule)
+TEST(UnusedMethodParameterRuleTest, AttributeUnusedSupressesFirstParameterRule)
+{
+    testRuleOnCode(new UnusedMethodParameterRule(), "int aMethod(int a, int b);\n\
+int aMethod(int __attribute__((unused)) a, int b) { return 1; }",
+        0, 2, 44, 2, 48, "The parameter 'b' is unused.");
+}
+
+TEST(UnusedMethodParameterRuleTest, AttributeUnusedSupressesSecondParameterRule)
 {
     testRuleOnCode(new UnusedMethodParameterRule(), "int aMethod(int a, int b);\n\
 int aMethod(int a, int __attribute__((unused)) b) { return 1; }",
         0, 2, 13, 2, 17, "The parameter 'a' is unused.");
+}
+
+TEST(UnusedMethodParameterRuleTest, AttributeUnusedSupressesAllParameterRule)
+{
+    testRuleOnCode(new UnusedMethodParameterRule(), "int aMethod(int a, int b);\n\
+int aMethod(int __attribute__((unused)) a, int __attribute__((unused)) b) { return 1; }");
 }
 
 int main(int argc, char **argv)
