@@ -177,11 +177,11 @@ static void preserveExecutablePath(const char *argv)
     llvm::SmallString<128> installedPath(argv);
     if (llvm::sys::path::filename(installedPath) == installedPath)
     {
-        std::string intermediatePath =
-            llvm::sys::FindProgramByName(llvm::sys::path::filename(installedPath.str()));
-        if (!intermediatePath.empty())
+        auto intermediatePath =
+            llvm::sys::findProgramByName(llvm::sys::path::filename(installedPath.str()));
+        if (intermediatePath)
         {
-            installedPath = intermediatePath;
+            installedPath = *intermediatePath;
         }
     }
     llvm::sys::fs::make_absolute(installedPath);
