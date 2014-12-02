@@ -12,6 +12,7 @@ SET(LIST_OF_RULES
     SwitchStatementsShouldHaveDefault
     CoveredSwitchStatementsDontNeedDefault
     TooFewBranchesInSwitchStatement
+    UseSmartPtr
     )
 
 BUILD_DYNAMIC_RULES("${LIST_OF_RULES}")
