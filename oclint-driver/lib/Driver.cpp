@@ -243,12 +243,11 @@ static void printCompileCommandDebugInfo(
 
 static std::vector<std::string> adjustArguments(std::vector<std::string> &unadjustedCmdLine)
 {
-    std::unique_ptr<clang::tooling::ArgumentsAdjuster> stripOutputAdjuster(
-        new clang::tooling::ClangStripOutputAdjuster());
-    std::vector<std::string> commandLine = stripOutputAdjuster->Adjust(unadjustedCmdLine);
-    std::unique_ptr<clang::tooling::ArgumentsAdjuster> syntaxOnlyAdjuster(
-        new clang::tooling::ClangSyntaxOnlyAdjuster());
-    return syntaxOnlyAdjuster->Adjust(commandLine);
+    clang::tooling::ArgumentsAdjuster argAdjuster =
+        clang::tooling::combineAdjusters(
+            clang::tooling::getClangStripOutputAdjuster(),
+            clang::tooling::getClangSyntaxOnlyAdjuster());
+    return argAdjuster(unadjustedCmdLine);
 }
 
 static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstance *> &compilers,
