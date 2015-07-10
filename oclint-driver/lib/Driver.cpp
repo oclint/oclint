@@ -87,11 +87,11 @@ static clang::driver::Driver *newDriver(clang::DiagnosticsEngine *diagnostics,
     return driver;
 }
 
-static std::string compilationJobsToString(const clang::driver::Job &job)
+static std::string compilationJobsToString(const clang::driver::JobList &jobs)
 {
     clang::SmallString<256> errorMsg;
     llvm::raw_svector_ostream errorStream(errorMsg);
-    job.Print(errorStream, "; ", true);
+    jobs.Print(errorStream, "; ", true);
     return errorStream.str();
 }
 
