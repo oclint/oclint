@@ -89,7 +89,10 @@ def install_xcodebuild():
 def install_licenses():
     license_path = os.path.join(bundle_root_dir, 'LICENSE')
     oclint_license_path = os.path.join(path.source.core_dir, 'LICENSE')
-    llvm_license_path = os.path.join(path.source.clang_dir, 'LICENSE.TXT')
+    for d in (args.llvm_root, path.source.clang_dir):
+        llvm_license_path = os.path.join(d, 'LICENSE.TXT')
+        if os.path.exists(llvm_license_path):
+            break
     with open(license_path, 'w') as license_file:
         with open(oclint_license_path, 'r') as oclint_license_file:
             license_file.write(oclint_license_file.read())

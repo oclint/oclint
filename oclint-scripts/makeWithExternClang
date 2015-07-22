@@ -18,4 +18,4 @@ fi
 # The path of the LLVM build needs to be absolute.
 
 ./build -llvm-root=$LLVM_PATH -release -clean
-./bundle -llvm-root=$LLVM_PATH -release -clean
+./bundle -llvm-root=$LLVM_PATH -release
