@@ -39,7 +39,7 @@ public:
         {
             addViolation(field, this);
         }
-        if (auto method = result.Nodes.getNodeAs<CXXMethodDecl>("method"))
+        if (auto method = result.Nodes.getNodeAs<CXXMethodDecl>("cxxMethod"))
         {
             addViolation(method, this);
         }
@@ -48,7 +48,7 @@ public:
     virtual void setUpMatcher() override
     {
         addMatcher(varDecl(isPrivate(), isStaticDataMember()).bind("field"));
-        addMatcher(methodDecl(isPrivate(), isStatic()).bind("method"));
+        addMatcher(cxxMethodDecl(isPrivate(), isStatic()).bind("cxxMethod"));
     }
 };
 

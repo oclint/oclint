@@ -35,15 +35,15 @@ public:
 
     virtual void callback(const MatchFinder::MatchResult &result) override
     {
-        const CXXMethodDecl *method = result.Nodes.getNodeAs<CXXMethodDecl>("method");
+        const CXXMethodDecl *method = result.Nodes.getNodeAs<CXXMethodDecl>("cxxMethod");
         addViolation(method, this);
     }
 
     virtual void setUpMatcher() override
     {
         addMatcher(
-            methodDecl(isVirtual(), hasAnyParameter(hasDefaultArg()))
-            .bind("method"));
+            cxxMethodDecl(isVirtual(), hasAnyParameter(hasDefaultArg()))
+            .bind("cxxMethod"));
     }
 };
 
