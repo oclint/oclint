@@ -113,25 +113,27 @@ public:
 
     bool VisitVarDecl(VarDecl *varDecl)
     {
-        if (isUnusedLocalVariable(varDecl))
+        if (!isUnusedLocalVariable(varDecl))
         {
-            // Getting ride of any template definition which might follow
-            auto varTypeName = varDecl->getType().getCanonicalType().getAsString();
-            auto const templPos = varTypeName.find('<');
-            if (templPos != string::npos) {
-                varTypeName = varTypeName.substr(0,templPos);
+			return true;
+		}
+
+        // Getting ride of any template definition which might follow
+        auto varTypeName = varDecl->getType().getCanonicalType().getAsString();
+        auto const templPos = varTypeName.find('<');
+        if (templPos != string::npos) {
+            varTypeName = varTypeName.substr(0,templPos);
+        }
+        // Remove of the qualifiers, to get ride of class/struct/... definition parts
+        {
+            auto const lastSpacePos = varTypeName.rfind(' ');
+            if (lastSpacePos != string::npos) {
+                varTypeName = varTypeName.substr(lastSpacePos + 1);
             }
-            // Remove of the qualifiers, to get ride of class/struct/... definition parts
-            {
-                auto const lastSpacePos = varTypeName.rfind(' ');
-                if (lastSpacePos != string::npos) {
-                    varTypeName = varTypeName.substr(lastSpacePos + 1);
-                }
-            }
-            if (skippedTypes.find(varTypeName) == skippedTypes.end())
-            {
-                addViolation(varDecl, this, description(varDecl->getNameAsString()));
-            }
+        }
+        if (skippedTypes.find(varTypeName) == skippedTypes.end())
+        {
+            addViolation(varDecl, this, description(varDecl->getNameAsString()));
         }
         return true;
     }
