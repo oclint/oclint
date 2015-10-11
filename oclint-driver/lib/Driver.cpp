@@ -163,7 +163,10 @@ static clang::CompilerInvocation *newCompilerInvocation(std::string &mainExecuta
     }
     for (int cmdIndex = start; cmdIndex != end; cmdIndex++)
     {
-        argv.push_back(commandLine[cmdIndex].c_str());
+        if (commandLine[cmdIndex] != "-gmodules")
+        {
+            argv.push_back(commandLine[cmdIndex].c_str());
+        }
     }
     argv.push_back("-D__OCLINT__");
 
