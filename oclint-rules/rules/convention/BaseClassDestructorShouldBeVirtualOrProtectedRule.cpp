@@ -53,7 +53,9 @@ public:
 
     bool VisitCXXRecordDecl(const CXXRecordDecl* cxxRecordDecl)
     {
-        if (cxxRecordDecl != nullptr && cxxRecordDecl->isPolymorphic())
+        if (cxxRecordDecl != nullptr
+            && cxxRecordDecl->hasDefinition()
+            && cxxRecordDecl->isPolymorphic())
         {
             check(*cxxRecordDecl, cxxRecordDecl->bases_begin(), cxxRecordDecl->bases_end());
         }
@@ -75,7 +77,7 @@ private:
             }
             const CXXRecordDecl* baseClass = it->getType()->getAsCXXRecordDecl();
 
-            if (baseClass == nullptr)
+            if (baseClass == nullptr || baseClass->hasDefinition())
             {
                 continue;
             }
