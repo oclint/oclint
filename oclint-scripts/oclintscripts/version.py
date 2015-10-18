@@ -11,13 +11,13 @@ def git_hash():
     return git_hash
 
 def oclint_version():
-    return "0.9"
+    return "0.10.1"
 
 def oclint_dev_version():
     return oclint_version() + '.dev.' + git_hash()
 
 def llvm_branches():
-    return ['trunk', 'branches/release_34', 'tags/RELEASE_34/final', 'branches/release_33', 'tags/RELEASE_33/final', 'branches/release_32', 'tags/RELEASE_32/final']
+    return ['trunk', llvm_default_branch()]
 
 def llvm_default_branch():
-    return 'trunk'
+    return 'tags/RELEASE_370/final'

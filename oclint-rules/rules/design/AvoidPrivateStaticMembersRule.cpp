@@ -48,7 +48,7 @@ public:
     virtual void setUpMatcher() override
     {
         addMatcher(varDecl(isPrivate(), isStaticDataMember()).bind("field"));
-        addMatcher(cxxMethodDecl(isPrivate(), isStatic()).bind("cxxMethod"));
+        addMatcher(methodDecl(isPrivate(), isStatic()).bind("cxxMethod"));
     }
 };
 
