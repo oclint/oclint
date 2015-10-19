@@ -123,6 +123,12 @@ TEST(BaseClassDestructorShouldBeVirtualOrProtectedRuleTest, MultipleKindBaseClas
     );
 }
 
+TEST(BaseClassDestructorShouldBeVirtualOrProtectedRuleTest, SkipCheckingOnForwardDeclarations)
+{
+    testRuleOnCXXCode(new BaseClassDestructorShouldBeVirtualOrProtectedRule(),
+        "namespace a {class aa;}");
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);

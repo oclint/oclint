@@ -19,8 +19,8 @@ static void handleClassName(const string & className)
 
 static void splitClasses(const string & input) {
     int startPos = 0;
-	// Take the string end into account, to avoid special string end handling
-    for (int i=0; i<input.length()+1; ++i)
+    // Take the string end into account, to avoid special string end handling
+    for (int i = 0; i < input.length() + 1; ++i)
     {
         for (auto const & curSep : { ',', ';', ' ', '\t', '\0' })
         {
@@ -30,7 +30,7 @@ static void splitClasses(const string & input) {
                 {
                     handleClassName(input.substr(startPos, i-startPos));
                 }
-                startPos = i+1;
+                startPos = i + 1;
             }
         }
     }
@@ -53,6 +53,7 @@ public:
             }
         }
     }
+
 private:
     bool isInNonTemplateFunction(Decl *varDecl)
     {
@@ -93,6 +94,31 @@ private:
             isInNonTemplateFunction(varDecl);
     }
 
+    bool isRAIIClass(VarDecl *varDecl)
+    {
+        // Getting ride of any template definition which might follow
+        auto varTypeName = varDecl->getType().getCanonicalType().getAsString();
+        auto const templPos = varTypeName.find('<');
+        if (templPos != string::npos)
+        {
+            varTypeName = varTypeName.substr(0,templPos);
+        }
+        // Remove of the qualifiers, to get ride of class/struct/... definition parts
+        {
+            auto const lastSpacePos = varTypeName.rfind(' ');
+            if (lastSpacePos != string::npos)
+            {
+                varTypeName = varTypeName.substr(lastSpacePos + 1);
+            }
+        }
+        if (skippedTypes.find(varTypeName) == skippedTypes.end())
+        {
+            return false;
+        }
+        CXXConstructExpr* expr = dyn_cast_or_null<CXXConstructExpr>(varDecl->getInit());
+        return expr && expr->getNumArgs() == 1;
+    }
+
     string description(const string& unusedVariableName)
     {
         ostringstream stream;
@@ -113,28 +139,11 @@ public:
 
     bool VisitVarDecl(VarDecl *varDecl)
     {
-        if (!isUnusedLocalVariable(varDecl))
-        {
-			return true;
-		}
-
-        // Getting ride of any template definition which might follow
-        auto varTypeName = varDecl->getType().getCanonicalType().getAsString();
-        auto const templPos = varTypeName.find('<');
-        if (templPos != string::npos) {
-            varTypeName = varTypeName.substr(0,templPos);
-        }
-        // Remove of the qualifiers, to get ride of class/struct/... definition parts
-        {
-            auto const lastSpacePos = varTypeName.rfind(' ');
-            if (lastSpacePos != string::npos) {
-                varTypeName = varTypeName.substr(lastSpacePos + 1);
-            }
-        }
-        if (skippedTypes.find(varTypeName) == skippedTypes.end())
+        if (isUnusedLocalVariable(varDecl) && !isRAIIClass(varDecl))
         {
             addViolation(varDecl, this, description(varDecl->getNameAsString()));
         }
+
         return true;
     }
 };

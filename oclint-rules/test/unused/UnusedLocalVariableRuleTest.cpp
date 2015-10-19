@@ -53,11 +53,6 @@ TEST(UnusedLocalVariableRuleTest, IgnoreUnusedLocalVariableInTemplateFunction)
 
 /*
  Resource Acquisition Is Initialization (RAII) programming idiom
-
- TODO: this has been discussed in https://github.com/oclint/oclint/issues/32,
- and it looks like we are not ready for having a whitelist for RAII yet,
- so for now we added local suppress to unused local variable,
- in case you use RAII idiom, you could suppress them.
  */
 
 string stdMutexHeader = "\n\
@@ -83,26 +78,13 @@ adopt_lock_t adopt_lock;\n\
 
 TEST(UnusedLocalVariableRuleTest, IgnoreRAIITechniqueInWhitelist)
 {
-    testRuleOnCXXCode(new UnusedLocalVariableRule(), stdMutexHeader + "using namespace std; int m() { static mutex mtx; lock_guard<mutex> lock __attribute__((annotate(\"oclint:suppress\"))) (mtx); return 1; }");
-/*
-VarDecl 0x7f8fe18611d0 <input.cpp:21:50, col:76> lock 'lock_guard<class std::mutex>':'class std::lock_guard<class std::mutex>'
-`-CXXConstructExpr 0x7f8fe1863470 <col:68, col:76> 'lock_guard<class std::mutex>':'class std::lock_guard<class std::mutex>' 'void (mutex_type &)'
-  `-DeclRefExpr 0x7f8fe1861170 <col:73> 'class std::mutex' lvalue Var 0x7f8fe1860d60 'mtx' 'class std::mutex'
- */
+    testRuleOnCXXCode(new UnusedLocalVariableRule(), stdMutexHeader + "using namespace std; int m() { static mutex mtx; lock_guard<mutex> lock(mtx); return 1; }");
 }
 
 TEST(UnusedLocalVariableRuleTest, RAIITechniqueWhitelistDifferentNumOfParameters)
 {
     testRuleOnCXXCode(new UnusedLocalVariableRule(), stdMutexHeader + "int m() { static std::mutex mutex; std::lock_guard<std::mutex> lock(mutex, std::adopt_lock); return 1; }",
         0, 21, 36, 21, 91, "The local variable 'lock' is unused.");
-/*
-VarDecl 0x7f8fe18610b0 <input.cpp:21:36, col:91> lock 'std::lock_guard<std::mutex>':'class std::lock_guard<class std::mutex>'
-`-CXXConstructExpr 0x7f8fe18635a0 <col:64, col:91> 'std::lock_guard<std::mutex>':'class std::lock_guard<class std::mutex>' 'void (mutex_type &, struct std::adopt_lock_t)'
-  |-DeclRefExpr 0x7f8fe1861048 <col:69> 'std::mutex':'class std::mutex' lvalue Var 0x7f8fe1860ba0 'mutex' 'std::mutex':'class std::mutex'
-  `-CXXConstructExpr 0x7f8fe1863418 <col:76, col:81> 'struct std::adopt_lock_t' 'void (const struct std::adopt_lock_t &) throw()'
-    `-ImplicitCastExpr 0x7f8fe18633b0 <col:76, col:81> 'const struct std::adopt_lock_t' lvalue <NoOp>
-      `-DeclRefExpr 0x7f8fe1861128 <col:76, col:81> 'struct std::adopt_lock_t' lvalue Var 0x7f8fe185fe60 'adopt_lock' 'struct std::adopt_lock_t'
- */
 }
 
 TEST(UnusedLocalVariableRuleTest, SuppressUnusedLocalVariable)

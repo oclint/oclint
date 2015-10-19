@@ -77,7 +77,7 @@ private:
             }
             const CXXRecordDecl* baseClass = it->getType()->getAsCXXRecordDecl();
 
-            if (baseClass == nullptr || baseClass->hasDefinition())
+            if (baseClass == nullptr || !baseClass->hasDefinition())
             {
                 continue;
             }
