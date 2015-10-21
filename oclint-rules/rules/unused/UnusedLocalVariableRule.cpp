@@ -9,35 +9,41 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-static set<string> skippedTypes;
-
-static void handleClassName(const string & className)
+class UnusedLocalVariableRule : public AbstractASTVisitorRule<UnusedLocalVariableRule>
 {
-    //TODO verify the input
-    skippedTypes.insert(className);
-}
+private:
+    set<string> skippedTypes;
 
-static void splitClasses(const string & input) {
-    int startPos = 0;
-    // Take the string end into account, to avoid special string end handling
-    for (int i = 0; i < input.length() + 1; ++i)
+    /** Ensure that the given class is a valid class name */
+    static bool verifyClassName(const string & className)
     {
-        for (auto const & curSep : { ',', ';', ' ', '\t', '\0' })
+        //TODO verify the input
+        return true;
+    }
+
+    void splitClasses(const string & input) {
+        int startPos = 0;
+        // Take the string end into account, to avoid special string end handling
+        for (int i = 0; i < input.length() + 1; ++i)
         {
-            if (input[i] == curSep)
+            for (auto const & curSep : { ',', ';', ' ', '\t', '\0' })
             {
-                if (startPos != i)
+                if (input[i] == curSep)
                 {
-                    handleClassName(input.substr(startPos, i-startPos));
+                    if (startPos != i)
+                    {
+                        const auto curClassName = input.substr(startPos, i-startPos);
+                        if (verifyClassName(curClassName))
+                        {
+                            skippedTypes.insert(curClassName);
+                        }
+                    }
+                    startPos = i + 1;
                 }
-                startPos = i + 1;
             }
         }
     }
-}
 
-class UnusedLocalVariableRule : public AbstractASTVisitorRule<UnusedLocalVariableRule>
-{
 public:
     UnusedLocalVariableRule()
     {
