@@ -1,6 +1,7 @@
 #include <sstream>
 #include <set>
 #include <string>
+#include <list>
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 #include "oclint/RuleConfiguration.h"
@@ -51,7 +52,22 @@ public:
             "std::lock_guard, std::unique_lock");
         string cusKeys = RuleConfiguration::stringForKey("RAII_CUSTOM_CLASSES", "");
 
-        for (auto const & curKeys : { defKeys, cusKeys })
+        resetSkippedTypes( { defKeys, cusKeys });
+    }
+protected:
+    /*
+     * Replace the list of known splitting classes and assign new values based on the parameter
+     *
+     * The main purpose of this class is to allow tests with different rule configurations
+     * In the regular operation mode, this part should be only triggered within the ctor
+     *
+     * @param newIgnoreTypes The new types to insert accordingly
+     * @throw std::invalid_argument, in case that the given input contains a failure
+     */
+    void resetSkippedTypes(const std::list<string> & newIgnoreTypes)
+    {
+        skippedTypes.clear();
+        for (auto const & curKeys : newIgnoreTypes)
         {
             if (!curKeys.empty())
             {
