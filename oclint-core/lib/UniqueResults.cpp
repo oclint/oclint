@@ -61,17 +61,59 @@ std::vector<oclint::Violation> UniqueResults::allViolations() const
 
 const std::vector<Violation>& UniqueResults::allErrors() const
 {
-    return _resultCollector.getCompilerErrorSet()->getViolations();
+    if (!_errors.empty())
+    {
+        return _errors;
+    }
+
+    std::unordered_set<oclint::Violation, ViolationHash> set;
+
+    for (const auto& violation : _resultCollector.getCompilerErrorSet()->getViolations())
+    {
+        if (set.insert(violation).second)
+        {
+            _errors.push_back(violation);
+        }
+    }
+    return _errors;
 }
 
 const std::vector<Violation>& UniqueResults::allWarnings() const
 {
-    return _resultCollector.getCompilerWarningSet()->getViolations();
+    if (!_warnings.empty())
+    {
+        return _warnings;
+    }
+
+    std::unordered_set<oclint::Violation, ViolationHash> set;
+
+    for (const auto& violation : _resultCollector.getCompilerWarningSet()->getViolations())
+    {
+        if (set.insert(violation).second)
+        {
+            _warnings.push_back(violation);
+        }
+    }
+    return _warnings;
 }
 
 const std::vector<Violation>& UniqueResults::allCheckerBugs() const
 {
-    return _resultCollector.getClangStaticCheckerBugSet()->getViolations();
+    if (!_checkerBugs.empty())
+    {
+        return _checkerBugs;
+    }
+
+    std::unordered_set<oclint::Violation, ViolationHash> set;
+
+    for (const auto& violation : _resultCollector.getClangStaticCheckerBugSet()->getViolations())
+    {
+        if (set.insert(violation).second)
+        {
+            _checkerBugs.push_back(violation);
+        }
+    }
+    return _checkerBugs;
 }
 
 } // end namespace oclint
