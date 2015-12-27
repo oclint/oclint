@@ -59,4 +59,19 @@ std::vector<oclint::Violation> UniqueResults::allViolations() const
     return _violations;
 }
 
+const std::vector<Violation>& UniqueResults::allErrors() const
+{
+    return _resultCollector.getCompilerErrorSet()->getViolations();
+}
+
+const std::vector<Violation>& UniqueResults::allWarnings() const
+{
+    return _resultCollector.getCompilerWarningSet()->getViolations();
+}
+
+const std::vector<Violation>& UniqueResults::allCheckerBugs() const
+{
+    return _resultCollector.getClangStaticCheckerBugSet()->getViolations();
+}
+
 } // end namespace oclint

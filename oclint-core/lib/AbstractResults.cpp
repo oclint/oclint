@@ -48,7 +48,7 @@ int AbstractResults::numberOfViolationsWithPriority(int priority) const
 
 int AbstractResults::numberOfErrors() const
 {
-    return _resultCollector.getCompilerErrorSet()->numberOfViolations();
+    return allErrors().size();
 }
 
 bool AbstractResults::hasErrors() const
@@ -56,14 +56,9 @@ bool AbstractResults::hasErrors() const
     return numberOfErrors() > 0;
 }
 
-const std::vector<Violation>& AbstractResults::allErrors() const
-{
-    return _resultCollector.getCompilerErrorSet()->getViolations();
-}
-
 int AbstractResults::numberOfWarnings() const
 {
-    return _resultCollector.getCompilerWarningSet()->numberOfViolations();
+    return allWarnings().size();
 }
 
 bool AbstractResults::hasWarnings() const
@@ -71,14 +66,9 @@ bool AbstractResults::hasWarnings() const
     return numberOfWarnings() > 0;
 }
 
-const std::vector<Violation>& AbstractResults::allWarnings() const
-{
-    return _resultCollector.getCompilerWarningSet()->getViolations();
-}
-
 int AbstractResults::numberOfCheckerBugs() const
 {
-    return _resultCollector.getClangStaticCheckerBugSet()->numberOfViolations();
+    return allCheckerBugs().size();
 }
 
 bool AbstractResults::hasCheckerBugs() const
@@ -86,10 +76,4 @@ bool AbstractResults::hasCheckerBugs() const
     return numberOfCheckerBugs() > 0;
 }
 
-const std::vector<Violation>& AbstractResults::allCheckerBugs() const
-{
-    return _resultCollector.getClangStaticCheckerBugSet()->getViolations();
-}
-
 } // end namespace oclint
-

@@ -22,4 +22,19 @@ std::vector<Violation> RawResults::allViolations() const
     return violations;
 }
 
+const std::vector<Violation>& RawResults::allErrors() const
+{
+    return _resultCollector.getCompilerErrorSet()->getViolations();
+}
+
+const std::vector<Violation>& RawResults::allWarnings() const
+{
+    return _resultCollector.getCompilerWarningSet()->getViolations();
+}
+
+const std::vector<Violation>& RawResults::allCheckerBugs() const
+{
+    return _resultCollector.getClangStaticCheckerBugSet()->getViolations();
+}
+
 } // end namespace oclint

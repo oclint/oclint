@@ -25,15 +25,12 @@ public:
 
     virtual int numberOfErrors() const override;
     virtual bool hasErrors() const override;
-    virtual const std::vector<Violation>& allErrors() const override;
 
     virtual int numberOfWarnings() const override;
     virtual bool hasWarnings() const override;
-    virtual const std::vector<Violation>& allWarnings() const override;
 
     virtual int numberOfCheckerBugs() const override;
     virtual bool hasCheckerBugs() const override;
-    virtual const std::vector<Violation>& allCheckerBugs() const override;
 };
 
 } // end namespace oclint
