@@ -123,12 +123,16 @@ public:
 
 TEST(UnusedLocalVariableRuleTest, IgnoreRAIITechniqueInWhitelist)
 {
-    testRuleOnCXXCode(new UnusedLocalVariableRule(), stdMutexHeader + "using namespace std; int m() { static mutex mtx; lock_guard<mutex> lock(mtx); return 1; }");
+    testRuleOnCXXCode(new UnusedLocalVariableRule(),
+        stdMutexHeader +
+        "using namespace std; int m() { static mutex mtx; lock_guard<mutex> lock(mtx); return 1; }");
 }
 
 TEST(UnusedLocalVariableRuleTest, RAIITechniqueWhitelistDifferentNumOfParameters)
 {
-    testRuleOnCXXCode(new UnusedLocalVariableRule(), stdMutexHeader + "int m() { static std::mutex mutex; std::lock_guard<std::mutex> lock(mutex, std::adopt_lock); return 1; }");
+    testRuleOnCXXCode(new UnusedLocalVariableRule(),
+        stdMutexHeader +
+        "int m() { static std::mutex mutex; std::lock_guard<std::mutex> lock(mutex, std::adopt_lock); return 1; }");
 }
 
 TEST(UnusedLocalVariableRuleTest, RAIITechniqueDefaultParameters)

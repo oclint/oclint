@@ -15,13 +15,6 @@ class UnusedLocalVariableRule : public AbstractASTVisitorRule<UnusedLocalVariabl
 private:
     set<string> skippedTypes;
 
-    /** Ensure that the given class is a valid class name */
-    static bool verifyClassName(const string & className)
-    {
-        //TODO verify the input
-        return true;
-    }
-
     void splitClasses(const string & input) {
         int startPos = 0;
         // Take the string end into account, to avoid special string end handling
@@ -34,10 +27,7 @@ private:
                     if (startPos != i)
                     {
                         const auto curClassName = input.substr(startPos, i-startPos);
-                        if (verifyClassName(curClassName))
-                        {
-                            skippedTypes.insert(curClassName);
-                        }
+                        skippedTypes.insert(curClassName);
                     }
                     startPos = i + 1;
                 }
@@ -52,7 +42,7 @@ public:
             "std::lock_guard, std::unique_lock");
         string cusKeys = RuleConfiguration::stringForKey("RAII_CUSTOM_CLASSES", "");
 
-        resetSkippedTypes( { defKeys, cusKeys });
+        resetSkippedTypes({ defKeys, cusKeys });
     }
 protected:
     /*
@@ -125,20 +115,15 @@ private:
         {
             varTypeName = varTypeName.substr(0,templPos);
         }
+
         // Remove of the qualifiers, to get ride of class/struct/... definition parts
+        auto const lastSpacePos = varTypeName.rfind(' ');
+        if (lastSpacePos != string::npos)
         {
-            auto const lastSpacePos = varTypeName.rfind(' ');
-            if (lastSpacePos != string::npos)
-            {
-                varTypeName = varTypeName.substr(lastSpacePos + 1);
-            }
+            varTypeName = varTypeName.substr(lastSpacePos + 1);
         }
-        if (skippedTypes.find(varTypeName) == skippedTypes.end())
-        {
-            return false;
-        }
-        CXXConstructExpr* expr = dyn_cast_or_null<CXXConstructExpr>(varDecl->getInit());
-        return expr && expr->getNumArgs() == 1;
+
+        return skippedTypes.find(varTypeName) != skippedTypes.end();
     }
 
     string description(const string& unusedVariableName)
