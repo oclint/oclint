@@ -201,6 +201,8 @@ TEST_F(UniqueResultsTest, CompilerErrors)
     UniqueResults results(collector);
     Violation violation(0, "test error path", 1, 2, 0, 0, "test error message");
     collector.addError(violation);
+    Violation duplicatedViolation(0, "test error path", 1, 2, 0, 0, "test error message");
+    collector.addError(duplicatedViolation);
     EXPECT_TRUE(results.hasErrors());
     EXPECT_THAT(results.numberOfErrors(), Eq(1));
     Violation compareViolation = results.allErrors().at(0);
@@ -230,6 +232,8 @@ TEST_F(UniqueResultsTest, CompilerWarnings)
     UniqueResults results(collector);
     Violation violation(0, "test warning path", 1, 2, 0, 0, "test warning message");
     collector.addWarning(violation);
+    Violation duplicatedViolation(0, "test warning path", 1, 2, 0, 0, "test warning message");
+    collector.addWarning(duplicatedViolation);
     EXPECT_TRUE(results.hasWarnings());
     EXPECT_THAT(results.numberOfWarnings(), Eq(1));
     Violation compareViolation = results.allWarnings().at(0);
@@ -259,6 +263,8 @@ TEST_F(UniqueResultsTest, CheckerBugs)
     UniqueResults results(collector);
     Violation violation(0, "test checker bug path", 1, 2, 0, 0, "test checker bug message");
     collector.addCheckerBug(violation);
+    Violation duplicatedViolation(0, "test checker bug path", 1, 2, 0, 0, "test checker bug message");
+    collector.addCheckerBug(duplicatedViolation);
     EXPECT_TRUE(results.hasCheckerBugs());
     EXPECT_THAT(results.numberOfCheckerBugs(), Eq(1));
     Violation compareViolation = results.allCheckerBugs().at(0);
