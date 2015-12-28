@@ -33,6 +33,19 @@ public:
             }
             writeViolation(out, violationSet.at(index));
         }
+        out << "],";
+        writeKey(out, "clangStaticAnalyzer");
+        out << "[";
+        std::vector<Violation> checkerBugs = results->allCheckerBugs();
+        for (int index = 0, numberOfViolations = checkerBugs.size();
+            index < numberOfViolations; index++)
+        {
+            if (index != 0)
+            {
+                out << ",";
+            }
+            writeViolation(out, checkerBugs.at(index));
+        }
         out << "]";
         out << "}";
         out << std::endl;
@@ -79,12 +92,18 @@ public:
         writeKeyValue(out, "path", violation.path);
         writeKeyValue(out, "startLine", violation.startLine);
         writeKeyValue(out, "startColumn", violation.startColumn);
-        writeKeyValue(out, "endLine", violation.endLine);
-        writeKeyValue(out, "endColumn", violation.endColumn);
+        if (violation.endLine != 0 && violation.endColumn != 0)
+        {
+            writeKeyValue(out, "endLine", violation.endLine);
+            writeKeyValue(out, "endColumn", violation.endColumn);
+        }
         const RuleBase *rule = violation.rule;
-        writeKeyValue(out, "rule", rule->name());
-        writeKeyValue(out, "category", rule->category());
-        writeKeyValue(out, "priority", rule->priority());
+        if (rule)
+        {
+            writeKeyValue(out, "rule", rule->name());
+            writeKeyValue(out, "category", rule->category());
+            writeKeyValue(out, "priority", rule->priority());
+        }
         writeKeyValue(out, "message", violation.message, true);
         out << "}";
     }
