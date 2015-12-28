@@ -45,8 +45,13 @@ public:
         out << "beginline=\"" << violation.startLine << "\" ";
         out << "endline=\"" << violation.endLine << "\" ";
         const RuleBase *rule = violation.rule;
-        out << "priority=\"" << 2 * rule->priority() - 1 << "\" ";
-        out << "rule=\"" << rule->name() << "\">" << std::endl;
+        if (rule)
+        {
+            out << "priority=\"" << 2 * rule->priority() - 1 << "\" ";
+            out << "rule=\"" << rule->name() << "\" ";
+            out << "ruleset=\"" << rule->category() << "\" ";
+        }
+        out << ">" << std::endl;
         out << violation.message << std::endl;
         out << "</violation>" << std::endl;
         out << "</file>" << std::endl;
