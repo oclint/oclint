@@ -25,8 +25,6 @@ def clean_module(module_name):
 
 def build_command(module_extras, source_path):
     cmd_build = cmake.builder(source_path).append('CMAKE_EXPORT_COMPILE_COMMANDS', 'ON')
-    if environment.is_unix():
-        cmd_build.use_clang_compiler()
     extras = {'LLVM_ROOT': path.build.clang_install_dir}
     extras.update(module_extras)
     return cmd_build.append_dict(extras).str()
