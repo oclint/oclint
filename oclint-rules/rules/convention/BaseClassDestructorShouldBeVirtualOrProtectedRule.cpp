@@ -46,7 +46,7 @@ public:
         return 2;
     }
 
-    virtual const string category() const override
+    virtual const std::string category() const override
     {
         return "convention";
     }

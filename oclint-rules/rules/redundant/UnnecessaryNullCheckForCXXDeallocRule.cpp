@@ -107,7 +107,7 @@ public:
         return 3;
     }
 
-    virtual const string category() const override
+    virtual const std::string category() const override
     {
         return "redundant";
     }
