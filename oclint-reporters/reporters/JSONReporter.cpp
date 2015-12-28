@@ -83,6 +83,7 @@ public:
         writeKeyValue(out, "endColumn", violation.endColumn);
         const RuleBase *rule = violation.rule;
         writeKeyValue(out, "rule", rule->name());
+        writeKeyValue(out, "category", rule->category());
         writeKeyValue(out, "priority", rule->priority());
         writeKeyValue(out, "message", violation.message, true);
         out << "}";
