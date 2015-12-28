@@ -91,9 +91,9 @@ TEST_F(HTMLReporterTest, WriteCompilerDiagnostics)
     std::ostringstream oss;
     reporter.writeCompilerDiagnostics(oss, violations, "testlevel");
     EXPECT_THAT(oss.str(), HasSubstr("<td>test1 path</td><td>1:2</td><td>compiler testlevel</td>"
-        "<td class='cmplr-testlevel'>testlevel</td><td>test1 message</td>"));
+        "<td></td><td class='cmplr-testlevel'>testlevel</td><td>test1 message</td>"));
     EXPECT_THAT(oss.str(), HasSubstr("<td>test2 path</td><td>5:6</td><td>compiler testlevel</td>"
-        "<td class='cmplr-testlevel'>testlevel</td><td>test2 message</td>"));
+        "<td></td><td class='cmplr-testlevel'>testlevel</td><td>test2 message</td>"));
 }
 
 TEST_F(HTMLReporterTest, WriteCheckerBugs)
@@ -106,9 +106,9 @@ TEST_F(HTMLReporterTest, WriteCheckerBugs)
     std::ostringstream oss;
     reporter.writeCheckerBugs(oss, violations);
     EXPECT_THAT(oss.str(), HasSubstr("<td>test1 path</td><td>1:2</td><td>clang static analyzer</td>"
-        "<td class='checker-bug'>checker bug</td><td>test1 message</td>"));
+        "<td></td><td class='checker-bug'>checker bug</td><td>test1 message</td>"));
     EXPECT_THAT(oss.str(), HasSubstr("<td>test2 path</td><td>5:6</td><td>clang static analyzer</td>"
-        "<td class='checker-bug'>checker bug</td><td>test2 message</td>"));
+        "<td></td><td class='checker-bug'>checker bug</td><td>test2 message</td>"));
 }
 
 int main(int argc, char **argv)
