@@ -53,7 +53,7 @@ INCLUDE_DIRECTORIES( ${LLVM_INCLUDE_DIRS} )
 LINK_DIRECTORIES( ${LLVM_LIBRARY_DIRS} )
 ADD_DEFINITIONS( ${LLVM_DEFINITIONS} )
 
-LLVM_MAP_COMPONENTS_TO_LIBNAMES(REQ_LLVM_LIBRARIES asmparser bitreader instrumentation mcparser option)
+LLVM_MAP_COMPONENTS_TO_LIBNAMES(REQ_LLVM_LIBRARIES asmparser bitreader instrumentation mcparser option support)
 
 SET(CLANG_LIBRARIES
     clangTooling
