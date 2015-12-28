@@ -10,14 +10,19 @@ using namespace oclint;
 class SuppressHelperTestASTRule : public AbstractASTVisitorRule<SuppressHelperTestASTRule>
 {
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "test ast rule";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 0;
+    }
+
+    virtual const string category() const override
+    {
+        return "test";
     }
 
     bool VisitDecl(clang::Decl *decl)
@@ -119,14 +124,19 @@ TEST(SuppressHelperTestASTRuleTest, CommentWithDescriptionNOLINT)
 class SuppressHelperTestSourceCodeReaderRule : public AbstractSourceCodeReaderRule
 {
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "test source code rule";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 0;
+    }
+
+    virtual const string category() const override
+    {
+        return "test";
     }
 
     void eachLine(int lineNumber, string line)

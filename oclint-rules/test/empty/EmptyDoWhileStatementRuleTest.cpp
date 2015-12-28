@@ -7,6 +7,7 @@ TEST(EmptyDoWhileStatementRuleTest, PropertyTest)
     EmptyDoWhileStatementRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("empty do/while statement", rule.name());
+    EXPECT_EQ("empty", rule.category());
 }
 
 TEST(EmptyDoWhileStatementRuleTest, GoodWhileStatement)

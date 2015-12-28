@@ -19,6 +19,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "convention";
+    }
+
     bool VisitSwitchStmt(SwitchStmt *switchStmt)
     {
         // SwitchCaseList has a linked data structure in the reversed order

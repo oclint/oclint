@@ -17,6 +17,7 @@ TEST(RedundantNilCheckRuleTest, PropertyTest)
     RedundantNilCheckRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("redundant nil check", rule.name());
+    EXPECT_EQ("redundant", rule.category());
 }
 
 TEST(RedundantNilCheckRuleTest, ObjC_CorrectNullEqCheck)

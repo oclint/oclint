@@ -32,10 +32,12 @@ TEST(MisplacedNullCheckRuleTest, PropertyTest)
     MisplacedNullCheckRule nullRule;
     EXPECT_EQ(1, nullRule.priority());
     EXPECT_EQ("misplaced null check", nullRule.name());
+    EXPECT_EQ("basic", nullRule.category());
 
     MisplacedNilCheckRule nilRule;
     EXPECT_EQ(3, nilRule.priority());
     EXPECT_EQ("misplaced nil check", nilRule.name());
+    EXPECT_EQ("basic", nilRule.category());
 }
 
 TEST(MisplacedNullCheckRuleTest, C_CorrectExplicitNullEqCheck)

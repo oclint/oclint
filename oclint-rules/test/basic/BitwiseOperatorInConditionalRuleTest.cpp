@@ -7,6 +7,7 @@ TEST(BitwiseOperatorInConditionalRuleTest, PropertyTest)
     BitwiseOperatorInConditionalRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("bitwise operator in conditional", rule.name());
+    EXPECT_EQ("basic", rule.category());
 }
 
 TEST(BitwiseOperatorInConditionalRuleTest, LogicalOr)

@@ -14,6 +14,7 @@ class MockRuleBaseOne : public RuleBase
 public:
     MOCK_METHOD0(apply, void());
     MOCK_CONST_METHOD0(name, const std::string());
+    MOCK_CONST_METHOD0(category, const std::string());
 
     virtual int priority() const
     {
@@ -26,6 +27,7 @@ class MockRuleBaseTwo : public RuleBase
 public:
     MOCK_METHOD0(apply, void());
     MOCK_CONST_METHOD0(name, const std::string());
+    MOCK_CONST_METHOD0(category, const std::string());
 
     virtual int priority() const
     {
@@ -95,15 +97,15 @@ TEST_F(UniqueResultsTest, NumberOfFilesWithViolations)
     ResultsTest_ResultsStub collector;
     UniqueResults results(collector);
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
-    Violation violation1(ruleOne, "", 1, 2, 3, 4);
+    Violation violation1(ruleOne, "test/path/0", 1, 2, 3, 4);
     violationSetWithOneViolation->addViolation(violation1);
     collector.add(violationSetWithOneViolation);
     EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(1));
     collector.add(new ViolationSet());
     EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(1));
     ViolationSet *violationSetWithTwoViolations = new ViolationSet();
-    Violation violation2(ruleOne, "", 1, 2, 3, 4);
-    Violation violation3(ruleTwo, "", 1, 2, 3, 4);
+    Violation violation2(ruleOne, "test/path/1", 1, 2, 3, 4);
+    Violation violation3(ruleTwo, "test/path/1", 1, 2, 3, 4);
     violationSetWithTwoViolations->addViolation(violation2);
     violationSetWithTwoViolations->addViolation(violation3);
     collector.add(violationSetWithTwoViolations);

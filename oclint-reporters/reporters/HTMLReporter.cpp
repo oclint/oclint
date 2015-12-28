@@ -27,7 +27,7 @@ public:
         out << "<h2>Summary</h2>";
         writeSummaryTable(out, *results);
         out << "<hr />";
-        out << "<table><thead><tr><th>File</th><th>Location</th><th>Rule Name</th>"
+        out << "<table><thead><tr><th>File</th><th>Location</th><th>Rule Name</th><th>Rule Category</th>"
             << "<th>Priority</th><th>Message</th></tr></thead><tbody>";
         for (const auto& violation : results->allViolations())
         {
@@ -65,8 +65,11 @@ public:
         out << "<tr><td>" << violation.path << "</td><td>" << violation.startLine
             << ":" << violation.startColumn << "</td>";
         const RuleBase *rule = violation.rule;
-        out << "<td>" << rule->name() << "</td><td class='priority" << rule->priority() << "'>"
-            << rule->priority() << "</td><td>" << violation.message << "</td></tr>";
+        out << "<td>" << rule->name() << "</td>"
+            << "<td>" << rule->category() << "</td>"
+            << "<td class='priority" << rule->priority() << "'>"
+            << rule->priority() << "</td>"
+            << "<td>" << violation.message << "</td></tr>";
     }
 
     void writeCompilerErrorOrWarning(std::ostream &out,
@@ -74,7 +77,7 @@ public:
     {
         out << "<tr><td>" << violation.path << "</td><td>" << violation.startLine
             << ":" << violation.startColumn << "</td>";
-        out << "<td>compiler " << level << "</td><td class='cmplr-" << level << "'>"
+        out << "<td>compiler " << level << "</td><td></td><td class='cmplr-" << level << "'>"
             << level << "</td><td>" << violation.message << "</td></tr>";
     }
 
@@ -93,7 +96,7 @@ public:
         {
             out << "<tr><td>" << violation.path << "</td><td>" << violation.startLine
                 << ":" << violation.startColumn << "</td>";
-            out << "<td>clang static analyzer</td><td class='checker-bug'>"
+            out << "<td>clang static analyzer</td><td></td><td class='checker-bug'>"
                 << "checker bug</td><td>" << violation.message << "</td></tr>";
         }
     }

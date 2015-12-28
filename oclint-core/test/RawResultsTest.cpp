@@ -15,6 +15,7 @@ class MockRuleBaseOne : public RuleBase
 public:
     MOCK_METHOD0(apply, void());
     MOCK_CONST_METHOD0(name, const std::string());
+    MOCK_CONST_METHOD0(category, const std::string());
 
     virtual int priority() const
     {
@@ -27,6 +28,7 @@ class MockRuleBaseTwo : public RuleBase
 public:
     MOCK_METHOD0(apply, void());
     MOCK_CONST_METHOD0(name, const std::string());
+    MOCK_CONST_METHOD0(category, const std::string());
 
     virtual int priority() const
     {
@@ -76,18 +78,27 @@ TEST(ResultsTest, NumberOfFilesWithViolations)
     ResultsTest_ResultsStub collector;
     RawResults results(collector);
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
-    Violation violation1(new MockRuleBaseOne(), "", 1, 2, 3, 4);
+    Violation violation1(new MockRuleBaseOne(), "file/path/0", 1, 2, 3, 4);
     violationSetWithOneViolation->addViolation(violation1);
     collector.add(violationSetWithOneViolation);
     EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(1));
     collector.add(new ViolationSet());
     EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(1));
     ViolationSet *violationSetWithTwoViolations = new ViolationSet();
-    Violation violation2(new MockRuleBaseOne(), "", 1, 2, 3, 4);
-    Violation violation3(new MockRuleBaseTwo(), "", 1, 2, 3, 4);
+    Violation violation2(new MockRuleBaseOne(), "file/path/1", 1, 2, 3, 4);
+    Violation violation3(new MockRuleBaseTwo(), "file/path/1", 1, 2, 3, 4);
     violationSetWithTwoViolations->addViolation(violation2);
     violationSetWithTwoViolations->addViolation(violation3);
     collector.add(violationSetWithTwoViolations);
+    EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(2));
+    collector.add(new ViolationSet());
+    EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(2));
+    Violation violation4(new MockRuleBaseOne(), "file/path/1", 1, 2, 3, 4);
+    Violation violation5(new MockRuleBaseTwo(), "file/path/1", 1, 2, 3, 4);
+    ViolationSet *violationSetWithTwoViolationsForTheSameFile = new ViolationSet();
+    violationSetWithTwoViolationsForTheSameFile->addViolation(violation4);
+    violationSetWithTwoViolationsForTheSameFile->addViolation(violation5);
+    collector.add(violationSetWithTwoViolationsForTheSameFile);
     EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(2));
 }
 

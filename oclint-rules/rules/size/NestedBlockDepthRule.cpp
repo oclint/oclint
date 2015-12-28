@@ -21,6 +21,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "size";
+    }
+
     bool VisitCompoundStmt(CompoundStmt *compoundStmt)
     {
         int depth = getStmtDepth(compoundStmt);

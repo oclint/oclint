@@ -34,6 +34,7 @@ TEST(ObjCNSNumberLiteralsRuleTest, PropertyTest)
     ObjCNSNumberLiteralsRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("replace with number literal", rule.name());
+    EXPECT_EQ("migration", rule.category());
 }
 
 TEST(ObjCNSNumberLiteralsRuleTest, CharacterLiteral)

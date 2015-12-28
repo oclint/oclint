@@ -85,6 +85,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "redundant";
+    }
+
     bool VisitIfStmt(IfStmt *ifStmt)
     {
         ReturnStmt *thenReturnStmt = extractStmt<ReturnStmt>(ifStmt->getThen());

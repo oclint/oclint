@@ -7,6 +7,7 @@ TEST(UselessParenthesesRuleTest, PropertyTest)
     UselessParenthesesRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("useless parentheses", rule.name());
+    EXPECT_EQ("redundant", rule.category());
 }
 
 TEST(UselessParenthesesRuleTest, NoParentheses)

@@ -7,6 +7,7 @@ TEST(InvertedLogicRuleTest, PropertyTest)
     InvertedLogicRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("inverted logic", rule.name());
+    EXPECT_EQ("convention", rule.category());
 }
 
 TEST(InvertedLogicRuleTest, IfElseInCorrectOrder)

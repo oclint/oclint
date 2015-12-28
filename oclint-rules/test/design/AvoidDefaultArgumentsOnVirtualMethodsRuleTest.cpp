@@ -6,6 +6,7 @@ TEST(AvoidDefaultArgumentsOnVirtualMethodsRuleTest, PropertyTest)
     AvoidDefaultArgumentsOnVirtualMethodsRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("avoid default arguments on virtual methods", rule.name());
+    EXPECT_EQ("design", rule.category());
 }
 
 TEST(AvoidDefaultArgumentsOnVirtualMethodsRuleTest, VirtualWithDefaultArg)

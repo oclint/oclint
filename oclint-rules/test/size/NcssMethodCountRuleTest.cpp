@@ -20,6 +20,7 @@ TEST_F(NcssMethodCountRuleTest, PropertyTest)
     NcssMethodCountRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("high ncss method", rule.name());
+    EXPECT_EQ("size", rule.category());
 }
 
 TEST_F(NcssMethodCountRuleTest, EmptyFunction)

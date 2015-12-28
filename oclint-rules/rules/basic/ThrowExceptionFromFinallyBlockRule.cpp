@@ -73,6 +73,11 @@ public:
         return 2;
     }
 
+    virtual const string category() const override
+    {
+        return "basic";
+    }
+
     virtual unsigned int supportedLanguages() const override
     {
         return LANG_OBJC;

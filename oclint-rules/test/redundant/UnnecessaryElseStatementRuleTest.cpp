@@ -7,6 +7,7 @@ TEST(UnnecessaryElseStatementRuleTest, PropertyTest)
     UnnecessaryElseStatementRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("unnecessary else statement", rule.name());
+    EXPECT_EQ("redundant", rule.category());
 }
 
 TEST(UnnecessaryElseStatementRuleTest, IfStmtWithoutElseBlock)

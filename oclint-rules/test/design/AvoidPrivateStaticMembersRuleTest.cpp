@@ -6,6 +6,7 @@ TEST(AvoidPrivateStaticMembersRuleTest, PropertyTest)
     AvoidPrivateStaticMembersRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("avoid private static members", rule.name());
+    EXPECT_EQ("design", rule.category());
 }
 
 TEST(AvoidPrivateStaticMembersRuleTest, PrivateStaticField)

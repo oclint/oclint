@@ -20,6 +20,7 @@ TEST_F(NestedBlockDepthRuleTest, PropertyTest)
     NestedBlockDepthRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("deep nested block", rule.name());
+    EXPECT_EQ("size", rule.category());
 }
 
 TEST_F(NestedBlockDepthRuleTest, EmptyFunction)

@@ -25,6 +25,7 @@ TEST(ObjCVerifyProtectedMethodRule, PropertyTest)
     EXPECT_EQ("verify protected method", rule.name());
     EXPECT_EQ("protected method", rule.attributeName());
     EXPECT_EQ(LANG_OBJC, rule.supportedLanguages());
+    EXPECT_EQ("cocoa", rule.category());
 }
 
 TEST(ObjCVerifyProtectedMethodRule, testOutsideCaller)

@@ -20,6 +20,11 @@ public:
         return 2;
     }
 
+    virtual const string category() const override
+    {
+        return "empty";
+    }
+
     bool VisitObjCAtFinallyStmt(ObjCAtFinallyStmt *finallyStmt)
     {
         return checkLexicalEmptyStmt(finallyStmt->getFinallyBody(), this);

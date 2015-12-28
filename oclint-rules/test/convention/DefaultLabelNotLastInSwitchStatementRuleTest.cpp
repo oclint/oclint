@@ -7,6 +7,7 @@ TEST(DefaultLabelNotLastInSwitchStatementRuleTest, PropertyTest)
     DefaultLabelNotLastInSwitchStatementRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("default label not last in switch statement", rule.name());
+    EXPECT_EQ("convention", rule.category());
 }
 
 TEST(DefaultLabelNotLastInSwitchStatementRuleTest, DefaultIsLast)

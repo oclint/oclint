@@ -7,6 +7,7 @@ TEST(ConstantConditionalOperatorRuleTest, PropertyTest)
     ConstantConditionalOperatorRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("constant conditional operator", rule.name());
+    EXPECT_EQ("basic", rule.category());
 }
 
 TEST(ConstantConditionalOperatorRuleTest, GoodConditionExpression)

@@ -23,6 +23,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "size";
+    }
+
     virtual void setUp() override
     {
         _threshold = RuleConfiguration::intForKey("TOO_MANY_METHODS", 30);

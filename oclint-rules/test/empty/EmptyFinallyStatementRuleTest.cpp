@@ -7,6 +7,7 @@ TEST(EmptyFinallyStatementRuleTest, PropertyTest)
     EmptyFinallyStatementRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("empty finally statement", rule.name());
+    EXPECT_EQ("empty", rule.category());
 }
 
 TEST(EmptyFinallyStatementRuleTest, NonEmptyObjCFinallyStmt)

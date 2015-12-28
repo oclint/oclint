@@ -20,6 +20,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "naming";
+    }
+
     bool VisitVarDecl(VarDecl *varDecl)
     {
         int nameLength = varDecl->getNameAsString().size();

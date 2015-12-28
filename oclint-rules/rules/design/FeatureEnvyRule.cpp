@@ -193,6 +193,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "design";
+    }
+
     bool VisitObjCMethodDecl(ObjCMethodDecl *node)
     {
         MessageAnalyzer analyzer;

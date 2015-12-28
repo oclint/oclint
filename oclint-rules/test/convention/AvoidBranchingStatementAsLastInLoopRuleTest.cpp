@@ -7,6 +7,7 @@ TEST(AvoidBranchingStatementAsLastInLoopRuleTest, PropertyTest)
     AvoidBranchingStatementAsLastInLoopRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("avoid branching statement as last in loop", rule.name());
+    EXPECT_EQ("convention", rule.category());
 }
 
 TEST(AvoidBranchingStatementAsLastInLoopRuleTest, CleanCode)

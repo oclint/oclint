@@ -91,6 +91,7 @@ TEST(ObjCAssignIvarOutsideAccessorsRuleTest, PropertyTest)
     ObjCAssignIvarOutsideAccessorsRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("ivar assignment outside accessors or init", rule.name());
+    EXPECT_EQ("convention", rule.category());
 }
 
 TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestInit)

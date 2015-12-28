@@ -7,6 +7,7 @@ TEST(GotoStatementRuleTest, PropertyTest)
     GotoStatementRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("goto statement", rule.name());
+    EXPECT_EQ("basic", rule.category());
 }
 
 TEST(GotoStatementRuleTest, NoGoto)
