@@ -1,3 +1,5 @@
+#include <map>
+
 #include "oclint/AbstractResults.h"
 #include "oclint/ResultCollector.h"
 #include "oclint/RuleBase.h"
@@ -16,15 +18,16 @@ int AbstractResults::numberOfFiles() const
 
 int AbstractResults::numberOfFilesWithViolations() const
 {
-    int numFiles = 0;
+    std::map<std::string, int> fileViolationsMapping;
     for (const auto& violationSet : _resultCollector.getCollection())
     {
         if (violationSet->numberOfViolations() > 0)
         {
-            numFiles++;
+            std::string filePath = violationSet->getViolations()[0].path;
+            fileViolationsMapping[filePath] += violationSet->numberOfViolations();
         }
     }
-    return numFiles;
+    return fileViolationsMapping.size();
 }
 
 int AbstractResults::numberOfViolations() const
