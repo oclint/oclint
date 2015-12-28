@@ -139,7 +139,7 @@ public:
         return "test";
     }
 
-    void eachLine(int lineNumber, string line)
+    void eachLine(int lineNumber, string line) override
     {
         addViolation(lineNumber, 1, lineNumber, line.size(), this, "");
     }
