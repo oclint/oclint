@@ -4,7 +4,10 @@ SET(CMAKE_BUILD_TYPE None)
 IF (${CMAKE_SYSTEM_NAME} MATCHES "Win")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -fno-rtti")
 ELSE()
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -fno-rtti -fcolor-diagnostics -Wno-c++11-extensions -fPIC")
+    IF(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        SET(CMAKE_CXX_FLAGS "-fcolor-diagnostics")
+    ENDIF()
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -fno-rtti -Wno-c++11-extensions -fPIC ${CMAKE_CXX_FLAGS}")
 ENDIF()
 SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -fno-rtti")
 
@@ -14,7 +17,10 @@ IF(APPLE)
 ELSEIF(MINGW)
     SET(CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
 ELSE()
-    SET(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libstdc++ ${CMAKE_CXX_FLAGS}")
+    IF(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        SET(CMAKE_CXX_FLAGS "-stdlib=libstdc++ ${CMAKE_CXX_FLAGS}")
+    ENDIF()
+    SET(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 ENDIF()
 
 IF(APPLE)
@@ -47,7 +53,7 @@ INCLUDE_DIRECTORIES( ${LLVM_INCLUDE_DIRS} )
 LINK_DIRECTORIES( ${LLVM_LIBRARY_DIRS} )
 ADD_DEFINITIONS( ${LLVM_DEFINITIONS} )
 
-LLVM_MAP_COMPONENTS_TO_LIBNAMES(REQ_LLVM_LIBRARIES asmparser bitreader instrumentation mcparser option)
+LLVM_MAP_COMPONENTS_TO_LIBNAMES(REQ_LLVM_LIBRARIES asmparser bitreader instrumentation mcparser option support)
 
 SET(CLANG_LIBRARIES
     clangTooling

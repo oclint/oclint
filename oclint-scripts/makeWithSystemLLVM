@@ -17,5 +17,5 @@ fi
 # Build OCLint against an existing LLVM installation outside this repository.
 # The path of the LLVM build needs to be absolute.
 
-./build -llvm-root=$LLVM_PATH -release -clean
+./build -llvm-root=$LLVM_PATH -release -clean -use-system-compiler
 ./bundle -llvm-root=$LLVM_PATH -release
