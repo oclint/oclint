@@ -20,6 +20,7 @@ TEST_F(TooManyMethodsRuleTest, PropertyTest)
     TooManyMethodsRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("too many methods", rule.name());
+    EXPECT_EQ("size", rule.category());
 }
 
 TEST_F(TooManyMethodsRuleTest, CXXClassNoMethod)

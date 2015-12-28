@@ -138,6 +138,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "unused";
+    }
+
     bool VisitParmVarDecl(ParmVarDecl *varDecl)
     {
         if (!varDecl->isUsed() &&

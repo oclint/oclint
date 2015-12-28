@@ -10,14 +10,19 @@ using namespace oclint;
 class DefaultASTRule : public AbstractASTVisitorRule<DefaultASTRule>
 {
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "default ast rule";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 0;
+    }
+
+    virtual const string category() const override
+    {
+        return "test";
     }
 
     bool VisitDecl(clang::Decl *decl)
@@ -71,19 +76,24 @@ public:
         _supportedLanguages = languageOpts;
     }
 
-    virtual unsigned int supportedLanguages() const
+    virtual unsigned int supportedLanguages() const override
     {
         return _supportedLanguages;
     }
 
-    virtual const std::string name() const
+    virtual const std::string name() const override
     {
         return "";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 0;
+    }
+
+    virtual const string category() const override
+    {
+        return "test";
     }
 
     bool VisitDecl(clang::Decl *decl)

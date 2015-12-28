@@ -99,6 +99,11 @@ public:
         return 2;
     }
 
+    virtual const std::string category() const override
+    {
+        return "basic";
+    }
+
     bool VisitCompoundStmt(const CompoundStmt *compoundStmt)
     {
         bool hasBreakPoint = false;

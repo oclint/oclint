@@ -7,6 +7,7 @@ TEST(DeadCodeRuleTest, PropertyTest)
     DeadCodeRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("dead code", rule.name());
+    EXPECT_EQ("basic", rule.category());
 }
 
 TEST(DeadCodeRuleTest, CleanCode)

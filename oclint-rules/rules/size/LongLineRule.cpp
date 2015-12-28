@@ -19,6 +19,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "size";
+    }
+
     virtual void eachLine(int lineNumber, string line) override
     {
         int threshold = RuleConfiguration::intForKey("LONG_LINE", 100);

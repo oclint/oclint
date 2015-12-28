@@ -75,6 +75,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "convention";
+    }
+
     virtual void setUp() override
     {
         _threshold = RuleConfiguration::intForKey("MAXIMUM_IF_LENGTH", 15);

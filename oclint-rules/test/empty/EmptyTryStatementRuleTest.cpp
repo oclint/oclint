@@ -7,6 +7,7 @@ TEST(EmptyTryStatementRuleTest, PropertyTest)
     EmptyTryStatementRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("empty try statement", rule.name());
+    EXPECT_EQ("empty", rule.category());
 }
 
 TEST(EmptyTryStatementRuleTest, NonEmptyCXXTryStmt)

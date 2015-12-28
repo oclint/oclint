@@ -26,6 +26,7 @@ public:
     virtual const std::string attributeName() const {
         return name();
     }
+    virtual const std::string category() const = 0;
     virtual int priority() const = 0;
 };
 

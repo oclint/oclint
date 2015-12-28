@@ -7,6 +7,7 @@ TEST(ReturnFromFinallyBlockRuleTest, PropertyTest)
     ReturnFromFinallyBlockRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("return from finally block", rule.name());
+    EXPECT_EQ("basic", rule.category());
 }
 
 TEST(ReturnFromFinallyBlockRuleTest, NoReturnFromFinallyBlock)

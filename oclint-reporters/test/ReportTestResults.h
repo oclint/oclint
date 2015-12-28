@@ -6,6 +6,9 @@ namespace oclint
 
 class ReportTestResults : public AbstractResults
 {
+private:
+    std::vector<Violation> _violations;
+
 public:
     explicit ReportTestResults(const ResultCollector &resultCollector)
         : AbstractResults(resultCollector)
@@ -14,8 +17,22 @@ public:
 
     std::vector<Violation> allViolations() const
     {
-        std::vector<Violation> violations;
-        return violations;
+        return _violations;
+    }
+
+    const std::vector<Violation>& allErrors() const
+    {
+        return _violations;
+    }
+
+    const std::vector<Violation>& allWarnings() const
+    {
+        return _violations;
+    }
+
+    const std::vector<Violation>& allCheckerBugs() const
+    {
+        return _violations;
     }
 };
 

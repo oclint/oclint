@@ -28,6 +28,12 @@ public:
             writeViolation(out, violation);
         }
         out << "</violations>";
+        out << "<clangstaticanalyzer>";
+        for (const auto& violation : results->allCheckerBugs())
+        {
+            writeViolation(out, violation);
+        }
+        out << "</clangstaticanalyzer>";
         writeFooter(out);
         out << std::endl;
     }
@@ -65,11 +71,18 @@ public:
         writeViolationAttribute(out, "path", violation.path);
         writeViolationAttribute(out, "startline", violation.startLine);
         writeViolationAttribute(out, "startcolumn", violation.startColumn);
-        writeViolationAttribute(out, "endline", violation.endLine);
-        writeViolationAttribute(out, "endcolumn", violation.endColumn);
+        if (violation.endLine != 0 && violation.endColumn != 0)
+        {
+            writeViolationAttribute(out, "endline", violation.endLine);
+            writeViolationAttribute(out, "endcolumn", violation.endColumn);
+        }
         const RuleBase *rule = violation.rule;
-        writeViolationAttribute(out, "rule", rule->name());
-        writeViolationAttribute(out, "priority", rule->priority());
+        if (rule)
+        {
+            writeViolationAttribute(out, "rule", rule->name());
+            writeViolationAttribute(out, "category", rule->category());
+            writeViolationAttribute(out, "priority", rule->priority());
+        }
         writeViolationAttribute(out, "message", violation.message);
         out << "></violation>";
     }

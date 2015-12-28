@@ -18,6 +18,11 @@ public:
         return 2;
     }
 
+    virtual const string category() const override
+    {
+        return "basic";
+    }
+
     bool VisitIfStmt(IfStmt *ifStmt)
     {
         Expr *conditionExpr = ifStmt->getCond();

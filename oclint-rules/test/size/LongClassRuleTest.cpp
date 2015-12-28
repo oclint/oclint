@@ -20,6 +20,7 @@ TEST_F(LongClassRuleTest, PropertyTest)
     LongClassRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("long class", rule.name());
+    EXPECT_EQ("size", rule.category());
 }
 
 TEST_F(LongClassRuleTest, CXXClass)

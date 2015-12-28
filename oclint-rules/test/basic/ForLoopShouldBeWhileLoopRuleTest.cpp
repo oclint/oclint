@@ -7,6 +7,7 @@ TEST(ForLoopShouldBeWhileLoopRuleTest, PropertyTest)
     ForLoopShouldBeWhileLoopRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("for loop should be while loop", rule.name());
+    EXPECT_EQ("basic", rule.category());
 }
 
 TEST(ForLoopShouldBeWhileLoopRuleTest, GoodForLoop)

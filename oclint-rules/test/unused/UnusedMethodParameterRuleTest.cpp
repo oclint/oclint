@@ -7,6 +7,7 @@ TEST(UnusedMethodParameterRuleTest, PropertyTest)
     UnusedMethodParameterRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("unused method parameter", rule.name());
+    EXPECT_EQ("unused", rule.category());
 }
 
 TEST(UnusedMethodParameterRuleTest, MethodWithUsedParameter)

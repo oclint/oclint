@@ -30,6 +30,11 @@ public:
         return 2;
     }
 
+    virtual const std::string category() const override
+    {
+        return "convention";
+    }
+
     unsigned int supportedLanguages() const override
     {
         return oclint::LANG_CXX;

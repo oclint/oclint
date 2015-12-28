@@ -20,6 +20,7 @@ TEST_F(LongVariableNameRuleTest, PropertyTest)
     LongVariableNameRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("long variable name", rule.name());
+    EXPECT_EQ("naming", rule.category());
 }
 
 TEST_F(LongVariableNameRuleTest, NoVar)

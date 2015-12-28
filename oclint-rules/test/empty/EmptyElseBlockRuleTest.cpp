@@ -7,6 +7,7 @@ TEST(EmptyElseBlockRuleTest, PropertyTest)
     EmptyElseBlockRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("empty else block", rule.name());
+    EXPECT_EQ("empty", rule.category());
 }
 
 TEST(EmptyElseBlockRuleTest, GoodElseBlock)

@@ -14,6 +14,7 @@ class MockRuleBaseOne : public RuleBase
 public:
     MOCK_METHOD0(apply, void());
     MOCK_CONST_METHOD0(name, const std::string());
+    MOCK_CONST_METHOD0(category, const std::string());
 
     virtual int priority() const
     {
@@ -26,6 +27,7 @@ class MockRuleBaseTwo : public RuleBase
 public:
     MOCK_METHOD0(apply, void());
     MOCK_CONST_METHOD0(name, const std::string());
+    MOCK_CONST_METHOD0(category, const std::string());
 
     virtual int priority() const
     {

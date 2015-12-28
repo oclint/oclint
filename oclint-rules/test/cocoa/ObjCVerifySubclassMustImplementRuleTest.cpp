@@ -65,6 +65,7 @@ TEST(ObjcVerifySubclassMustImplementRuleTest, PropertyTest)
     ObjCVerifySubclassMustImplementRule rule;
     EXPECT_EQ(1, rule.priority());
     EXPECT_EQ("subclass must implement", rule.name());
+    EXPECT_EQ("cocoa", rule.category());
 }
 
 TEST(ObjcVerifySubclassMustImplementRuleTest, AnnotationDoesNotImplementation)

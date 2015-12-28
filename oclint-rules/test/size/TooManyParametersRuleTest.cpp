@@ -20,6 +20,7 @@ TEST_F(TooManyParametersRuleTest, PropertyTest)
     TooManyParametersRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("too many parameters", rule.name());
+    EXPECT_EQ("size", rule.category());
 }
 
 TEST_F(TooManyParametersRuleTest, NoParameter)

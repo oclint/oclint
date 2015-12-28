@@ -22,6 +22,7 @@ TEST(ObjCVerifyProhibitedCallRule, PropertyTest)
     ObjCVerifyProhibitedCallRule rule;
     EXPECT_EQ(1, rule.priority());
     EXPECT_EQ("verify prohibited call", rule.name());
+    EXPECT_EQ("cocoa", rule.category());
 }
 
 TEST(ObjCVerifyProhibitedCallRule, OutsideCallerTest)

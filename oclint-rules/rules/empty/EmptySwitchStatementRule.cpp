@@ -20,6 +20,11 @@ public:
         return 2;
     }
 
+    virtual const string category() const override
+    {
+        return "empty";
+    }
+
     bool VisitSwitchStmt(SwitchStmt *switchStmt)
     {
         return checkLexicalEmptyStmt(switchStmt->getBody(), this);

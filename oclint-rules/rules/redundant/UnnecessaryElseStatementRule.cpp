@@ -82,6 +82,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "redundant";
+    }
+
     virtual void setUp() override
     {
         _visitedIfStmt = new vector<IfStmt *>();

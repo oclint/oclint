@@ -40,6 +40,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "convention";
+    }
+
     bool VisitSwitchStmt(SwitchStmt *switchStmt)
     {
         CountCaseStmts countCaseStmts;

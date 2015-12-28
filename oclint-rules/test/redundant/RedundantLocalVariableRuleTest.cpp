@@ -7,6 +7,7 @@ TEST(RedundantLocalVariableRuleTest, PropertyTest)
     RedundantLocalVariableRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("redundant local variable", rule.name());
+    EXPECT_EQ("redundant", rule.category());
 }
 
 TEST(RedundantLocalVariableRuleTest, NoRedundantLocalVariable)

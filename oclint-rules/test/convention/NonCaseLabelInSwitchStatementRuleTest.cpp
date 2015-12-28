@@ -7,6 +7,7 @@ TEST(NonCaseLabelInSwitchStatementRuleTest, PropertyTest)
     NonCaseLabelInSwitchStatementRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("non case label in switch statement", rule.name());
+    EXPECT_EQ("convention", rule.category());
 }
 
 TEST(NonCaseLabelInSwitchStatementRuleTest, CaseAndDefault)

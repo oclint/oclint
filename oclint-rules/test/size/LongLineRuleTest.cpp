@@ -20,6 +20,7 @@ TEST_F(LongLineRuleTest, PropertyTest)
     LongLineRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("long line", rule.name());
+    EXPECT_EQ("size", rule.category());
 }
 
 TEST_F(LongLineRuleTest, GetNumberOfCharactersForALine)

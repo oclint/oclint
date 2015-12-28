@@ -49,6 +49,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "redundant";
+    }
+
     virtual unsigned int supportedLanguages() const override
     {
         return LANG_OBJC;

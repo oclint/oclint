@@ -107,6 +107,11 @@ public:
         return 3;
     }
 
+    virtual const std::string category() const override
+    {
+        return "redundant";
+    }
+
     virtual unsigned int supportedLanguages() const override
     {
         return oclint::LANG_CXX;

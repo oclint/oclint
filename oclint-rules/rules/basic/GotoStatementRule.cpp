@@ -25,6 +25,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "basic";
+    }
+
     virtual void callback(const MatchFinder::MatchResult& result) override
     {
         addViolation(result.Nodes.getNodeAs<GotoStmt>("gotoStmt"), this);

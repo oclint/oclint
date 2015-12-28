@@ -7,6 +7,7 @@ TEST(CollapsibleIfStatementsRuleTest, PropertyTest)
     CollapsibleIfStatementsRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("collapsible if statements", rule.name());
+    EXPECT_EQ("basic", rule.category());
 }
 
 TEST(CollapsibleIfStatementsRuleTest, InterveningStatementAboveNestedIfStmt)

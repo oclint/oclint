@@ -17,14 +17,19 @@ public:
         _counter = 0;
     }
 
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "find all compound stmt rule";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 0;
+    }
+
+    virtual const string category() const override
+    {
+        return "test";
     }
 
     bool VisitCompoundStmt(clang::CompoundStmt *stmt)

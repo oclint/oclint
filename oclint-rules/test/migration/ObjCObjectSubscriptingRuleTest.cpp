@@ -51,6 +51,7 @@ TEST(ObjCObjectSubscriptingRuleTest, PropertyTest)
     ObjCObjectSubscriptingRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("replace with object subscripting", rule.name());
+    EXPECT_EQ("migration", rule.category());
 }
 
 #if defined(__APPLE__) || defined(__MACH__)

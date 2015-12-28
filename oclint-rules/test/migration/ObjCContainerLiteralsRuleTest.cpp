@@ -39,6 +39,7 @@ TEST(ObjCContainerLiteralsRuleTest, PropertyTest)
     ObjCContainerLiteralsRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("replace with container literal", rule.name());
+    EXPECT_EQ("migration", rule.category());
 }
 
 TEST(ObjCContainerLiteralsRuleTest, ArrayLiteralWithArray)

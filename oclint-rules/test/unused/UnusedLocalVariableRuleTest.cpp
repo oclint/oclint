@@ -7,6 +7,7 @@ TEST(UnusedLocalVariableRuleTest, PropertyTest)
     UnusedLocalVariableRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("unused local variable", rule.name());
+    EXPECT_EQ("unused", rule.category());
 }
 
 TEST(UnusedLocalVariableRuleTest, UsedLocalVariable)
