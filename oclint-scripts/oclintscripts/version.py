@@ -11,7 +11,7 @@ def git_hash():
     return git_hash
 
 def oclint_version():
-    return "0.10.1"
+    return "0.10.2"
 
 def oclint_dev_version():
     return oclint_version() + '.dev.' + git_hash()
