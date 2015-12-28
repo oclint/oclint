@@ -48,6 +48,11 @@ public:
         return 2;
     }
 
+    virtual const string category() const override
+    {
+        return "convention";
+    }
+
     bool isSwitchCase(Stmt *stmt)
     {
         return stmt && isa<SwitchCase>(stmt);

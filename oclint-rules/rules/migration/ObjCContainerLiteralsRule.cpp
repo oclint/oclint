@@ -19,6 +19,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "migration";
+    }
+
     virtual unsigned int supportedLanguages() const override
     {
         return LANG_OBJC;

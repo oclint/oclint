@@ -48,6 +48,11 @@ public:
         return 2;
     }
 
+    virtual const string category() const override
+    {
+        return "size";
+    }
+
     bool VisitObjCMethodDecl(ObjCMethodDecl *decl)
     {
         applyDecl(decl);

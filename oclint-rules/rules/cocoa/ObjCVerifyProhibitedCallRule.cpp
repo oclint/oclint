@@ -38,18 +38,24 @@ public:
         return true;
     }
 
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "verify prohibited call";
     }
 
-    virtual const string attributeName() const {
+    virtual const string attributeName() const override
+    {
         return "prohibited call";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 1;
+    }
+
+    virtual const string category() const override
+    {
+        return "cocoa";
     }
 
 };

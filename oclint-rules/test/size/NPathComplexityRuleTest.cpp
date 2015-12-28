@@ -20,6 +20,7 @@ TEST_F(NPathComplexityRuleTest, PropertyTest)
     NPathComplexityRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("high npath complexity", rule.name());
+    EXPECT_EQ("size", rule.category());
 }
 
 TEST_F(NPathComplexityRuleTest, EmptyMethod)

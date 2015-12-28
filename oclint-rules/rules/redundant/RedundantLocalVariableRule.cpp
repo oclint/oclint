@@ -52,6 +52,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "redundant";
+    }
+
     bool VisitCompoundStmt(CompoundStmt *compoundStmt)
     {
         if (compoundStmt->size() >= 2)

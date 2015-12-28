@@ -20,6 +20,7 @@ TEST_F(ShortVariableNameRuleTest, PropertyTest)
     ShortVariableNameRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("short variable name", rule.name());
+    EXPECT_EQ("naming", rule.category());
 }
 
 TEST_F(ShortVariableNameRuleTest, C_NoVar)

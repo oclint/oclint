@@ -7,6 +7,7 @@ TEST(CoveredSwitchStatementsDontNeedDefaultRuleTest, PropertyTest)
     CoveredSwitchStatementsDontNeedDefaultRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("switch statements don't need default when fully covered", rule.name());
+    EXPECT_EQ("convention", rule.category());
 }
 
 TEST(CoveredSwitchStatementsDontNeedDefaultRuleTest, SwitchHasDefaultButNotCovered)

@@ -68,6 +68,11 @@ public:
         return 1;
     }
 
+    virtual const string category() const override
+    {
+        return "basic";
+    }
+
     virtual unsigned int supportedLanguages() const override
     {
         return LANG_C | LANG_CXX;
@@ -93,6 +98,11 @@ public:
     virtual int priority() const override
     {
         return 3;
+    }
+
+    virtual const string category() const override
+    {
+        return "basic";
     }
 
     virtual unsigned int supportedLanguages() const override

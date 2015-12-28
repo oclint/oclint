@@ -7,6 +7,7 @@ TEST(DoubleNegativeRuleTest, PropertyTest)
     DoubleNegativeRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("double negative", rule.name());
+    EXPECT_EQ("basic", rule.category());
 }
 
 TEST(DoubleNegativeRuleTest, GoodNegative)

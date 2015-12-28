@@ -8,6 +8,7 @@ TEST(DestructorOfVirtualClassRuleTest, PropertyTest)
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("destructor of virtual class", rule.name());
     EXPECT_EQ(LANG_CXX, rule.supportedLanguages());
+    EXPECT_EQ("convention", rule.category());
 }
 
 TEST(DestructorOfVirtualClassRuleTest, NonVirtualClass)

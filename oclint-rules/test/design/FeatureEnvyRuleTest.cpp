@@ -7,6 +7,7 @@ TEST(FeatureEnvyRuleTest, PropertyTest)
     FeatureEnvyRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("feature envy", rule.name());
+    EXPECT_EQ("design", rule.category());
 }
 
 TEST(FeatureEnvyRuleTest, ObjCImplementationNoMethod)

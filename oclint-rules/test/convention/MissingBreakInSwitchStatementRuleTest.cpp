@@ -7,6 +7,7 @@ TEST(MissingBreakInSwitchStatementRuleTest, PropertyTest)
     MissingBreakInSwitchStatementRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("missing break in switch statement", rule.name());
+    EXPECT_EQ("convention", rule.category());
 }
 
 TEST(MissingBreakInSwitchStatementRuleTest, CasesHaveBreaks)

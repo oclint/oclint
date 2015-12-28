@@ -7,6 +7,7 @@ TEST(RedundantConditionalOperatorRuleTest, PropertyTest)
     RedundantConditionalOperatorRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("redundant conditional operator", rule.name());
+    EXPECT_EQ("redundant", rule.category());
 }
 
 TEST(RedundantConditionalOperatorRuleTest, GoodConditionalOperator)

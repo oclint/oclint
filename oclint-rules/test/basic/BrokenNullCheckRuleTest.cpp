@@ -32,10 +32,12 @@ TEST(BrokenNullCheckRuleTest, PropertyTest)
     BrokenNullCheckRule nullRule;
     EXPECT_EQ(1, nullRule.priority());
     EXPECT_EQ("broken null check", nullRule.name());
+    EXPECT_EQ("basic", nullRule.category());
 
     BrokenNilCheckRule nilRule;
     EXPECT_EQ(2, nilRule.priority());
     EXPECT_EQ("broken nil check", nilRule.name());
+    EXPECT_EQ("basic", nilRule.category());
 }
 
 TEST(BrokenNullCheckRuleTest, C_CorrectExplicitNullEqCheck)

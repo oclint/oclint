@@ -144,6 +144,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "unused";
+    }
+
     bool VisitVarDecl(VarDecl *varDecl)
     {
         if (isUnusedLocalVariable(varDecl) && !isRAIIClass(varDecl))

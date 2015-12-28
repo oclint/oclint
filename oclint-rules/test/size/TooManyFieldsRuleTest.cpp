@@ -20,6 +20,7 @@ TEST_F(TooManyFieldsRuleTest, PropertyTest)
     TooManyFieldsRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("too many fields", rule.name());
+    EXPECT_EQ("size", rule.category());
 }
 
 TEST_F(TooManyFieldsRuleTest, CXXClassNoField)

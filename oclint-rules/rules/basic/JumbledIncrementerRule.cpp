@@ -51,6 +51,11 @@ public:
         return 2;
     }
 
+    virtual const string category() const override
+    {
+        return "basic";
+    }
+
     bool VisitForStmt(ForStmt *parentStmt)
     {
         Stmt *bodyStmt = parentStmt->getBody();

@@ -20,6 +20,7 @@ TEST_F(CyclomaticComplexityRuleTest, PropertyTest)
     CyclomaticComplexityRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("high cyclomatic complexity", rule.name());
+    EXPECT_EQ("size", rule.category());
 }
 
 TEST_F(CyclomaticComplexityRuleTest, NoDecisionPoint)

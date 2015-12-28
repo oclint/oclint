@@ -44,6 +44,11 @@ public:
         return 2;
     }
 
+    virtual const string category() const override
+    {
+        return "convention";
+    }
+
     bool VisitForStmt(ForStmt *stmt)
     {
         applyStmt<ForStmt>(stmt);

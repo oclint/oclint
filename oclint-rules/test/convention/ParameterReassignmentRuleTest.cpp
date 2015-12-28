@@ -7,6 +7,7 @@ TEST(ParameterReassignmentRuleTest, PropertyTest)
     ParameterReassignmentRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("parameter reassignment", rule.name());
+    EXPECT_EQ("convention", rule.category());
 }
 
 TEST(ParameterReassignmentRuleTest, UseParameter)

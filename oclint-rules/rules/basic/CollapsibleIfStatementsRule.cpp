@@ -47,6 +47,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "basic";
+    }
+
     bool VisitIfStmt(IfStmt *ifStmt)
     {
         IfStmt *innerIf = getInnerIfStmt(ifStmt);

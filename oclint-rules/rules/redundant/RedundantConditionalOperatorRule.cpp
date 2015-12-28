@@ -155,6 +155,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "redundant";
+    }
+
     bool VisitConditionalOperator(ConditionalOperator *conditionalOperator)
     {
         // There are three types of violations: 1. true expression and false expression

@@ -19,6 +19,11 @@ public:
         return 2;
     }
 
+    virtual const string category() const override
+    {
+        return "basic";
+    }
+
     virtual void callback(const MatchFinder::MatchResult& result) override
     {
         const IfStmt *ifStmt = result.Nodes.getNodeAs<IfStmt>("ifStmt");

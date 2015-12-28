@@ -94,6 +94,7 @@ TEST(ObjcVerifyMustCallSuperRuleTest, PropertyTest)
     ObjCVerifyMustCallSuperRule rule;
     EXPECT_EQ(1, rule.priority());
     EXPECT_EQ("must call super", rule.name());
+    EXPECT_EQ("cocoa", rule.category());
 }
 
 TEST(ObjcVerifyMustCallSuperRuleTest, AnnotationDoesCall)

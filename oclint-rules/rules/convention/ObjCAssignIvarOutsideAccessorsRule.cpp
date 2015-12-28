@@ -77,6 +77,11 @@ public:
         return 2;
     }
 
+    virtual const string category() const override
+    {
+        return "convention";
+    }
+
     bool VisitObjCMethodDecl(ObjCMethodDecl* decl) {
         // Save the method name
         string selectorName = decl->getSelector().getAsString();

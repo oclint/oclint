@@ -23,6 +23,11 @@ public:
         return 1;
     }
 
+    virtual const string category() const override
+    {
+        return "cocoa";
+    }
+
     virtual unsigned int supportedLanguages() const override
     {
         return LANG_OBJC;

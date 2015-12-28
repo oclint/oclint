@@ -28,6 +28,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "design";
+    }
+
     virtual unsigned int supportedLanguages() const override
     {
         return LANG_CXX;

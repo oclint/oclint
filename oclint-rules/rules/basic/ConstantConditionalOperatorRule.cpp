@@ -19,6 +19,11 @@ public:
         return 2;
     }
 
+    virtual const string category() const override
+    {
+        return "basic";
+    }
+
     bool VisitConditionalOperator(ConditionalOperator *conditionalOperator)
     {
         Expr *conditionExpr = conditionalOperator->getCond();

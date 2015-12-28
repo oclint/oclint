@@ -7,6 +7,7 @@ TEST(EmptyWhileStatementRuleTest, PropertyTest)
     EmptyWhileStatementRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("empty while statement", rule.name());
+    EXPECT_EQ("empty", rule.category());
 }
 
 TEST(EmptyWhileStatementRuleTest, GoodWhileStatement)

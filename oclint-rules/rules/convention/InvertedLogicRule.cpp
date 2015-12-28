@@ -27,6 +27,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "convention";
+    }
+
     bool VisitIfStmt(IfStmt *ifStmt)
     {
         if (ifStmt->getElse() && isInvertedLogic(ifStmt->getCond()))

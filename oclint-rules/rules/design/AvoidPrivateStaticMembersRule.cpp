@@ -33,6 +33,11 @@ public:
         return 3;
     }
 
+    virtual const string category() const override
+    {
+        return "design";
+    }
+
     virtual void callback(const MatchFinder::MatchResult &result) override
     {
         if (auto field = result.Nodes.getNodeAs<VarDecl>("field"))

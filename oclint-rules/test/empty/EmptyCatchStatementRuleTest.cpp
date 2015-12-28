@@ -7,6 +7,7 @@ TEST(EmptyCatchStatementRuleTest, PropertyTest)
     EmptyCatchStatementRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("empty catch statement", rule.name());
+    EXPECT_EQ("empty", rule.category());
 }
 
 TEST(EmptyCatchStatementRuleTest, NonEmptyCXXCatchStmt)

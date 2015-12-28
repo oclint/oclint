@@ -20,6 +20,7 @@ TEST_F(TooFewBranchesInSwitchStatementRuleTest, PropertyTest)
     TooFewBranchesInSwitchStatementRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("too few branches in switch statement", rule.name());
+    EXPECT_EQ("convention", rule.category());
 }
 
 TEST_F(TooFewBranchesInSwitchStatementRuleTest, FourBranches)

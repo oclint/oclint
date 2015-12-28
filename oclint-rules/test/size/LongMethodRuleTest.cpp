@@ -20,6 +20,7 @@ TEST_F(LongMethodRuleTest, PropertyTest)
     LongMethodRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("long method", rule.name());
+    EXPECT_EQ("size", rule.category());
 }
 
 TEST_F(LongMethodRuleTest, OneLine)

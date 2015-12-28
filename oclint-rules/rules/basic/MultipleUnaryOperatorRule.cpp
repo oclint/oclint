@@ -27,6 +27,11 @@ public:
         return 2;
     }
 
+    virtual const string category() const override
+    {
+        return "basic";
+    }
+
     bool VisitUnaryOperator(UnaryOperator *unaryOperator)
     {
         Expr *subExpr = unaryOperator->getSubExpr();

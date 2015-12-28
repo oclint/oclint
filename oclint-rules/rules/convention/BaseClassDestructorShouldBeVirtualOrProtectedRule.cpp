@@ -36,17 +36,22 @@ class BaseClassDestructorShouldBeVirtualOrProtectedRule :
     public oclint::AbstractASTVisitorRule<BaseClassDestructorShouldBeVirtualOrProtectedRule>
 {
 public:
-    virtual const std::string name() const
+    virtual const std::string name() const override
     {
         return "Base class destructor should be virtual or protected";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 2;
     }
 
-    unsigned int supportedLanguages() const
+    virtual const string category() const override
+    {
+        return "convention";
+    }
+
+    unsigned int supportedLanguages() const override
     {
         return oclint::LANG_CXX;
     }

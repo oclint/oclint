@@ -11,18 +11,23 @@ using namespace oclint;
 class AttributeHelperTestCallRule : public AbstractASTVisitorRule<AttributeHelperTestCallRule>
 {
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "test ast rule";
     }
 
-    virtual const string attributeName() const {
+    virtual const string attributeName() const override {
         return "test attribute";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 0;
+    }
+
+    virtual const string category() const override
+    {
+        return "test";
     }
 
     bool VisitObjCMessageExpr(ObjCMessageExpr* expr)
@@ -46,19 +51,25 @@ public:
 class AttributeHelperTestCallCommentRule : public AbstractASTVisitorRule<AttributeHelperTestCallCommentRule>
 {
 public:
-    virtual const string name() const
+    virtual const string name() const override
     {
         return "test ast rule";
     }
 
-    virtual const string attributeName() const {
+    virtual const string attributeName() const override {
         return "test attribute";
     }
 
-    virtual int priority() const
+    virtual int priority() const override
     {
         return 0;
     }
+
+    virtual const string category() const override
+    {
+        return "test";
+    }
+
     bool VisitCallExpr(CallExpr* expr)
     {
         std::string comment;
@@ -179,7 +190,7 @@ TEST(AttributeHelperTestCallRuleTest, MethodNoAttribute)
     testRuleOnObjCCode(&rule,
        R"END(
             __attribute__((objc_root_class))
-            @interface SomeObject 
+            @interface SomeObject
             @end
 
             @implementation SomeObject

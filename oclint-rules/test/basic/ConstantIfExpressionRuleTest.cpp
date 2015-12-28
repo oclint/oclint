@@ -7,6 +7,7 @@ TEST(ConstantIfExpressionRuleTest, PropertyTest)
     ConstantIfExpressionRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("constant if expression", rule.name());
+    EXPECT_EQ("basic", rule.category());
 }
 
 TEST(ConstantIfExpressionRuleTest, GoodConditionExpression)
