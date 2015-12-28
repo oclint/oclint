@@ -27,7 +27,8 @@ public:
         out << "<h2>Summary</h2>";
         writeSummaryTable(out, *results);
         out << "<hr />";
-        out << "<table><thead><tr><th>File</th><th>Location</th><th>Rule Name</th><th>Rule Category</th>"
+        out << "<table><thead><tr><th>File</th><th>Location</th>"
+            << "<th>Rule Name</th><th>Rule Category</th>"
             << "<th>Priority</th><th>Message</th></tr></thead><tbody>";
         for (const auto& violation : results->allViolations())
         {

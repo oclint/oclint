@@ -18,16 +18,16 @@ int AbstractResults::numberOfFiles() const
 
 int AbstractResults::numberOfFilesWithViolations() const
 {
-    std::map<std::string, int> fileViolationsMapping;
+    std::map<std::string, int> violationsMapping;
     for (const auto& violationSet : _resultCollector.getCollection())
     {
         if (violationSet->numberOfViolations() > 0)
         {
             std::string filePath = violationSet->getViolations()[0].path;
-            fileViolationsMapping[filePath] += violationSet->numberOfViolations();
+            violationsMapping[filePath] += violationSet->numberOfViolations();
         }
     }
-    return fileViolationsMapping.size();
+    return violationsMapping.size();
 }
 
 int AbstractResults::numberOfViolations() const
