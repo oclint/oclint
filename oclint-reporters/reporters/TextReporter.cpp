@@ -65,7 +65,9 @@ public:
     {
         out << violation.path << ":" << violation.startLine << ":" << violation.startColumn;
         const RuleBase *rule = violation.rule;
-        out << ": " << rule->name() << " P" << rule->priority() << " " << violation.message;
+        out << ": " << rule->name();
+        out << " [" << rule->category() << "|P" << rule->priority() << "]";
+        out << " " << violation.message;
     }
 
     void writeViolations(std::ostream &out, std::vector<Violation> violations)
