@@ -93,13 +93,14 @@ def install_licenses():
         llvm_license_path = os.path.join(d, 'LICENSE.TXT')
         if os.path.exists(llvm_license_path):
             break
-    with open(license_path, 'w') as license_file:
-        with open(oclint_license_path, 'r') as oclint_license_file:
-            license_file.write(oclint_license_file.read())
-        license_file.write('\n')
-        with open(llvm_license_path, 'r') as llvm_license_file:
-            for _it in range(44):
-                license_file.write(llvm_license_file.readline())
+    if os.path.exists(llvm_license_path):
+        with open(license_path, 'w') as license_file:
+            with open(oclint_license_path, 'r') as oclint_license_file:
+                license_file.write(oclint_license_file.read())
+            license_file.write('\n')
+            with open(llvm_license_path, 'r') as llvm_license_file:
+                for _it in range(44):
+                    license_file.write(llvm_license_file.readline())
 
 def archive(is_release):
     full_version = version.oclint_version()
