@@ -19,6 +19,7 @@ arg_parser.add_argument('-release', '--release', action="store_true")
 arg_parser.add_argument('-clean', '--clean', action="store_true")
 arg_parser.add_argument('-j', type=int, default=0)
 arg_parser.add_argument('-llvm-root', '--llvm-root', default=path.build.clang_install_dir)
+arg_parser.add_argument('-use-system-compiler', '--use-system-compiler', action="store_true")
 args = arg_parser.parse_args()
 
 def clean_module(module_name):
@@ -29,6 +30,8 @@ def build_command(llvm_root, is_release, module_extras, source_path):
     cmd_build = cmake.builder(source_path)
     if is_release:
         cmd_build.release_build()
+    if environment.is_unix() and not args.use_system_compiler:
+        cmd_build.use_local_clang_compiler(llvm_root)
     extras = {'LLVM_ROOT': llvm_root}
     extras.update(module_extras)
     return cmd_build.append_dict(extras).str()
