@@ -16,7 +16,6 @@ arg_parser.add_argument('-reset', '--reset', action="store_true")
 arg_parser.add_argument('-setup', '--setup', action="store_true")
 arg_parser.add_argument('-llvm-branch', '--llvm-branch', nargs='?', choices=version.llvm_branches(), default=version.llvm_default_branch())
 arg_parser.add_argument('-release', '--release', action="store_true")
-arg_parser.add_argument('-jenkins', '--jenkins', action="store_true")
 arg_parser.add_argument('-archive', '--archive', action="store_true")
 args = arg_parser.parse_args()
 
@@ -31,7 +30,7 @@ if args.reset:
     path.rm_f(path.source.xcodebuild_dir)
     sys.exit(0)
 
-if args.setup or args.jenkins:
+if args.setup:
     current_dir = os.getcwd()
     path.cd(path.root_dir)
     process.call('git clone ' + path.url.json_compilation_database)
@@ -53,13 +52,10 @@ else:
     process.call('python build -clean')
 process.call('python bundle')
 if environment.is_unix() and not args.release:
-    if args.jenkins:
-        process.call('python dogFooding -enable-clang-static-analyzer')
+    process.call('python dogFooding -enable-clang-static-analyzer')
+if args.archive:
+    if args.release:
+        process.call('python bundle -archive -release')
     else:
-        process.call('python dogFooding')
-if args.jenkins:
-    process.call('python bundle -archive')
-    if not args.release:
-        upload_snapshot()
-elif args.archive and args.release:
-    process.call('python bundle -archive -release')
+        process.call('python bundle -archive')
+
