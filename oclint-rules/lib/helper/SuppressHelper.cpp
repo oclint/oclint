@@ -1,5 +1,6 @@
 #include "oclint/helper/SuppressHelper.h"
 
+#include <regex>
 #include <set>
 #include <unordered_map>
 #include <utility>
@@ -125,9 +126,9 @@ bool lineBasedShouldSuppress(int beginLine, clang::ASTContext &context)
 
         for (auto comment : commentArray)
         {
-
-            if (std::string::npos !=
-                comment->getRawText(context.getSourceManager()).find("//!OCLINT"))
+            std::string commentString = comment->getRawText(context.getSourceManager()).str();
+            std::regex oclintRegex = std::regex("//! *OCLINT", std::regex::basic | std::regex::icase);
+            if (std::regex_search(commentString, oclintRegex))
             {
                 clang::SourceLocation startLocation = comment->getLocStart();
                 int startLocationLine =
