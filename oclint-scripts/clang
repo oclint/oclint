@@ -13,7 +13,7 @@ from oclintscripts import process
 from oclintscripts import version
 
 arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument('task_name', choices=['checkout', 'co', 'update', 'up', 'build'])
+arg_parser.add_argument('task_name', choices=['checkout', 'co', 'update', 'up', 'build', 'prebuilt'])
 arg_parser.add_argument('-branch', '--branch', nargs='?', choices=version.llvm_branches(), default=version.llvm_default_branch())
 arg_parser.add_argument('-rev', '--rev')
 arg_parser.add_argument('-clean', '--clean', action="store_true")
@@ -84,11 +84,31 @@ def update_clang(rev):
     svn_update(os.path.join(path.root_dir, 'llvm', 'tools', 'clang'), rev)
     svn_update(os.path.join(path.root_dir, 'llvm', 'projects', 'compiler-rt'), rev)
 
+def setup_prebuilt_binary():
+    build_path = path.build.clang_build_dir
+    install_path = path.build.clang_install_dir
+
+    if environment.is_darwin():
+        binary_url = path.url.clang_prebuilt_binary_for_darwin
+    else:
+        binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts
+
+    current_dir = os.getcwd()
+    path.mkdir_p(build_path)
+    path.cd(build_path)
+    process.call('curl -o prebuilt.tar.gz ' + binary_url)
+    path.mkdir_p(install_path)
+    process.call('tar zxvf prebuilt.tar.gz -C ' + install_path + ' --strip-components=1')
+    path.cd(current_dir)
+
 if args.task_name == 'checkout' or args.task_name == 'co':
     checkout_clang(args.branch)
 
 if args.task_name == 'update' or args.task_name == 'up':
     update_clang(args.rev)
+
+if args.task_name == 'prebuilt':
+    setup_prebuilt_binary()
 
 multiple_thread = environment.cpu_count()
 if environment.is_mingw32():
