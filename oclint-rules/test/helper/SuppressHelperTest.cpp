@@ -106,11 +106,17 @@ TEST(SuppressHelperTestASTRuleTest, ObjCContainerSuppressOnMethod)
 TEST(SuppressHelperTestASTRuleTest, SimpleNOLINT)
 {
     testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLINT");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //! OCLINT");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLint");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //! OCLint");
 }
 
 TEST(SuppressHelperTestASTRuleTest, MultipleLineNOLINT)
 {
     testRuleOnCode(new SuppressHelperTestASTRule(), "void a() { //!OCLINT\n if (1) {//!OCLINT\n}}");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() { //! OCLINT\n if (1) {//! OCLINT\n}}");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() { //!OCLint\n if (1) {//!OCLint\n}}");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() { //! OCLint\n if (1) {//! OCLint\n}}");
 }
 
 TEST(SuppressHelperTestASTRuleTest, CommentWithDescriptionNOLINT)
@@ -119,6 +125,18 @@ TEST(SuppressHelperTestASTRuleTest, CommentWithDescriptionNOLINT)
     testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLINT[reason for suppressing this is blahblah]");
     testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLINT:reason for suppressing this is blahblah)");
     testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLINT     ");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //! OCLINT(reason for suppressing this is blahblah)");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //! OCLINT[reason for suppressing this is blahblah]");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //! OCLINT:reason for suppressing this is blahblah)");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //! OCLINT     ");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLint(reason for suppressing this is blahblah)");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLint[reason for suppressing this is blahblah]");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLint:reason for suppressing this is blahblah)");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!OCLint     ");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //! OCLint(reason for suppressing this is blahblah)");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //! OCLint[reason for suppressing this is blahblah]");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //! OCLint:reason for suppressing this is blahblah)");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //! OCLint     ");
 }
 
 class SuppressHelperTestSourceCodeReaderRule : public AbstractSourceCodeReaderRule
@@ -160,6 +178,9 @@ TEST(SuppressHelperTestSourceCodeReaderRuleTest, NoSuppress)
 TEST(SuppressHelperTestSourceCodeReaderRuleTest, SuppressByComment)
 {
     testRuleOnCode(new SuppressHelperTestSourceCodeReaderRule(), "void a() {} //!OCLINT");
+    testRuleOnCode(new SuppressHelperTestSourceCodeReaderRule(), "void a() {} //! OCLINT");
+    testRuleOnCode(new SuppressHelperTestSourceCodeReaderRule(), "void a() {} //!OCLint");
+    testRuleOnCode(new SuppressHelperTestSourceCodeReaderRule(), "void a() {} //! OCLint");
 }
 
 TEST(SuppressHelperTestSourceCodeReaderRuleTest, SuppressEntireMethod)
