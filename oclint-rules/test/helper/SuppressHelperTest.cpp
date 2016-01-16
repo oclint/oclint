@@ -137,6 +137,10 @@ TEST(SuppressHelperTestASTRuleTest, CommentWithDescriptionNOLINT)
     testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //! OCLint[reason for suppressing this is blahblah]");
     testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //! OCLint:reason for suppressing this is blahblah)");
     testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //! OCLint     ");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!  OCLint(reason for suppressing this is blahblah)");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!   OCLint[reason for suppressing this is blahblah]");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!    OCLint:reason for suppressing this is blahblah)");
+    testRuleOnCode(new SuppressHelperTestASTRule(), "void a() {} //!     OCLint     ");
 }
 
 class SuppressHelperTestSourceCodeReaderRule : public AbstractSourceCodeReaderRule
