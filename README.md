@@ -16,3 +16,4 @@ It looks for potential problems that aren't visible to compilers, for example:
 * ...
 
 For more information, visit http://oclint.org
+
