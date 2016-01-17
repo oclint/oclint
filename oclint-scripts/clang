@@ -98,7 +98,7 @@ def setup_prebuilt_binary():
     path.cd(build_path)
     process.call('curl -o prebuilt.tar.xz ' + binary_url)
     path.mkdir_p(install_path)
-    process.call('tar xvf prebuilt.tar.xz -C ' + install_path + ' --strip-components=1')
+    process.call('tar xf prebuilt.tar.xz -C ' + install_path + ' --strip-components=1')
 
     # A workaround for mac prebuilt binary
     if environment.is_darwin:
