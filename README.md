@@ -1,5 +1,6 @@
-OCLint - http://oclint.org
--------------------------------------------------------------------------------
+# OCLint - http://oclint.org
+
+[![Travis CI Status](https://api.travis-ci.org/oclint/oclint.svg?branch=master)](https://travis-ci.org/oclint/oclint)
 
 OCLint is a static code analysis tool for improving quality and reducing defects
 by inspecting C, C++ and Objective-C code.
