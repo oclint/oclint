@@ -96,9 +96,27 @@ def setup_prebuilt_binary():
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
     path.cd(build_path)
-    process.call('curl -o prebuilt.tar.gz ' + binary_url)
+    process.call('curl -o prebuilt.tar.xz ' + binary_url)
     path.mkdir_p(install_path)
-    process.call('tar zxvf prebuilt.tar.gz -C ' + install_path + ' --strip-components=1')
+    process.call('tar xvf prebuilt.tar.xz -C ' + install_path + ' --strip-components=1')
+
+    # A workaround for mac prebuilt binary
+    if environment.is_darwin:
+        correct_header = """get_filename_component(_LLVM_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+get_filename_component(LLVM_INSTALL_PREFIX "${CMAKE_CURRENT_LIST_FILE}" PATH)
+get_filename_component(LLVM_INSTALL_PREFIX "${LLVM_INSTALL_PREFIX}" PATH)
+get_filename_component(LLVM_INSTALL_PREFIX "${LLVM_INSTALL_PREFIX}" PATH)
+get_filename_component(LLVM_INSTALL_PREFIX "${LLVM_INSTALL_PREFIX}" PATH)
+set(_LLVM_LIBRARY_DIR "${LLVM_INSTALL_PREFIX}/lib")"""
+        problematic_file_path = install_path + "/share/llvm/cmake/LLVMConfig.cmake"
+        file_read_ptr = open(problematic_file_path, 'r')
+        file_text = file_read_ptr.read()
+        file_read_ptr.close()
+        new_text = correct_header + "\n\n\n" + file_text
+        file_write_ptr = open(problematic_file_path, 'w')
+        file_write_ptr.write(new_text)
+        file_write_ptr.close()
+
     path.cd(current_dir)
 
 if args.task_name == 'checkout' or args.task_name == 'co':
