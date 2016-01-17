@@ -1,0 +1,7 @@
+sudo: required
+dist: trusty
+language: cpp
+
+script:
+  - cd oclint-scripts
+  - ./make
