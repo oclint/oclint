@@ -3,4 +3,10 @@
 ./clang prebuilt
 ./googleTest co
 ./googleTest build
-./test
+MODULE="$1"
+shift
+for dep in $*
+do
+    ./test "$dep"
+done
+./test "$MODULE"
