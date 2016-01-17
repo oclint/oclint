@@ -126,9 +126,17 @@ bool lineBasedShouldSuppress(int beginLine, clang::ASTContext &context)
 
         for (auto comment : commentArray)
         {
+// g++ 4.8 on Ubuntu 14.04 LTS doesn't support regex yet,
+// so we will ship this once Ubuntu 16.04 releases
+#if defined(__APPLE__) || defined(__MACH__)
             std::string commentString = comment->getRawText(context.getSourceManager()).str();
-            std::regex oclintRegex = std::regex("//! *OCLINT", std::regex::basic | std::regex::icase);
+            std::regex oclintRegex =
+                std::regex("//! *OCLINT", std::regex::basic | std::regex::icase);
             if (std::regex_search(commentString, oclintRegex))
+#else
+            if (std::string::npos !=
+                comment->getRawText(context.getSourceManager()).find("//!OCLINT"))
+#endif
             {
                 clang::SourceLocation startLocation = comment->getLocStart();
                 int startLocationLine =
