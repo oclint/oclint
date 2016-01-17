@@ -1,7 +1,9 @@
+ADD_LIBRARY(test_helper headers/TestRuleOnCode.cpp)
 MACRO(build_test name)
     ADD_EXECUTABLE(${name} ${name}.cpp)
     IF (MINGW)
         TARGET_LINK_LIBRARIES(${name}
+            test_helper
             gmock
             ${PROFILE_RT_LIBS}
             ${CLANG_LIBRARIES}
@@ -13,6 +15,7 @@ MACRO(build_test name)
         )
     ELSE()
         TARGET_LINK_LIBRARIES(${name}
+            test_helper
             OCLintAbstractRule
             OCLintMetric
             OCLintHelper

@@ -1,6 +1,12 @@
 os:
 - linux
 - osx
+env:
+  - MODULE="core"
+  - MODULE="metrics"
+  - MODULE="rules" DEP="core metrics"
+  - MODULE="reporters" DEP="core"
+
 language: cpp
 sudo: required
 dist: trusty
@@ -9,4 +15,4 @@ before_install:
 - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install cmake; fi
 script:
   - cd oclint-scripts
-  - ./travis
+  - ./travis $MODULE $DEP
