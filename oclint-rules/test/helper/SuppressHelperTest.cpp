@@ -188,9 +188,11 @@ TEST(SuppressHelperTestSourceCodeReaderRuleTest, NoSuppress)
 TEST(SuppressHelperTestSourceCodeReaderRuleTest, SuppressByComment)
 {
     testRuleOnCode(new SuppressHelperTestSourceCodeReaderRule(), "void a() {} //!OCLINT");
+#if defined(__APPLE__) || defined(__MACH__)
     testRuleOnCode(new SuppressHelperTestSourceCodeReaderRule(), "void a() {} //! OCLINT");
     testRuleOnCode(new SuppressHelperTestSourceCodeReaderRule(), "void a() {} //!OCLint");
     testRuleOnCode(new SuppressHelperTestSourceCodeReaderRule(), "void a() {} //! OCLint");
+#endif
 }
 
 TEST(SuppressHelperTestSourceCodeReaderRuleTest, SuppressEntireMethod)
