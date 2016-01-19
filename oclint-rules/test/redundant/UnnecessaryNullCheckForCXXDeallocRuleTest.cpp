@@ -57,9 +57,3 @@ TEST(UnnecessaryNullCheckForCXXDeallocRuleTest, CorrectCode)
     testRuleOnCXXCode(new UnnecessaryNullCheckForCXXDeallocRule(), code3);
     testRuleOnCXXCode(new UnnecessaryNullCheckForCXXDeallocRule(), code4);
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

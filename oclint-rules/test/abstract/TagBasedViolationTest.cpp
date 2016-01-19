@@ -69,9 +69,3 @@ TEST(FindAllCompoundStmtRuleTest, ParallelViolations)
         "void a() " VIOLATION_START "{" VIOLATION_START "{" VIOLATION_END "}" VIOLATION_START "{" VIOLATION_END "}" VIOLATION_END "}",
         {"1", "2", "3"});
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

@@ -159,9 +159,3 @@ TEST_F(ShortVariableNameRuleTest, ShortVariableInsideCatchBlock)
     testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { @try {;} @catch (id ex) {;} @catch (id e) { id i; } }",
         0, 1, 62, 1, 65, "Variable name with 1 characters is shorter than the threshold of 3");
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

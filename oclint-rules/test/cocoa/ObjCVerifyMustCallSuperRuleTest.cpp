@@ -118,9 +118,3 @@ TEST(ObjcVerifyMustCallSuperRuleTest, NormalMethod)
 {
     testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(), testNormalMethod);
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

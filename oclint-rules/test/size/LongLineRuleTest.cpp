@@ -38,9 +38,3 @@ TEST_F(LongLineRuleTest, GetNumberOfCharactersForThreeLines)
     testRuleOnCode(new LongLineRule(), "void m() {\n  \n}",
         2, 3, 1, 3, 1, "Line with 1 characters exceeds limit of 0");
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

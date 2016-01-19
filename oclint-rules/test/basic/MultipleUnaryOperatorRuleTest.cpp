@@ -160,9 +160,3 @@ TEST(MultipleUnaryOperatorRuleTest, MixUnaryOperators)
     testRuleOnCode(new MultipleUnaryOperatorRule(), "void aMethod() { int b = -(+(!(~1))); }",
         2, 1, 30, 1, 34);
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

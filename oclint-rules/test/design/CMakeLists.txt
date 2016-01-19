@@ -1,3 +1,5 @@
-BUILD_TEST(AvoidDefaultArgumentsOnVirtualMethodsRuleTest)
-BUILD_TEST(AvoidPrivateStaticMembersRuleTest)
-BUILD_TEST(FeatureEnvyRuleTest)
+BUILD_TEST(DesignTests
+    AvoidDefaultArgumentsOnVirtualMethodsRuleTest.cpp
+    AvoidPrivateStaticMembersRuleTest.cpp
+    FeatureEnvyRuleTest.cpp
+)

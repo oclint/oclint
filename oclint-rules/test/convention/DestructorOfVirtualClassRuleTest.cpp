@@ -60,9 +60,3 @@ TEST(DestructorOfVirtualClassRuleTest, ImplicitVirtualDestructor)
         "class Base { public: virtual ~Base(); };\n"
         "class C : public Base { public: ~C(); virtual void f(); };");
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

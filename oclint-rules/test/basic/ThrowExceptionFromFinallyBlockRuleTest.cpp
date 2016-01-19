@@ -111,9 +111,3 @@ typedef void *va_list;                                                          
 void m() { @try {;} @catch(id ex) {;} @finally {                                                \n\
 id arg1, arg2; void *argList; [NSNotException raise:arg1 format:arg2 arguments:argList]; } }");
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

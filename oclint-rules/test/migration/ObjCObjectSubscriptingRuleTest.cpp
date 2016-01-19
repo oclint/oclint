@@ -2,7 +2,7 @@
 
 #include "rules/migration/ObjCObjectSubscriptingRule.cpp"
 
-string objCNSArrayPrefix = "\n\
+static string objCNSArrayPrefix = "\n\
 #define nil (id)0                                       \n\
 typedef unsigned long NSUInteger;                       \n\
 @interface NSObject\n@end                               \n\
@@ -22,7 +22,7 @@ typedef unsigned long NSUInteger;                       \n\
 - (void)setObject:(id)obj atIndexedSubscript:(NSUInteger)idx;\n\
 @end\n";
 
-string objCNSDictionaryPrefix = "\n\
+static string objCNSDictionaryPrefix = "\n\
 #define nil (id)0                                       \n\
 typedef unsigned long NSUInteger;                       \n\
 @interface NSObject\n@end                               \n\
@@ -140,10 +140,4 @@ TEST(ObjCObjectSubscriptingRuleTest, DictionarySetObjectForKeyedSubscript)
     testRuleOnObjCCode(new ObjCObjectSubscriptingRule(), objCNSDictionaryPrefix +
         "void m(NSMutableDictionary *d, id item) { [d setObject:item forKeyedSubscript:@1]; }",
         0, 25, 43, 25, 81);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

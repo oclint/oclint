@@ -166,9 +166,3 @@ TEST(AvoidBranchingStatementAsLastInLoopRuleTest, BadDoWhileReturn)
     testRuleOnObjCCode(new AvoidBranchingStatementAsLastInLoopRule(), "void a(int b) { do { return; } while (b > 0); }",
             0, 1, 22, 1, 22);
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

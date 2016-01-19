@@ -2,15 +2,15 @@
 
 #include "rules/migration/ObjCBoxedExpressionsRule.cpp"
 
-string oldBOOLDef = "\n\
+static string oldBOOLDef = "\n\
 #define YES ((BOOL)1)\n\
 #define NO  ((BOOL)0)\n";
 
-string newBOOLDef = "\n\
+static string newBOOLDef = "\n\
 #define YES __objc_yes\n\
 #define NO  __objc_no\n";
 
-string objcNSNumberPrefix = "\n\
+static string objcNSNumberPrefix = "\n\
 typedef signed char BOOL;\n\
 @interface NSObject\n@end                               \n\
 @interface NSNumber : NSObject                          \n\
@@ -26,7 +26,7 @@ typedef signed char BOOL;\n\
 + (NSNumber *)numberWithBool:(BOOL)value;               \n\
 @end\n";
 
-string objcNSStringPrefix = "\n\
+static string objcNSStringPrefix = "\n\
 @interface NSObject\n@end                               \n\
 @interface NSString : NSObject                          \n\
 + (id)stringWithUTF8String:(const char *)nullTerminatedCString;\n\
@@ -347,10 +347,4 @@ TEST(ObjCBoxedExpressionsRuleTest, StringWithUTF8String)
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSStringPrefix +
         "char* getenv (const char* name); void m() { NSString *env = [NSString stringWithUTF8String:(getenv(\"PATH\"))]; }",
         0, 7, 61, 7, 108);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

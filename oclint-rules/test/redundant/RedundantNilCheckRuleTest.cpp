@@ -140,10 +140,3 @@ TEST(RedundantNilCheckRuleTest, ObjC_MultipleMessageExpr)
         "}\n"
         "@end");
 }
-
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

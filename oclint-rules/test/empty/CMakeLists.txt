@@ -1,9 +1,11 @@
-BUILD_TEST(EmptyCatchStatementRuleTest)
-BUILD_TEST(EmptyDoWhileStatementRuleTest)
-BUILD_TEST(EmptyElseBlockRuleTest)
-BUILD_TEST(EmptyFinallyStatementRuleTest)
-BUILD_TEST(EmptyForStatementRuleTest)
-BUILD_TEST(EmptyIfStatementRuleTest)
-BUILD_TEST(EmptySwitchStatementRuleTest)
-BUILD_TEST(EmptyTryStatementRuleTest)
-BUILD_TEST(EmptyWhileStatementRuleTest)
+BUILD_TEST(EmptyTests
+    EmptyCatchStatementRuleTest.cpp
+    EmptyDoWhileStatementRuleTest.cpp
+    EmptyElseBlockRuleTest.cpp
+    EmptyFinallyStatementRuleTest.cpp
+    EmptyForStatementRuleTest.cpp
+    EmptyIfStatementRuleTest.cpp
+    EmptySwitchStatementRuleTest.cpp
+    EmptyTryStatementRuleTest.cpp
+    EmptyWhileStatementRuleTest.cpp
+)

@@ -1,5 +1,7 @@
-BUILD_TEST(ObjCVerifyMustCallSuperRuleTest)
-BUILD_TEST(ObjCVerifyIsEqualHashRuleTest)
-BUILD_TEST(ObjCVerifyProhibitedCallRuleTest)
-BUILD_TEST(ObjCVerifyProtectedMethodRuleTest)
-BUILD_TEST(ObjCVerifySubclassMustImplementRuleTest)
+BUILD_TEST(CocoaTests
+    ObjCVerifyIsEqualHashRuleTest.cpp
+    ObjCVerifyMustCallSuperRuleTest.cpp
+    ObjCVerifyProhibitedCallRuleTest.cpp
+    ObjCVerifyProtectedMethodRuleTest.cpp
+    ObjCVerifySubclassMustImplementRuleTest.cpp
+)

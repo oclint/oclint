@@ -60,9 +60,3 @@ case value2:                              \n\
 } }",
         0, 6, 27, 11, 1);
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

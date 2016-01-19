@@ -362,9 +362,3 @@ TEST(ObjCVerifyProhibitedCallRule, ProtocolAnnotation)
     testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), test, 0, 13, 30, 13, 69,
         "calling prohibited method respondsToSelector:");
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

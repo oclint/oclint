@@ -20,9 +20,3 @@ TEST(EmptyFinallyStatementRuleTest, EmptyObjCFinallyWithEmptyCompoundStmt)
     testRuleOnObjCCode(new EmptyFinallyStatementRule(), "void m() { @try { ; } @catch(id ex) { ; } @finally {} }",
         0, 1, 52, 1, 53);
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

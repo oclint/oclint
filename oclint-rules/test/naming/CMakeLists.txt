@@ -1,2 +1,4 @@
-BUILD_TEST(LongVariableNameRuleTest)
-BUILD_TEST(ShortVariableNameRuleTest)
+BUILD_TEST(NamingTests
+    LongVariableNameRuleTest.cpp
+    ShortVariableNameRuleTest.cpp
+)

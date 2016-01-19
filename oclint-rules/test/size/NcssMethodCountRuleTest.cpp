@@ -154,9 +154,3 @@ TEST_F(NcssMethodCountRuleTest, SupressHighNcssMethod)
 {
     testRuleOnCode(new NcssMethodCountRule(), "void __attribute__((annotate(\"oclint:suppress[high ncss method]\"))) aMethod() { do {} while(1); }");
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

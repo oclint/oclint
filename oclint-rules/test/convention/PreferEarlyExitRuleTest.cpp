@@ -149,9 +149,3 @@ INSTANTIATE_TEST_CASE_P(PreferEarlyExit, LoopsTest, ::testing::ValuesIn(loops));
 INSTANTIATE_TEST_CASE_P(
     PreferEarlyExit, FlowControlStatementsTest,
     ::testing::Values("break;", "continue;", "goto LABEL;", "goto *label_ptr;"));
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

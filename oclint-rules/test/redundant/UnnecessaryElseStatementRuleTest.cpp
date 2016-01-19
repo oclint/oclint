@@ -74,9 +74,3 @@ TEST(UnnecessaryElseStatementRuleTest, EmbeddedIfStatementsEndingWithReturn)
         "void m() { if (1) { if (0) { return; } else "
         LOC_START "{ return; " LOC_END "} } else " LOC_START "{ int i = 0; " LOC_END "} }");
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

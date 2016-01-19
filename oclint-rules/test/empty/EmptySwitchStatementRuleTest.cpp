@@ -20,9 +20,3 @@ TEST(EmptySwitchStatementRuleTest, SwitchStatementWithEmptyComponent)
     testRuleOnCode(new EmptySwitchStatementRule(), "void m() { int i; switch (i) {} }",
         0, 1, 30, 1, 31);
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

@@ -2,15 +2,15 @@
 
 #include "rules/migration/ObjCNSNumberLiteralsRule.cpp"
 
-string oldBOOLDef = "\n\
+static string oldBOOLDef = "\n\
 #define YES ((BOOL)1)\n\
 #define NO  ((BOOL)0)\n";
 
-string newBOOLDef = "\n\
+static string newBOOLDef = "\n\
 #define YES __objc_yes\n\
 #define NO  __objc_no\n";
 
-string objcNSNumberPrefix = "\n\
+static string objcNSNumberPrefix = "\n\
 typedef signed char BOOL;\n\
 @interface NSObject\n@end                               \n\
 @interface NSNumber : NSObject                          \n\
@@ -312,10 +312,4 @@ TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedBOOLNo_oldBOOLDef)
 {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix + oldBOOLDef +
         "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!NO)]; }");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

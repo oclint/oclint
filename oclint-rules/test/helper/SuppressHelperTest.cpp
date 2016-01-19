@@ -212,9 +212,3 @@ TEST(SuppressHelperTestSourceCodeReaderRuleTest, ObjCContainerSuppressOnAtInterf
     testRuleOnObjCCode(new SuppressHelperTestSourceCodeReaderRule(),
         "__attribute__((annotate(\"oclint:suppress\"))) @interface a {\nint i;\n}\n@end");
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

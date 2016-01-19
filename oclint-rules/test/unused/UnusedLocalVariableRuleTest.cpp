@@ -245,9 +245,3 @@ TEST(UnusedLocalVariableRuleTest, IgnoreVariablesWithoutAName)
 {
     testRuleOnCXXCode(new UnusedLocalVariableRule(), "void f(); bool g() { try { f(); } catch (int &) { return false; } return true; }");
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

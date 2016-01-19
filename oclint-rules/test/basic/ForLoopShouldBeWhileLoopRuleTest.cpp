@@ -35,9 +35,3 @@ TEST(ForLoopShouldBeWhileLoopRuleTest, IgnoreNullCondExpr)
 {
     testRuleOnCode(new ForLoopShouldBeWhileLoopRule(), "void aMethod(int a) { for (int i = 0; ; i++) {;} }");
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

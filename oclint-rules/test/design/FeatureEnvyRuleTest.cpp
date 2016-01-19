@@ -321,10 +321,3 @@ TEST(FeatureEnvyRuleTest, MethodDeclaredInProtocol)
 //       "}; \n",
 //       0, 6, 5, 11, 5, "Method f messages B more than self.");
 // }
-
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

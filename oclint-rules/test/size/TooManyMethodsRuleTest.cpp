@@ -89,10 +89,3 @@ TEST_F(TooManyMethodsRuleTest, ObjCImplementationFourMethodsMethodsWithOneProper
     testRuleOnObjCCode(new TooManyMethodsRule(), "@interface a\n{\nint i;\n}\n@property int i;\n@end\n@implementation a\n@synthesize i;\n-(void)m {}\n+(void)n {}\n-(void)o {}\n+(void)p {}\n-(void)q {}\n@end\n",
         0, 7, 1, 14, 1, "Objective-C implementation with 5 methods exceeds limit of 3");
 }
-
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

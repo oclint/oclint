@@ -188,9 +188,3 @@ TEST(MultipleLanguagesSupportASTRuleTest, RunOnObjC)
 {
     testRuleOnObjCCode(new LanguageSelectionASTRule(LANG_C | LANG_OBJC), "void a() {}", 0, 1, 1, 1, 11);
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

@@ -72,10 +72,3 @@ TEST_F(TooManyFieldsRuleTest, ObjCInterfaceFourFieldsWithOneProperty)
     testRuleOnObjCCode(new TooManyFieldsRule(), "@interface a {\nint i, j;\nint k, l;\n}\n@property int m;\n@end",
         0, 1, 1, 6, 2, "Objective-C interface with 4 fields exceeds limit of 2");
 }
-
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

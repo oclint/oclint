@@ -28,9 +28,3 @@ TEST(GotoStatementRuleTest, TwoGotos)
     testRuleOnCode(new GotoStatementRule(), "void a(); void m() { goto A; goto B; A:\na();\nB:\na(); }",
         1, 1, 30, 1, 35);
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

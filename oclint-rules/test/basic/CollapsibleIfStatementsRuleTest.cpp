@@ -73,9 +73,3 @@ TEST(CollapsibleIfStatementsRuleTest, ElseIfHasElseAndNestedIfHasElse)
 {
     testRuleOnCode(new CollapsibleIfStatementsRule(), "void m() { if (1) {} else if (1) { if (0) {} else {} } else {} }");
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

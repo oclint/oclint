@@ -38,9 +38,3 @@ TEST(AvoidPrivateStaticMembersRuleTest, PublicStaticMethod)
     std::string code = "class Test { public: static int a(); };";
     testRuleOnCXXCode(new AvoidPrivateStaticMembersRule(), code);
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

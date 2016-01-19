@@ -47,9 +47,3 @@ TEST(EmptyCatchStatementRuleTest, MultipleEmptyObjCCatchStmts)
     testRuleOnObjCCode(new EmptyCatchStatementRule(), "void m() { @try { ; } @catch(id i) {} @catch(id ex) {} }",
         1, 1, 53, 1, 54);
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

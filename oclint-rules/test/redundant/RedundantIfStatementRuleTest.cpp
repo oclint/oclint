@@ -115,9 +115,3 @@ TEST(RedundantIfStatementRuleTest, CIntDeclaration)
     testRuleOnCode(new RedundantIfStatementRule(),
         "void aMethod() { int b; if (1) { b = 6; } else b = 0; }");
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

@@ -57,9 +57,3 @@ TEST(ConstantIfExpressionRuleTest, testOnlyEvaluateTheNecessaryCondition)
     testRuleOnCode(new ConstantIfExpressionRule(), "int foo() { return 1; } void aMethod() { if (1 ? 0 : foo()) {;} }",
         0, 1, 46, 1, 58);
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

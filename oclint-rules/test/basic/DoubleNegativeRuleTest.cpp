@@ -54,9 +54,3 @@ TEST(DoubleNegativeRuleTest, LogicalNotFollowByNot)
 {
     testRuleOnCode(new DoubleNegativeRule(), "void aMethod() { int b = !~1; }");
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

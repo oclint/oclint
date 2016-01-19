@@ -64,9 +64,3 @@ a = 1;                                      \n\
 @end",
         0, 9, 1, 9, 5);
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

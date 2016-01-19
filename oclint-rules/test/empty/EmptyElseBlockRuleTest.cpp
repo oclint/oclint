@@ -26,9 +26,3 @@ TEST(EmptyElseBlockRuleTest, NullElseComponent)
     testRuleOnCode(new EmptyElseBlockRule(), "void aMethod() { if (1) {;} else; }",
         0, 1, 33, 1, 33);
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

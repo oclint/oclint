@@ -2,14 +2,14 @@
 
 #include "rules/basic/MisplacedNullCheckRule.cpp"
 
-string cPrefix = "#define NULL ((void*)0)   \n\
+static string cPrefix = "#define NULL ((void*)0)   \n\
 struct B {};                                \n\
 struct A {                                  \n\
     int foo;                                \n\
     int bar;                                \n\
 };\n";
 
-string cxxPrefix = "#define NULL 0      \n\
+static string cxxPrefix = "#define NULL 0      \n\
 class B {};                             \n\
 class A {                               \n\
 public:                                 \n\
@@ -17,7 +17,7 @@ public:                                 \n\
     bool bar(B* b);                     \n\
 };\n";
 
-string objcPrefix = "#define nil (id)0          \n\
+static string objcPrefix = "#define nil (id)0          \n\
 typedef signed char    BOOL;                    \n\
 #define YES             (BOOL)1                 \n\
 #define NO              (BOOL)0                 \n\
@@ -396,11 +396,4 @@ TEST(MisplacedNullCheckRuleTest, ObjC_MisplacedEzButRedundantNullEqCheck_ShouldI
     if ([obj1 isEqualTo:obj2] && obj1) { ; }                    \n\
 }                                                               \n\
 @end");
-}
-
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

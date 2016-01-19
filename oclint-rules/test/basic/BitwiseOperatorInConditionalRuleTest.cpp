@@ -121,9 +121,3 @@ TEST(BitwiseOperatorInConditionalRuleTest, BitwiseNestedDeep)
     testRuleOnCode(new BitwiseOperatorInConditionalRule(), "void m(int a, int b) { if (((a || b) || a) && ((b || b) || (a & b))) {;} }",
         0, 1, 28, 1, 67);
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

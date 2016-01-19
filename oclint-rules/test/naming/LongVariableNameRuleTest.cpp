@@ -54,9 +54,3 @@ TEST_F(LongVariableNameRuleTest, FiveCharsName)
     testRuleOnCode(new LongVariableNameRule(), "void aMethod() { int iiiii; }",
         0, 1, 18, 1, 22, "Variable name with 5 characters is longer than the threshold of 3");
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

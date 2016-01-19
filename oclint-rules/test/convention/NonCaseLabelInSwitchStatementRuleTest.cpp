@@ -50,9 +50,3 @@ label2:     \n\
 } }",
         1, 4, 1, 5, 2);
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

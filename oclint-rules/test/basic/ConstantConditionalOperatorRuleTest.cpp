@@ -25,9 +25,3 @@ TEST(ConstantConditionalOperatorRuleTest, testCompareTwoKnownBoolValuesAlwaysBeT
 // method as ConstantIfExpressionRule does. There are more comprehensive tests in
 // ConstantIfExpressionRuleTest that verifies how "smartness" the EvaluateAsBooleanCondition
 // method is. We only verify if ConditionalOperator is visited here in above test cases.
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}

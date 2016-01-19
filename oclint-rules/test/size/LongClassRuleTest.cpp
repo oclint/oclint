@@ -84,9 +84,3 @@ TEST_F(LongClassRuleTest, ObjCImplementation)
     testRuleOnObjCCode(new LongClassRule(), "@interface c\n@end\n@interface a : c\n- (void)m;\n@end\n@implementation a\n- (void)m {}\n@end",
         2, 6, 1, 8, 1, "Objective-C implementation with 3 lines exceeds limit of 0");
 }
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}
