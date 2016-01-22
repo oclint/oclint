@@ -21,3 +21,8 @@ script:
 matrix:
   allow_failures:
     - env: BUILD="build"
+
+addons:
+  artifacts:
+    paths:
+      - $(ls build/oclint-*.tar.gz)
