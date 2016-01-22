@@ -19,10 +19,6 @@ script:
   - ./travis $BUILD $MODULE $DEP
   - cd ..
 
-matrix:
-  allow_failures:
-    - env: BUILD="build"
-
 addons:
   artifacts:
     paths:
