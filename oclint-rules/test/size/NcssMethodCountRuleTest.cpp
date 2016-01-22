@@ -1,4 +1,5 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
+#include <gtest/gtest.h>
 
 #include "rules/size/NcssMethodCountRule.cpp"
 

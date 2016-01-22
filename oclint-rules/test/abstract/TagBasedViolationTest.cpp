@@ -1,9 +1,9 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
+#include <gtest/gtest.h>
 
 #include "oclint/AbstractASTVisitorRule.h"
 
 using namespace std;
-using namespace clang;
 using namespace oclint;
 
 class FindAllCompoundStmtRule : public AbstractASTVisitorRule<FindAllCompoundStmtRule>

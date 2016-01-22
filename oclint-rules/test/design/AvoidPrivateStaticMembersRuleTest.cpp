@@ -1,4 +1,6 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
+#include <gtest/gtest.h>
+
 #include "rules/design/AvoidPrivateStaticMembersRule.cpp"
 
 TEST(AvoidPrivateStaticMembersRuleTest, PropertyTest)

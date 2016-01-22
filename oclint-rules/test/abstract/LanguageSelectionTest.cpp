@@ -1,10 +1,9 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
+#include <gtest/gtest.h>
 
 #include "oclint/AbstractASTVisitorRule.h"
-#include "oclint/AbstractASTMatcherRule.h"
 
 using namespace std;
-using namespace clang;
 using namespace oclint;
 
 class DefaultASTRule : public AbstractASTVisitorRule<DefaultASTRule>

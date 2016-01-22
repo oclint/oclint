@@ -1,4 +1,6 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
+#include <gtest/gtest.h>
+
 #include "rules/cocoa/ObjCVerifyProhibitedCallRule.cpp"
 
 string testBase = R"END(

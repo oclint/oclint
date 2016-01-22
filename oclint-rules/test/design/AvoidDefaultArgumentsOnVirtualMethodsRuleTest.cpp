@@ -1,4 +1,6 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
+#include <gtest/gtest.h>
+
 #include "rules/design/AvoidDefaultArgumentsOnVirtualMethodsRule.cpp"
 
 TEST(AvoidDefaultArgumentsOnVirtualMethodsRuleTest, PropertyTest)

@@ -1,4 +1,6 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
+#include <gtest/gtest.h>
+
 #include "rules/convention/PreferEarlyExitRule.cpp"
 
 class PreferEarlyExitRuleTest : public ::testing::Test
