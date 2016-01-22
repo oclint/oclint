@@ -1,12 +1,19 @@
 #! /bin/sh -e
 
 ./clang prebuilt
-./googleTest co
-./googleTest build
-MODULE="$1"
-shift
-for dep in $*
-do
-    ./test "$dep"
-done
-./test "$MODULE"
+if [ "$1" = "build" ]
+then
+    ./build
+    ./bundle -archive
+else
+    ./googleTest co
+    ./googleTest build
+    shift
+    MODULE="$1"
+    shift
+    for dep in $*
+    do
+        ./test "$dep"
+    done
+    ./test "$MODULE"
+fi
