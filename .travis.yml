@@ -17,6 +17,7 @@ before_install:
 script:
   - cd oclint-scripts
   - ./travis $BUILD $MODULE $DEP
+  - cd ..
 
 matrix:
   allow_failures:
