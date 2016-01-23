@@ -145,8 +145,18 @@ static void processConfigFile(const std::string &path)
     {
         argRulesPath.push_back(rulePath.str());
     }
-    filter.enableRules(config.rules().begin(), config.rules().end());
-    filter.disableRules(config.disableRules().begin(), config.disableRules().end());
+    std::vector<std::string> enableRules;
+    for (auto rule : config.rules())
+    {
+        enableRules.push_back(rule.str());
+    }
+    filter.enableRules(enableRules.begin(), enableRules.end());
+    std::vector<std::string> disableRules;
+    for (auto rule : config.disableRules())
+    {
+        disableRules.push_back(rule.str());
+    }
+    filter.disableRules(disableRules.begin(), disableRules.end());
 
     updateArgIfSet(argOutput, config.output());
     updateArgIfSet(argReportType, config.reportType());
