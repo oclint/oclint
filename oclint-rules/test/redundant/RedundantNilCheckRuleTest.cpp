@@ -1,5 +1,4 @@
 #include "TestRuleOnCode.h"
-#include <gtest/gtest.h>
 
 #include "rules/redundant/RedundantNilCheckRule.cpp"
 

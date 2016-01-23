@@ -1,5 +1,4 @@
 #include "TestRuleOnCode.h"
-#include <gtest/gtest.h>
 
 #include "rules/size/LongMethodRule.cpp"
 

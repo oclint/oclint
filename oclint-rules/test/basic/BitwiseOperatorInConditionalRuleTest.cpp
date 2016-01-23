@@ -1,6 +1,5 @@
 #include "TestRuleOnCode.h"
 #include "rules/basic/BitwiseOperatorInConditionalRule.cpp"
-#include <gtest/gtest.h>
 
 TEST(BitwiseOperatorInConditionalRuleTest, PropertyTest)
 {

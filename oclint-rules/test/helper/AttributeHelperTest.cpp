@@ -1,5 +1,4 @@
 #include "TestRuleOnCode.h"
-#include <gtest/gtest.h>
 
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/AbstractSourceCodeReaderRule.h"
