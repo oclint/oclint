@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/empty/EmptyIfStatementRule.cpp"
 
@@ -25,10 +25,4 @@ TEST(EmptyIfStatementRuleTest, IfStatementWithNull)
 {
     testRuleOnCode(new EmptyIfStatementRule(), "void aMethod() { if (1)\n; }",
         0, 2, 1, 2, 1);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/basic/MultipleUnaryOperatorRule.cpp"
 
@@ -159,10 +159,4 @@ TEST(MultipleUnaryOperatorRuleTest, MixUnaryOperators)
         1, 1, 28, 1, 35);
     testRuleOnCode(new MultipleUnaryOperatorRule(), "void aMethod() { int b = -(+(!(~1))); }",
         2, 1, 30, 1, 34);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/convention/MissingBreakInSwitchStatementRule.cpp"
 
@@ -141,10 +141,4 @@ case 1:     \n\
 \ti = 1;    \n\
 \tbreak;    \n\
 } }");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

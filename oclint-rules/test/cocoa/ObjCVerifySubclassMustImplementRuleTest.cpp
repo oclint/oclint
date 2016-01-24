@@ -1,4 +1,5 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
+
 #include "rules/cocoa/ObjCVerifySubclassMustImplementRule.cpp"
 
 static string testAnnotationBase = "\
@@ -95,11 +96,4 @@ TEST(ObjcVerifySubclassMustImplementRuleTest, NormalDoesImplement)
 TEST(ObjcVerifySubclassMustImplementRuleTest, SubChildUnaffected)
 {
     testRuleOnObjCCode(new ObjCVerifySubclassMustImplementRule(), testSubChildUnaffected);
-}
-
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

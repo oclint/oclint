@@ -1,10 +1,12 @@
-BUILD_TEST(CyclomaticComplexityRuleTest)
-BUILD_TEST(LongClassRuleTest)
-BUILD_TEST(LongLineRuleTest)
-BUILD_TEST(LongMethodRuleTest)
-BUILD_TEST(NcssMethodCountRuleTest)
-BUILD_TEST(NestedBlockDepthRuleTest)
-BUILD_TEST(NPathComplexityRuleTest)
-BUILD_TEST(TooManyFieldsRuleTest)
-BUILD_TEST(TooManyMethodsRuleTest)
-BUILD_TEST(TooManyParametersRuleTest)
+BUILD_TEST(SizeTests
+    CyclomaticComplexityRuleTest.cpp
+    LongClassRuleTest.cpp
+    LongLineRuleTest.cpp
+    LongMethodRuleTest.cpp
+    NPathComplexityRuleTest.cpp
+    NcssMethodCountRuleTest.cpp
+    NestedBlockDepthRuleTest.cpp
+    TooManyFieldsRuleTest.cpp
+    TooManyMethodsRuleTest.cpp
+    TooManyParametersRuleTest.cpp
+)

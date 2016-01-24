@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/convention/DestructorOfVirtualClassRule.cpp"
 
@@ -59,10 +59,4 @@ TEST(DestructorOfVirtualClassRuleTest, ImplicitVirtualDestructor)
     testRuleOnCXXCode(new DestructorOfVirtualClassRule(),
         "class Base { public: virtual ~Base(); };\n"
         "class C : public Base { public: ~C(); virtual void f(); };");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

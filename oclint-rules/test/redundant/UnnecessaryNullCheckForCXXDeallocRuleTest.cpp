@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/redundant/UnnecessaryNullCheckForCXXDeallocRule.cpp"
 
@@ -56,10 +56,4 @@ TEST(UnnecessaryNullCheckForCXXDeallocRuleTest, CorrectCode)
     testRuleOnCXXCode(new UnnecessaryNullCheckForCXXDeallocRule(), code2);
     testRuleOnCXXCode(new UnnecessaryNullCheckForCXXDeallocRule(), code3);
     testRuleOnCXXCode(new UnnecessaryNullCheckForCXXDeallocRule(), code4);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

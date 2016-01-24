@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/redundant/RedundantConditionalOperatorRule.cpp"
 
@@ -155,10 +155,4 @@ TEST(RedundantConditionalOperatorRuleTest, DifferentVariable)
 {
     testRuleOnCode(new RedundantConditionalOperatorRule(),
         "void m(int a, int b, int d, int e) { int c = a > b ? d : e; }");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

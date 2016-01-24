@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/basic/GotoStatementRule.cpp"
 
@@ -27,10 +27,4 @@ TEST(GotoStatementRuleTest, TwoGotos)
         0, 1, 22, 1, 27);
     testRuleOnCode(new GotoStatementRule(), "void a(); void m() { goto A; goto B; A:\na();\nB:\na(); }",
         1, 1, 30, 1, 35);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

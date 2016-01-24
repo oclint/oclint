@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/basic/BrokenOddnessCheckRule.cpp"
 
@@ -32,10 +32,4 @@ TEST(BrokenOddnessCheckRuleTest, Method)
 {
     testRuleOnCode(new BrokenOddnessCheckRule(), "int a(); void m() { if (1 == a() % 2) {;} }",
         0, 1, 25, 1, 36);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

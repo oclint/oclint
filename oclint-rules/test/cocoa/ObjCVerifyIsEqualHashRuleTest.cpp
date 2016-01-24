@@ -1,4 +1,5 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
+
 #include "rules/cocoa/ObjCVerifyIsEqualHashRule.cpp"
 
 static string testHashAndIsEqual = "\
@@ -90,10 +91,4 @@ TEST(ObjCVerifyIsEqualHashRuleTest, EqualMethod)
         testIsEqualOnly,
         0, 11, 1, 17, 1,
         "If you override isEqual you must override hash too.");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/empty/EmptyForStatementRule.cpp"
 
@@ -42,10 +42,4 @@ TEST(EmptyForStatementRuleTest, ObjcForEachStatementWithNullStmt)
 {
     testRuleOnObjCCode(new EmptyForStatementRule(), "void aMethod() { id a; for (id it in a) \n; }",
         0, 2, 1, 2, 1);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

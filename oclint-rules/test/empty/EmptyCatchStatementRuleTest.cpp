@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/empty/EmptyCatchStatementRule.cpp"
 
@@ -46,10 +46,4 @@ TEST(EmptyCatchStatementRuleTest, MultipleEmptyObjCCatchStmts)
         0, 1, 36, 1, 37);
     testRuleOnObjCCode(new EmptyCatchStatementRule(), "void m() { @try { ; } @catch(id i) {} @catch(id ex) {} }",
         1, 1, 53, 1, 54);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

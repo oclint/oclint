@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/basic/DeadCodeRule.cpp"
 
@@ -217,10 +217,4 @@ TEST(DeadCodeRuleTest, NotSupported)
         "void f() { try { return; } catch (int) { throw; } int b; }";
 
     testRuleOnCXXCode(new DeadCodeRule, cppcode);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

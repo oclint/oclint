@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/convention/ObjCAssignIvarOutsideAccessorsRule.cpp"
 
@@ -122,10 +122,4 @@ TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestOtherMethod)
 TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestChildPropertyAccess)
 {
     testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testChildPropertyAccess);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

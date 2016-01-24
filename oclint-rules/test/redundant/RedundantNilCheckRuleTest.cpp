@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/redundant/RedundantNilCheckRule.cpp"
 
@@ -139,11 +139,4 @@ TEST(RedundantNilCheckRuleTest, ObjC_MultipleMessageExpr)
         "    if (" VIOLATION_START "obj1 != nil && ([obj2 isEqualTo:obj1] && [obj1 isEqualTo:obj2]" VIOLATION_END ")) { ; }\n"
         "}\n"
         "@end");
-}
-
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

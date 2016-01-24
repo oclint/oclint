@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/size/LongLineRule.cpp"
 
@@ -37,10 +37,4 @@ TEST_F(LongLineRuleTest, GetNumberOfCharactersForThreeLines)
         1, 2, 1, 2, 2, "Line with 2 characters exceeds limit of 0");
     testRuleOnCode(new LongLineRule(), "void m() {\n  \n}",
         2, 3, 1, 3, 1, "Line with 1 characters exceeds limit of 0");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

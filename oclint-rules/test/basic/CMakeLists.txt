@@ -1,15 +1,17 @@
-BUILD_TEST(BitwiseOperatorInConditionalRuleTest)
-BUILD_TEST(BrokenNullCheckRuleTest)
-BUILD_TEST(BrokenOddnessCheckRuleTest)
-BUILD_TEST(CollapsibleIfStatementsRuleTest)
-BUILD_TEST(ConstantConditionalOperatorRuleTest)
-BUILD_TEST(ConstantIfExpressionRuleTest)
-BUILD_TEST(DeadCodeRuleTest)
-BUILD_TEST(DoubleNegativeRuleTest)
-BUILD_TEST(ForLoopShouldBeWhileLoopRuleTest)
-BUILD_TEST(GotoStatementRuleTest)
-BUILD_TEST(JumbledIncrementerRuleTest)
-BUILD_TEST(MisplacedNullCheckRuleTest)
-BUILD_TEST(MultipleUnaryOperatorRuleTest)
-BUILD_TEST(ReturnFromFinallyBlockRuleTest)
-BUILD_TEST(ThrowExceptionFromFinallyBlockRuleTest)
+BUILD_TEST(BasicTests
+    BitwiseOperatorInConditionalRuleTest.cpp
+    BrokenNullCheckRuleTest.cpp
+    BrokenOddnessCheckRuleTest.cpp
+    CollapsibleIfStatementsRuleTest.cpp
+    ConstantConditionalOperatorRuleTest.cpp
+    ConstantIfExpressionRuleTest.cpp
+    DeadCodeRuleTest.cpp
+    DoubleNegativeRuleTest.cpp
+    ForLoopShouldBeWhileLoopRuleTest.cpp
+    GotoStatementRuleTest.cpp
+    JumbledIncrementerRuleTest.cpp
+    MisplacedNullCheckRuleTest.cpp
+    MultipleUnaryOperatorRuleTest.cpp
+    ReturnFromFinallyBlockRuleTest.cpp
+    ThrowExceptionFromFinallyBlockRuleTest.cpp
+)

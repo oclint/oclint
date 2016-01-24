@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/empty/EmptyWhileStatementRule.cpp"
 
@@ -25,10 +25,4 @@ TEST(EmptyWhileStatementRuleTest, WhileStatementWithNullStmt)
 {
     testRuleOnCode(new EmptyWhileStatementRule(), "void m() { while(1) \n; }",
         0, 2, 1, 2, 1);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

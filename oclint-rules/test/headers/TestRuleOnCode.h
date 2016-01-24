@@ -1,16 +1,22 @@
 #include <vector>
 #include <string>
+#include <gtest/gtest.h>
 
 using namespace std;
 
-#include <clang/Tooling/Tooling.h>
+namespace llvm
+{
+    class Twine;
+}
+using llvm::Twine;
 
-using namespace llvm;
-using namespace clang;
-using namespace clang::tooling;
-
-#include "oclint/RuleBase.h"
-
+namespace oclint
+{
+    class RuleBase;
+    class ViolationSet;
+    class Violation;
+    class RuleCarrier;
+}
 using namespace oclint;
 
 bool computeViolationSet(const Twine &fileName,

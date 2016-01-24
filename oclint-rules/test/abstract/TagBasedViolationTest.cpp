@@ -1,9 +1,8 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "oclint/AbstractASTVisitorRule.h"
 
 using namespace std;
-using namespace clang;
 using namespace oclint;
 
 class FindAllCompoundStmtRule : public AbstractASTVisitorRule<FindAllCompoundStmtRule>
@@ -68,10 +67,4 @@ TEST(FindAllCompoundStmtRuleTest, ParallelViolations)
     testRuleOnCode(new FindAllCompoundStmtRule(),
         "void a() " VIOLATION_START "{" VIOLATION_START "{" VIOLATION_END "}" VIOLATION_START "{" VIOLATION_END "}" VIOLATION_END "}",
         {"1", "2", "3"});
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

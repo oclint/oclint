@@ -1,3 +1,5 @@
-BUILD_TEST(LanguageSelectionTest)
-BUILD_TEST(TagBasedViolationTest)
-BUILD_TEST(MacroLocationTest)
+BUILD_TEST(AbstractTests
+    LanguageSelectionTest.cpp
+    MacroLocationTest.cpp
+    TagBasedViolationTest.cpp
+)

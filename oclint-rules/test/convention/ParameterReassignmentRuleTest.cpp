@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/convention/ParameterReassignmentRule.cpp"
 
@@ -63,10 +63,4 @@ a = 1;                                      \n\
 }                                           \n\
 @end",
         0, 9, 1, 9, 5);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

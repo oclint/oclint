@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/unused/UnusedMethodParameterRule.cpp"
 
@@ -252,10 +252,4 @@ TEST(UnusedMethodParameterRuleTest, AttributeUnusedSupressesAllParameterRule)
 {
     testRuleOnCode(new UnusedMethodParameterRule(), "int aMethod(int a, int b);\n\
 int aMethod(int __attribute__((unused)) a, int __attribute__((unused)) b) { return 1; }");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

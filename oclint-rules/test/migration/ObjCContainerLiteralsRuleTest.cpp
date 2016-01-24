@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/migration/ObjCContainerLiteralsRule.cpp"
 
@@ -157,10 +157,4 @@ TEST(ObjCContainerLiteralsRuleTest, DictionaryWithObjectsForKeys)
     testRuleOnObjCCode(new ObjCContainerLiteralsRule(), objCNSDictionaryPrefix +
         "void m() { NSDictionary *d = [NSDictionary dictionaryWithObjects:@[@2,@4] forKeys:@[@1,@3]]; }",
         0, 19, 30, 19, 91);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

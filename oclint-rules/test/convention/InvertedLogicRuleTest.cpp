@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/convention/InvertedLogicRule.cpp"
 
@@ -48,10 +48,4 @@ TEST(InvertedLogicRuleTest, ConditionalOperatorNotEqualBinaryOperator)
 {
     testRuleOnCode(new InvertedLogicRule(), "int m(int i) { return i != 0 ? 3 : 2; }",
         0, 1, 23, 1, 28);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

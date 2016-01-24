@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/size/NPathComplexityRule.cpp"
 
@@ -203,10 +203,4 @@ TEST_F(NPathComplexityRuleTest, NastingConditionalOperator)
 TEST_F(NPathComplexityRuleTest, SuppressHighNPathComplexity)
 {
     testRuleOnCode(new NPathComplexityRule(), "void __attribute__((annotate(\"oclint:suppress[high npath complexity]\"))) mthd() { if (1 ? 2 : 3) {} }");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

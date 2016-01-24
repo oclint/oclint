@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/redundant/UselessParenthesesRule.cpp"
 
@@ -43,10 +43,4 @@ TEST(UselessParenthesesRuleTest, RedundantParenthesesInIfCondition)
 TEST(UselessParenthesesRuleTest, ParenthesesInArithmetic)
 {
     testRuleOnCode(new UselessParenthesesRule(), "int m(int x) { return (x + 1) / 2; }");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

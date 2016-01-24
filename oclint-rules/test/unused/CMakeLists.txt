@@ -1,2 +1,4 @@
-BUILD_TEST(UnusedLocalVariableRuleTest)
-BUILD_TEST(UnusedMethodParameterRuleTest)
+BUILD_TEST(UnusedTests
+    UnusedLocalVariableRuleTest.cpp
+    UnusedMethodParameterRuleTest.cpp
+)

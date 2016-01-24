@@ -1,2 +1,4 @@
-BUILD_TEST(AttributeHelperTest)
-BUILD_TEST(SuppressHelperTest)
+BUILD_TEST(HelperTests
+    AttributeHelperTest.cpp
+    SuppressHelperTest.cpp
+)

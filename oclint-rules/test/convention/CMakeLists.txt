@@ -1,13 +1,15 @@
-BUILD_TEST(AvoidBranchingStatementAsLastInLoopRuleTest)
-BUILD_TEST(BaseClassDestructorShouldBeVirtualOrProtectedRuleTest)
-BUILD_TEST(DefaultLabelNotLastInSwitchStatementRuleTest)
-BUILD_TEST(DestructorOfVirtualClassRuleTest)
-BUILD_TEST(InvertedLogicRuleTest)
-BUILD_TEST(MissingBreakInSwitchStatementRuleTest)
-BUILD_TEST(NonCaseLabelInSwitchStatementRuleTest)
-BUILD_TEST(ObjCAssignIvarOutsideAccessorsRuleTest)
-BUILD_TEST(ParameterReassignmentRuleTest)
-BUILD_TEST(PreferEarlyExitRuleTest)
-BUILD_TEST(SwitchStatementsShouldHaveDefaultRuleTest)
-BUILD_TEST(CoveredSwitchStatementsDontNeedDefaultRuleTest)
-BUILD_TEST(TooFewBranchesInSwitchStatementRuleTest)
+BUILD_TEST(ConventionTests
+    AvoidBranchingStatementAsLastInLoopRuleTest.cpp
+    BaseClassDestructorShouldBeVirtualOrProtectedRuleTest.cpp
+    CoveredSwitchStatementsDontNeedDefaultRuleTest.cpp
+    DefaultLabelNotLastInSwitchStatementRuleTest.cpp
+    DestructorOfVirtualClassRuleTest.cpp
+    InvertedLogicRuleTest.cpp
+    MissingBreakInSwitchStatementRuleTest.cpp
+    NonCaseLabelInSwitchStatementRuleTest.cpp
+    ObjCAssignIvarOutsideAccessorsRuleTest.cpp
+    ParameterReassignmentRuleTest.cpp
+    PreferEarlyExitRuleTest.cpp
+    SwitchStatementsShouldHaveDefaultRuleTest.cpp
+    TooFewBranchesInSwitchStatementRuleTest.cpp
+)

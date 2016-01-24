@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/redundant/RedundantLocalVariableRule.cpp"
 
@@ -25,10 +25,4 @@ TEST(RedundantLocalVariableRuleTest, DeclVarFollowedByReturnStmtInANestedCompoun
 {
     testRuleOnCode(new RedundantLocalVariableRule(),
         "int aMethod() { if (1) { " VIOLATION_START "int i = " VIOLATION_END "1; return i; } return 0; }");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

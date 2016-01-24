@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/basic/JumbledIncrementerRule.cpp"
 
@@ -30,10 +30,4 @@ TEST(JumbledIncrementerRuleTest, InnerForLoopIsTheBodyOfOuterForLoop)
 TEST(JumbledIncrementerRuleTest, MultiIncsAreFine)
 {
     testRuleOnCode(new JumbledIncrementerRule(), "void aMethod(int a) { for (int i = 0; i < a; i++) for (int j = 0; j < a; i++, j++) {;} }");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

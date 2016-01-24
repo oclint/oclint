@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/basic/ReturnFromFinallyBlockRule.cpp"
 
@@ -25,10 +25,4 @@ TEST(ReturnFromFinallyBlockRuleTest, ReturnFromNestedBlockInsideFinallyBlock)
 {
     testRuleOnObjCCode(new ReturnFromFinallyBlockRule(), "void m() { @try {;} @catch(id ex) {;} @finally { int i; if(1) {return;} int j; } }",
         0, 1, 64, 1, 64);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

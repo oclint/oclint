@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/basic/ForLoopShouldBeWhileLoopRule.cpp"
 
@@ -34,10 +34,4 @@ TEST(ForLoopShouldBeWhileLoopRuleTest, NoInitExprNorIncExpr)
 TEST(ForLoopShouldBeWhileLoopRuleTest, IgnoreNullCondExpr)
 {
     testRuleOnCode(new ForLoopShouldBeWhileLoopRule(), "void aMethod(int a) { for (int i = 0; ; i++) {;} }");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

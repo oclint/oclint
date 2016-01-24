@@ -1,3 +1,7 @@
+#include "oclint/RuleBase.h"
+
+using namespace oclint;
+
 class TestProcessor : public ASTConsumer
 {
 private:

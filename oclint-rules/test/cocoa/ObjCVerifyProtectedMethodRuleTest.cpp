@@ -1,4 +1,5 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
+
 #include "rules/cocoa/ObjCVerifyProtectedMethodRule.cpp"
 
 static const string testBase = "\
@@ -194,10 +195,4 @@ TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertyCategoryOutside)
     ";
     testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testCategory, 0, 26, 9, 26, 24,
         "calling protected method setA: from outside C and its subclasses");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/size/TooManyParametersRule.cpp"
 
@@ -76,10 +76,4 @@ TEST_F(TooManyParametersRuleTest, Suppress)
 - (void)m:(int)a another:(int)b __attribute__((annotate(\"oclint:suppress[too many parameters]\")))  \n\
 {;}                                          \n\
 @end");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "oclint/AbstractASTVisitorRule.h"
 
@@ -6,7 +6,7 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class DefaultASTRule : public AbstractASTVisitorRule<DefaultASTRule>
+class DefaultASTRule2 : public AbstractASTVisitorRule<DefaultASTRule2>
 {
 public:
     virtual const string name() const override
@@ -33,16 +33,10 @@ public:
 
 TEST(DefaultASTRuleTest, WithoutMacro)
 {
-    testRuleOnCode(new DefaultASTRule(), "int a = 1+1;", 0, 1, 9, 1, 11);
+    testRuleOnCode(new DefaultASTRule2(), "int a = 1+1;", 0, 1, 9, 1, 11);
 }
 
 TEST(DefaultASTRuleTest, WithMacro)
 {
-    testRuleOnCode(new DefaultASTRule(), "#define ADD(a,b) ((a)+(b))\nint a = ADD(1,1);", 0, 2, 9, 2, 9);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
+    testRuleOnCode(new DefaultASTRule2(), "#define ADD(a,b) ((a)+(b))\nint a = ADD(1,1);", 0, 2, 9, 2, 9);
 }

@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/size/LongMethodRule.cpp"
 
@@ -33,10 +33,4 @@ TEST_F(LongMethodRuleTest, TweLines)
 {
     testRuleOnCode(new LongMethodRule(), "void aMethod() {\n}",
         0, 1, 1, 2, 1, "Method with 2 lines exceeds limit of 0");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

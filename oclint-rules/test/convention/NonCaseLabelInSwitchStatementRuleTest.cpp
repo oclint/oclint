@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/convention/NonCaseLabelInSwitchStatementRule.cpp"
 
@@ -49,10 +49,4 @@ label2:     \n\
 \tbreak;    \n\
 } }",
         1, 4, 1, 5, 2);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

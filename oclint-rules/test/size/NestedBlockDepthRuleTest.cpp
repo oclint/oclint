@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/size/NestedBlockDepthRule.cpp"
 
@@ -122,10 +122,4 @@ TEST_F(NestedBlockDepthRuleTest, TwoCaseStatementsAndDefault)
 {
     testRuleOnCode(new NestedBlockDepthRule(), "void m() { int i = 1; switch (i) { case 1: i = 2; break; case 2: break; default: break; } }",
         0, 1, 10, 1, 91, "Block depth of 2 exceeds limit of 1");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

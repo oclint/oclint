@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/AbstractSourceCodeReaderRule.h"
@@ -408,11 +408,4 @@ TEST(AttributeHelperTestCallRuleTest, ExtraJunk)
             }
         )END"
     , 0, 4, 17, 4, 19, "no comment");
-}
-
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

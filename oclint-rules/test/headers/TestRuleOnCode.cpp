@@ -1,9 +1,15 @@
 #include "TestRuleOnCode.h"
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
 using namespace ::testing;
 
+#include <clang/Tooling/Tooling.h>
+
+using namespace llvm;
+using namespace clang;
+using namespace clang::tooling;
+
+#include "oclint/RuleBase.h"
 #include "TestEngine.h"
 
 bool computeViolationSet(const Twine &fileName,

@@ -1,4 +1,5 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
+
 #include "rules/design/AvoidDefaultArgumentsOnVirtualMethodsRule.cpp"
 
 TEST(AvoidDefaultArgumentsOnVirtualMethodsRuleTest, PropertyTest)
@@ -30,10 +31,4 @@ TEST(AvoidDefaultArgumentsOnVirtualMethodsRuleTest, NonVirtualWithDefaultArg)
     std::string code = "class Test { void test(int a=0); };";
     testRuleOnCXXCode(new AvoidDefaultArgumentsOnVirtualMethodsRule(),
                       code);
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }

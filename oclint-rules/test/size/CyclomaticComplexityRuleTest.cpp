@@ -1,4 +1,4 @@
-#include "TestHeaders.h"
+#include "TestRuleOnCode.h"
 
 #include "rules/size/CyclomaticComplexityRule.cpp"
 
@@ -108,10 +108,4 @@ TEST_F(CyclomaticComplexityRuleTest, ABinaryOperatorButHasNoEffectOnCCNCouting)
 TEST_F(CyclomaticComplexityRuleTest, SuppressCyclomaticComplexity)
 {
     testRuleOnCode(new CyclomaticComplexityRule(), "void __attribute__((annotate(\"oclint:suppress[high cyclomatic complexity]\"))) aMethod() { int b = 1 || 0; }");
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
 }
