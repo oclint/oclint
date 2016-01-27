@@ -20,9 +20,6 @@ def module_build_dir(module_name):
 def oclint_module_build_dir(module_name):
     return module_build_dir("oclint-" + module_name)
 
-def oclint_module_test_dir(module_name):
-    return module_build_dir("oclint-" + module_name + "-test")
-
 def oclint_module_dogfooding_dir(module_name):
     return module_build_dir("oclint-" + module_name + "-dogfooding")
 
@@ -51,11 +48,6 @@ class build:
     driver_build_dir = oclint_module_build_dir("driver")
 
     bundle_dir = oclint_module_build_dir("release")
-
-    core_test_dir = oclint_module_test_dir("core")
-    metrics_test_dir = oclint_module_test_dir("metrics")
-    rules_test_dir = oclint_module_test_dir("rules")
-    reporters_test_dir = oclint_module_test_dir("reporters")
 
     core_dogfooding_dir = oclint_module_dogfooding_dir("core")
     metrics_dogfooding_dir = oclint_module_dogfooding_dir("metrics")
