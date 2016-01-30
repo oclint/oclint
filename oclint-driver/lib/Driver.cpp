@@ -177,7 +177,7 @@ static clang::CompilerInvocation *newCompilerInvocation(std::string &mainExecuta
         llvm::IntrusiveRefCntPtr<clang::DiagnosticIDs>(new clang::DiagnosticIDs()),
         &*diagOpts,
         new clang::DiagnosticConsumer(),
-        false);
+        true);
 
     // create driver
     const char *const mainBinaryPath = argv[0];
