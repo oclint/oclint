@@ -13,8 +13,12 @@ sudo: required
 dist: trusty
 osx_image: xcode7.2
 before_install:
-- if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install cmake; fi
-- if [ $TRAVIS_OS_NAME != osx ]; then sudo pip install cpp-coveralls; fi
+- if [ $TRAVIS_OS_NAME == osx ]; then
+    brew update;
+    brew install cmake;
+    brew install python;
+  fi
+- sudo pip install cpp-coveralls
 
 script:
   - cd oclint-scripts
@@ -22,7 +26,7 @@ script:
   - cd ..
 
 after_success:
-  - if [ $BUILD == test ] && [ $TRAVIS_OS_NAME != osx ]; then
+  - if [ $BUILD == test ]; then
       coveralls --gcov $PWD/build/llvm-install/bin/llvm-cov --gcov-options gcov --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test;
     fi
 
