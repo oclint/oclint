@@ -40,19 +40,23 @@ SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 SET(OCLINT_VERSION_RELEASE "0.10.2")
 
-IF( NOT EXISTS ${LLVM_ROOT}/include/llvm )
-    MESSAGE(FATAL_ERROR "LLVM_ROOT (${LLVM_ROOT}) is not a valid LLVM install. Could not find ${LLVM_ROOT}/include/llvm")
-ENDIF()
-
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${LLVM_ROOT}/share/llvm/cmake")
+if(LLVM_ROOT)
+    IF( NOT EXISTS ${LLVM_ROOT}/include/llvm )
+    	MESSAGE(FATAL_ERROR "LLVM_ROOT (${LLVM_ROOT}) is not a valid LLVM install. Could not find ${LLVM_ROOT}/include/llvm")
+    ENDIF()
+    message("LLVM_ROOT: ${LLVM_ROOT}")
+    SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${LLVM_ROOT}/share/llvm/cmake")
 INCLUDE(LLVMConfig)
-
-STRING(REGEX MATCH "[0-9]+\\.[0-9]+(\\.[0-9]+)?" LLVM_VERSION_RELEASE ${LLVM_PACKAGE_VERSION})
+else()
+	find_package(LLVM REQUIRED CONFIG)
+endif()
 
 INCLUDE_DIRECTORIES( ${LLVM_INCLUDE_DIRS} )
 LINK_DIRECTORIES( ${LLVM_LIBRARY_DIRS} )
 ADD_DEFINITIONS( ${LLVM_DEFINITIONS} )
 
+message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 LLVM_MAP_COMPONENTS_TO_LIBNAMES(REQ_LLVM_LIBRARIES asmparser bitreader instrumentation mcparser option support)
 
 SET(CLANG_LIBRARIES
