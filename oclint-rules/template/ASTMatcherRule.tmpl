@@ -19,6 +19,11 @@ public:
         return {{RULE_PRIORITY}};
     }
 
+    virtual const string category() const override
+    {
+        return "{{RULE_CATEGORY}}";
+    }
+
     virtual void callback(const MatchFinder::MatchResult &result) override
     {
     }
