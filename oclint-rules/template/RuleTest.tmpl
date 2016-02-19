@@ -6,6 +6,7 @@ TEST({{RULE_CLASS_NAME}}RuleTest, PropertyTest)
     {{RULE_CLASS_NAME}}Rule rule;
     EXPECT_EQ({{RULE_PRIORITY}}, rule.priority());
     EXPECT_EQ("{{RULE_NAME}}", rule.name());
+    EXPECT_EQ("{{RULE_CATEGORY}}", rule.category());
 }
 
 TEST({{RULE_CLASS_NAME}}RuleTest, FirstFailingTest)
