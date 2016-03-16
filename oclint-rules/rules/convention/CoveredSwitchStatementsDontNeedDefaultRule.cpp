@@ -11,7 +11,7 @@ class CoveredSwitchStatementsDontNeedDefaultRule :
 public:
     virtual const string name() const override
     {
-        return "switch statements don't need default when fully covered";
+        return "covered switch statements dont need default";
     }
 
     virtual int priority() const override
