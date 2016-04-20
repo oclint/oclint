@@ -243,13 +243,14 @@ static void printCompileCommandDebugInfo(
 }
 #endif
 
-static std::vector<std::string> adjustArguments(std::vector<std::string> &unadjustedCmdLine)
+static std::vector<std::string> adjustArguments(std::vector<std::string> &unadjustedCmdLine,
+	const std::string& filename)
 {
     clang::tooling::ArgumentsAdjuster argAdjuster =
         clang::tooling::combineAdjusters(
             clang::tooling::getClangStripOutputAdjuster(),
             clang::tooling::getClangSyntaxOnlyAdjuster());
-    return argAdjuster(unadjustedCmdLine);
+    return argAdjuster(unadjustedCmdLine, filename);
 }
 
 static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstance *> &compilers,
@@ -260,7 +261,7 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
     for (auto &compileCommand : compileCommands)
     {
         std::vector<std::string> adjustedCmdLine =
-            adjustArguments(compileCommand.second.CommandLine);
+            adjustArguments(compileCommand.second.CommandLine, compileCommand.first);
 
 #ifndef NDEBUG
         printCompileCommandDebugInfo(compileCommand, adjustedCmdLine);
@@ -309,7 +310,7 @@ static void invokeClangStaticAnalyzer(
                 "please make sure the directory exists and you have permission to access!");
         }
         std::vector<std::string> adjustedArguments =
-            adjustArguments(compileCommand.second.CommandLine);
+            adjustArguments(compileCommand.second.CommandLine, compileCommand.first);
         clang::CompilerInvocation *compilerInvocation =
             newCompilerInvocation(mainExecutable, adjustedArguments, true);
         clang::FileManager *fileManager = newFileManager();

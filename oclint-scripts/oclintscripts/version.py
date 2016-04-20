@@ -20,4 +20,4 @@ def llvm_branches():
     return ['trunk', llvm_default_branch()]
 
 def llvm_default_branch():
-    return 'tags/RELEASE_371/final'
+    return 'tags/RELEASE_380/final'
