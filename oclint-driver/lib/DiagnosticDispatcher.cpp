@@ -18,19 +18,28 @@ DiagnosticDispatcher::DiagnosticDispatcher(bool runClangChecker)
 void DiagnosticDispatcher::HandleDiagnostic(clang::DiagnosticsEngine::Level diagnosticLevel,
     const clang::Diagnostic &diagnosticInfo)
 {
+    int line = 0;
+    int column = 0;
+    std::string filename = "";
+
     clang::DiagnosticConsumer::HandleDiagnostic(diagnosticLevel, diagnosticInfo);
 
     clang::SourceLocation location = diagnosticInfo.getLocation();
-    clang::SourceManager *sourceManager = &diagnosticInfo.getSourceManager();
-    llvm::StringRef filename = sourceManager->getFilename(location);
-    int line = sourceManager->getPresumedLineNumber(location);
-    int column = sourceManager->getPresumedColumnNumber(location);
 
     clang::SmallString<100> diagnosticMessage;
     diagnosticInfo.FormatDiagnostic(diagnosticMessage);
 
-    Violation violation(nullptr, filename.str(), line, column, 0, 0,
+    if (diagnosticInfo.hasSourceManager()) {
+        clang::SourceManager *sourceManager = &diagnosticInfo.getSourceManager();
+        llvm::StringRef filename = sourceManager->getFilename(location);
+        line = sourceManager->getPresumedLineNumber(location);
+        column = sourceManager->getPresumedColumnNumber(location);
+        filename = filename.str();
+    }
+
+    Violation violation(nullptr, filename, line, column, 0, 0,
                         diagnosticMessage.str().str());
+
 
     ResultCollector *results = ResultCollector::getInstance();
     if (_isCheckerCustomer)
