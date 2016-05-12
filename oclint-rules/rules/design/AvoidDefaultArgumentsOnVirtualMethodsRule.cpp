@@ -47,7 +47,7 @@ public:
     virtual void setUpMatcher() override
     {
         addMatcher(
-            methodDecl(isVirtual(), hasAnyParameter(hasDefaultArg()))
+            cxxMethodDecl(isVirtual(), hasAnyParameter(hasDefaultArg()))
             .bind("cxxMethod"));
     }
 };

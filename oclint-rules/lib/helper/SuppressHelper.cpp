@@ -29,8 +29,8 @@ bool markedParentsAsSuppress(const T &node, clang::ASTContext &context, oclint::
         return false;
     }
 
-    clang::ast_type_traits::DynTypedNode dynTypedNode = parents.front();
-    const clang::Decl *aDecl = dynTypedNode.get<clang::Decl>();
+    const clang::ast_type_traits::DynTypedNode* dynTypedNode = parents.begin();
+    const clang::Decl *aDecl = dynTypedNode->get<clang::Decl>();
     if (aDecl)
     {
         if (markedAsSuppress(aDecl, rule))
@@ -39,7 +39,7 @@ bool markedParentsAsSuppress(const T &node, clang::ASTContext &context, oclint::
         }
         return markedParentsAsSuppress(*aDecl, context, rule);
     }
-    const clang::Stmt *aStmt = dynTypedNode.get<clang::Stmt>();
+    const clang::Stmt *aStmt = dynTypedNode->get<clang::Stmt>();
     if (aStmt)
     {
         return markedParentsAsSuppress(*aStmt, context, rule);
