@@ -22,7 +22,8 @@ def clean_module():
     path.rm_f(build_path)
 
 def build_command():
-    cmd_build = cmake.builder(path.source.googletest_dir)
+    googlemock_dir = os.path.join(path.source.googletest_dir, "googlemock")
+    cmd_build = cmake.builder(googlemock_dir)
     if environment.is_mingw32():
         cmd_build.append('gtest_disable_pthreads:BOOL', 'ON')
     if environment.is_darwin() and not environment.is_darwin_13():
@@ -46,7 +47,7 @@ def checkout_googletest():
         sys.exit('GoogleTest folder exists!')
     current_dir = os.getcwd()
     path.cd(path.root_dir)
-    process.call('svn checkout ' + path.url.googletest + ' googletest')
+    process.call('git clone ' + path.url.googletest + ' googletest')
     path.cd(current_dir)
 
 def update_googletest():
@@ -54,7 +55,7 @@ def update_googletest():
         sys.exit('GoogleTest folder does not exist!')
     current_dir = os.getcwd()
     path.cd(path.source.googletest_dir)
-    process.call('svn up')
+    process.call('git pull')
     path.cd(current_dir)
 
 if args.task_name == 'checkout' or args.task_name == 'co':
