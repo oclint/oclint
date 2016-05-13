@@ -19,14 +19,17 @@ arg_parser.add_argument('-show', '--show', action="store_true")
 arg_parser.add_argument('-clean', '--clean', action="store_true")
 arg_parser.add_argument('-j', type=int, default=0)
 arg_parser.add_argument('-use-system-compiler', '--use-system-compiler', action="store_true")
+arg_parser.add_argument('-as-dep', '--as-dep', action="store_true")
 args = arg_parser.parse_args()
 
 def clean_module(module_name):
-    test_path = path.oclint_module_build_dir(module_name)
+    test_path = path.oclint_module_test_dir(module_name)
     path.rm_f(test_path);
 
 def build_command(module_extras, source_path):
     cmd_build = cmake.builder(source_path).test_build()
+    if args.as_dep:
+        cmd_build = cmake.builder(source_path)
     if environment.is_unix() and not args.use_system_compiler:
         cmd_build.use_local_clang_compiler()
     extras = {'LLVM_ROOT': path.build.clang_install_dir, 'GOOGLETEST_SRC': path.source.googletest_dir, 'GOOGLETEST_BUILD': path.build.googletest_build_dir}
@@ -34,7 +37,7 @@ def build_command(module_extras, source_path):
     return cmd_build.append_dict(extras).str()
 
 def test_result_path(module_name):
-    return os.path.join(path.oclint_module_build_dir(module_name), 'testresults.txt')
+    return os.path.join(path.oclint_module_test_dir(module_name), 'testresults.txt')
 
 def display_test_result(module_name):
     testresult_path = test_result_path(module_name)
@@ -42,16 +45,16 @@ def display_test_result(module_name):
         print(testresult_file.read())
 
 def test_module(module_name, multiple_thread):
-    build_path = path.oclint_module_build_dir(module_name)
+    build_path = path.oclint_module_test_dir(module_name)
     source_path = path.oclint_module_source_dir(module_name)
 
     module_extras = {}
     if module_name == "rules" or module_name == "reporters":
         module_extras['OCLINT_SOURCE_DIR'] = path.source.core_dir
-        module_extras['OCLINT_BUILD_DIR'] = path.build.core_build_dir
+        module_extras['OCLINT_BUILD_DIR'] = path.build.core_test_dir
     if module_name == "rules":
         module_extras['OCLINT_METRICS_SOURCE_DIR'] = path.source.metrics_dir
-        module_extras['OCLINT_METRICS_BUILD_DIR'] = path.build.metrics_build_dir
+        module_extras['OCLINT_METRICS_BUILD_DIR'] = path.build.metrics_test_dir
 
     command = build_command(module_extras, source_path)
 
@@ -60,9 +63,10 @@ def test_module(module_name, multiple_thread):
     path.cd(build_path)
     process.call(command)
     process.call('make -j ' + multiple_thread)
-    run_ctest_command = 'ctest --output-on-failure > ' + test_result_path(module_name)
-    process.call(run_ctest_command)
-    display_test_result(module_name)
+    if not args.as_dep:
+        run_ctest_command = 'ctest --output-on-failure > ' + test_result_path(module_name)
+        process.call(run_ctest_command)
+        display_test_result(module_name)
     path.cd(current_dir)
 
 build_modules = []

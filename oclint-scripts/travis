@@ -13,7 +13,7 @@ else
     shift
     for dep in $*
     do
-        ./build "$dep"
+        ./test "$dep" -as-dep
     done
     ./test "$MODULE"
 fi
