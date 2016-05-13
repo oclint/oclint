@@ -81,8 +81,8 @@ IF(TEST_BUILD)
         --coverage
         )
     INCLUDE_DIRECTORIES(
-        ${GOOGLETEST_SRC}/include
-        ${GOOGLETEST_SRC}/gtest/include
+        ${GOOGLETEST_SRC}/googlemock/include
+        ${GOOGLETEST_SRC}/googletest/include
         )
     LINK_DIRECTORIES(${GOOGLETEST_BUILD})
 
