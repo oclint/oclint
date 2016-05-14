@@ -15,6 +15,7 @@ bundle_root_dir = path.build.bundle_dir
 bundle_bin_dir = os.path.join(bundle_root_dir, 'bin')
 bundle_lib_dir = os.path.join(bundle_root_dir, 'lib')
 bundle_lib_oclint_dir = os.path.join(bundle_lib_dir, 'oclint')
+bundle_include_dir = os.path.join(bundle_root_dir, 'include')
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('-archive', '--archive', action='store_true')
@@ -86,6 +87,14 @@ def install_xcodebuild():
         if os.path.isfile(xcodebuild_src_path):
             path.cp(xcodebuild_src_path, xcodebuild_dst_path)
 
+def install_cpp_headers():
+    if environment.is_darwin():
+        install_dir = path.build.clang_install_dir
+        clang_cpp_headers_dir = os.path.join(install_dir, 'include', 'c++')
+        oclint_cpp_headers_dir = os.path.join(bundle_include_dir, 'c++')
+        path.mkdir_p(bundle_include_dir)
+        path.cp_r(clang_cpp_headers_dir, oclint_cpp_headers_dir)
+
 def install_licenses():
     license_path = os.path.join(bundle_root_dir, 'LICENSE')
     oclint_license_path = os.path.join(path.source.core_dir, 'LICENSE')
@@ -122,7 +131,9 @@ install_rules()
 install_reporters()
 install_clang_headers(args.llvm_root)
 install_json_compilation_database()
-install_xcodebuild()
+if environment.is_darwin():
+    install_xcodebuild()
+    install_cpp_headers()
 
 if args.archive:
     archive(args.release)

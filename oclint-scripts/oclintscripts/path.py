@@ -83,11 +83,11 @@ def mv(src_path, dst_path):
     os.rename(src_path, dst_path)
 
 def rm_f(dir_path):
-    if os.path.isdir(dir_path):
+    if is_dir(dir_path):
         shutil.rmtree(dir_path)
 
 def mkdir_p(dir_path):
-    if not os.path.isdir(dir_path):
+    if not is_dir(dir_path):
         os.makedirs(dir_path)
 
 def cp(src_path, dst_path):
@@ -96,3 +96,5 @@ def cp(src_path, dst_path):
 def cp_r(src_path, dst_path):
     shutil.copytree(src_path, dst_path)
 
+def is_dir(dir_path):
+    return os.path.isdir(dir_path)

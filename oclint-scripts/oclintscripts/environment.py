@@ -25,14 +25,6 @@ def is_mingw32():
 def is_darwin():
     return kernel().startswith("darwin")
 
-def is_darwin_13():
-    if is_darwin():
-        kernel_full_version = kernel_version()
-        first_dot_index = kernel_full_version.find('.')
-        kernel_main_version_str = kernel_full_version[:first_dot_index]
-        return int(kernel_main_version_str) is 13
-    return False
-
 def is_linux():
     return kernel().startswith("linux")
 

@@ -26,7 +26,7 @@ def build_command():
     cmd_build = cmake.builder(googlemock_dir)
     if environment.is_mingw32():
         cmd_build.append('gtest_disable_pthreads:BOOL', 'ON')
-    if environment.is_darwin() and not environment.is_darwin_13():
+    if environment.is_darwin():
         cmd_build.append('CMAKE_CXX_FLAGS', '-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}', True)
     return cmd_build.str()
 
@@ -43,7 +43,7 @@ def build_module(multiple_thread):
     path.cd(current_dir)
 
 def checkout_googletest():
-    if os.path.isdir(path.source.googletest_dir):
+    if path.is_dir(path.source.googletest_dir):
         sys.exit('GoogleTest folder exists!')
     current_dir = os.getcwd()
     path.cd(path.root_dir)
@@ -51,7 +51,7 @@ def checkout_googletest():
     path.cd(current_dir)
 
 def update_googletest():
-    if not os.path.isdir(path.source.googletest_dir):
+    if not path.is_dir(path.source.googletest_dir):
         sys.exit('GoogleTest folder does not exist!')
     current_dir = os.getcwd()
     path.cd(path.source.googletest_dir)

@@ -37,7 +37,7 @@ def build_command(is_release):
         cmd_build.append('LLVM_BUILD_RUNTIME', 'OFF')
     else:
         cmd_build.append('LLVM_BUILD_RUNTIME', 'ON')
-    if environment.is_darwin() and not environment.is_darwin_13():
+    if environment.is_darwin():
         cmd_build.append('CMAKE_CXX_FLAGS', '-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}', True)
     cmd_build.append('CMAKE_INSTALL_PREFIX', path.build.clang_install_dir, environment.is_mingw32())
     return cmd_build.str()
@@ -55,6 +55,14 @@ def build_module(is_release, multiple_thread):
     process.call('make install')
     path.cd(current_dir)
 
+def copy_cpp_headers():
+    install_dir = path.build.clang_install_dir
+    cpp_dir = os.path.join(install_dir, 'include', 'c++')
+    if environment.is_darwin() and not path.is_dir(cpp_dir):
+        xcode_root = subprocess.check_output(['xcode-select', '--print-path']).strip()
+        xcode_cpp_headers = os.path.join(xcode_root, 'Toolchains', 'XcodeDefault.xctoolchain', 'usr', 'include', 'c++')
+        path.cp_r(xcode_cpp_headers, cpp_dir)
+
 def svn_checkout(url, prefix, root_dir):
     current_dir = os.getcwd()
     path.cd(root_dir)
@@ -71,14 +79,14 @@ def svn_update(root_dir, rev):
     path.cd(current_dir)
 
 def checkout_clang(branch_name):
-    if os.path.isdir(path.source.clang_dir):
+    if path.is_dir(path.source.clang_dir):
         sys.exit('Clang folder exists!')
     svn_checkout(path.url.llvm + branch_name, 'llvm', path.root_dir)
     svn_checkout(path.url.clang + branch_name, 'clang', os.path.join(path.root_dir, 'llvm', 'tools'))
     svn_checkout(path.url.clang_rt + branch_name, 'compiler-rt', os.path.join(path.root_dir, 'llvm', 'projects'))
 
 def update_clang(rev):
-    if not os.path.isdir(path.source.clang_dir):
+    if not path.is_dir(path.source.clang_dir):
         sys.exit('Clang folder does not exist!')
     svn_update(os.path.join(path.root_dir, 'llvm'), rev)
     svn_update(os.path.join(path.root_dir, 'llvm', 'tools', 'clang'), rev)
@@ -120,3 +128,5 @@ if args.task_name == 'build':
     if args.clean:
         clean_module()
     build_module(args.release, str(multiple_thread))
+    if environment.is_darwin():
+        copy_cpp_headers()
