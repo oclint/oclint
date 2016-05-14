@@ -71,14 +71,14 @@ def svn_update(root_dir, rev):
     path.cd(current_dir)
 
 def checkout_clang(branch_name):
-    if os.path.isdir(path.source.clang_dir):
+    if path.is_dir(path.source.clang_dir):
         sys.exit('Clang folder exists!')
     svn_checkout(path.url.llvm + branch_name, 'llvm', path.root_dir)
     svn_checkout(path.url.clang + branch_name, 'clang', os.path.join(path.root_dir, 'llvm', 'tools'))
     svn_checkout(path.url.clang_rt + branch_name, 'compiler-rt', os.path.join(path.root_dir, 'llvm', 'projects'))
 
 def update_clang(rev):
-    if not os.path.isdir(path.source.clang_dir):
+    if not path.is_dir(path.source.clang_dir):
         sys.exit('Clang folder does not exist!')
     svn_update(os.path.join(path.root_dir, 'llvm'), rev)
     svn_update(os.path.join(path.root_dir, 'llvm', 'tools', 'clang'), rev)
