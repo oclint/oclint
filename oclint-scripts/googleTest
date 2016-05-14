@@ -26,7 +26,7 @@ def build_command():
     cmd_build = cmake.builder(googlemock_dir)
     if environment.is_mingw32():
         cmd_build.append('gtest_disable_pthreads:BOOL', 'ON')
-    if environment.is_darwin() and not environment.is_darwin_13():
+    if environment.is_darwin():
         cmd_build.append('CMAKE_CXX_FLAGS', '-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}', True)
     return cmd_build.str()
 
