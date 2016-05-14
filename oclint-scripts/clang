@@ -55,6 +55,14 @@ def build_module(is_release, multiple_thread):
     process.call('make install')
     path.cd(current_dir)
 
+def copy_cpp_headers():
+    install_dir = path.build.clang_install_dir
+    cpp_dir = os.path.join(install_dir, 'include', 'c++')
+    if environment.is_darwin() and not path.is_dir(cpp_dir):
+        xcode_root = subprocess.check_output(['xcode-select', '--print-path']).strip()
+        xcode_cpp_headers = os.path.join(xcode_root, 'Toolchains', 'XcodeDefault.xctoolchain', 'usr', 'include', 'c++')
+        path.cp_r(xcode_cpp_headers, cpp_dir)
+
 def svn_checkout(url, prefix, root_dir):
     current_dir = os.getcwd()
     path.cd(root_dir)
@@ -120,3 +128,5 @@ if args.task_name == 'build':
     if args.clean:
         clean_module()
     build_module(args.release, str(multiple_thread))
+    if environment.is_darwin():
+        copy_cpp_headers()
