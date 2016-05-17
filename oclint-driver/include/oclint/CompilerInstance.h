@@ -20,7 +20,7 @@ public:
     void end();
 
 private:
-    std::vector<clang::FrontendAction *> _actions;
+    std::vector<std::unique_ptr<clang::FrontendAction>> _actions;
 };
 
 } // end namespace oclint
