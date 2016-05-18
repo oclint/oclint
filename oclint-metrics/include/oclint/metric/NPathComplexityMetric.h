@@ -28,6 +28,7 @@ public:
             DISPATH(clang::DoStmt);
             DISPATH(clang::ForStmt);
             DISPATH(clang::SwitchStmt);
+            DISPATH(clang::SwitchCase);
             DISPATH(clang::ObjCForCollectionStmt);
         }
         return 1;
@@ -52,6 +53,7 @@ public:
     int nPath(clang::ForStmt *stmt);
     int nPath(clang::ObjCForCollectionStmt *stmt);
     int nPath(clang::SwitchStmt *stmt);
+    int nPath(clang::SwitchCase *stmt);
     int nPath(clang::ConditionalOperator *expr);
     int nPath(clang::BinaryOperator *expr);
     int nPath(clang::ParenExpr *expr);

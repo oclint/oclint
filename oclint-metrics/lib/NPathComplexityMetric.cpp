@@ -79,15 +79,19 @@ int NPathComplexityMetric::nPath(clang::ObjCForCollectionStmt *stmt)
 int NPathComplexityMetric::nPath(clang::SwitchStmt *stmt)
 {
     int internalNPath = 0, nPathSwitchStmt = nPath(stmt->getCond());
-    clang::CompoundStmt *body = (clang::CompoundStmt *)stmt->getBody();
-    for (clang::CompoundStmt::body_iterator bodyStmt = body->body_begin(),
-        bodyStmtEnd = body->body_end(); bodyStmt != bodyStmtEnd; bodyStmt++)
+    clang::Stmt *body = stmt->getBody();
+    if(!clang::isa<clang::CompoundStmt>(body))
+    {
+        return nPathSwitchStmt + nPath(body);
+    }
+    clang::CompoundStmt *compound = clang::dyn_cast<clang::CompoundStmt>(body);
+    for (clang::CompoundStmt::body_iterator bodyStmt = compound->body_begin(),
+        bodyStmtEnd = compound->body_end(); bodyStmt != bodyStmtEnd; bodyStmt++)
     {
         if (clang::isa<clang::SwitchCase>(*bodyStmt))
         {
-            clang::SwitchCase *switchCase = clang::dyn_cast<clang::SwitchCase>(*bodyStmt);
             nPathSwitchStmt += internalNPath;
-            internalNPath = nPath(switchCase->getSubStmt());
+            internalNPath = nPath(*bodyStmt);
         }
         else
         {
@@ -95,6 +99,11 @@ int NPathComplexityMetric::nPath(clang::SwitchStmt *stmt)
         }
     }
     return nPathSwitchStmt + internalNPath;
+}
+
+int NPathComplexityMetric::nPath(clang::SwitchCase *expr)
+{
+    return nPath(expr->getSubStmt());
 }
 
 int NPathComplexityMetric::nPath(clang::ConditionalOperator *expr)
