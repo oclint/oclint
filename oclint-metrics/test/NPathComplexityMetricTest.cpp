@@ -240,6 +240,15 @@ TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneCase)
     testMatcherOnCode(finder, "void mthd() { int i; switch (i) { case 1: break; } }");
 }
 
+TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneReturn)
+{
+    NPathCallback nPathCallback(1);
+    MatchFinder finder;
+    finder.addMatcher(functionDeclMatcher, &nPathCallback);
+
+    testMatcherOnCode(finder, "void mthd() { int i; switch (i) return; }");
+}
+
 TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneCaseOneDefault)
 {
     NPathCallback nPathCallback(2);
