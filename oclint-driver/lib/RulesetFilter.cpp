@@ -1,35 +1,12 @@
 #include "oclint/RulesetFilter.h"
 
-#include <algorithm>
-
 #include "oclint/RuleSet.h"
 
 using namespace oclint;
 
-static std::string convertSpacesInName(const std::string &name)
-{
-    if (!name.length())
-    {
-        return name;
-    }
-
-    std::string copy = name;
-    copy[0] = toupper(copy[0]);
-
-    for (std::string::iterator it = copy.begin() + 1; it != copy.end(); ++it)
-    {
-        if (!isalpha(*(it - 1)) && islower(*it))
-        {
-            *it = toupper(*it);
-        }
-    }
-    copy.erase(remove_if(copy.begin(), copy.end(), isspace), copy.end());
-    return copy;
-}
-
 static std::string getName(const oclint::RuleBase *rule)
 {
-    return convertSpacesInName(rule->name());
+    return rule->identifier();
 }
 
 void RulesetFilter::enableRule(const std::string &ruleName)
