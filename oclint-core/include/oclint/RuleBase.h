@@ -42,7 +42,8 @@ public:
                 *it = toupper(*it);
             }
         }
-        copy.erase(std::remove_if(copy.begin(), copy.end(), isalpha), copy.end());
+        copy.erase(std::remove_if(copy.begin(), copy.end(),
+                   [](char c){return !isalpha(c);}), copy.end());
         return copy;
     }
     virtual const std::string category() const = 0;
