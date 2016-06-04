@@ -11,7 +11,7 @@ from oclintscripts import environment
 from oclintscripts import path
 from oclintscripts import process
 
-OCLINT_MODULES = ['core', 'metrics', 'rules', 'reporters']
+OCLINT_MODULES = ['core', 'metrics', 'rules', 'reporters', 'driver']
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('module_name', nargs='?', choices=['all'] + OCLINT_MODULES, default='all')
@@ -49,7 +49,7 @@ def test_module(module_name, multiple_thread):
     source_path = path.oclint_module_source_dir(module_name)
 
     module_extras = {}
-    if module_name == "rules" or module_name == "reporters":
+    if module_name == "rules" or module_name == "reporters" or module_name == "driver":
         module_extras['OCLINT_SOURCE_DIR'] = path.source.core_dir
         module_extras['OCLINT_BUILD_DIR'] = path.build.core_test_dir
     if module_name == "rules":
