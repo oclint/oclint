@@ -31,10 +31,10 @@ void DiagnosticDispatcher::HandleDiagnostic(clang::DiagnosticsEngine::Level diag
 
     if (diagnosticInfo.hasSourceManager()) {
         clang::SourceManager *sourceManager = &diagnosticInfo.getSourceManager();
-        llvm::StringRef filename = sourceManager->getFilename(location);
+        llvm::StringRef sourceFilename = sourceManager->getFilename(location);
         line = sourceManager->getPresumedLineNumber(location);
         column = sourceManager->getPresumedColumnNumber(location);
-        filename = filename.str();
+        filename = sourceFilename.str();
     }
 
     Violation violation(nullptr, filename, line, column, 0, 0,
