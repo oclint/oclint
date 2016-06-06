@@ -104,7 +104,7 @@ def write_cmake_lists(cmake_lists_path, rule_dict):
 
 def write_test_cmake_lists(cmake_lists_path, rule_dict):
     rule_class_name = rule_dict['RULE_CLASS_NAME']
-    build_test_rule = 'BUILD_TEST(' + rule_class_name + 'RuleTest)'
+    build_test_rule = 'BUILD_TEST(' + rule_class_name + 'RuleTest\n' + rule_class_name + 'RuleTest.cpp)'
     with open(cmake_lists_path, 'a') as cmake_lists_file:
         cmake_lists_file.write('\n' + build_test_rule + '\n')
 
