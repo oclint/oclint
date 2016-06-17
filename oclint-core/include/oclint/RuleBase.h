@@ -24,10 +24,12 @@ public:
     virtual ~RuleBase() {}
     virtual void apply() = 0;
     virtual const std::string name() const = 0;
-    virtual const std::string attributeName() const {
+    virtual const std::string attributeName() const
+    {
         return name();
     }
-    virtual const std::string identifier() const {
+    virtual const std::string identifier() const
+    {
         std::string copy = name();
         if (copy.empty())
         {
