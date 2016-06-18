@@ -6,6 +6,7 @@ env:
   - BUILD="test" MODULE="metrics"
   - BUILD="test" MODULE="rules" DEP="core metrics"
   - BUILD="test" MODULE="reporters" DEP="core"
+  - BUILD="test" MODULE="driver" DEP="core"
   - BUILD="build"
 
 language: cpp
