@@ -17,6 +17,20 @@ public:
     std::string ruleName;
 };
 
+class CustomRule : public RuleBase
+{
+public:
+    void apply() {}
+    const std::string name() const
+    { return "Some Identifier"; }
+    const std::string identifier() const
+    { return "Some Other Identifier"; }
+    const std::string category() const
+    { return "test"; }
+    int priority() const
+    { return 0; }
+};
+
 TEST(RuleBaseTest, EmptyName)
 {
     EXPECT_EQ(TestRule("").identifier(), "");
@@ -35,6 +49,13 @@ TEST(RuleBaseTest, SpecialChars)
 TEST(RuleBaseTest, AttributeName)
 {
     EXPECT_EQ(TestRule("attr").attributeName(), "attr");
+}
+
+TEST(RuleBaseTest, OverwrittenIdentifier)
+{
+    CustomRule rule;
+    RuleBase *ruleBase = &rule;
+    EXPECT_EQ(ruleBase->identifier(), "Some Other Identifier");
 }
 
 int main(int argc, char **argv)
