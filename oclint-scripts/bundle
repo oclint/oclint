@@ -33,12 +33,14 @@ def setup_release_dir():
     path.mkdir_p(bundle_lib_dir)
     path.mkdir_p(bundle_lib_oclint_dir)
 
-def install_binary():
+def install_binary(is_release):
     driver_bin_dir = os.path.join(path.build.driver_build_dir, 'bin')
     path.cp_r(driver_bin_dir, bundle_bin_dir)
     if environment.is_unix():
         path.cd(bundle_bin_dir)
         process.call('ln -s oclint-' + version.oclint_version() + ' oclint')
+        if not is_release:
+            process.call('ln -s oclint-' + version.oclint_version() + ' oclint-' + version.oclint_dev_version())
     if environment.is_mingw32():
         ruleset_dll_name = 'libOCLintRuleSet.dll'
         ruleset_dll_path = os.path.join(path.build.core_build_dir, 'lib', ruleset_dll_name)
@@ -126,7 +128,7 @@ def archive(is_release):
 
 setup_release_dir()
 install_licenses()
-install_binary()
+install_binary(args.release)
 install_rules()
 install_reporters()
 install_clang_headers(args.llvm_root)
