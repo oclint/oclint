@@ -6,8 +6,10 @@ import os
 from oclintscripts import path
 
 def git_hash():
+    current_working_folder = os.getcwd()
     os.chdir(path.root_dir)
     git_hash = subprocess.check_output(['git', 'log', '-n', '1', '--pretty=%h']).split()[0]
+    path.cd(current_working_folder)
     return git_hash
 
 def oclint_version():
