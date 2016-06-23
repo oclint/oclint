@@ -2,6 +2,7 @@
 
 import platform
 import multiprocessing
+import subprocess
 
 def cpu_count():
     return multiprocessing.cpu_count()
@@ -24,6 +25,12 @@ def is_mingw32():
 
 def is_darwin():
     return kernel().startswith("darwin")
+
+def is_xcode8():
+    if not is_darwin():
+        return 0
+    xcodebuild_version = subprocess.check_output(['xcodebuild', '-version'])
+    return xcodebuild_version.find("Xcode 8.") != -1
 
 def is_linux():
     return kernel().startswith("linux")

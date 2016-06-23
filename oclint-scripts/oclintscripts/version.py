@@ -4,6 +4,7 @@ import subprocess
 import os
 
 from oclintscripts import path
+from oclintscripts import environment
 
 def git_hash():
     current_working_folder = os.getcwd()
@@ -22,6 +23,8 @@ def llvm_branches():
     return [llvm_master_branch(), llvm_latest_release_branch()]
 
 def llvm_default_branch():
+    if environment.is_xcode8():
+        return llvm_master_branch()
     return llvm_latest_release_branch()
 
 def llvm_master_branch():
