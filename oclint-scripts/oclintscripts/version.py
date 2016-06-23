@@ -19,7 +19,13 @@ def oclint_dev_version():
     return oclint_version() + '.dev.' + git_hash()
 
 def llvm_branches():
-    return ['trunk', llvm_default_branch()]
+    return [llvm_master_branch(), llvm_latest_release_branch()]
 
 def llvm_default_branch():
+    return llvm_latest_release_branch()
+
+def llvm_master_branch():
+    return 'trunk'
+
+def llvm_latest_release_branch():
     return 'tags/RELEASE_381/final'
