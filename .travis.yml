@@ -1,18 +1,68 @@
-os:
-- linux
-- osx
-env:
-  - BUILD="test" MODULE="core"
-  - BUILD="test" MODULE="metrics"
-  - BUILD="test" MODULE="rules" DEP="core metrics"
-  - BUILD="test" MODULE="reporters" DEP="core"
-  - BUILD="test" MODULE="driver" DEP="core"
-  - BUILD="build"
-
 language: cpp
-sudo: required
-dist: trusty
-osx_image: xcode8
+
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: BUILD="test" MODULE="core"
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: BUILD="test" MODULE="metrics"
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: BUILD="test" MODULE="rules" DEP="core metrics"
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: BUILD="test" MODULE="reporters" DEP="core"
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: BUILD="test" MODULE="driver" DEP="core"
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: BUILD="build"
+    - os: osx
+      osx_image: xcode7.3
+      env: BUILD="test" MODULE="core"
+    - os: osx
+      osx_image: xcode7.3
+      env: BUILD="test" MODULE="metrics"
+    - os: osx
+      osx_image: xcode7.3
+      env: BUILD="test" MODULE="rules" DEP="core metrics"
+    - os: osx
+      osx_image: xcode7.3
+      env: BUILD="test" MODULE="reporters" DEP="core"
+    - os: osx
+      osx_image: xcode7.3
+      env: BUILD="test" MODULE="driver" DEP="core"
+    - os: osx
+      osx_image: xcode7.3
+      env: BUILD="build"
+    - os: osx
+      osx_image: xcode8
+      env: BUILD="test" MODULE="core"
+    - os: osx
+      osx_image: xcode8
+      env: BUILD="test" MODULE="metrics"
+    - os: osx
+      osx_image: xcode8
+      env: BUILD="test" MODULE="rules" DEP="core metrics"
+    - os: osx
+      osx_image: xcode8
+      env: BUILD="test" MODULE="reporters" DEP="core"
+    - os: osx
+      osx_image: xcode8
+      env: BUILD="test" MODULE="driver" DEP="core"
+    - os: osx
+      osx_image: xcode8
+      env: BUILD="build"
+
 before_install:
 - if [ $TRAVIS_OS_NAME == osx ]; then
     brew update;
