@@ -143,6 +143,18 @@ public:
         return "unused";
     }
 
+#ifndef NDEBUG
+    virtual const std::string since() const override
+    {
+        return "0.4";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "This rule detects parameters that are not used in the method.";
+    }
+#endif
+
     bool VisitParmVarDecl(ParmVarDecl *varDecl)
     {
         if (!varDecl->isUsed() &&

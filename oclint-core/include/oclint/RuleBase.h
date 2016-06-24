@@ -50,6 +50,11 @@ public:
     }
     virtual const std::string category() const = 0;
     virtual int priority() const = 0;
+
+#ifndef NDEBUG
+    virtual const std::string since() const = 0;
+    virtual const std::string description() const = 0;
+#endif
 };
 
 } // end namespace oclint

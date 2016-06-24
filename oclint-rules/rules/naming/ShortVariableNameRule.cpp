@@ -67,6 +67,20 @@ public:
         return "naming";
     }
 
+#ifndef NDEBUG
+    virtual const std::string since() const override
+    {
+        return "0.7";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "A variable with a short name is hard to understand what it stands for. "
+            "Variable with name, but the name has number of characters less than the "
+            "threshold will be emitted.";
+    }
+#endif
+
     bool VisitVarDecl(VarDecl *varDecl)
     {
         int nameLength = varDecl->getNameAsString().size();

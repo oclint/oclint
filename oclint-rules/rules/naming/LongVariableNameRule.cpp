@@ -25,6 +25,18 @@ public:
         return "naming";
     }
 
+#ifndef NDEBUG
+    virtual const std::string since() const override
+    {
+        return "0.7";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "Variables with long names harm readability.";
+    }
+#endif
+
     bool VisitVarDecl(VarDecl *varDecl)
     {
         int nameLength = varDecl->getNameAsString().size();

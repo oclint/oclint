@@ -149,6 +149,18 @@ public:
         return "unused";
     }
 
+#ifndef NDEBUG
+    virtual const std::string since() const override
+    {
+        return "0.4";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "This rule detects local variables that are declared, but not used.";
+    }
+#endif
+
     bool VisitVarDecl(VarDecl *varDecl)
     {
         if (isUnusedLocalVariable(varDecl) && !isRAIIClass(varDecl))
