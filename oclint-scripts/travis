@@ -5,7 +5,7 @@ if [ "$1" = "build" ]
 then
     ./build
     ./bundle -archive
-elif [ "$1" == "docgen" ]
+elif [ "$1" = "docgen" ]
 then
     ./docGen
 else

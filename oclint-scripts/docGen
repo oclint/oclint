@@ -3,3 +3,6 @@
 ./build core -docgen
 ./build metrics -docgen
 ./build rules -docgen
+./build driver -docgen
+./bundle
+../build/oclint-release/bin/oclint-docgen docgen

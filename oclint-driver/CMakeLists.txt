@@ -53,3 +53,23 @@ IF(TEST_BUILD)
         )
     ADD_SUBDIRECTORY(test)
 ENDIF()
+
+IF(DOC_GEN_BUILD)
+    ADD_EXECUTABLE(oclint-docgen
+        main_docgen.cpp
+        rules_dlfcn_port.cpp
+        )
+    TARGET_LINK_LIBRARIES(oclint-docgen
+        OCLintDriver
+        OCLintRuleSet
+        OCLintCore
+        clangStaticAnalyzerFrontend
+        clangStaticAnalyzerCheckers
+        clangStaticAnalyzerCore
+        clangRewriteFrontend
+        clangRewrite
+        ${CLANG_LIBRARIES}
+        ${REQ_LLVM_LIBRARIES}
+        ${CMAKE_DL_LIBS}
+        )
+ENDIF()
