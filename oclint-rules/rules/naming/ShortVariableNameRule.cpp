@@ -67,7 +67,7 @@ public:
         return "naming";
     }
 
-#ifndef NDEBUG
+#ifdef DOCGEN
     virtual const std::string since() const override
     {
         return "0.7";

@@ -1,0 +1,5 @@
+#! /bin/sh -e
+
+./build core -docgen
+./build metrics -docgen
+./build rules -docgen
