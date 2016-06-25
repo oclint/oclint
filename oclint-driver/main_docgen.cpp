@@ -129,8 +129,8 @@ int main(int argc, const char **argv)
 
     string docRulePath = "../build/oclint-docs/rules/";
     string indexPath = docRulePath + "index.rst";
-    auto indexOut = ofstream(indexPath.c_str());
-    indexOut
+    ofstream *indexOut = new ofstream(indexPath.c_str());
+    *indexOut
         << "Rule Index" << endl
         << "==========" << endl
         << endl
@@ -142,40 +142,40 @@ int main(int argc, const char **argv)
 
     for (auto category : categories)
     {
-        indexOut << "   " << category << endl;
+        *indexOut << "   " << category << endl;
 
         string categoryPath = docRulePath + category + ".rst";
-        auto categoryOut = ofstream(categoryPath.c_str());
+        ofstream *categoryOut = new ofstream(categoryPath.c_str());
 
         string categoryName = category;
         categoryName[0] = toupper(categoryName[0]);
-        categoryOut << categoryName << endl;
+        *categoryOut << categoryName << endl;
         for (int i = 0; i < categoryName.size(); i++)
         {
-            categoryOut << "=";
+            *categoryOut << "=";
         }
-        categoryOut << endl << endl;
+        *categoryOut << endl << endl;
 
         auto rulesForCategory = rulesMapping[category];
         for (auto rule : rulesForCategory)
         {
             auto ruleIdentifier = rule->identifier();
-            categoryOut << ruleIdentifier << endl;
+            *categoryOut << ruleIdentifier << endl;
             for (int i = 0; i < ruleIdentifier.size(); i++)
             {
-                categoryOut << "=";
+                *categoryOut << "=";
             }
-            categoryOut << endl << endl;
-            categoryOut << "**Since: " << rule->since() << "**" << endl << endl;
-            categoryOut << rule->description() << endl << endl;
+            *categoryOut << endl << endl;
+            *categoryOut << "**Since: " << rule->since() << "**" << endl << endl;
+            *categoryOut << rule->description() << endl << endl;
         }
 
-        categoryOut << endl;
-        categoryOut.close();
+        *categoryOut << endl;
+        categoryOut->close();
     }
 
-    indexOut << endl;
-    indexOut.close();
+    *indexOut << endl;
+    indexOut->close();
 
     return SUCCESS;
 }
