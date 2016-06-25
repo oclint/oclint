@@ -7,3 +7,5 @@
 ./bundle -docgen
 mkdir -p ../build/oclint-docs/rules
 ../build/oclint-release/bin/oclint-docgen docgen
+cd ../build/
+tar zcf oclint-docs-dev-snapshot.tar.gz oclint-docs/
