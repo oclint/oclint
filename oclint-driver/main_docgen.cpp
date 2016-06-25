@@ -3,28 +3,16 @@
 #include <fstream>
 #include <ctime>
 #include <string>
+#include <map>
 #include <memory>
 
 #include <clang/Tooling/CommonOptionsParser.h>
 
-#include "oclint/Analyzer.h"
-#include "oclint/CompilerInstance.h"
-#include "oclint/Driver.h"
-#include "oclint/GenericException.h"
 #include "oclint/Options.h"
-#include "oclint/RawResults.h"
-#include "oclint/Reporter.h"
-#include "oclint/ResultCollector.h"
 #include "oclint/RuleBase.h"
 #include "oclint/RuleSet.h"
-#include "oclint/RulesetFilter.h"
-#include "oclint/RulesetBasedAnalyzer.h"
-#include "oclint/UniqueResults.h"
 #include "oclint/Version.h"
-#include "oclint/ViolationSet.h"
-#include "oclint/Violation.h"
 
-#include "reporters.h"
 #include "rules.h"
 
 using namespace std;
@@ -94,6 +82,56 @@ static void oclintDocGenVersionPrinter()
 
 extern llvm::cl::OptionCategory OCLintOptionCategory;
 
+void writeIndexHeader(ofstream& out)
+{
+    out << "Rule Index" << endl
+        << "==========" << endl
+        << endl
+        << "OCLint |release| includes " << allRules().size() << " rules." << endl
+        << endl
+        << ".. toctree::" << endl
+        << "   :maxdepth: 2" << endl
+        << endl;
+}
+
+void writeCategoryToIndex(ofstream& out, string category)
+{
+    out << "   " << category << endl;
+}
+
+void writeCategoryHeader(ofstream& out, string category)
+{
+    category[0] = toupper(category[0]);
+    out << category << endl;
+    for (int i = 0; i < category.size(); i++)
+    {
+        out << "=";
+    }
+    out << endl << endl;
+}
+
+void writeRuleToCategory(ofstream& out, oclint::RuleBase* rule)
+{
+    auto ruleIdentifier = rule->identifier();
+    out << ruleIdentifier << endl;
+    for (int i = 0; i < ruleIdentifier.size(); i++)
+    {
+        out << "=";
+    }
+    out << endl << endl;
+    out << "**Since: " << rule->since() << "**" << endl << endl;
+    out << rule->description() << endl << endl;
+}
+
+void writeFooter(ofstream& out)
+{
+    time_t timeT = time(NULL);
+    struct tm * currentTime = localtime(&timeT);
+    out << endl;
+    out << ".. Generated on " << asctime(currentTime);
+    out << endl;
+}
+
 int main(int argc, const char **argv)
 {
     llvm::cl::AddExtraVersionPrinter(&oclintDocGenVersionPrinter);
@@ -130,51 +168,29 @@ int main(int argc, const char **argv)
     string docRulePath = "../build/oclint-docs/rules/";
     string indexPath = docRulePath + "index.rst";
     ofstream *indexOut = new ofstream(indexPath.c_str());
-    *indexOut
-        << "Rule Index" << endl
-        << "==========" << endl
-        << endl
-        << "OCLint |release| includes " << allRules().size() << " rules." << endl
-        << endl
-        << ".. toctree::" << endl
-        << "   :maxdepth: 2" << endl
-        << endl;
+
+    writeIndexHeader(*indexOut);
 
     for (auto category : categories)
     {
-        *indexOut << "   " << category << endl;
+        writeCategoryToIndex(*indexOut, category);
 
         string categoryPath = docRulePath + category + ".rst";
         ofstream *categoryOut = new ofstream(categoryPath.c_str());
 
-        string categoryName = category;
-        categoryName[0] = toupper(categoryName[0]);
-        *categoryOut << categoryName << endl;
-        for (int i = 0; i < categoryName.size(); i++)
-        {
-            *categoryOut << "=";
-        }
-        *categoryOut << endl << endl;
+        writeCategoryHeader(*categoryOut, category);
 
         auto rulesForCategory = rulesMapping[category];
         for (auto rule : rulesForCategory)
         {
-            auto ruleIdentifier = rule->identifier();
-            *categoryOut << ruleIdentifier << endl;
-            for (int i = 0; i < ruleIdentifier.size(); i++)
-            {
-                *categoryOut << "=";
-            }
-            *categoryOut << endl << endl;
-            *categoryOut << "**Since: " << rule->since() << "**" << endl << endl;
-            *categoryOut << rule->description() << endl << endl;
+            writeRuleToCategory(*categoryOut, rule);
         }
 
-        *categoryOut << endl;
+        writeFooter(*categoryOut);
         categoryOut->close();
     }
 
-    *indexOut << endl;
+    writeFooter(*indexOut);
     indexOut->close();
 
     return SUCCESS;
