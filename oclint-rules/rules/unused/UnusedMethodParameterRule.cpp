@@ -153,6 +153,18 @@ public:
     {
         return "This rule detects parameters that are not used in the method.";
     }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    int example(int a)  // parameter a is not used
+    {
+        return 0;
+    }
+    )rst";
+    }
 #endif
 
     bool VisitParmVarDecl(ParmVarDecl *varDecl)

@@ -35,6 +35,18 @@ public:
     {
         return "Variables with long names harm readability.";
     }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void aMethod()
+    {
+        int reallyReallyLongIntegerName;
+    }
+    )rst";
+    }
 #endif
 
     bool VisitVarDecl(VarDecl *varDecl)

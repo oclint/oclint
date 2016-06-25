@@ -120,13 +120,19 @@ void writeRuleToCategory(ofstream& out, oclint::RuleBase* rule)
         out << "=";
     }
     out << endl << endl;
+
     out << "**Since: " << rule->since() << "**" << endl << endl;
+
     out << rule->description() << endl << endl;
+
     out << "This rule is defined by the following class: "
         << "`oclint-rules/rules/" << ruleCategory << "/" << ruleIdentifier << "Rule.cpp "
         << "<https://github.com/oclint/oclint/blob/master/"
         << "oclint-rules/rules/" << ruleCategory << "/" << ruleIdentifier << "Rule.cpp>`"
         << endl << endl;
+
+    out << "**Example:**" << endl << endl;
+    out << rule->example() << endl << endl;
 }
 
 void writeFooter(ofstream& out)

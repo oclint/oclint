@@ -79,6 +79,18 @@ public:
             "Variable with name, but the name has number of characters less than the "
             "threshold will be emitted.";
     }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void aMethod(int i)  // i is short
+    {
+        int ii;          // ii is short
+    }
+    )rst";
+    }
 #endif
 
     bool VisitVarDecl(VarDecl *varDecl)

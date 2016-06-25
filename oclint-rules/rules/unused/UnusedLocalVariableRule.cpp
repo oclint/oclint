@@ -159,6 +159,19 @@ public:
     {
         return "This rule detects local variables that are declared, but not used.";
     }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    int example(int a)
+    {
+        int i;          // variable i is declared, but not used
+        return 0;
+    }
+    )rst";
+    }
 #endif
 
     bool VisitVarDecl(VarDecl *varDecl)
