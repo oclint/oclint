@@ -4,5 +4,6 @@
 ./build metrics -docgen
 ./build rules -docgen
 ./build driver -docgen
-./bundle
+./bundle -docgen
+mkdir -p ../build/oclint-docs/rules
 ../build/oclint-release/bin/oclint-docgen docgen

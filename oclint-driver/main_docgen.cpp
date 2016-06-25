@@ -106,10 +106,76 @@ int main(int argc, const char **argv)
         return prepareStatus;
     }
 
+    vector<string> categories;
+    map<string, vector<oclint::RuleBase *>> rulesMapping;
+
     for (auto rule : allRules())
     {
-        cout << rule->name() << ": " << rule->since() << endl;
+        auto category = rule->category();
+        if (std::find(categories.begin(), categories.end(), category) == categories.end())
+        {
+            vector<oclint::RuleBase *> rulesForCategory;
+            rulesForCategory.push_back(rule);
+            rulesMapping[category] = rulesForCategory;
+            categories.push_back(category);
+        }
+        else
+        {
+            auto rulesForCategory = rulesMapping[category];
+            rulesForCategory.push_back(rule);
+            rulesMapping[category] = rulesForCategory;
+        }
     }
+
+    string docRulePath = "../build/oclint-docs/rules/";
+    string indexPath = docRulePath + "index.rst";
+    auto indexOut = ofstream(indexPath.c_str());
+    indexOut
+        << "Rule Index" << endl
+        << "==========" << endl
+        << endl
+        << "OCLint |release| includes " << allRules().size() << " rules." << endl
+        << endl
+        << ".. toctree::" << endl
+        << "   :maxdepth: 2" << endl
+        << endl;
+
+    for (auto category : categories)
+    {
+        indexOut << "   " << category << endl;
+
+        string categoryPath = docRulePath + category + ".rst";
+        auto categoryOut = ofstream(categoryPath.c_str());
+
+        string categoryName = category;
+        categoryName[0] = toupper(categoryName[0]);
+        categoryOut << categoryName << endl;
+        for (int i = 0; i < categoryName.size(); i++)
+        {
+            categoryOut << "=";
+        }
+        categoryOut << endl << endl;
+
+        auto rulesForCategory = rulesMapping[category];
+        for (auto rule : rulesForCategory)
+        {
+            auto ruleIdentifier = rule->identifier();
+            categoryOut << ruleIdentifier << endl;
+            for (int i = 0; i < ruleIdentifier.size(); i++)
+            {
+                categoryOut << "=";
+            }
+            categoryOut << endl << endl;
+            categoryOut << "**Since: " << rule->since() << "**" << endl << endl;
+            categoryOut << rule->description() << endl << endl;
+        }
+
+        categoryOut << endl;
+        categoryOut.close();
+    }
+
+    indexOut << endl;
+    indexOut.close();
 
     return SUCCESS;
 }
