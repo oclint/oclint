@@ -33,6 +33,37 @@ public:
         return LANG_OBJC;
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.8";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "When ``isEqual`` method is overridden, ``hash`` method must be overridden, too.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: objective-c
+
+    @implementation BaseObject
+
+    - (BOOL)isEqual:(id)obj {
+        return YES;
+    }
+
+    /*
+    - (int)hash is missing; If you override isEqual you must override hash too.
+    */
+
+    @end
+    )rst";
+    }
+#endif
+
     bool VisitObjCImplementationDecl(ObjCImplementationDecl *implementation) {
         bool foundHash = false;
         bool foundIsEqual = false;
