@@ -165,6 +165,11 @@ public:
     }
     )rst";
     }
+
+    virtual bool enableSuppress() const
+    {
+        return true;
+    }
 #endif
 
     bool VisitParmVarDecl(ParmVarDecl *varDecl)

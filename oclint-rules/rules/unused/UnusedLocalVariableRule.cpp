@@ -172,6 +172,11 @@ public:
     }
     )rst";
     }
+
+    virtual bool enableSuppress() const
+    {
+        return true;
+    }
 #endif
 
     bool VisitVarDecl(VarDecl *varDecl)

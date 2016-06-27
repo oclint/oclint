@@ -4,6 +4,10 @@
 #include <string>
 #include <algorithm>
 
+#ifdef DOCGEN
+#include <map>
+#endif
+
 #include "oclint/RuleCarrier.h"
 
 namespace oclint
@@ -55,6 +59,19 @@ public:
     virtual const std::string since() const = 0;
     virtual const std::string description() const = 0;
     virtual const std::string example() const = 0;
+    virtual bool enableSuppress() const
+    {
+        return false;
+    }
+    virtual const std::map<std::string, std::string> thresholds() const
+    {
+        std::map<std::string, std::string> emptyMap;
+        return emptyMap;
+    }
+    virtual const std::string additionalDocument() const
+    {
+        return "";
+    }
 #endif
 };
 

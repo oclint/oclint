@@ -47,6 +47,13 @@ public:
     }
     )rst";
     }
+
+    virtual const std::map<std::string, std::string> thresholds() const override
+    {
+        std::map<std::string, std::string> thresholdMapping;
+        thresholdMapping["LONG_VARIABLE_NAME"] = "The long variable name reporting threshold, default value is 20.";
+        return thresholdMapping;
+    }
 #endif
 
     bool VisitVarDecl(VarDecl *varDecl)

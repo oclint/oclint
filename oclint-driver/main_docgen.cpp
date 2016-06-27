@@ -133,6 +133,32 @@ void writeRuleToCategory(ofstream& out, oclint::RuleBase* rule)
 
     out << "**Example:**" << endl << endl;
     out << rule->example() << endl << endl;
+
+    auto thresholdMapping = rule->thresholds();
+    if (thresholdMapping.size() > 0)
+    {
+        out << "**Thresholds:**" << endl << endl;
+        for (auto entry : thresholdMapping)
+        {
+            out << entry.first << endl
+                << "    " << entry.second << endl;
+        }
+        out << endl;
+    }
+
+    if (rule->enableSuppress())
+    {
+        out << "**Suppress:**" << endl << endl;
+        out << ".. code-block:: cpp" << endl << endl;
+        out << "    __attribute__((annotate(\"oclint:suppress[" << rule->attributeName() << "]\")))"
+            << endl << endl;
+    }
+
+    auto additionalDoc = rule->additionalDocument();
+    if (additionalDoc.size() > 0)
+    {
+        out << additionalDoc << endl;
+    }
 }
 
 void writeFooter(ofstream& out)
