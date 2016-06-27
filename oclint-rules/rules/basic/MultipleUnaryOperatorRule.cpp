@@ -32,6 +32,30 @@ public:
         return "basic";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.6";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "Multiple unary operator can always be confusing and should be simplified.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void example()
+    {
+        int b = -(+(!(~1)));
+    }
+    )rst";
+    }
+#endif
+
     bool VisitUnaryOperator(UnaryOperator *unaryOperator)
     {
         Expr *subExpr = unaryOperator->getSubExpr();

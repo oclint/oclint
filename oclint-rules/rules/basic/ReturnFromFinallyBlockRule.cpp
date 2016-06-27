@@ -42,6 +42,41 @@ public:
         return "basic";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.6";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "Returning from a finally block is not recommended.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: objective-c
+
+    void example()
+    {
+        @try
+        {
+            foo();
+        }
+        @catch(id ex)
+        {
+            bar();
+        }
+        @finally
+        {
+            return;         // this can discard exceptions.
+        }
+    }
+    )rst";
+    }
+#endif
+
     bool VisitObjCAtFinallyStmt(ObjCAtFinallyStmt *finallyStmt)
     {
         vector<ReturnStmt*> returns;

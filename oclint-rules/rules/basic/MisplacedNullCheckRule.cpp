@@ -77,6 +77,37 @@ public:
     {
         return LANG_C | LANG_CXX;
     }
+
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.7";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "The null check is misplaced. In C and C++, sending a message to a null pointer could crash the app. "
+            "When null is misplaced, either the check is useless or it's incorrect.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void m(A *a, B *b)
+    {
+        if (a->bar(b) && a != NULL) // violation
+        {
+        }
+
+        if (a->bar(b) || !a)        // violation
+        {
+        }
+    }
+    )rst";
+    }
+#endif
 };
 
 class MisplacedNilCheckRule : public MisplacedNullCheckBaseRule
@@ -109,6 +140,37 @@ public:
     {
         return LANG_OBJC;
     }
+
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.7";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "The nil check is misplaced. In Objective-C, sending a message to a nil pointer simply does nothing. "
+            "But code readers may be confused about the misplaced nil check.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: objective-c
+
+    + (void)compare:(A *)obj1 withOther:(A *)obj2
+    {
+        if ([obj1 isEqualTo:obj2] && obj1)
+        {
+        }
+
+        if (![obj1 isEqualTo:obj2] || obj1 == nil)
+        {
+        }
+    }
+    )rst";
+    }
+#endif
 };
 
 static RuleSet rulesMisplacedNull(new MisplacedNullCheckRule());

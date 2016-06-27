@@ -56,6 +56,32 @@ public:
         return "basic";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.7";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "Jumbled incrementers are usually typos. If it’s done on purpose, it’s very confusing for code readers.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void aMethod(int a) {
+        for (int i = 0; i < a; i++) {
+            for (int j = 0; j < a; i++) { // references both 'i' and 'j'
+            }
+        }
+    }
+    )rst";
+    }
+#endif
+
     bool VisitForStmt(ForStmt *parentStmt)
     {
         Stmt *bodyStmt = parentStmt->getBody();

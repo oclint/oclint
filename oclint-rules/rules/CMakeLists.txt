@@ -52,7 +52,7 @@ MACRO(add_rule_category_directory category)
     ENDIF()
 ENDMACRO(add_rule_category_directory)
 
-#ADD_RULE_CATEGORY_DIRECTORY(basic)
+ADD_RULE_CATEGORY_DIRECTORY(basic)
 #ADD_RULE_CATEGORY_DIRECTORY(cocoa)
 #ADD_RULE_CATEGORY_DIRECTORY(convention)
 #ADD_RULE_CATEGORY_DIRECTORY(design)

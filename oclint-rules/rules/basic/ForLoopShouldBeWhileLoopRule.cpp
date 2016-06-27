@@ -23,6 +23,34 @@ public:
         return "basic";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.6";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "Under certain circumstances, some ``for`` loops can be simplified to while "
+            "loops to make code more concise.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void example(int a)
+    {
+        for (; a < 100;)
+        {
+            foo(a);
+        }
+    }
+    )rst";
+    }
+#endif
+
     bool VisitForStmt(ForStmt *forStmt)
     {
         Stmt *initStmt = forStmt->getInit();
