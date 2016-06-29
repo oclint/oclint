@@ -151,9 +151,9 @@ int prepare()
 
 static void oclintVersionPrinter()
 {
-    cout << "OCLint (http://oclint.org/):\n";
-    cout << "  OCLint version " << oclint::Version::identifier() << ".\n";
-    cout << "  Built " << __DATE__ << " (" << __TIME__ << ").\n";
+    outs() << "OCLint (http://oclint.org/):\n";
+    outs() << "  OCLint version " << oclint::Version::identifier() << ".\n";
+    outs() << "  Built " << __DATE__ << " (" << __TIME__ << ").\n";
 }
 
 extern llvm::cl::OptionCategory OCLintOptionCategory;
