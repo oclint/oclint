@@ -98,6 +98,35 @@ public:
         return LANG_OBJC;
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.7";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "This rule locates the places that can be migrated to the "
+            "new Objective-C literals with boxed expressions.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: objective-c
+
+    void aMethod()
+    {
+        NSNumber *fortyTwo = [NSNumber numberWithInt:(43 - 1)];
+        // NSNumber *fortyTwo = @(43 - 1);
+
+        NSString *env = [NSString stringWithUTF8String:getenv("PATH")];
+        // NSString *env = @(getenv("PATH"));
+    }
+        )rst";
+    }
+#endif
+
     bool VisitObjCMessageExpr(ObjCMessageExpr *objCMsgExpr)
     {
         ObjCInterfaceDecl *objCInterfaceDecl = objCMsgExpr->getReceiverInterface();

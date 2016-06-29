@@ -70,6 +70,35 @@ public:
         return LANG_OBJC;
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.7";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "This rule locates the places that can be migrated to the "
+            "new Objective-C literals with object subscripting.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: objective-c
+
+    void aMethod(NSArray *a, NSDictionary *d)
+    {
+        id item = [a objectAtIndex:0];
+        // id item = a[0];
+
+        id item = [d objectForKey:@1];
+        // id item = d[@1];
+    }
+        )rst";
+    }
+#endif
+
     bool VisitObjCMessageExpr(ObjCMessageExpr *objCMsgExpr)
     {
         Expr *receiverExpr = objCMsgExpr->getInstanceReceiver();
