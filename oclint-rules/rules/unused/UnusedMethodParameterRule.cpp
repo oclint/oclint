@@ -166,7 +166,7 @@ public:
     )rst";
     }
 
-    virtual bool enableSuppress() const
+    virtual bool enableSuppress() const override
     {
         return true;
     }
