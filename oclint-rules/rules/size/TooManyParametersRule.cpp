@@ -83,11 +83,6 @@ public:
 Fowler, Martin (1999). *Refactoring: Improving the design of existing code.* Addison Wesley.
         )rst";
     }
-
-    virtual bool enableSuppress() const override
-    {
-        return true;
-    }
 #endif
 
     virtual void setUp() override
