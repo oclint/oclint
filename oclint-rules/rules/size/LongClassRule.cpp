@@ -40,6 +40,41 @@ public:
         return "size";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.6";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "Long class generally indicates that this class tries to do many things. "
+            "Each class should do one thing and that one thing well.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    class Foo
+    {
+        void bar()
+        {
+            // 1001 lines of code
+        }
+    }
+        )rst";
+    }
+
+    virtual const std::map<std::string, std::string> thresholds() const override
+    {
+        std::map<std::string, std::string> thresholdMapping;
+        thresholdMapping["LONG_CLASS"] = "The class size reporting threshold, default value is 1000.";
+        return thresholdMapping;
+    }
+#endif
+
     virtual void setUp() override
     {
         _threshold = RuleConfiguration::intForKey("LONG_CLASS", 1000);

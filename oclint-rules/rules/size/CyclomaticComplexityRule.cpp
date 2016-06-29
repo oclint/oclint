@@ -47,6 +47,78 @@ public:
         return "size";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.4";
+    }
+
+    virtual const std::string description() const override
+    {
+        return R"rst(
+Cyclomatic complexity is determined by the number of linearly independent paths through a program's source code. In other words, cyclomatic complexity of a method is measured by the number of decision points, like ``if``, ``while``, and ``for`` statements, plus one for the method entry.
+
+The experiments McCabe, the author of cyclomatic complexity, conclude that methods in the 3 to 7 complexity range are quite well structured. He also suggest the cyclomatic complexity of 10 is a reasonable upper limit.
+        )rst";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void example(int a, int b, int c) // 1
+    {
+        if (a == b)                   // 2
+        {
+            if (b == c)               // 3
+            {
+            }
+            else if (a == c)          // 3
+            {
+            }
+            else
+            {
+            }
+        }
+        for (int i = 0; i < c; i++)   // 4
+        {
+        }
+        switch(c)
+        {
+            case 1:                   // 5
+                break;
+            case 2:                   // 6
+                break;
+            default:                  // 7
+                break;
+        }
+    }
+        )rst";
+    }
+
+    virtual const std::map<std::string, std::string> thresholds() const override
+    {
+        std::map<std::string, std::string> thresholdMapping;
+        thresholdMapping["CYCLOMATIC_COMPLEXITY"] = "The cyclomatic complexity reporting threshold, default value is 10.";
+        return thresholdMapping;
+    }
+
+    virtual const std::string additionalDocument() const override
+    {
+        return R"rst(
+**References:**
+
+McCabe (December 1976). `"A Complexity Measure" <http://www.literateprogramming.com/mccabe.pdf>`_. *IEEE Transactions on Software Engineering: 308–320*
+        )rst";
+    }
+
+    virtual bool enableSuppress() const override
+    {
+        return true;
+    }
+#endif
+
     bool VisitObjCMethodDecl(ObjCMethodDecl *decl)
     {
         applyDecl(decl);
