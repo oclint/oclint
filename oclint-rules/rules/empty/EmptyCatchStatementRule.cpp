@@ -25,6 +25,36 @@ public:
         return "empty";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.6";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "This rule detects instances where an exception is caught, but nothing is done about it.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void example()
+    {
+        try
+        {
+            int* m= new int[1000];
+        }
+        catch(...)                  // empty catch statement, this swallows an exception
+        {
+        }
+    }
+        )rst";
+    }
+#endif
+
     bool VisitCXXCatchStmt(CXXCatchStmt *catchStmt)
     {
         return checkLexicalEmptyStmt(catchStmt->getHandlerBlock(), this);
