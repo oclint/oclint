@@ -32,6 +32,40 @@ public:
         return "convention";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.4";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "An inverted logic is hard to understand.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    int example(int a)
+    {
+        int i;
+        if (a != 0)             // if (a == 0)
+        {                       // {
+            i = 1;              //      i = 0;
+        }                       // }
+        else                    // else
+        {                       // {
+            i = 0;              //      i = 1;
+        }                       // }
+
+        return !i ? -1 : 1;     // return i ? 1 : -1;
+    }
+        )rst";
+    }
+#endif
+
     bool VisitIfStmt(IfStmt *ifStmt)
     {
         if (ifStmt->getElse() && isInvertedLogic(ifStmt->getCond()))

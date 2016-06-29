@@ -56,6 +56,44 @@ public:
         return oclint::LANG_CXX;
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.10.2";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "Make base class destructors public and virtual, or protected and nonvirtual";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    class Base
+    {
+    public:
+        ~Base(); // this should be either protected or virtual
+    }
+    class C : public Base
+    {
+        virtual ~C();
+    }
+        )rst";
+    }
+
+    virtual const std::string additionalDocument() const override
+    {
+        return R"rst(
+**References:**
+
+Sutter & Alexandrescu (November 2004). `"C++ Coding Standards: 101 Rules, Guidelines, and Best Practices" <http://gotw.ca/publications/c++cs.htm>`_. *Addison-Wesley Professional*
+        )rst";
+    }
+#endif
+
     bool VisitCXXRecordDecl(const CXXRecordDecl* cxxRecordDecl)
     {
         if (cxxRecordDecl != nullptr

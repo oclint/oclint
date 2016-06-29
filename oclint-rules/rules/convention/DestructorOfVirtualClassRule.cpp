@@ -40,6 +40,32 @@ public:
         return oclint::LANG_CXX;
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.8";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "This rule enforces the destructor of a virtual class must be virtual.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    class Base { // class Base should have a virtual destructor ~Base()
+        public: virtual void f();
+    };
+    class Child : public Base {
+        public: ~Child();  // destructor ~Child() should be virtual
+    };
+        )rst";
+    }
+#endif
+
     bool VisitCXXRecordDecl(const CXXRecordDecl* cxxRecordDecl)
     {
         if (cxxRecordDecl != nullptr

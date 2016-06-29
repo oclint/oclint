@@ -82,6 +82,38 @@ public:
         return "convention";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.8";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "This rule prevents assigning an ivar outside of getters, setters, and ``init`` method.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: objective-c
+
+    @interface Foo : NSObject
+    {
+        int _bar;
+    }
+    @property (assign, nonatomic) int bar;
+    @end
+    @implementation Foo
+    @synthesize bar = _bar;
+    - (void)doSomething {
+        _bar = 3; // access _bar outside its getter, setter or init
+    }
+    @end
+        )rst";
+    }
+#endif
+
     bool VisitObjCMethodDecl(ObjCMethodDecl* decl) {
         // Save the method name
         string selectorName = decl->getSelector().getAsString();
