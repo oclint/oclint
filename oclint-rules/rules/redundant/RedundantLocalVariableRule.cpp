@@ -57,6 +57,32 @@ public:
         return "redundant";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.4";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "This rule detects cases where a variable declaration is immediately "
+            "followed by a return of that variable.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    int example(int a)
+    {
+        int b = a * 2;
+        return b;   // variable b is returned immediately after its declaration,
+    }               // can be simplified to return a * 2;
+        )rst";
+    }
+#endif
+
     bool VisitCompoundStmt(CompoundStmt *compoundStmt)
     {
         if (compoundStmt->size() >= 2)

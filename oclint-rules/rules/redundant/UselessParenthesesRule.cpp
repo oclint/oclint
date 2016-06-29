@@ -32,6 +32,35 @@ public:
         return "redundant";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.6";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "This rule detects useless parentheses.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    int example(int a)
+    {
+        int y = (a + 1);    // int y = a + 1;
+        if ((y > 0))        // if (y > 0)
+        {
+            return a;
+        }
+        return (0);         // return 0;
+    }
+        )rst";
+    }
+#endif
+
     bool VisitIfStmt(IfStmt *ifStmt)
     {
         addParenExprToViolation(ifStmt->getCond());

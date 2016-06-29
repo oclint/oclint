@@ -117,6 +117,31 @@ public:
         return oclint::LANG_CXX;
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.8";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "``char* p = 0; delete p;`` is valid. This rule locates unnecessary ``if (p)`` checks.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void m(char* c) {
+        if (c != nullptr) { // and be simplified to delete c;
+            delete c;
+        }
+    }
+        )rst";
+    }
+#endif
+
     bool VisitIfStmt(IfStmt* ifStmt)
     {
         if (ifStmt == nullptr || ifStmt->getElse() != nullptr)

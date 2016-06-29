@@ -160,6 +160,42 @@ public:
         return "redundant";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.6";
+    }
+
+    virtual const std::string description() const override
+    {
+        return R"rst(
+This rule detects three types of redundant conditional operators:
+
+#. true expression and false expression are returning true/false or false/true respectively;
+#. true expression and false expression are the same constant;
+#. true expression and false expression are the same variable expression.
+
+They are usually introduced by mistake, and should be simplified.
+        )rst";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void example(int a, int b, int c)
+    {
+        bool b1 = a > b ? true : false;     // true/false: bool b1 = a > b;
+        bool b2 = a > b ? false : true;     // false/true: bool b2 = !(a > b);
+        int i1 = a > b ? 1 : 1;             // same constant: int i1 = 1;
+        float f1 = a > b ? 1.0 : 1.00;      // equally constant: float f1 = 1.0;
+        int i2 = a > b ? c : c;             // same variable: int i2 = c;
+    }
+        )rst";
+    }
+#endif
+
     bool VisitConditionalOperator(ConditionalOperator *conditionalOperator)
     {
         // There are three types of violations: 1. true expression and false expression

@@ -59,6 +59,33 @@ public:
         return LANG_OBJC;
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.7";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "C/C++-style null check in Objective-C like ``foo != nil && [foo bar]`` is redundant, "
+            "since sending a message to a nil object in this case simply returns a false-y value.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: objective-c
+
+    + (void)compare:(A *)obj1 withOther:(A *)obj2
+    {
+        if (obj1 && [obj1 isEqualTo:obj2]) // if ([obj1 isEqualTo:obj2]) is okay
+        {
+        }
+    }
+        )rst";
+    }
+#endif
+
     bool VisitBinaryOperator(BinaryOperator *binaryOperator)
     {
         if (isRedundantNilCheck(binaryOperator) && isSameVariableBroken(binaryOperator))
