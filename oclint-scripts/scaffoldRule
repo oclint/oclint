@@ -5,6 +5,7 @@ import re
 import argparse
 
 from oclintscripts import path
+from oclintscripts import version
 
 SCRIPT_WORKING_FOLDER = os.path.dirname(os.path.abspath(__file__))
 RULES_PROJECT_DIRECTORY = os.path.join(SCRIPT_WORKING_FOLDER, "../oclint-rules")
@@ -72,7 +73,7 @@ def visit_ast_nodes():
     return visit_nodes
 
 def replace_wildcard(each_line, rule_dict):
-    wildcard_attributes = ['RULE_CLASS_NAME', 'RULE_NAME', 'RULE_PRIORITY', "RULE_CATEGORY", "RULE_NAME"]
+    wildcard_attributes = ['RULE_CLASS_NAME', 'RULE_NAME', 'RULE_PRIORITY', "RULE_CATEGORY", "RULE_NAME", "OCLINT_VERSION"]
     for each in wildcard_attributes:
         wildcard = '{{' + each + '}}'
         each_line = each_line.replace(wildcard, rule_dict[each])
@@ -135,7 +136,8 @@ rule_info_dict = {"RULE_CLASS_NAME" : args.class_name,
                   "RULE_PRIORITY"   : str(args.rule_priority),
                   "RULE_NAME"       : args.rule_name,
                   "RULE_TEST"       : args.generate_tests,
-                  "RULE_CATEGORY"   : args.rule_category}
+                  "RULE_CATEGORY"   : args.rule_category,
+                  "OCLINT_VERSION"  : version.oclint_version()}
 
 if not args.rule_name:
     rule_info_dict["RULE_NAME"] = re.sub('[A-Z]', lower_add_space, args.class_name)[1:]
