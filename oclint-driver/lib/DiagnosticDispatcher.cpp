@@ -31,10 +31,20 @@ void DiagnosticDispatcher::HandleDiagnostic(clang::DiagnosticsEngine::Level diag
 
     if (diagnosticInfo.hasSourceManager()) {
         clang::SourceManager *sourceManager = &diagnosticInfo.getSourceManager();
+
         llvm::StringRef sourceFilename = sourceManager->getFilename(location);
+
+        // If we didn't match, and we have a macro location try to expand it
+        if (sourceFilename.empty() && location.isMacroID()) {
+            clang::SourceLocation macroLocation = sourceManager->getExpansionLoc(location);
+            llvm::StringRef expansionFilename = sourceManager->getFilename(macroLocation);
+            filename = expansionFilename.str();
+        } else {
+            filename = sourceFilename.str();
+        }
+
         line = sourceManager->getPresumedLineNumber(location);
         column = sourceManager->getPresumedColumnNumber(location);
-        filename = sourceFilename.str();
     }
 
     Violation violation(nullptr, filename, line, column, 0, 0,
