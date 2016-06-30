@@ -204,6 +204,7 @@ int main(int argc, const char **argv)
             rulesMapping[category] = rulesForCategory;
         }
     }
+    sort(categories.begin(), categories.end());
 
     string docRulePath = "../build/oclint-docs/rules/";
     string indexPath = docRulePath + "index.rst";
