@@ -59,6 +59,10 @@ public:
     virtual const std::string since() const = 0;
     virtual const std::string description() const = 0;
     virtual const std::string example() const = 0;
+    virtual const std::string fileName() const
+    {
+        return identifier() + "Rule.cpp";
+    }
     virtual bool enableSuppress() const
     {
         return false;

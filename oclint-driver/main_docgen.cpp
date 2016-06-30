@@ -114,6 +114,8 @@ void writeRuleToCategory(ofstream& out, oclint::RuleBase* rule)
 {
     auto ruleIdentifier = rule->identifier();
     auto ruleCategory = rule->category();
+    auto fileName = rule->fileName();
+
     out << ruleIdentifier << endl;
     for (int i = 0; i < ruleIdentifier.size(); i++)
     {
@@ -126,9 +128,9 @@ void writeRuleToCategory(ofstream& out, oclint::RuleBase* rule)
     out << rule->description() << endl << endl;
 
     out << "This rule is defined by the following class: "
-        << "`oclint-rules/rules/" << ruleCategory << "/" << ruleIdentifier << "Rule.cpp "
+        << "`oclint-rules/rules/" << ruleCategory << "/" << fileName << " "
         << "<https://github.com/oclint/oclint/blob/master/"
-        << "oclint-rules/rules/" << ruleCategory << "/" << ruleIdentifier << "Rule.cpp>`_"
+        << "oclint-rules/rules/" << ruleCategory << "/" << fileName << ">`_"
         << endl << endl;
 
     out << "**Example:**" << endl << endl;
