@@ -70,6 +70,11 @@ public:
             "annotation, all of its usages will be prohibited.";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "ObjCVerifyProhibitedCallRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

@@ -41,6 +41,11 @@ public:
             "new Objective-C literals with container literals.";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "ObjCContainerLiteralsRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

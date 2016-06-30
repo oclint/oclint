@@ -44,6 +44,11 @@ public:
         return "When ``isEqual`` method is overridden, ``hash`` method must be overridden, too.";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "ObjCVerifyIsEqualHashRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

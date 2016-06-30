@@ -47,6 +47,11 @@ public:
             "the subclass implement the correct abstract method.";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "ObjCVerifySubclassMustImplementRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

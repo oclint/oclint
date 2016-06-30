@@ -90,6 +90,11 @@ public:
             "When null is misplaced, either the check is useless or it's incorrect.";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "MisplacedNullCheckRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

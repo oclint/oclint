@@ -62,6 +62,11 @@ The experiments McCabe, the author of cyclomatic complexity, conclude that metho
         )rst";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "CyclomaticComplexityRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

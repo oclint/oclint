@@ -53,6 +53,11 @@ public:
             "broken into multiple lines contribute only one count.";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "NcssMethodCountRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

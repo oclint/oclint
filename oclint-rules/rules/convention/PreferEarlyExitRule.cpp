@@ -92,6 +92,11 @@ public:
             "all the previous decisions, therefore, makes it easier to understand the code.";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "PreferEarlyExitRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

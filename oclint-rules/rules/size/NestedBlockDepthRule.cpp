@@ -37,6 +37,11 @@ public:
         return "This rule indicates blocks nested more deeply than the upper limit.";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "NestedBlockDepthRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

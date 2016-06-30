@@ -104,6 +104,11 @@ public:
             "new Objective-C literals with number literals.";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "ObjCNSNumberLiteralsRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

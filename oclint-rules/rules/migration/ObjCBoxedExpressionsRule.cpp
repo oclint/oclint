@@ -110,6 +110,11 @@ public:
             "new Objective-C literals with boxed expressions.";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "ObjCBoxedExpressionsRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

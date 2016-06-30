@@ -36,6 +36,11 @@ public:
         return "This rule detects instances where a else statement does nothing.";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "EmptyElseBlockRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

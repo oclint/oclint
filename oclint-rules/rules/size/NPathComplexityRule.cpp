@@ -43,6 +43,11 @@ public:
         return "high npath complexity";
     }
 
+    virtual const string identifier() const override
+    {
+        return "HighNPathComplexity";
+    }
+
     virtual int priority() const override
     {
         return 2;
@@ -66,6 +71,11 @@ NPath complexity is determined by the number of execution paths through that met
 
 Based on studies done by the original author in AT&T Bell Lab, an NPath threshold value of 200 has been established for a method.
         )rst";
+    }
+
+    virtual const std::string fileName() const override
+    {
+        return "NPathComplexityRule.cpp";
     }
 
     virtual const std::string example() const override

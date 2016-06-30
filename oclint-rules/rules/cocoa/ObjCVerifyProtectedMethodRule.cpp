@@ -108,6 +108,11 @@ public:
             "and alerts developers when a method is called outside its access scope.";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "ObjCVerifyProtectedMethodRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

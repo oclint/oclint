@@ -151,6 +151,11 @@ public:
         return "The broken nil check in Objective-C in some cases returns just the opposite result.";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "BrokenNullCheckRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

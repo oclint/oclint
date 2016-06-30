@@ -38,7 +38,7 @@ class BaseClassDestructorShouldBeVirtualOrProtectedRule :
 public:
     virtual const std::string name() const override
     {
-        return "Base class destructor should be virtual or protected";
+        return "base class destructor should be virtual or protected";
     }
 
     virtual int priority() const override

@@ -82,6 +82,11 @@ public:
             "new Objective-C literals with object subscripting.";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "ObjCObjectSubscriptingRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

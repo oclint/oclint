@@ -93,6 +93,11 @@ public:
         return "This rule prevents assigning an ivar outside of getters, setters, and ``init`` method.";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "ObjCAssignIvarOutsideAccessorsRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

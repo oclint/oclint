@@ -99,7 +99,7 @@ class UnnecessaryNullCheckForCXXDeallocRule :
 public:
     virtual const std::string name() const override
     {
-        return "unnecessary null check for cxxdealloc";
+        return "unnecessary null check for dealloc";
     }
 
     virtual int priority() const override
@@ -126,6 +126,11 @@ public:
     virtual const std::string description() const override
     {
         return "``char* p = 0; delete p;`` is valid. This rule locates unnecessary ``if (p)`` checks.";
+    }
+
+    virtual const std::string fileName() const override
+    {
+        return "UnnecessaryNullCheckForCXXDeallocRule.cpp";
     }
 
     virtual const std::string example() const override

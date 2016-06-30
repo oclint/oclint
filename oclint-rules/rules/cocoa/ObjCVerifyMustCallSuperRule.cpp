@@ -90,6 +90,11 @@ public:
             "implementation in super class.";
     }
 
+    virtual const std::string fileName() const override
+    {
+        return "ObjCVerifyMustCallSuperRule.cpp";
+    }
+
     virtual const std::string example() const override
     {
         return R"rst(

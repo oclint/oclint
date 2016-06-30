@@ -119,7 +119,7 @@ public:
     virtual const std::string example() const override
     {
         return R"rst(
-.. code-block:: cpp
+.. code-block:: objective-c
 
     void example(id collection)
     {
