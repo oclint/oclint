@@ -77,6 +77,36 @@ public:
     {
         return LANG_C | LANG_CXX;
     }
+
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.7";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "The broken null check itself will crash the program.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void m(A *a, B *b)
+    {
+        if (a != NULL || a->bar(b))
+        {
+        }
+
+        if (a == NULL && a->bar(b))
+        {
+        }
+    }
+    )rst";
+    }
+#endif
 };
 
 class BrokenNilCheckRule : public BrokenNullCheckBaseRule
@@ -109,6 +139,41 @@ public:
     {
         return LANG_OBJC;
     }
+
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.7";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "The broken nil check in Objective-C in some cases returns just the opposite result.";
+    }
+
+    virtual const std::string fileName() const override
+    {
+        return "BrokenNullCheckRule.cpp";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: objective-c
+
+    + (void)compare:(A *)obj1 withOther:(A *)obj2
+    {
+        if (obj1 || [obj1 isEqualTo:obj2])
+        {
+        }
+
+        if (!obj1 && ![obj1 isEqualTo:obj2])
+        {
+        }
+    }
+    )rst";
+    }
+#endif
 };
 
 static RuleSet rulesForBrokenNull(new BrokenNullCheckRule());

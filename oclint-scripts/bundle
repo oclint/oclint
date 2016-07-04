@@ -19,6 +19,7 @@ bundle_include_dir = os.path.join(bundle_root_dir, 'include')
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('-archive', '--archive', action='store_true')
+arg_parser.add_argument('-docgen', '--docgen', action='store_true')
 arg_parser.add_argument('-release', '--release', action='store_true')
 arg_parser.add_argument('-llvm-root', '--llvm-root', default=path.build.clang_install_dir)
 args = arg_parser.parse_args()
@@ -130,12 +131,13 @@ setup_release_dir()
 install_licenses()
 install_binary(args.release)
 install_rules()
-install_reporters()
-install_clang_headers(args.llvm_root)
-install_json_compilation_database()
-if environment.is_darwin():
-    install_xcodebuild()
-    install_cpp_headers()
+if not args.docgen:
+    install_reporters()
+    install_clang_headers(args.llvm_root)
+    install_json_compilation_database()
+    if environment.is_darwin():
+        install_xcodebuild()
+        install_cpp_headers()
 
 if args.archive:
     archive(args.release)

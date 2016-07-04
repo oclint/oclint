@@ -104,6 +104,37 @@ public:
         return "basic";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.4";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "Code after ``return``, ``break``, ``continue``, and ``throw`` statements "
+            "is unreachable and will never be executed.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: objective-c
+
+    void example(id collection)
+    {
+        for (id it in collection)
+        {
+            continue;
+            int i1;                 // dead code
+        }
+        return;
+        int i2;                     // dead code
+    }
+    )rst";
+    }
+#endif
+
     bool VisitCompoundStmt(const CompoundStmt *compoundStmt)
     {
         bool hasBreakPoint = false;

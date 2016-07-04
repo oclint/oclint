@@ -67,6 +67,39 @@ public:
         return "naming";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.7";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "A variable with a short name is hard to understand what it stands for. "
+            "Variable with name, but the name has number of characters less than the "
+            "threshold will be emitted.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void aMethod(int i)  // i is short
+    {
+        int ii;          // ii is short
+    }
+    )rst";
+    }
+
+    virtual const std::map<std::string, std::string> thresholds() const override
+    {
+        std::map<std::string, std::string> thresholdMapping;
+        thresholdMapping["SHORT_VARIABLE_NAME"] = "The short variable name reporting threshold, default value is 3.";
+        return thresholdMapping;
+    }
+#endif
+
     bool VisitVarDecl(VarDecl *varDecl)
     {
         int nameLength = varDecl->getNameAsString().size();
@@ -117,8 +150,6 @@ public:
 
         return true;
     }
-
-
 
     bool VisitCXXCatchStmt(CXXCatchStmt *catchStmt)
     {

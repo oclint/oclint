@@ -34,6 +34,31 @@ public:
         return "basic";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.6";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "There is no point in using a double negative, it is always positive.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void example()
+    {
+        int b1 = !!1;
+        int b2 = ~~1;
+    }
+    )rst";
+    }
+#endif
+
     bool VisitUnaryOperator(UnaryOperator *unaryOperator)
     {
         Expr *subExpr = unaryOperator->getSubExpr();

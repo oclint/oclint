@@ -94,6 +94,46 @@ public:
         return LANG_OBJC;
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.8";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "Even though there is no ``protected`` in Objective-C language level, "
+            "in a design's perspective, we sometimes hope to enforce a method only be used inside "
+            "the class itself or by its subclass. This rule mimics the ``protected`` behavior, "
+            "and alerts developers when a method is called outside its access scope.";
+    }
+
+    virtual const std::string fileName() const override
+    {
+        return "ObjCVerifyProtectedMethodRule.cpp";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: objective-c
+
+    @interface A : NSObject
+    - (void)foo __attribute__((annotate("oclint:enforce[protected method]")));
+    @end
+
+    @interface B : NSObject
+    @property (strong, nonatomic) A* a;
+    @end
+
+    @implementation B
+    - (void)bar {
+        [self.a foo]; // calling protected method foo from outside A and its subclasses
+    }
+    @end
+    )rst";
+    }
+#endif
 };
 
 

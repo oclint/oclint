@@ -80,6 +80,57 @@ public:
         return "convention";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.8";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "Early exits can reduce the indentation of a block of code, so that reader do not have to remember "
+            "all the previous decisions, therefore, makes it easier to understand the code.";
+    }
+
+    virtual const std::string fileName() const override
+    {
+        return "PreferEarlyExitRule.cpp";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    int *doSomething(int a) {
+      if (!foo(a) && bar(a) && doOtherThing(a)) {
+        // ... some really long code ....
+      }
+
+      return 0;
+    }
+
+    // is preferred as
+
+    int *doSomething(int a) {
+      if (foo(a)) {
+        return 0;
+      }
+
+      if (!bar(a)) {
+        return 0;
+      }
+
+      if (!doOtherThing(a)) {
+        return 0;
+      }
+
+      // ... some long code ....
+    }
+        )rst";
+    }
+#endif
+
     virtual void setUp() override
     {
         _threshold = RuleConfiguration::intForKey("MAXIMUM_IF_LENGTH", 15);

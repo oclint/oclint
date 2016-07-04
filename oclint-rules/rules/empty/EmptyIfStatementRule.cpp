@@ -25,6 +25,32 @@ public:
         return "empty";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.2";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "This rule detects instances where a condition is checked, but nothing is done about it.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void example(int a)
+    {
+        if (a == 1)                  // empty if statement
+        {
+        }
+    }
+        )rst";
+    }
+#endif
+
     bool VisitIfStmt(IfStmt *ifStmt)
     {
         return checkLexicalEmptyStmt(ifStmt->getThen(), this);

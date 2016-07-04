@@ -87,6 +87,40 @@ public:
         return "redundant";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.6";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "When an if statement block ends with a return statement, or all branches in the if statement block "
+            "end with return statements, then the else statement is unnecessary. The code in the else statement "
+            "can be run without being in the block.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    bool example(int a)
+    {
+        if (a == 1)                 // if (a == 1)
+        {                           // {
+            cout << "a is 1.";      //     cout << "a is 1.";
+            return true;            //     return true;
+        }                           // }
+        else                        //
+        {                           //
+            cout << "a is not 1."   // cout << "a is not 1."
+        }                           //
+    }
+        )rst";
+    }
+#endif
+
     virtual void setUp() override
     {
         _visitedIfStmt = new vector<IfStmt *>();

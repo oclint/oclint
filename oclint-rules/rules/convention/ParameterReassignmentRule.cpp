@@ -71,6 +71,33 @@ public:
         return "convention";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.6";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "Reassigning values to parameters is very problematic in most cases.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void example(int a)
+    {
+        if (a < 0)
+        {
+            a = 0; // reassign parameter a to 0
+        }
+    }
+        )rst";
+    }
+#endif
+
     bool VisitFunctionDecl(FunctionDecl *decl)
     {
         vector<string> names;

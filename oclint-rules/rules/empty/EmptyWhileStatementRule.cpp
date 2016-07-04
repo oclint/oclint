@@ -25,6 +25,32 @@ public:
         return "empty";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.6";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "This rule detects instances where a while statement does nothing.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void example(int a)
+    {
+        while(a--)              // empty while statement
+        {
+        }
+    }
+        )rst";
+    }
+#endif
+
     bool VisitWhileStmt(WhileStmt *whileStmt)
     {
         return checkLexicalEmptyStmt(whileStmt->getBody(), this);

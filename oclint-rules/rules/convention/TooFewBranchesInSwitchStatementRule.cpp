@@ -45,6 +45,44 @@ public:
         return "convention";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.6";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "To increase code readability, when a switch consists of only a few branches, "
+            "it's much better to use an if statement instead.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void example(int a)
+    {
+        switch (a) {
+            case 1:
+                break;
+            default:
+                break;
+        } // Better to use an if statement and check if variable a equals 1.
+    }
+        )rst";
+    }
+
+    virtual const std::map<std::string, std::string> thresholds() const override
+    {
+        std::map<std::string, std::string> thresholdMapping;
+        thresholdMapping["MINIMUM_CASES_IN_SWITCH"] =
+            "The reporting threshold for count of case statements in a switch statement, default value is 3.";
+        return thresholdMapping;
+    }
+#endif
+
     bool VisitSwitchStmt(SwitchStmt *switchStmt)
     {
         CountCaseStmts countCaseStmts;

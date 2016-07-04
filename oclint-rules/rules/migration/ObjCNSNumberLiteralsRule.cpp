@@ -92,6 +92,40 @@ public:
         return LANG_OBJC;
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.7";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "This rule locates the places that can be migrated to the "
+            "new Objective-C literals with number literals.";
+    }
+
+    virtual const std::string fileName() const override
+    {
+        return "ObjCNSNumberLiteralsRule.cpp";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: objective-c
+
+    void aMethod()
+    {
+        NSNumber *fortyTwo = [NSNumber numberWithInt:42];
+        // NSNumber *fortyTwo = @42;
+
+        NSNumber *yesBool = [NSNumber numberWithBool:YES];
+        // NSNumber *yesBool = @YES;
+    }
+        )rst";
+    }
+#endif
+
     bool VisitObjCMessageExpr(ObjCMessageExpr *objCMsgExpr)
     {
         ObjCInterfaceDecl *objCInterfaceDecl = objCMsgExpr->getReceiverInterface();

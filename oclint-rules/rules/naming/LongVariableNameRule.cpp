@@ -25,6 +25,37 @@ public:
         return "naming";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.7";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "Variables with long names harm readability.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void aMethod()
+    {
+        int reallyReallyLongIntegerName;
+    }
+    )rst";
+    }
+
+    virtual const std::map<std::string, std::string> thresholds() const override
+    {
+        std::map<std::string, std::string> thresholdMapping;
+        thresholdMapping["LONG_VARIABLE_NAME"] = "The long variable name reporting threshold, default value is 20.";
+        return thresholdMapping;
+    }
+#endif
+
     bool VisitVarDecl(VarDecl *varDecl)
     {
         int nameLength = varDecl->getNameAsString().size();

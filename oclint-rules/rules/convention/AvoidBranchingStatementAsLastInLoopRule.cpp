@@ -49,6 +49,38 @@ public:
         return "convention";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.7";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "Having branching statement as the last statement inside a loop is very confusing, "
+            "and could largely be forgetting of something and turning into a bug.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void example()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            if (foo(i))
+            {
+                continue;
+            }
+            break;      // this break is confusing
+        }
+    }
+        )rst";
+    }
+#endif
+
     bool VisitForStmt(ForStmt *stmt)
     {
         applyStmt<ForStmt>(stmt);

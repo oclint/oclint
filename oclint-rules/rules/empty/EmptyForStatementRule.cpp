@@ -25,6 +25,36 @@ public:
         return "empty";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.6";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "This rule detects instances where a for statement does nothing.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: objective-c
+
+    void example(NSArray *array)
+    {
+        for (;;)                // empty for statement
+        {
+        }
+
+        for (id it in array)    // empty for-each statement
+        {
+        }
+    }
+        )rst";
+    }
+#endif
+
     bool VisitForStmt(ForStmt *forStmt)
     {
         return checkLexicalEmptyStmt(forStmt->getBody(), this);

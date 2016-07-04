@@ -149,6 +149,36 @@ public:
         return "unused";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.4";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "This rule detects local variables that are declared, but not used.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    int example(int a)
+    {
+        int i;          // variable i is declared, but not used
+        return 0;
+    }
+    )rst";
+    }
+
+    virtual bool enableSuppress() const override
+    {
+        return true;
+    }
+#endif
+
     bool VisitVarDecl(VarDecl *varDecl)
     {
         if (isUnusedLocalVariable(varDecl) && !isRAIIClass(varDecl))

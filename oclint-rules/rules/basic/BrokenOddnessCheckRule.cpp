@@ -43,6 +43,37 @@ public:
         return "basic";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.6";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "Checking oddness by ``x % 2 == 1`` won't work for negative numbers. "
+            "Use ``x & 1 == 1``, or ``x % 2 != 0`` instead.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void example()
+    {
+        if (x % 2 == 1)         // violation
+        {
+        }
+
+        if (foo() % 2 == 1)     // violation
+        {
+        }
+    }
+    )rst";
+    }
+#endif
+
     bool VisitBinaryOperator(BinaryOperator *binaryOperator)
     {
         Expr *leftExpr = binaryOperator->getLHS();

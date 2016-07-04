@@ -90,6 +90,37 @@ public:
         return "redundant";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.4";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "This rule detects unnecessary if statements.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    bool example(int a, int b)
+    {
+        if (a == b)             // this if statement is redundant
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }                       // the entire method can be simplified to return a == b;
+    }
+        )rst";
+    }
+#endif
+
     bool VisitIfStmt(IfStmt *ifStmt)
     {
         ReturnStmt *thenReturnStmt = extractStmt<ReturnStmt>(ifStmt->getThen());

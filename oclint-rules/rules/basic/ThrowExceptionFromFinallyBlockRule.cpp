@@ -83,6 +83,37 @@ public:
         return LANG_OBJC;
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.6";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "Throwing exceptions within a ``finally`` block may mask other exceptions or code defects.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: objective-c
+
+    void example()
+    {
+        @try {;}
+        @catch(id ex) {;}
+        @finally {
+            id ex1;
+            @throw ex1;                              // this throws an exception
+            NSException *ex2 = [NSException new];
+            [ex2 raise];                             // this throws an exception, too
+        }
+    }
+    )rst";
+    }
+#endif
+
     bool VisitObjCAtFinallyStmt(ObjCAtFinallyStmt *finallyStmt)
     {
         vector<ObjCAtThrowStmt*> throws;

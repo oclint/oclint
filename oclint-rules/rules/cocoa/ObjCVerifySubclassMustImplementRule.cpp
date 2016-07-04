@@ -34,6 +34,50 @@ public:
         return LANG_OBJC;
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.8";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "Due to the Objective-C language tries to postpone making decisions to the runtime as much as possible, "
+            "an abstract method is okay to be declared but without implementations. This rule tries to verify "
+            "the subclass implement the correct abstract method.";
+    }
+
+    virtual const std::string fileName() const override
+    {
+        return "ObjCVerifySubclassMustImplementRule.cpp";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: objective-c
+
+    @interface Parent
+
+    - (void)anAbstractMethod __attribute__((annotate("oclint:enforce[subclass must implement]")));
+
+    @end
+
+    @interface Child : Parent
+    @end
+
+    @implementation Child
+
+    /*
+    // Child, as a subclass of Parent, must implement anAbstractMethod
+    - (void)anAbstractMethod {}
+    */
+
+    @end
+    )rst";
+    }
+#endif
+
     bool VisitObjCImplementationDecl(ObjCImplementationDecl* implementation) {
         const auto parent = implementation->getClassInterface()->getSuperClass();
         if(!parent) {

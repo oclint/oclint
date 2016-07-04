@@ -23,6 +23,37 @@ public:
         return "basic";
     }
 
+#ifdef DOCGEN
+    virtual const std::string since() const override
+    {
+        return "0.2";
+    }
+
+    virtual const std::string description() const override
+    {
+        return "``if`` statements whose conditionals are always true or always false are confusing.";
+    }
+
+    virtual const std::string example() const override
+    {
+        return R"rst(
+.. code-block:: cpp
+
+    void example()
+    {
+        if (true)       // always true
+        {
+            foo();
+        }
+        if (1 == 0)     // always false
+        {
+            bar();
+        }
+    }
+    )rst";
+    }
+#endif
+
     bool VisitIfStmt(IfStmt *ifStmt)
     {
         Expr *conditionExpr = ifStmt->getCond();
