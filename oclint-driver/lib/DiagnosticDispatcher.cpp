@@ -15,41 +15,65 @@ DiagnosticDispatcher::DiagnosticDispatcher(bool runClangChecker)
     _isCheckerCustomer = runClangChecker;
 }
 
+struct LocalSourceLocation
+{
+    int line;
+    int column;
+    std::string filename;
+};
+
+LocalSourceLocation emptySourceLocation()
+{
+    LocalSourceLocation sourceLoc;
+    sourceLoc.line = 0;
+    sourceLoc.column = 0;
+    sourceLoc.filename = "";
+    return sourceLoc;
+}
+
+LocalSourceLocation populateSourceLocation(const clang::Diagnostic &diagnosticInfo)
+{
+    LocalSourceLocation sourceLoc = emptySourceLocation();
+
+    if (!diagnosticInfo.hasSourceManager()) {
+        return sourceLoc;
+    }
+
+    clang::SourceManager *sourceManager = &diagnosticInfo.getSourceManager();
+    clang::SourceLocation location = diagnosticInfo.getLocation();
+
+    llvm::StringRef sourceFilename = sourceManager->getFilename(location);
+    // If we didn't match, and we have a macro location try to expand it
+    if (sourceFilename.empty() && location.isMacroID())
+    {
+        clang::SourceLocation macroLocation = sourceManager->getExpansionLoc(location);
+        llvm::StringRef expansionFilename = sourceManager->getFilename(macroLocation);
+        sourceLoc.filename = expansionFilename.str();
+    }
+    else
+    {
+        sourceLoc.filename = sourceFilename.str();
+    }
+
+    sourceLoc.line = sourceManager->getPresumedLineNumber(location);
+    sourceLoc.column = sourceManager->getPresumedColumnNumber(location);
+
+    return sourceLoc;
+}
+
 void DiagnosticDispatcher::HandleDiagnostic(clang::DiagnosticsEngine::Level diagnosticLevel,
     const clang::Diagnostic &diagnosticInfo)
 {
-    int line = 0;
-    int column = 0;
-    std::string filename = "";
-
     clang::DiagnosticConsumer::HandleDiagnostic(diagnosticLevel, diagnosticInfo);
-
-    clang::SourceLocation location = diagnosticInfo.getLocation();
 
     clang::SmallString<100> diagnosticMessage;
     diagnosticInfo.FormatDiagnostic(diagnosticMessage);
 
-    if (diagnosticInfo.hasSourceManager()) {
-        clang::SourceManager *sourceManager = &diagnosticInfo.getSourceManager();
+    LocalSourceLocation localSourceLocation = populateSourceLocation(diagnosticInfo);
 
-        llvm::StringRef sourceFilename = sourceManager->getFilename(location);
-
-        // If we didn't match, and we have a macro location try to expand it
-        if (sourceFilename.empty() && location.isMacroID()) {
-            clang::SourceLocation macroLocation = sourceManager->getExpansionLoc(location);
-            llvm::StringRef expansionFilename = sourceManager->getFilename(macroLocation);
-            filename = expansionFilename.str();
-        } else {
-            filename = sourceFilename.str();
-        }
-
-        line = sourceManager->getPresumedLineNumber(location);
-        column = sourceManager->getPresumedColumnNumber(location);
-    }
-
-    Violation violation(nullptr, filename, line, column, 0, 0,
-                        diagnosticMessage.str().str());
-
+    Violation violation(nullptr,
+        localSourceLocation.filename, localSourceLocation.line, localSourceLocation.column,
+        0, 0, diagnosticMessage.str().str());
 
     ResultCollector *results = ResultCollector::getInstance();
     if (_isCheckerCustomer)
