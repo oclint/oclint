@@ -19,39 +19,13 @@ protected:
     RuleCarrier *_carrier;
 
 public:
-    void takeoff(RuleCarrier *carrier)
-    {
-        _carrier = carrier;
-        apply();
-    }
+    void takeoff(RuleCarrier *carrier);
 
     virtual ~RuleBase() {}
     virtual void apply() = 0;
     virtual const std::string name() const = 0;
-    virtual const std::string attributeName() const
-    {
-        return name();
-    }
-    virtual const std::string identifier() const
-    {
-        std::string copy = name();
-        if (copy.empty())
-        {
-            return copy;
-        }
-        copy[0] = toupper(copy[0]);
-
-        for (std::string::iterator it = copy.begin() + 1; it != copy.end(); ++it)
-        {
-            if (!isalpha(*(it - 1)) && islower(*it))
-            {
-                *it = toupper(*it);
-            }
-        }
-        copy.erase(std::remove_if(copy.begin(), copy.end(),
-                   [](char c){return !isalpha(c);}), copy.end());
-        return copy;
-    }
+    virtual const std::string attributeName() const;
+    virtual const std::string identifier() const;
     virtual const std::string category() const = 0;
     virtual int priority() const = 0;
 
@@ -59,23 +33,10 @@ public:
     virtual const std::string since() const = 0;
     virtual const std::string description() const = 0;
     virtual const std::string example() const = 0;
-    virtual const std::string fileName() const
-    {
-        return identifier() + "Rule.cpp";
-    }
-    virtual bool enableSuppress() const
-    {
-        return false;
-    }
-    virtual const std::map<std::string, std::string> thresholds() const
-    {
-        std::map<std::string, std::string> emptyMap;
-        return emptyMap;
-    }
-    virtual const std::string additionalDocument() const
-    {
-        return "";
-    }
+    virtual const std::string fileName() const;
+    virtual bool enableSuppress() const;
+    virtual const std::map<std::string, std::string> thresholds() const;
+    virtual const std::string additionalDocument() const;
 #endif
 };
 
