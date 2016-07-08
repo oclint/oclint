@@ -41,8 +41,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "Giving virtual functions default argument initializers tends to defeat polymorphism "
-            "and introduce unnecessary complexity into a class hierarchy.";
+        return "Giving virtual functions default argument initializers tends to "
+            "defeat polymorphism and introduce unnecessary complexity into a class hierarchy.";
     }
 
     virtual const std::string example() const override

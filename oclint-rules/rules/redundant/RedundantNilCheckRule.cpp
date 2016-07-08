@@ -1,3 +1,4 @@
+
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
@@ -67,8 +68,9 @@ public:
 
     virtual const std::string description() const override
     {
-        return "C/C++-style null check in Objective-C like ``foo != nil && [foo bar]`` is redundant, "
-            "since sending a message to a nil object in this case simply returns a false-y value.";
+        return "C/C++-style null check in Objective-C like ``foo != nil && [foo bar]`` "
+            "is redundant, since sending a message to a nil object in this case "
+            "simply returns a false-y value.";
     }
 
     virtual const std::string example() const override

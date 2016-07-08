@@ -32,7 +32,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "``conditional operator`` whose conditionals are always true or always false are confusing.";
+        return "``conditional operator`` whose conditionals are always true "
+            "or always false are confusing.";
     }
 
     virtual const std::string example() const override

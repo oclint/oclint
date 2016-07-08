@@ -78,7 +78,8 @@ public:
     {
         std::map<std::string, std::string> thresholdMapping;
         thresholdMapping["MINIMUM_CASES_IN_SWITCH"] =
-            "The reporting threshold for count of case statements in a switch statement, default value is 3.";
+            "The reporting threshold for count of case statements in a switch statement, "
+            "default value is 3.";
         return thresholdMapping;
     }
 #endif

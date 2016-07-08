@@ -64,7 +64,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "Jumbled incrementers are usually typos. If it’s done on purpose, it’s very confusing for code readers.";
+        return "Jumbled incrementers are usually typos. If it’s done on purpose, "
+            "it’s very confusing for code readers.";
     }
 
     virtual const std::string example() const override

@@ -95,7 +95,8 @@ public:
     virtual const std::map<std::string, std::string> thresholds() const override
     {
         std::map<std::string, std::string> thresholdMapping;
-        thresholdMapping["SHORT_VARIABLE_NAME"] = "The short variable name reporting threshold, default value is 3.";
+        thresholdMapping["SHORT_VARIABLE_NAME"] =
+            "The short variable name reporting threshold, default value is 3.";
         return thresholdMapping;
     }
 #endif

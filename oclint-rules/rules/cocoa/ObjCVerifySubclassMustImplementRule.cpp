@@ -42,9 +42,10 @@ public:
 
     virtual const std::string description() const override
     {
-        return "Due to the Objective-C language tries to postpone making decisions to the runtime as much as possible, "
-            "an abstract method is okay to be declared but without implementations. This rule tries to verify "
-            "the subclass implement the correct abstract method.";
+        return "Due to the Objective-C language tries to postpone making decisions "
+            "to the runtime as much as possible, an abstract method is okay to be declared "
+            "but without implementations. This rule tries to verify the subclass implement "
+            "the correct abstract method.";
     }
 
     virtual const std::string fileName() const override

@@ -86,7 +86,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "The null check is misplaced. In C and C++, sending a message to a null pointer could crash the app. "
+        return "The null check is misplaced. "
+            "In C and C++, sending a message to a null pointer could crash the app. "
             "When null is misplaced, either the check is useless or it's incorrect.";
     }
 
@@ -154,7 +155,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "The nil check is misplaced. In Objective-C, sending a message to a nil pointer simply does nothing. "
+        return "The nil check is misplaced. "
+            "In Objective-C, sending a message to a nil pointer simply does nothing. "
             "But code readers may be confused about the misplaced nil check.";
     }
 

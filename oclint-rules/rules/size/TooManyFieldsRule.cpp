@@ -36,8 +36,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "A class with too many fields indicates it does too many things and lacks proper abstraction. "
-            "It can be redesigned to have fewer fields.";
+        return "A class with too many fields indicates it does too many things "
+            "and lacks proper abstraction. It can be redesigned to have fewer fields.";
     }
 
     virtual const std::string example() const override
@@ -63,7 +63,8 @@ public:
     virtual const std::map<std::string, std::string> thresholds() const override
     {
         std::map<std::string, std::string> thresholdMapping;
-        thresholdMapping["TOO_MANY_FIELDS"] = "The reporting threshold for too many fields, default value is 20.";
+        thresholdMapping["TOO_MANY_FIELDS"] =
+            "The reporting threshold for too many fields, default value is 20.";
         return thresholdMapping;
     }
 #endif
