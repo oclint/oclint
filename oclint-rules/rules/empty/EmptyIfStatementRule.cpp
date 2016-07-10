@@ -33,7 +33,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "This rule detects instances where a condition is checked, but nothing is done about it.";
+        return "This rule detects instances where a condition is checked, "
+            "but nothing is done about it.";
     }
 
     virtual const std::string example() const override

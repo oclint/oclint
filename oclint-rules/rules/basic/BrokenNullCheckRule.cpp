@@ -148,7 +148,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "The broken nil check in Objective-C in some cases returns just the opposite result.";
+        return "The broken nil check in Objective-C in some cases "
+            "returns just the opposite result.";
     }
 
     virtual const std::string fileName() const override

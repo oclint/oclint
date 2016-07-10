@@ -56,9 +56,14 @@ public:
     virtual const std::string description() const override
     {
         return R"rst(
-Cyclomatic complexity is determined by the number of linearly independent paths through a program's source code. In other words, cyclomatic complexity of a method is measured by the number of decision points, like ``if``, ``while``, and ``for`` statements, plus one for the method entry.
+Cyclomatic complexity is determined by the number of linearly independent paths
+through a program's source code. In other words, cyclomatic complexity of a method
+is measured by the number of decision points, like ``if``, ``while``, and ``for`` statements,
+plus one for the method entry.
 
-The experiments McCabe, the author of cyclomatic complexity, conclude that methods in the 3 to 7 complexity range are quite well structured. He also suggest the cyclomatic complexity of 10 is a reasonable upper limit.
+The experiments McCabe, the author of cyclomatic complexity, conclude that
+methods in the 3 to 7 complexity range are quite well structured. He also suggest
+the cyclomatic complexity of 10 is a reasonable upper limit.
         )rst";
     }
 
@@ -105,7 +110,8 @@ The experiments McCabe, the author of cyclomatic complexity, conclude that metho
     virtual const std::map<std::string, std::string> thresholds() const override
     {
         std::map<std::string, std::string> thresholdMapping;
-        thresholdMapping["CYCLOMATIC_COMPLEXITY"] = "The cyclomatic complexity reporting threshold, default value is 10.";
+        thresholdMapping["CYCLOMATIC_COMPLEXITY"] =
+            "The cyclomatic complexity reporting threshold, default value is 10.";
         return thresholdMapping;
     }
 
@@ -114,7 +120,8 @@ The experiments McCabe, the author of cyclomatic complexity, conclude that metho
         return R"rst(
 **References:**
 
-McCabe (December 1976). `"A Complexity Measure" <http://www.literateprogramming.com/mccabe.pdf>`_. *IEEE Transactions on Software Engineering: 308–320*
+McCabe (December 1976). `"A Complexity Measure" <http://www.literateprogramming.com/mccabe.pdf>`_.
+*IEEE Transactions on Software Engineering: 308–320*
         )rst";
     }
 

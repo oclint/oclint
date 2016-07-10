@@ -88,8 +88,9 @@ public:
 
     virtual const std::string description() const override
     {
-        return "Early exits can reduce the indentation of a block of code, so that reader do not have to remember "
-            "all the previous decisions, therefore, makes it easier to understand the code.";
+        return "Early exits can reduce the indentation of a block of code, "
+            "so that reader do not have to remember all the previous decisions, "
+            "therefore, makes it easier to understand the code.";
     }
 
     virtual const std::string fileName() const override

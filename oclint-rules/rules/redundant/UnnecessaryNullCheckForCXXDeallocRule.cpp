@@ -125,7 +125,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "``char* p = 0; delete p;`` is valid. This rule locates unnecessary ``if (p)`` checks.";
+        return "``char* p = 0; delete p;`` is valid. "
+            "This rule locates unnecessary ``if (p)`` checks.";
     }
 
     virtual const std::string fileName() const override

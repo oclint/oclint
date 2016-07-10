@@ -90,7 +90,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "This rule prevents assigning an ivar outside of getters, setters, and ``init`` method.";
+        return "This rule prevents assigning an ivar outside of "
+            "getters, setters, and ``init`` method.";
     }
 
     virtual const std::string fileName() const override

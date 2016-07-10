@@ -91,7 +91,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "Throwing exceptions within a ``finally`` block may mask other exceptions or code defects.";
+        return "Throwing exceptions within a ``finally`` block "
+            "may mask other exceptions or code defects.";
     }
 
     virtual const std::string example() const override

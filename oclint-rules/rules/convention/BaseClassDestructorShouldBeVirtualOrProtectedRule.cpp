@@ -89,7 +89,9 @@ public:
         return R"rst(
 **References:**
 
-Sutter & Alexandrescu (November 2004). `"C++ Coding Standards: 101 Rules, Guidelines, and Best Practices" <http://gotw.ca/publications/c++cs.htm>`_. *Addison-Wesley Professional*
+Sutter & Alexandrescu (November 2004).
+`"C++ Coding Standards: 101 Rules, Guidelines, and Best Practices"
+<http://gotw.ca/publications/c++cs.htm>`_. *Addison-Wesley Professional*
         )rst";
     }
 #endif

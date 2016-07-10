@@ -85,9 +85,10 @@ public:
 
     virtual const std::string description() const override
     {
-        return "When a method is declared with ``__attribute__((annotate(\"oclint:enforce[must call super]\")))`` "
-            "annotation, all of its implementations (including its own and its sub classes) must call the method "
-            "implementation in super class.";
+        return "When a method is declared with "
+            "``__attribute__((annotate(\"oclint:enforce[must call super]\")))`` annotation, "
+            "all of its implementations (including its own and its sub classes) "
+            "must call the method implementation in super class.";
     }
 
     virtual const std::string fileName() const override

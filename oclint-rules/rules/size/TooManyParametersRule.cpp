@@ -48,11 +48,13 @@ public:
 
     virtual const std::string description() const override
     {
-        return "Methods with too many parameters are hard to understand and maintain, and are thirsty for "
-            "refactorings, like `Replace Parameter With method "
+        return "Methods with too many parameters are hard to understand and maintain, "
+            "and are thirsty for refactorings, like `Replace Parameter With method "
             "<http://www.refactoring.com/catalog/replaceParameterWithMethod.html>`_, "
-            "`Introduce Parameter Object <http://www.refactoring.com/catalog/introduceParameterObject.html>`_, "
-            "or `Preserve Whole Object <http://www.refactoring.com/catalog/preserveWholeObject.html>`_.";
+            "`Introduce Parameter Object "
+            "<http://www.refactoring.com/catalog/introduceParameterObject.html>`_, "
+            "or `Preserve Whole Object "
+            "<http://www.refactoring.com/catalog/preserveWholeObject.html>`_.";
     }
 
     virtual const std::string example() const override

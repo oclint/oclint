@@ -73,7 +73,8 @@ public:
     virtual const std::map<std::string, std::string> thresholds() const override
     {
         std::map<std::string, std::string> thresholdMapping;
-        thresholdMapping["LONG_METHOD"] = "The long method reporting threshold, default value is 50.";
+        thresholdMapping["LONG_METHOD"] =
+            "The long method reporting threshold, default value is 50.";
         return thresholdMapping;
     }
 #endif

@@ -61,7 +61,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "A switch statement without a break statement has a very large chance to contribute a bug.";
+        return "A switch statement without a break statement has a very large chance "
+            "to contribute a bug.";
     }
 
     virtual const std::string example() const override

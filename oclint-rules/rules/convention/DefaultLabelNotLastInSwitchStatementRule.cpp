@@ -32,7 +32,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "It is very confusing when default label is not the last label in a switch statement.";
+        return "It is very confusing when default label is not the last label "
+            "in a switch statement.";
     }
 
     virtual const std::string example() const override

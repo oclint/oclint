@@ -66,7 +66,8 @@ public:
 
     virtual const std::string description() const override
     {
-         return "When a method is declared with ``__attribute__((annotate(\"oclint:enforce[prohibited call]\")))`` "
+         return "When a method is declared with "
+            "``__attribute__((annotate(\"oclint:enforce[prohibited call]\")))`` "
             "annotation, all of its usages will be prohibited.";
     }
 

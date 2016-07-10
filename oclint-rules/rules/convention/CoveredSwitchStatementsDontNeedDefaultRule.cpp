@@ -32,8 +32,10 @@ public:
 
     virtual const std::string description() const override
     {
-        return "When a switch statement covers all possible cases, a default label is not needed and should "
-            "be removed. If the switch is not fully covered, the SwitchStatementsShouldHaveDefault rule will report.";
+        return "When a switch statement covers all possible cases, "
+            "a default label is not needed and should be removed. "
+            "If the switch is not fully covered, "
+            "the SwitchStatementsShouldHaveDefault rule will report.";
     }
 
     virtual const std::string example() const override

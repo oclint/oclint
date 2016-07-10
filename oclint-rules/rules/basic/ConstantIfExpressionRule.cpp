@@ -31,7 +31,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "``if`` statements whose conditionals are always true or always false are confusing.";
+        return "``if`` statements whose conditionals are always true "
+            "or always false are confusing.";
     }
 
     virtual const std::string example() const override

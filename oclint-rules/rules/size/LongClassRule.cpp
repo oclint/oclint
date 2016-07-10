@@ -70,7 +70,8 @@ public:
     virtual const std::map<std::string, std::string> thresholds() const override
     {
         std::map<std::string, std::string> thresholdMapping;
-        thresholdMapping["LONG_CLASS"] = "The class size reporting threshold, default value is 1000.";
+        thresholdMapping["LONG_CLASS"] =
+            "The class size reporting threshold, default value is 1000.";
         return thresholdMapping;
     }
 #endif

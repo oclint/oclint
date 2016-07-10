@@ -36,7 +36,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "A class with too many methods indicates it does too many things and is hard to read and understand. "
+        return "A class with too many methods indicates it does too many things "
+            "and is hard to read and understand. "
             "It usually contains complicated code, and should be refactored.";
     }
 
@@ -70,7 +71,8 @@ public:
     virtual const std::map<std::string, std::string> thresholds() const override
     {
         std::map<std::string, std::string> thresholdMapping;
-        thresholdMapping["TOO_MANY_METHODS"] = "The reporting threshold for too many methods, default value is 30.";
+        thresholdMapping["TOO_MANY_METHODS"] =
+            "The reporting threshold for too many methods, default value is 30.";
         return thresholdMapping;
     }
 #endif

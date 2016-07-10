@@ -95,8 +95,9 @@ public:
 
     virtual const std::string description() const override
     {
-        return "When an if statement block ends with a return statement, or all branches in the if statement block "
-            "end with return statements, then the else statement is unnecessary. The code in the else statement "
+        return "When an if statement block ends with a return statement, "
+            "or all branches in the if statement block end with return statements, "
+            "then the else statement is unnecessary. The code in the else statement "
             "can be run without being in the block.";
     }
 

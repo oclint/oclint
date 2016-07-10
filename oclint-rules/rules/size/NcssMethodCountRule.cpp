@@ -47,10 +47,12 @@ public:
 
     virtual const std::string description() const override
     {
-        return "This rule counts number of lines for a method by counting Non Commenting Source Statements (NCSS). "
-            "NCSS only takes actual statements into consideration, in other words, ignores empty statements, "
-            "empty blocks, closing brackets or semicolons after closing brackets. Meanwhile, a statement that is "
-            "broken into multiple lines contribute only one count.";
+        return "This rule counts number of lines for a method by "
+            "counting Non Commenting Source Statements (NCSS). "
+            "NCSS only takes actual statements into consideration, "
+            "in other words, ignores empty statements, empty blocks, "
+            "closing brackets or semicolons after closing brackets. "
+            "Meanwhile, a statement that is broken into multiple lines contribute only one count.";
     }
 
     virtual const std::string fileName() const override
@@ -78,7 +80,8 @@ public:
     virtual const std::map<std::string, std::string> thresholds() const override
     {
         std::map<std::string, std::string> thresholdMapping;
-        thresholdMapping["NCSS_METHOD"] = "The high NCSS method reporting threshold, default value is 30.";
+        thresholdMapping["NCSS_METHOD"] =
+            "The high NCSS method reporting threshold, default value is 30.";
         return thresholdMapping;
     }
 
