@@ -6,7 +6,7 @@ TEST(BaseClassDestructorShouldBeVirtualOrProtectedRuleTest, PropertyTest)
 {
     BaseClassDestructorShouldBeVirtualOrProtectedRule rule;
     EXPECT_EQ(2, rule.priority());
-    EXPECT_EQ("Base class destructor should be virtual or protected", rule.name());
+    EXPECT_EQ("base class destructor should be virtual or protected", rule.name());
     EXPECT_EQ(oclint::LANG_CXX, rule.supportedLanguages());
     EXPECT_EQ("convention", rule.category());
 }
