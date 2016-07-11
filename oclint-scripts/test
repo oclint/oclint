@@ -18,7 +18,7 @@ arg_parser.add_argument('module_name', nargs='?', choices=['all'] + OCLINT_MODUL
 arg_parser.add_argument('-show', '--show', action="store_true")
 arg_parser.add_argument('-clean', '--clean', action="store_true")
 arg_parser.add_argument('-j', type=int, default=0)
-arg_parser.add_argument('-use-system-compiler', '--use-system-compiler', action="store_true")
+arg_parser.add_argument('-use-system-compiler', '--use-system-compiler', action="store_true", default=environment.is_linux())
 arg_parser.add_argument('-as-dep', '--as-dep', action="store_true")
 args = arg_parser.parse_args()
 
