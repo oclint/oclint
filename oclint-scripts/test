@@ -65,8 +65,10 @@ def test_module(module_name, multiple_thread):
     process.call('make -j ' + multiple_thread)
     if not args.as_dep:
         run_ctest_command = 'ctest --output-on-failure > ' + test_result_path(module_name)
-        subprocess.call(run_ctest_command, shell=True)
+        ctest_exit_code = subprocess.call(run_ctest_command, shell=True)
         display_test_result(module_name)
+        if ctest_exit_code:
+            sys.exit(ctest_exit_code)
     path.cd(current_dir)
 
 build_modules = []

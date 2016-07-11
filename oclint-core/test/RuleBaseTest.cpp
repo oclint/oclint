@@ -5,57 +5,85 @@
 using namespace oclint;
 class TestRule : public RuleBase
 {
+private:
+    std::string ruleName;
 public:
     TestRule(std::string ruleName) : ruleName(ruleName) {}
     void apply() {}
     const std::string name() const
-    { return ruleName; }
+    {
+        return ruleName;
+    }
     const std::string category() const
-    { return "test"; }
+    {
+        return "test";
+    }
     int priority() const
-    { return 0; }
-    std::string ruleName;
+    {
+        return 0;
+    }
 };
 
 class CustomRule : public RuleBase
 {
+private:
+    std::string ruleName;
 public:
+    CustomRule(std::string ruleName) : ruleName(ruleName) {}
     void apply() {}
     const std::string name() const
-    { return "Some Identifier"; }
+    {
+        return ruleName;
+    }
     const std::string identifier() const
-    { return "Some Other Identifier"; }
+    {
+        return "SomeOtherIdentifier";
+    }
+    const std::string attributeName() const
+    {
+        return "some other attribute name";
+    }
     const std::string category() const
-    { return "test"; }
+    {
+        return "test";
+    }
     int priority() const
-    { return 0; }
+    {
+        return 0;
+    }
 };
 
 TEST(RuleBaseTest, EmptyName)
 {
     EXPECT_EQ(TestRule("").identifier(), "");
+    EXPECT_EQ(TestRule("").attributeName(), "");
+}
+
+TEST(RuleBaseTest, SingleWordName)
+{
+    EXPECT_EQ(TestRule("name").identifier(), "Name");
+    EXPECT_EQ(TestRule("name").attributeName(), "name");
 }
 
 TEST(RuleBaseTest, CamelCase)
 {
     EXPECT_EQ(TestRule("some name").identifier(), "SomeName");
+    EXPECT_EQ(TestRule("some name").attributeName(), "some name");
 }
 
 TEST(RuleBaseTest, SpecialChars)
 {
     EXPECT_EQ(TestRule("some/name?").identifier(), "SomeName");
-}
-
-TEST(RuleBaseTest, AttributeName)
-{
-    EXPECT_EQ(TestRule("attr").attributeName(), "attr");
+    EXPECT_EQ(TestRule("some/name?").attributeName(), "some/name?");
 }
 
 TEST(RuleBaseTest, OverwrittenIdentifier)
 {
-    CustomRule rule;
+    CustomRule rule("some name");
     RuleBase *ruleBase = &rule;
-    EXPECT_EQ(ruleBase->identifier(), "Some Other Identifier");
+    EXPECT_EQ(ruleBase->name(), "some name");
+    EXPECT_EQ(ruleBase->identifier(), "SomeOtherIdentifier");
+    EXPECT_EQ(ruleBase->attributeName(), "some other attribute name");
 }
 
 int main(int argc, char **argv)
