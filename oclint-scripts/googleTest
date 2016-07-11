@@ -15,6 +15,7 @@ arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('task_name', choices=['checkout', 'co', 'update', 'up', 'build'])
 arg_parser.add_argument('-clean', '--clean', action="store_true")
 arg_parser.add_argument('-j', type=int, default=0)
+arg_parser.add_argument('-use-system-compiler', '--use-system-compiler', action="store_true")
 args = arg_parser.parse_args()
 
 def clean_module():
@@ -24,6 +25,8 @@ def clean_module():
 def build_command():
     googlemock_dir = os.path.join(path.source.googletest_dir, "googlemock")
     cmd_build = cmake.builder(googlemock_dir)
+    if environment.is_unix() and not args.use_system_compiler:
+        cmd_build.use_local_clang_compiler()
     if environment.is_mingw32():
         cmd_build.append('gtest_disable_pthreads:BOOL', 'ON')
     if environment.is_darwin():
