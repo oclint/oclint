@@ -6,7 +6,7 @@ TEST(UnnecessaryNullCheckForCXXDeallocRuleTest, PropertyTest)
 {
     UnnecessaryNullCheckForCXXDeallocRule rule;
     EXPECT_EQ(3, rule.priority());
-    EXPECT_EQ("unnecessary null check for cxxdealloc", rule.name());
+    EXPECT_EQ("unnecessary null check for dealloc", rule.name());
     EXPECT_EQ("redundant", rule.category());
 }
 
