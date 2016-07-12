@@ -100,6 +100,8 @@ def setup_prebuilt_binary():
         binary_url = path.url.clang_prebuilt_binary_for_xcode_8
     elif environment.is_darwin():
         binary_url = path.url.clang_prebuilt_binary_for_xcode_7
+    elif environment.is_linux() and environment.linux_distribution()[1] == '16.04':
+        binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts_16
     else:
         binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts_14
 

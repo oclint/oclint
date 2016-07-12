@@ -20,7 +20,7 @@ arg_parser.add_argument('-release', '--release', action="store_true")
 arg_parser.add_argument('-clean', '--clean', action="store_true")
 arg_parser.add_argument('-j', type=int, default=0)
 arg_parser.add_argument('-llvm-root', '--llvm-root', default=path.build.clang_install_dir)
-arg_parser.add_argument('-use-system-compiler', '--use-system-compiler', action="store_true")
+arg_parser.add_argument('-use-system-compiler', '--use-system-compiler', action="store_true", default=environment.is_linux())
 args = arg_parser.parse_args()
 
 def clean_module(module_name):

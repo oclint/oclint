@@ -5,72 +5,103 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
-      env: BUILD="test" MODULE="core"
+      env: BUILD="test" MODULE="core" COMPILER="gcc4"
     - os: linux
       dist: trusty
       sudo: required
-      env: BUILD="test" MODULE="metrics"
+      env: BUILD="test" MODULE="metrics" COMPILER="gcc4"
     - os: linux
       dist: trusty
       sudo: required
-      env: BUILD="test" MODULE="rules" DEP="core metrics"
+      env: BUILD="test" MODULE="rules" DEP="core metrics" COMPILER="gcc4"
     - os: linux
       dist: trusty
       sudo: required
-      env: BUILD="test" MODULE="reporters" DEP="core"
+      env: BUILD="test" MODULE="reporters" DEP="core" COMPILER="gcc4"
     - os: linux
       dist: trusty
       sudo: required
-      env: BUILD="test" MODULE="driver" DEP="core"
+      env: BUILD="test" MODULE="driver" DEP="core" COMPILER="gcc4"
     - os: linux
       dist: trusty
       sudo: required
-      env: BUILD="build"
+      env: BUILD="build" COMPILER="gcc4"
     - os: linux
       dist: trusty
       sudo: required
-      env: BUILD="docgen"
+      env: BUILD="docgen" COMPILER="gcc4"
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: BUILD="test" MODULE="core" COMPILER="gcc5"
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: BUILD="test" MODULE="metrics" COMPILER="gcc5"
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: BUILD="test" MODULE="rules" DEP="core metrics" COMPILER="gcc5"
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: BUILD="test" MODULE="reporters" DEP="core" COMPILER="gcc5"
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: BUILD="test" MODULE="driver" DEP="core" COMPILER="gcc5"
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: BUILD="build" COMPILER="gcc5"
     - os: osx
       osx_image: xcode7.3
-      env: BUILD="test" MODULE="core"
+      env: BUILD="test" MODULE="core" COMPILER="apple7"
     - os: osx
       osx_image: xcode7.3
-      env: BUILD="test" MODULE="metrics"
+      env: BUILD="test" MODULE="metrics" COMPILER="apple7"
     - os: osx
       osx_image: xcode7.3
-      env: BUILD="test" MODULE="rules" DEP="core metrics"
+      env: BUILD="test" MODULE="rules" DEP="core metrics" COMPILER="apple7"
     - os: osx
       osx_image: xcode7.3
-      env: BUILD="test" MODULE="reporters" DEP="core"
+      env: BUILD="test" MODULE="reporters" DEP="core" COMPILER="apple7"
     - os: osx
       osx_image: xcode7.3
-      env: BUILD="test" MODULE="driver" DEP="core"
+      env: BUILD="test" MODULE="driver" DEP="core" COMPILER="apple7"
     - os: osx
       osx_image: xcode7.3
-      env: BUILD="build"
+      env: BUILD="build" COMPILER="apple7"
     - os: osx
       osx_image: xcode8
-      env: BUILD="test" MODULE="core"
+      env: BUILD="test" MODULE="core" COMPILER="apple8"
     - os: osx
       osx_image: xcode8
-      env: BUILD="test" MODULE="metrics"
+      env: BUILD="test" MODULE="metrics" COMPILER="apple8"
     - os: osx
       osx_image: xcode8
-      env: BUILD="test" MODULE="rules" DEP="core metrics"
+      env: BUILD="test" MODULE="rules" DEP="core metrics" COMPILER="apple8"
     - os: osx
       osx_image: xcode8
-      env: BUILD="test" MODULE="reporters" DEP="core"
+      env: BUILD="test" MODULE="reporters" DEP="core" COMPILER="apple8"
     - os: osx
       osx_image: xcode8
-      env: BUILD="test" MODULE="driver" DEP="core"
+      env: BUILD="test" MODULE="driver" DEP="core" COMPILER="apple8"
     - os: osx
       osx_image: xcode8
-      env: BUILD="build"
+      env: BUILD="build" COMPILER="apple8"
     - os: osx
       osx_image: xcode8
-      env: BUILD="docgen"
+      env: BUILD="docgen" COMPILER="apple8"
 
 before_install:
+- if [ "$COMPILER" == "gcc5" ]; then
+    sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y;
+    sudo apt-get update -q;
+    sudo apt-get install gcc-5 g++-5 -y;
+    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 50;
+    sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 50;
+  fi
 - if [ $TRAVIS_OS_NAME == osx ]; then
     brew update;
     brew install cmake;
@@ -85,7 +116,11 @@ script:
 
 after_success:
   - if [ $BUILD == test ]; then
-      coveralls --gcov $PWD/build/llvm-install/bin/llvm-cov --gcov-options gcov --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test;
+      if [ $TRAVIS_OS_NAME == osx ]; then
+        coveralls --gcov $PWD/build/llvm-install/bin/llvm-cov --gcov-options gcov --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test;
+      else
+        coveralls --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test;
+      fi
     fi
 
 addons:
