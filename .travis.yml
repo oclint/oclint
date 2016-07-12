@@ -116,7 +116,11 @@ script:
 
 after_success:
   - if [ $BUILD == test ]; then
-      coveralls --gcov $PWD/build/llvm-install/bin/llvm-cov --gcov-options gcov --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test;
+      if [ $TRAVIS_OS_NAME == osx ]; then
+        coveralls --gcov $PWD/build/llvm-install/bin/llvm-cov --gcov-options gcov --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test;
+      else
+        coveralls --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test;
+      fi
     fi
 
 addons:
