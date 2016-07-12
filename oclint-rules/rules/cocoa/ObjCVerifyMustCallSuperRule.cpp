@@ -59,7 +59,12 @@ private:
 public:
     virtual const string name() const override
     {
-        return "must call super";
+        return "missing calling base method";
+    }
+
+    virtual const string attributeName() const override
+    {
+        return "base method";
     }
 
     virtual int priority() const override
@@ -86,7 +91,7 @@ public:
     virtual const std::string description() const override
     {
         return "When a method is declared with "
-            "``__attribute__((annotate(\"oclint:enforce[must call super]\")))`` annotation, "
+            "``__attribute__((annotate(\"oclint:enforce[base method]\")))`` annotation, "
             "all of its implementations (including its own and its sub classes) "
             "must call the method implementation in super class.";
     }
@@ -102,7 +107,7 @@ public:
 .. code-block:: objective-c
 
     @interface UIView (OCLintStaticChecks)
-    - (void)layoutSubviews __attribute__((annotate("oclint:enforce[must call super]")));
+    - (void)layoutSubviews __attribute__((annotate("oclint:enforce[base method]")));
     @end
 
     @interface CustomView : UIView

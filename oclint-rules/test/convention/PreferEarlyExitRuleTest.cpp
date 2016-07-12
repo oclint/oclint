@@ -103,7 +103,7 @@ TEST_F(PreferEarlyExitRuleTest, PropertyTest)
 {
     PreferEarlyExitRule rule;
     EXPECT_EQ(3, rule.priority());
-    EXPECT_EQ("use early exits and continue", rule.name());
+    EXPECT_EQ("prefer early exits and continue", rule.name());
     EXPECT_EQ("convention", rule.category());
 }
 

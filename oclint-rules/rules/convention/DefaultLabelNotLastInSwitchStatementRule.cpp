@@ -11,7 +11,12 @@ class DefaultLabelNotLastInSwitchStatementRule :
 public:
     virtual const string name() const override
     {
-        return "default label not last in switch statement";
+        return "ill-placed default label in switch statement";
+    }
+
+    virtual const string identifier() const override
+    {
+        return "IllplacedDefaultLabel";
     }
 
     virtual int priority() const override
@@ -34,6 +39,11 @@ public:
     {
         return "It is very confusing when default label is not the last label "
             "in a switch statement.";
+    }
+
+    virtual const std::string fileName() const override
+    {
+        return "DefaultLabelNotLastInSwitchStatementRule.cpp";
     }
 
     virtual const std::string example() const override

@@ -125,6 +125,8 @@ void writeRuleToCategory(ofstream& out, oclint::RuleBase* rule)
 
     out << "**Since: " << rule->since() << "**" << endl << endl;
 
+    out << "**Name: " << rule->name() << "**" << endl << endl;
+
     out << rule->description() << endl << endl;
 
     out << "This rule is defined by the following class: "

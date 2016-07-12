@@ -36,7 +36,7 @@ TEST(ObjCBoxedExpressionsRuleTest, PropertyTest)
 {
     ObjCBoxedExpressionsRule rule;
     EXPECT_EQ(3, rule.priority());
-    EXPECT_EQ("replace with boxed expression", rule.name());
+    EXPECT_EQ("use boxed expression", rule.name());
     EXPECT_EQ("migration", rule.category());
 }
 

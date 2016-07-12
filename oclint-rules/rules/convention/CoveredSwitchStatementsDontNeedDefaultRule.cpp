@@ -11,7 +11,12 @@ class CoveredSwitchStatementsDontNeedDefaultRule :
 public:
     virtual const string name() const override
     {
-        return "covered switch statements dont need default";
+        return "unnecessary default statement in covered switch statement";
+    }
+
+    virtual const string identifier() const override
+    {
+        return "UnnecessaryDefaultStatement";
     }
 
     virtual int priority() const override
@@ -36,6 +41,11 @@ public:
             "a default label is not needed and should be removed. "
             "If the switch is not fully covered, "
             "the SwitchStatementsShouldHaveDefault rule will report.";
+    }
+
+    virtual const std::string fileName() const override
+    {
+        return "CoveredSwitchStatementsDontNeedDefaultRule.cpp";
     }
 
     virtual const std::string example() const override

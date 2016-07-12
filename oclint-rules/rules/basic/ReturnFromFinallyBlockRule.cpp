@@ -50,7 +50,7 @@ public:
 
     virtual const std::string description() const override
     {
-        return "Returning from a finally block is not recommended.";
+        return "Returning from a ``finally`` block is not recommended.";
     }
 
     virtual const std::string example() const override

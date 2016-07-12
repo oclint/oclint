@@ -74,7 +74,7 @@ private:
 public:
     virtual const string name() const override
     {
-        return "replace with number literal";
+        return "use number literal";
     }
 
     virtual int priority() const override

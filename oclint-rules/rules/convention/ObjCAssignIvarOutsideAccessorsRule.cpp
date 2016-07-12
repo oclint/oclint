@@ -72,6 +72,11 @@ public:
         return "ivar assignment outside accessors or init";
     }
 
+    virtual const string identifier() const override
+    {
+        return "AssignIvarOutsideAccessors";
+    }
+
     virtual int priority() const override
     {
         return 2;

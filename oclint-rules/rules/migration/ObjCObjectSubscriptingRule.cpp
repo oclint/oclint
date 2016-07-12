@@ -52,7 +52,7 @@ private:
 public:
     virtual const string name() const override
     {
-        return "replace with object subscripting";
+        return "use object subscripting";
     }
 
     virtual int priority() const override

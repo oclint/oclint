@@ -11,7 +11,7 @@ class ObjCContainerLiteralsRule : public AbstractASTVisitorRule<ObjCContainerLit
 public:
     virtual const string name() const override
     {
-        return "replace with container literal";
+        return "use container literal";
     }
 
     virtual int priority() const override

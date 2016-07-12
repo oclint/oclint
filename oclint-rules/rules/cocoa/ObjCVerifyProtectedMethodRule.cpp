@@ -71,7 +71,7 @@ public:
 
     virtual const string name() const override
     {
-        return "verify protected method";
+        return "calling protected method";
     }
 
     virtual const string attributeName() const override

@@ -7,7 +7,7 @@ static string testAnnotationBase = "\
 @interface Parent                                   \n\
                                                     \n\
 - (void)someAbstractMethod                          \n\
-    __attribute__((annotate(\"oclint:enforce[subclass must implement]\")));  \n\
+    __attribute__((annotate(\"oclint:enforce[abstract method]\")));  \n\
 @end                                                \n\
                                                     \n\
 @interface Child : Parent                           \n\
@@ -65,7 +65,7 @@ TEST(ObjcVerifySubclassMustImplementRuleTest, PropertyTest)
 {
     ObjCVerifySubclassMustImplementRule rule;
     EXPECT_EQ(1, rule.priority());
-    EXPECT_EQ("subclass must implement", rule.name());
+    EXPECT_EQ("missing abstract method implementation", rule.name());
     EXPECT_EQ("cocoa", rule.category());
 }
 
