@@ -85,9 +85,11 @@ void CompilerInstance::start()
         }
 
         clang::FrontendAction *frontendAction = getFrontendAction();
-        frontendAction->BeginSourceFile(*this, input);
-        frontendAction->Execute();
-        _actions.emplace_back(frontendAction);
+        if(frontendAction->BeginSourceFile(*this, input))
+        {
+            frontendAction->Execute();
+            _actions.emplace_back(frontendAction);
+        }
     }
 }
 
