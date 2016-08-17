@@ -60,6 +60,21 @@ TEST_F(PMDReporterTest, WriteViolation)
     EXPECT_THAT(oss.str(), HasSubstr("test message"));
 }
 
+TEST_F(PMDReporterTest, WriteCheckerBug)
+{
+    Violation violation(nullptr, "test path", 1, 2, 3, 4, "test message");
+    std::ostringstream oss;
+    reporter.writeCheckerBug(oss, violation);
+    EXPECT_THAT(oss.str(), HasSubstr("<file name=\"test path\">"));
+    EXPECT_THAT(oss.str(), HasSubstr("<violation"));
+    EXPECT_THAT(oss.str(), HasSubstr("begincolumn=\"2\""));
+    EXPECT_THAT(oss.str(), HasSubstr("endcolumn=\"4\""));
+    EXPECT_THAT(oss.str(), HasSubstr("beginline=\"1\""));
+    EXPECT_THAT(oss.str(), HasSubstr("endline=\"3\""));
+    EXPECT_THAT(oss.str(), HasSubstr("priority=\"2\""));
+    EXPECT_THAT(oss.str(), HasSubstr("clang static analyzer"));
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleMock(&argc, argv);

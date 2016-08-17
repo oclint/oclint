@@ -22,6 +22,11 @@ public:
             writeViolation(out, violation);
             out << std::endl;
         }
+        for (const auto& violation : results->allCheckerBugs())
+        {
+            writeCheckerBug(out, violation);
+            out << std::endl;
+        }
         writeFooter(out);
     }
 
@@ -51,6 +56,23 @@ public:
             out << "rule=\"" << rule->name() << "\" ";
             out << "ruleset=\"" << rule->category() << "\" ";
         }
+        out << ">" << std::endl;
+        out << violation.message << std::endl;
+        out << "</violation>" << std::endl;
+        out << "</file>" << std::endl;
+    }
+
+    void writeCheckerBug(std::ostream &out, const Violation &violation)
+    {
+        out << "<file name=\"" << violation.path << "\">" << std::endl;
+        out << "<violation ";
+        out << "begincolumn=\"" << violation.startColumn << "\" ";
+        out << "endcolumn=\"" << violation.endColumn << "\" ";
+        out << "beginline=\"" << violation.startLine << "\" ";
+        out << "endline=\"" << violation.endLine << "\" ";
+        out << "priority=\"" << 2 << "\" ";
+        out << "rule=\"" << "clang static analyzer" << "\" ";
+        out << "ruleset=\"" << "cland static analyzer" << "\" ";
         out << ">" << std::endl;
         out << violation.message << std::endl;
         out << "</violation>" << std::endl;
