@@ -23,12 +23,10 @@ def llvm_branches():
     return [llvm_master_branch(), llvm_latest_release_branch()]
 
 def llvm_default_branch():
-    if environment.is_xcode8():
-        return llvm_master_branch()
     return llvm_latest_release_branch()
 
 def llvm_master_branch():
     return 'trunk'
 
 def llvm_latest_release_branch():
-    return 'tags/RELEASE_381/final'
+    return 'tags/RELEASE_390/final'
