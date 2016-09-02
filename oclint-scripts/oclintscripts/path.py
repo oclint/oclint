@@ -73,10 +73,10 @@ class url:
     json_compilation_database = 'https://github.com/oclint/oclint-json-compilation-database.git'
     xcodebuild = 'https://github.com/oclint/oclint-xcodebuild.git'
 
-    clang_prebuilt_binary_for_xcode_8 = 'http://clang-snapshots.oclint.org/llvm-3.9.0-dev-snapshot-mac-10.12-xcode-8-oclint-16.07.11.tar.gz'
-    clang_prebuilt_binary_for_xcode_7 = 'http://clang-snapshots.oclint.org/llvm-3.8.1-final-mac-10.11-xcode-7-oclint-16.07.11.tar.gz'
-    clang_prebuilt_binary_for_ubuntu_lts_14 = 'http://clang-snapshots.oclint.org/llvm-3.8.1-final-ubuntu-14.04-oclint-16.07.11.tar.gz'
-    clang_prebuilt_binary_for_ubuntu_lts_16 = 'http://clang-snapshots.oclint.org/llvm-3.8.1-final-ubuntu-16.04-oclint-16.07.11.tar.gz'
+    clang_prebuilt_binary_for_xcode_8 = 'http://clang-snapshots.oclint.org/llvm-3.9.0-dev-snapshot-mac-10.12-xcode-8-oclint-16.09.01.tar.gz'
+    clang_prebuilt_binary_for_xcode_7 = 'http://clang-snapshots.oclint.org/llvm-3.9.0-final-mac-10.11-xcode-7-oclint-16.09.01.tar.gz'
+    clang_prebuilt_binary_for_ubuntu_lts_14 = 'http://clang-snapshots.oclint.org/llvm-3.9.0-final-ubuntu-14.04-oclint-16.09.01.tar.gz'
+    clang_prebuilt_binary_for_ubuntu_lts_16 = 'http://clang-snapshots.oclint.org/llvm-3.9.0-final-ubuntu-16.04-oclint-16.09.01.tar.gz'
 
 def cd(dir_path):
     os.chdir(dir_path)

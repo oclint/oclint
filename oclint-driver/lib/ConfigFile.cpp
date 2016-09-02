@@ -1,5 +1,7 @@
 #include "oclint/ConfigFile.h"
 
+#include <climits>
+
 #include <llvm/Support/SourceMgr.h>
 #include <llvm/Support/YAMLParser.h>
 
