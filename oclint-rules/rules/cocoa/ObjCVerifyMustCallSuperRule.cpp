@@ -59,7 +59,7 @@ private:
 public:
     virtual const string name() const override
     {
-        return "missing calling base method";
+        return "missing call to base method";
     }
 
     virtual const string attributeName() const override

@@ -94,7 +94,7 @@ TEST(ObjcVerifyMustCallSuperRuleTest, PropertyTest)
 {
     ObjCVerifyMustCallSuperRule rule;
     EXPECT_EQ(1, rule.priority());
-    EXPECT_EQ("missing calling base method", rule.name());
+    EXPECT_EQ("missing call to base method", rule.name());
     EXPECT_EQ("cocoa", rule.category());
 }
 
