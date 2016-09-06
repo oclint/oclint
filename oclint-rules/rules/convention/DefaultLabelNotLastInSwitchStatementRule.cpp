@@ -16,7 +16,7 @@ public:
 
     virtual const string identifier() const override
     {
-        return "IllplacedDefaultLabel";
+        return "MisplacedDefaultLabel";
     }
 
     virtual int priority() const override
