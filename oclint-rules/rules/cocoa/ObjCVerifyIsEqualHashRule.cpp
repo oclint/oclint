@@ -15,7 +15,7 @@ class ObjCVerifyIsEqualHashRule : public AbstractASTVisitorRule<ObjCVerifyIsEqua
 public:
     virtual const string name() const override
     {
-        return "must override hash with isEqual";
+        return "missing hash method";
     }
 
     virtual int priority() const override

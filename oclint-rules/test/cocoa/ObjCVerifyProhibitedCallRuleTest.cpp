@@ -8,7 +8,7 @@ string testBase = R"END(
 @end
 
 @interface A : NSObject
-- (void)foo __attribute__((annotate("oclint:enforce[prohibited call]")));
+- (void)foo __attribute__((annotate("oclint:enforce[prohibited method]")));
 @end
 
 @interface B : NSObject
@@ -22,7 +22,7 @@ TEST(ObjCVerifyProhibitedCallRule, PropertyTest)
 {
     ObjCVerifyProhibitedCallRule rule;
     EXPECT_EQ(1, rule.priority());
-    EXPECT_EQ("verify prohibited call", rule.name());
+    EXPECT_EQ("calling prohibited method", rule.name());
     EXPECT_EQ("cocoa", rule.category());
 }
 
@@ -97,7 +97,7 @@ TEST(ObjCVerifyProhibitedCallRule, ProtectedPropertyGetterOutside)
     const string testGetterOutside = testBase + R"END(
     @interface C : NSObject
     @property (strong) A* a
-        __attribute__((annotate("oclint:enforce[prohibited call]")));
+        __attribute__((annotate("oclint:enforce[prohibited method]")));
     @end
     @interface D : NSObject
     @property (strong) C* c;
@@ -119,7 +119,7 @@ TEST(ObjCVerifyProhibitedCallRule, ProtectedPropertySetterOutside)
     const string testSetterOutside = testBase + R"END(
     @interface C : NSObject
     @property (strong) A* a
-        __attribute__((annotate("oclint:enforce[prohibited call]")));
+        __attribute__((annotate("oclint:enforce[prohibited method]")));
     @end
     @interface D : NSObject
     @property (strong) C* c;
@@ -140,7 +140,7 @@ TEST(ObjCVerifyProhibitedCallRule, ProtectedPropertyGetterInside)
     const string testGetterInside = testBase + R"END(
     @interface C : NSObject
     @property (strong) A* a
-        __attribute__((annotate("oclint:enforce[prohibited call]")));
+        __attribute__((annotate("oclint:enforce[prohibited method]")));
     @end
     @interface D : C
     @property (strong) C* c;
@@ -159,7 +159,7 @@ TEST(ObjCVerifyProhibitedCallRule, ProtectedPropertySetterInside)
     const string testSetterInside = testBase + R"END(
     @interface C : NSObject
     @property (strong) A* a
-        __attribute__((annotate("oclint:enforce[prohibited call]")));
+        __attribute__((annotate("oclint:enforce[prohibited method]")));
     @end
     @interface D : C
     @property (strong) C* c;
@@ -228,7 +228,7 @@ TEST(ObjCVerifyProhibitedCallRule, PropertyCategoryOutside)
     @end
     @interface C (Additions)
     - (void)setA:(A*)a
-        __attribute__((annotate("oclint:enforce[prohibited call]")));
+        __attribute__((annotate("oclint:enforce[prohibited method]")));
     @end
     @interface D : NSObject
     @property (strong) C* c;
@@ -246,7 +246,7 @@ TEST(ObjCVerifyProhibitedCallRule, PropertyCategoryOutside)
 TEST(ObjCVerifyProhibitedCallRule, ProhibitedFunctionCall)
 {
     const string testFunction = R"END(
-    void foo(int x) __attribute__((annotate("oclint:enforce[prohibited call]")));
+    void foo(int x) __attribute__((annotate("oclint:enforce[prohibited method]")));
     int main(int argc, char* argv[]) {
         foo(3);
         return 0;
@@ -260,7 +260,7 @@ TEST(ObjCVerifyProhibitedCallRule, RedeclareFunctionCallBefore)
 {
     const string testFunction = R"END(
     void foo(int x);
-    void foo(int x) __attribute__((annotate("oclint:enforce[prohibited call]")));
+    void foo(int x) __attribute__((annotate("oclint:enforce[prohibited method]")));
     int main(int argc, char* argv[]) {
         foo(3);
         return 0;
@@ -273,7 +273,7 @@ TEST(ObjCVerifyProhibitedCallRule, RedeclareFunctionCallBefore)
 TEST(ObjCVerifyProhibitedCallRule, RedeclareFunctionCallAfter)
 {
     const string testFunction = R"END(
-    void foo(int x) __attribute__((annotate("oclint:enforce[prohibited call]")));
+    void foo(int x) __attribute__((annotate("oclint:enforce[prohibited method]")));
     void foo(int x);
     int main(int argc, char* argv[]) {
         foo(3);
@@ -287,7 +287,7 @@ TEST(ObjCVerifyProhibitedCallRule, RedeclareFunctionCallAfter)
 TEST(ObjCVerifyProhibitedCallRule, CommentFunction)
 {
     const string testFunction = R"END(
-    void foo(int x) __attribute__((annotate("oclint:enforce[prohibited call][bar]")));
+    void foo(int x) __attribute__((annotate("oclint:enforce[prohibited method][bar]")));
     int main(int argc, char* argv[]) {
         foo(3);
         return 0;
@@ -306,7 +306,7 @@ TEST(ObjCVerifyProhibitedCallRule, CommentMethod)
 
     @interface A : NSObject
 
-    - (void)foo __attribute__((annotate("oclint:enforce[prohibited call][bar]")));
+    - (void)foo __attribute__((annotate("oclint:enforce[prohibited method][bar]")));
 
     @end
     @interface B : NSObject
@@ -348,7 +348,7 @@ TEST(ObjCVerifyProhibitedCallRule, ProtocolAnnotation)
         typedef int SEL;
         @protocol NSObject
             - (int)respondsToSelector:(SEL)selector
-            __attribute__((annotate("oclint:enforce[prohibited call]")));
+            __attribute__((annotate("oclint:enforce[prohibited method]")));
         @end
         @interface NSObject <NSObject>
         @end

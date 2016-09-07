@@ -6,7 +6,7 @@ TEST(SwitchStatementsShouldHaveDefaultRuleTest, PropertyTest)
 {
     SwitchStatementsShouldHaveDefaultRule rule;
     EXPECT_EQ(3, rule.priority());
-    EXPECT_EQ("switch statements should have default", rule.name());
+    EXPECT_EQ("missing default in switch statements", rule.name());
     EXPECT_EQ("convention", rule.category());
 }
 

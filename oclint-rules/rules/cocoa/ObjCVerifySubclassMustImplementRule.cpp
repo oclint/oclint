@@ -16,7 +16,12 @@ class ObjCVerifySubclassMustImplementRule : public
 public:
     virtual const string name() const override
     {
-        return "subclass must implement";
+        return "missing abstract method implementation";
+    }
+
+    virtual const string attributeName() const override
+    {
+        return "abstract method";
     }
 
     virtual int priority() const override
@@ -42,7 +47,7 @@ public:
 
     virtual const std::string description() const override
     {
-        return "Due to the Objective-C language tries to postpone making decisions "
+        return "Due to the Objective-C language tries to postpone the decision makings "
             "to the runtime as much as possible, an abstract method is okay to be declared "
             "but without implementations. This rule tries to verify the subclass implement "
             "the correct abstract method.";
@@ -60,7 +65,7 @@ public:
 
     @interface Parent
 
-    - (void)anAbstractMethod __attribute__((annotate("oclint:enforce[subclass must implement]")));
+    - (void)anAbstractMethod __attribute__((annotate("oclint:enforce[abstract method]")));
 
     @end
 

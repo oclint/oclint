@@ -80,7 +80,7 @@ private:
 public:
     virtual const string name() const override
     {
-        return "replace with boxed expression";
+        return "use boxed expression";
     }
 
     virtual int priority() const override

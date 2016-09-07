@@ -41,6 +41,11 @@ public:
         return "base class destructor should be virtual or protected";
     }
 
+    virtual const std::string identifier() const override
+    {
+        return "ProblematicBaseClassDestructor";
+    }
+
     virtual int priority() const override
     {
         return 2;
@@ -64,7 +69,12 @@ public:
 
     virtual const std::string description() const override
     {
-        return "Make base class destructors public and virtual, or protected and nonvirtual";
+        return "Make base class destructor public and virtual, or protected and nonvirtual";
+    }
+
+    virtual const std::string fileName() const override
+    {
+        return "BaseClassDestructorShouldBeVirtualOrProtectedRule.cpp";
     }
 
     virtual const std::string example() const override

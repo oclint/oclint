@@ -71,7 +71,7 @@ TEST(ObjCVerifyIsEqualHashRuleTest, PropertyTest)
 {
     ObjCVerifyIsEqualHashRule rule;
     EXPECT_EQ(1, rule.priority());
-    EXPECT_EQ("must override hash with isEqual", rule.name());
+    EXPECT_EQ("missing hash method", rule.name());
     EXPECT_EQ("cocoa", rule.category());
 }
 

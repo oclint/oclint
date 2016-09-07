@@ -34,7 +34,7 @@ typedef unsigned char BOOL;                                                     
 @interface SomeBaseClass : NSObject                                                            \n\
                                                                                                \n\
 - (void)viewWillAppear:(BOOL)animated                                                          \n\
-__attribute__((annotate(\"oclint:enforce[must call super]\")));                                \n\
+__attribute__((annotate(\"oclint:enforce[base method]\")));                                    \n\
                                                                                                \n\
 @end                                                                                           \n\
                                                                                                \n\
@@ -51,7 +51,7 @@ static const string testSuppression = "\
 @implementation ChildViewController                                             \n\
                                                                                 \n\
 - (void)viewWillAppear:(BOOL)animated                                           \n\
-    __attribute__((annotate(\"oclint:suppress[must call super]\"))) {           \n\
+    __attribute__((annotate(\"oclint:suppress[base method]\"))) {               \n\
 }                                                                               \n\
                                                                                 \n\
 @end                                                                            \n\
@@ -94,7 +94,7 @@ TEST(ObjcVerifyMustCallSuperRuleTest, PropertyTest)
 {
     ObjCVerifyMustCallSuperRule rule;
     EXPECT_EQ(1, rule.priority());
-    EXPECT_EQ("must call super", rule.name());
+    EXPECT_EQ("missing call to base method", rule.name());
     EXPECT_EQ("cocoa", rule.category());
 }
 

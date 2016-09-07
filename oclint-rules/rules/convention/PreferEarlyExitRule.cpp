@@ -67,7 +67,12 @@ private:
 public:
     virtual const string name() const override
     {
-        return "use early exits and continue";
+        return "prefer early exits and continue";
+    }
+
+    virtual const string identifier() const override
+    {
+        return "PreferEarlyExit";
     }
 
     virtual int priority() const override
