@@ -26,6 +26,11 @@ class MissingBreakInSwitchStatementRule :
             return false;
         }
 
+        bool VisitContinueStmt(ContinueStmt *)
+        {
+            return false;
+        }
+
         bool VisitCXXThrowExpr(CXXThrowExpr *)
         {
             return false;
@@ -93,7 +98,10 @@ public:
     bool isBreakingPoint(Stmt *stmt)
     {
         return stmt && (isa<BreakStmt>(stmt) ||
-                isa<ReturnStmt>(stmt) || isa<CXXThrowExpr>(stmt) || isa<ObjCAtThrowStmt>(stmt));
+                        isa<ReturnStmt>(stmt) ||
+                        isa<CXXThrowExpr>(stmt) ||
+                        isa<ContinueStmt>(stmt) ||
+                        isa<ObjCAtThrowStmt>(stmt));
     }
 
     bool VisitSwitchStmt(SwitchStmt *switchStmt)

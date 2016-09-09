@@ -127,6 +127,20 @@ default:      \n\
 } }");
 }
 
+TEST(MissingBreakInSwitchStatementRuleTest, SkipCasesWithContinue)
+{
+    testRuleOnCode(new MissingBreakInSwitchStatementRule(), "int aMethod(int a) {\n\
+for(int i=0;i<2;++i) {\n\
+\tswitch(a){  \n\
+\tcase 1:     \n\
+\t\tcontinue; \n\
+\tcase 2:     \n\
+\t\tcontinue; \n\
+\tdefault:    \n\
+\t\tcontinue; \n\
+} } }");
+}
+
 /*
  Tests for the false positive found by Stephan Esch
  Details at https://github.com/oclint/oclint/issues/16
