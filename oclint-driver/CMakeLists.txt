@@ -18,12 +18,13 @@ LINK_DIRECTORIES(
 IF((NOT NO_ANALYTICS) AND (NOT MINGW) AND (NOT DOC_GEN_BUILD) AND (NOT TEST_BUILD))
     # Analytics are only availble on Linux and macOS
     SET(CMAKE_CXX_FLAGS "-DCOUNTLY_ANALYTICS ${CMAKE_CXX_FLAGS}")
-    INCLUDE_DIRECTORIES(
-        ${COUNTLY_SOURCE_DIR}/include
-        )
-    LINK_DIRECTORIES(
-        ${COUNTLY_BUILD_DIR}/lib
-        )
+    INCLUDE_DIRECTORIES(${COUNTLY_SOURCE_DIR}/include)
+    LINK_DIRECTORIES(${COUNTLY_BUILD_DIR}/lib)
+    IF(APPLE)
+        # use OpenSSL from Homebrew installation due to Apple deprecated its support
+        INCLUDE_DIRECTORIES(/usr/local/opt/openssl/include)
+        LINK_DIRECTORIES(/usr/local/opt/openssl/lib)
+    ENDIF()
 ENDIF()
 
 INCLUDE_DIRECTORIES(${OCLINT_DRIVER_SOURCE_DIR}/include)
@@ -61,6 +62,8 @@ TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
 IF((NOT NO_ANALYTICS) AND (NOT MINGW) AND (NOT DOC_GEN_BUILD) AND (NOT TEST_BUILD))
     TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
         Countly
+        ssl
+        crypto
         )
 ENDIF()
 

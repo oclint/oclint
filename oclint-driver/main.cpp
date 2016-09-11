@@ -7,6 +7,7 @@
 
 #include <clang/Tooling/CommonOptionsParser.h>
 
+#include "oclint/Analytics.h"
 #include "oclint/Analyzer.h"
 #include "oclint/CompilerInstance.h"
 #include "oclint/Driver.h"
@@ -160,6 +161,9 @@ extern llvm::cl::OptionCategory OCLintOptionCategory;
 
 int main(int argc, const char **argv)
 {
+    oclint::Analytics analytics;
+    analytics.send();
+
     llvm::cl::AddExtraVersionPrinter(&oclintVersionPrinter);
     CommonOptionsParser optionsParser(argc, argv, OCLintOptionCategory);
     oclint::option::process(argv[0]);

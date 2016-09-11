@@ -1,4 +1,5 @@
 ADD_LIBRARY(OCLintDriver
+    Analytics.cpp
     CompilerInstance.cpp
     ConfigFile.cpp
     DiagnosticDispatcher.cpp
