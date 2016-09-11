@@ -30,3 +30,6 @@ def llvm_master_branch():
 
 def llvm_latest_release_branch():
     return 'tags/RELEASE_390/final'
+
+def countly_cpp_tag():
+    return '16.9'
