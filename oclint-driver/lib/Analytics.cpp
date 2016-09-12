@@ -86,12 +86,9 @@ static void sendConfiguration(countly::Countly &cntly)
 {
   std::map<std::string, std::string> segments;
   segments["report_type"] = oclint::option::reportType();
-  segments["global_analysis"] =
-    oclint::option::enableGlobalAnalysis() ? "1" : "0";
-  segments["clang_checker"] =
-    oclint::option::enableClangChecker() ? "1" : "0";
-  segments["allow_duplications"] =
-    oclint::option::allowDuplicatedViolations() ? "1" : "0";
+  segments["global_analysis"] = oclint::option::enableGlobalAnalysis() ? "1" : "0";
+  segments["clang_checker"] = oclint::option::enableClangChecker() ? "1" : "0";
+  segments["allow_duplications"] = oclint::option::allowDuplicatedViolations() ? "1" : "0";
   segments["p1_violations"] = std::to_string(oclint::option::maxP1());
   segments["p2_violations"] = std::to_string(oclint::option::maxP2());
   segments["p3_violations"] = std::to_string(oclint::option::maxP3());
@@ -103,11 +100,8 @@ static void sendLoadedRules(countly::Countly &cntly)
 {
   std::map<std::string, std::string> segments;
 
-  std::vector<std::string> rules =
-    oclint::option::rulesetFilter().filteredRuleNames();
-  for (int ruleIdx = 0, numRules = oclint::RuleSet::numberOfRules();
-       ruleIdx < numRules;
-       ruleIdx++)
+  std::vector<std::string> rules = oclint::option::rulesetFilter().filteredRuleNames();
+  for (int ruleIdx = 0, numRules = oclint::RuleSet::numberOfRules(); ruleIdx < numRules; ruleIdx++)
   {
     oclint::RuleBase *rule = oclint::RuleSet::getRuleAtIndex(ruleIdx);
     std::string ruleId = rule->identifier();
@@ -143,8 +137,6 @@ static void sendLanguageCount(countly::Countly &cntly)
       cntly.recordEvent("DevLanguageCount", segments);
     }
   }
-  else {
-  }
 }
 
 static void sendExitStatus(countly::Countly &cntly, int exitCode)
@@ -156,15 +148,22 @@ static void sendExitStatus(countly::Countly &cntly, int exitCode)
 void oclint::Analytics::send(int exitCode)
 {
   countly::Countly cntly;
-  cntly.start("countly.ryuichisaito.com",
-    "873c792b2ead515f27f0ccba01a976ae9a4cc425");
+  cntly.start("countly.ryuichisaito.com", "873c792b2ead515f27f0ccba01a976ae9a4cc425");
 
-  sendEnvironment(cntly);
-  sendConfiguration(cntly);
-  sendLoadedRules(cntly);
-  sendRuleConfiguration(cntly);
-  sendLanguageCount(cntly);
-  sendExitStatus(cntly, exitCode);
+  switch (exitCode)
+  {
+    case SUCCESS:
+    case ERROR_WHILE_REPORTING:
+      sendLanguageCount(cntly);
+    case ERROR_WHILE_PROCESSING:
+    case REPORTER_NOT_FOUND:
+      sendLoadedRules(cntly);
+    default:
+      sendRuleConfiguration(cntly);
+      sendEnvironment(cntly);
+      sendConfiguration(cntly);
+      sendExitStatus(cntly, exitCode);
+  }
 
   cntly.suspend();
 }
