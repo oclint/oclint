@@ -176,8 +176,7 @@ int main(int argc, const char **argv)
         listRules();
     }
 
-    oclint::Analytics analytics;
-    analytics.send();
+    oclint::Analytics::send();
 
     oclint::RulesetBasedAnalyzer analyzer(oclint::option::rulesetFilter().filteredRules());
     oclint::Driver driver;

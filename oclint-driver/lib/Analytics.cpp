@@ -3,11 +3,11 @@
 #ifndef COUNTLY_ANALYTICS
 
 void oclint::Analytics::send() {}
+void oclint::Analytics::ruleConfiguration(std::string key, std::string value) {}
 
 #else
 
 #include <map>
-#include <string>
 #include <sstream>
 
 #include <countly/Countly.h>
@@ -18,7 +18,9 @@ void oclint::Analytics::send() {}
 #include "oclint/RuleSet.h"
 #include "oclint/Version.h"
 
-std::string hashedWorkingPath()
+static std::map<std::string, std::string>* _ruleConfigurations = nullptr;
+
+static std::string hashedWorkingPath()
 {
   std::string workingPath = oclint::option::workingPath();
   if (workingPath == "")
@@ -31,7 +33,7 @@ std::string hashedWorkingPath()
   return hashed.str();
 }
 
-void sendEnvironment(countly::Countly &cntly)
+static void sendEnvironment(countly::Countly &cntly)
 {
   std::map<std::string, std::string> segments;
   // anonymous identifiers to deduplicate events
@@ -47,7 +49,7 @@ void sendEnvironment(countly::Countly &cntly)
   cntly.recordEvent("DevEnvironment", segments);
 }
 
-void sendConfiguration(countly::Countly &cntly)
+static void sendConfiguration(countly::Countly &cntly)
 {
   std::map<std::string, std::string> segments;
   segments["report_type"] = oclint::option::reportType();
@@ -64,7 +66,7 @@ void sendConfiguration(countly::Countly &cntly)
   cntly.recordEvent("DevConfiguration", segments);
 }
 
-void sendLoadedRules(countly::Countly &cntly)
+static void sendLoadedRules(countly::Countly &cntly)
 {
   std::map<std::string, std::string> segments;
 
@@ -83,6 +85,14 @@ void sendLoadedRules(countly::Countly &cntly)
   cntly.recordEvent("DevLoadedRules", segments);
 }
 
+static void sendRuleConfiguration(countly::Countly &cntly)
+{
+  if (_ruleConfigurations && _ruleConfigurations->size() > 0)
+  {
+    cntly.recordEvent("DevRuleConfigurations", *_ruleConfigurations);
+  }
+}
+
 void oclint::Analytics::send()
 {
   countly::Countly cntly;
@@ -92,8 +102,19 @@ void oclint::Analytics::send()
   sendEnvironment(cntly);
   sendConfiguration(cntly);
   sendLoadedRules(cntly);
+  sendRuleConfiguration(cntly);
 
   cntly.suspend();
+}
+
+void oclint::Analytics::ruleConfiguration(std::string key, std::string value)
+{
+  if (_ruleConfigurations == nullptr)
+  {
+      _ruleConfigurations = new std::map<std::string, std::string>();
+  }
+
+  _ruleConfigurations->operator[](key) = value;
 }
 
 #endif
