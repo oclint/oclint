@@ -161,12 +161,12 @@ extern llvm::cl::OptionCategory OCLintOptionCategory;
 
 int main(int argc, const char **argv)
 {
-    oclint::Analytics analytics;
-    analytics.send();
-
     llvm::cl::AddExtraVersionPrinter(&oclintVersionPrinter);
     CommonOptionsParser optionsParser(argc, argv, OCLintOptionCategory);
     oclint::option::process(argv[0]);
+
+    oclint::Analytics analytics;
+    analytics.send();
 
     int prepareStatus = prepare();
     if (prepareStatus)
