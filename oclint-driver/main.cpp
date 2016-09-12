@@ -165,9 +165,6 @@ int main(int argc, const char **argv)
     CommonOptionsParser optionsParser(argc, argv, OCLintOptionCategory);
     oclint::option::process(argv[0]);
 
-    oclint::Analytics analytics;
-    analytics.send();
-
     int prepareStatus = prepare();
     if (prepareStatus)
     {
@@ -178,6 +175,9 @@ int main(int argc, const char **argv)
     {
         listRules();
     }
+
+    oclint::Analytics analytics;
+    analytics.send();
 
     oclint::RulesetBasedAnalyzer analyzer(oclint::option::rulesetFilter().filteredRules());
     oclint::Driver driver;
