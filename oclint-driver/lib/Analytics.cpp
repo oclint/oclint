@@ -15,6 +15,7 @@ void oclint::Analytics::languageOption(clang::LangOptions langOptions) {}
 #include <countly/Device.h>
 #include <countly/Metrics.h>
 
+#include "oclint/ExitCode.h"
 #include "oclint/Options.h"
 #include "oclint/RuleSet.h"
 #include "oclint/Version.h"
@@ -48,6 +49,20 @@ static std::string toolchain()
     }
   }
   return "unknown-toolchain";
+}
+
+static std::string exitCodeToString(int exitCode)
+{
+  switch (exitCode)
+  {
+    case SUCCESS: return "success";
+    case RULE_NOT_FOUND: return "rule_not_found";
+    case REPORTER_NOT_FOUND: return "reporter_not_found";
+    case ERROR_WHILE_PROCESSING: return "error_while_processing";
+    case ERROR_WHILE_REPORTING: return "error_while_reporting";
+    case VIOLATIONS_EXCEED_THRESHOLD: return "violations_exceed_threshold";
+    default: return "unknown_exit_status";
+  }
 }
 
 static void sendEnvironment(countly::Countly &cntly)
@@ -132,7 +147,13 @@ static void sendLanguageCount(countly::Countly &cntly)
   }
 }
 
-void oclint::Analytics::send()
+static void sendExitStatus(countly::Countly &cntly, int exitCode)
+{
+  std::map<std::string, std::string> segments = {{"exit_code", exitCodeToString(exitCode)}};
+  cntly.recordEvent("DevExitStatus", segments);
+}
+
+void oclint::Analytics::send(int exitCode)
 {
   countly::Countly cntly;
   cntly.start("countly.ryuichisaito.com",
@@ -143,6 +164,7 @@ void oclint::Analytics::send()
   sendLoadedRules(cntly);
   sendRuleConfiguration(cntly);
   sendLanguageCount(cntly);
+  sendExitStatus(cntly, exitCode);
 
   cntly.suspend();
 }

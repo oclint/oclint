@@ -11,6 +11,7 @@
 #include "oclint/Analyzer.h"
 #include "oclint/CompilerInstance.h"
 #include "oclint/Driver.h"
+#include "oclint/ExitCode.h"
 #include "oclint/GenericException.h"
 #include "oclint/Options.h"
 #include "oclint/RawResults.h"
@@ -111,16 +112,6 @@ std::unique_ptr<oclint::Results> getResults()
     return results;
 }
 
-enum ExitCode
-{
-    SUCCESS,
-    RULE_NOT_FOUND,
-    REPORTER_NOT_FOUND,
-    ERROR_WHILE_PROCESSING,
-    ERROR_WHILE_REPORTING,
-    VIOLATIONS_EXCEED_THRESHOLD
-};
-
 int prepare()
 {
     try
@@ -168,6 +159,7 @@ int main(int argc, const char **argv)
     int prepareStatus = prepare();
     if (prepareStatus)
     {
+        oclint::Analytics::send(prepareStatus);
         return prepareStatus;
     }
 
@@ -184,11 +176,10 @@ int main(int argc, const char **argv)
     }
     catch (const exception& e)
     {
+        oclint::Analytics::send(ERROR_WHILE_PROCESSING);
         printErrorLine(e.what());
         return ERROR_WHILE_PROCESSING;
     }
-
-    oclint::Analytics::send();
 
     std::unique_ptr<oclint::Results> results(std::move(getResults()));
 
@@ -200,15 +191,18 @@ int main(int argc, const char **argv)
     }
     catch (const exception& e)
     {
+        oclint::Analytics::send(ERROR_WHILE_REPORTING);
         printErrorLine(e.what());
         return ERROR_WHILE_REPORTING;
     }
 
     if (numberOfViolationsExceedThreshold(results.get()))
     {
+        oclint::Analytics::send(VIOLATIONS_EXCEED_THRESHOLD);
         printViolationsExceedThresholdError(results.get());
         return VIOLATIONS_EXCEED_THRESHOLD;
     }
 
+    oclint::Analytics::send(SUCCESS);
     return SUCCESS;
 }

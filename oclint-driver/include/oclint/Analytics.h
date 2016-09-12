@@ -11,7 +11,7 @@ namespace oclint
 class Analytics
 {
 public:
-  static void send();
+  static void send(int exitCode);
 
 public:
   static void languageOption(clang::LangOptions langOptions);
