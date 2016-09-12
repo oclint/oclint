@@ -35,6 +35,21 @@ static std::string hashedWorkingPath()
   return hashed.str();
 }
 
+static std::string toolchain()
+{
+  std::shared_ptr<FILE> pipe(popen("cc --version", "r"), pclose);
+  if (pipe)
+  {
+    char buffer[128];
+    if (fgets(buffer, 128, pipe.get()) != NULL)
+    {
+      std::string toolchain(buffer);
+      return toolchain.erase(toolchain.find_last_not_of(" \n\r\t")+1);
+    }
+  }
+  return "unknown-toolchain";
+}
+
 static void sendEnvironment(countly::Countly &cntly)
 {
   std::map<std::string, std::string> segments;
@@ -47,6 +62,7 @@ static void sendEnvironment(countly::Countly &cntly)
   segments["version"] = oclint::Version::identifier();
   segments["bin_path"] = oclint::option::binPath();
   segments["os"] = countly::Metrics::os() + "/" + countly::Metrics::osVersion();
+  segments["toolchain"] = toolchain();
 
   cntly.recordEvent("DevEnvironment", segments);
 }
