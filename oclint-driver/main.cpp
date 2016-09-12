@@ -176,8 +176,6 @@ int main(int argc, const char **argv)
         listRules();
     }
 
-    oclint::Analytics::send();
-
     oclint::RulesetBasedAnalyzer analyzer(oclint::option::rulesetFilter().filteredRules());
     oclint::Driver driver;
     try
@@ -189,6 +187,8 @@ int main(int argc, const char **argv)
         printErrorLine(e.what());
         return ERROR_WHILE_PROCESSING;
     }
+
+    oclint::Analytics::send();
 
     std::unique_ptr<oclint::Results> results(std::move(getResults()));
 
@@ -209,5 +209,6 @@ int main(int argc, const char **argv)
         printViolationsExceedThresholdError(results.get());
         return VIOLATIONS_EXCEED_THRESHOLD;
     }
+
     return SUCCESS;
 }

@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include <clang/Basic/LangOptions.h>
+
 namespace oclint
 {
 
@@ -12,6 +14,7 @@ public:
   static void send();
 
 public:
+  static void languageOption(clang::LangOptions langOptions);
   static void ruleConfiguration(std::string key, std::string value);
 };
 
