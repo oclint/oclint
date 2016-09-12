@@ -141,6 +141,15 @@ int prepare()
     return SUCCESS;
 }
 
+static int sendAnalyticsAndExit(int exitCode)
+{
+  if (!oclint::option::disableAnalyltics())
+  {
+    oclint::Analytics::send(exitCode);
+  }
+  return exitCode;
+}
+
 static void oclintVersionPrinter()
 {
     outs() << "OCLint (http://oclint.org/):\n";
@@ -159,8 +168,7 @@ int main(int argc, const char **argv)
     int prepareStatus = prepare();
     if (prepareStatus)
     {
-        oclint::Analytics::send(prepareStatus);
-        return prepareStatus;
+        return sendAnalyticsAndExit(prepareStatus);
     }
 
     if (oclint::option::showEnabledRules())
@@ -176,9 +184,8 @@ int main(int argc, const char **argv)
     }
     catch (const exception& e)
     {
-        oclint::Analytics::send(ERROR_WHILE_PROCESSING);
         printErrorLine(e.what());
-        return ERROR_WHILE_PROCESSING;
+        return sendAnalyticsAndExit(ERROR_WHILE_PROCESSING);
     }
 
     std::unique_ptr<oclint::Results> results(std::move(getResults()));
@@ -191,18 +198,15 @@ int main(int argc, const char **argv)
     }
     catch (const exception& e)
     {
-        oclint::Analytics::send(ERROR_WHILE_REPORTING);
         printErrorLine(e.what());
-        return ERROR_WHILE_REPORTING;
+        return sendAnalyticsAndExit(ERROR_WHILE_REPORTING);
     }
 
     if (numberOfViolationsExceedThreshold(results.get()))
     {
-        oclint::Analytics::send(VIOLATIONS_EXCEED_THRESHOLD);
         printViolationsExceedThresholdError(results.get());
-        return VIOLATIONS_EXCEED_THRESHOLD;
+        return sendAnalyticsAndExit(VIOLATIONS_EXCEED_THRESHOLD);
     }
 
-    oclint::Analytics::send(SUCCESS);
-    return SUCCESS;
+    return sendAnalyticsAndExit(SUCCESS);
 }
