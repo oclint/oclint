@@ -32,7 +32,7 @@ namespace option
     bool enableGlobalAnalysis();
     bool enableClangChecker();
     bool allowDuplicatedViolations();
-    bool disableAnalyltics();
+    bool disableAnalytics();
     bool enableVerbose();
 } // end namespace option
 } // end namespace oclint

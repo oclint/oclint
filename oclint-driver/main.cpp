@@ -143,7 +143,7 @@ int prepare()
 
 static int sendAnalyticsAndExit(int exitCode)
 {
-  if (!oclint::option::disableAnalyltics())
+  if (!oclint::option::disableAnalytics())
   {
     oclint::Analytics::send(exitCode);
   }

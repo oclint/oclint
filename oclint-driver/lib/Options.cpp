@@ -332,7 +332,7 @@ bool oclint::option::allowDuplicatedViolations()
     return argDuplications;
 }
 
-bool oclint::option::disableAnalyltics()
+bool oclint::option::disableAnalytics()
 {
   return argNoAnalytics;
 }
