@@ -79,7 +79,7 @@ static void sendEnvironment(countly::Countly &cntly)
   segments["os"] = countly::Metrics::os() + "/" + countly::Metrics::osVersion();
   segments["toolchain"] = toolchain();
 
-  cntly.recordEvent("DevEnvironment", segments);
+  cntly.recordEvent("Environment", segments);
 }
 
 static void sendConfiguration(countly::Countly &cntly)
@@ -93,7 +93,7 @@ static void sendConfiguration(countly::Countly &cntly)
   segments["p2_violations"] = std::to_string(oclint::option::maxP2());
   segments["p3_violations"] = std::to_string(oclint::option::maxP3());
 
-  cntly.recordEvent("DevConfiguration", segments);
+  cntly.recordEvent("Configuration", segments);
 }
 
 static void sendLoadedRules(countly::Countly &cntly)
@@ -109,14 +109,14 @@ static void sendLoadedRules(countly::Countly &cntly)
     segments[ruleId] = enabled ? "1" : "0";
   }
 
-  cntly.recordEvent("DevLoadedRules", segments);
+  cntly.recordEvent("LoadedRules", segments);
 }
 
 static void sendRuleConfiguration(countly::Countly &cntly)
 {
   if (_ruleConfigurations && _ruleConfigurations->size() > 0)
   {
-    cntly.recordEvent("DevRuleConfigurations", *_ruleConfigurations);
+    cntly.recordEvent("RuleConfigurations", *_ruleConfigurations);
   }
 }
 
@@ -134,7 +134,7 @@ static void sendLanguageCount(countly::Countly &cntly)
     }
     if (segments.size() > 0)
     {
-      cntly.recordEvent("DevLanguageCount", segments);
+      cntly.recordEvent("LanguageCount", segments);
     }
   }
 }
@@ -142,7 +142,7 @@ static void sendLanguageCount(countly::Countly &cntly)
 static void sendExitStatus(countly::Countly &cntly, int exitCode)
 {
   std::map<std::string, std::string> segments = {{"exit_code", exitCodeToString(exitCode)}};
-  cntly.recordEvent("DevExitStatus", segments);
+  cntly.recordEvent("ExitStatus", segments);
 }
 
 void oclint::Analytics::send(int exitCode)
@@ -150,7 +150,7 @@ void oclint::Analytics::send(int exitCode)
   countly::Countly cntly;
   cntly.start("countly.ryuichisaito.com", "873c792b2ead515f27f0ccba01a976ae9a4cc425");
 
-  switch (exitCode)
+  switch (exitCode) //!OCLINT
   {
     case SUCCESS:
     case ERROR_WHILE_REPORTING:
