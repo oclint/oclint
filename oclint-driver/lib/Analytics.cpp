@@ -2,7 +2,7 @@
 
 #ifndef COUNTLY_ANALYTICS
 
-void oclint::Analytics::send() {}
+void oclint::Analytics::send(int) {}
 void oclint::Analytics::ruleConfiguration(std::string key, std::string value) {}
 void oclint::Analytics::languageOption(clang::LangOptions langOptions) {}
 
