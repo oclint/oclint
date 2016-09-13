@@ -25,6 +25,7 @@ def clean_module():
 
 def build_command():
     cmd_build = cmake.builder(path.source.countly_dir)
+    cmd_build.append('CMAKE_BUILD_TYPE', 'Release')
     if environment.is_unix() and not args.use_system_compiler:
         cmd_build.use_local_clang_compiler()
     return cmd_build.str()
