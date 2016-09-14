@@ -7,9 +7,11 @@
 
 #include <clang/Tooling/CommonOptionsParser.h>
 
+#include "oclint/Analytics.h"
 #include "oclint/Analyzer.h"
 #include "oclint/CompilerInstance.h"
 #include "oclint/Driver.h"
+#include "oclint/ExitCode.h"
 #include "oclint/GenericException.h"
 #include "oclint/Options.h"
 #include "oclint/RawResults.h"
@@ -110,16 +112,6 @@ std::unique_ptr<oclint::Results> getResults()
     return results;
 }
 
-enum ExitCode
-{
-    SUCCESS,
-    RULE_NOT_FOUND,
-    REPORTER_NOT_FOUND,
-    ERROR_WHILE_PROCESSING,
-    ERROR_WHILE_REPORTING,
-    VIOLATIONS_EXCEED_THRESHOLD
-};
-
 int prepare()
 {
     try
@@ -149,6 +141,15 @@ int prepare()
     return SUCCESS;
 }
 
+static int sendAnalyticsAndExit(int exitCode)
+{
+  if (!oclint::option::disableAnalytics())
+  {
+    oclint::Analytics::send(exitCode);
+  }
+  return exitCode;
+}
+
 static void oclintVersionPrinter()
 {
     outs() << "OCLint (http://oclint.org/):\n";
@@ -167,7 +168,7 @@ int main(int argc, const char **argv)
     int prepareStatus = prepare();
     if (prepareStatus)
     {
-        return prepareStatus;
+        return sendAnalyticsAndExit(prepareStatus);
     }
 
     if (oclint::option::showEnabledRules())
@@ -184,7 +185,7 @@ int main(int argc, const char **argv)
     catch (const exception& e)
     {
         printErrorLine(e.what());
-        return ERROR_WHILE_PROCESSING;
+        return sendAnalyticsAndExit(ERROR_WHILE_PROCESSING);
     }
 
     std::unique_ptr<oclint::Results> results(std::move(getResults()));
@@ -198,13 +199,14 @@ int main(int argc, const char **argv)
     catch (const exception& e)
     {
         printErrorLine(e.what());
-        return ERROR_WHILE_REPORTING;
+        return sendAnalyticsAndExit(ERROR_WHILE_REPORTING);
     }
 
     if (numberOfViolationsExceedThreshold(results.get()))
     {
         printViolationsExceedThresholdError(results.get());
-        return VIOLATIONS_EXCEED_THRESHOLD;
+        return sendAnalyticsAndExit(VIOLATIONS_EXCEED_THRESHOLD);
     }
-    return SUCCESS;
+
+    return sendAnalyticsAndExit(SUCCESS);
 }

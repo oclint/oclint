@@ -11,6 +11,7 @@
 #include <clang/Driver/Options.h>
 #include <clang/Tooling/CommonOptionsParser.h>
 
+#include "oclint/Analytics.h"
 #include "oclint/ConfigFile.h"
 #include "oclint/RuleConfiguration.h"
 
@@ -90,6 +91,10 @@ static llvm::cl::opt<bool> argDuplications("allow-duplicated-violations",
     llvm::cl::desc("Allow duplicated violations in the OCLint report"),
     llvm::cl::init(false),
     llvm::cl::cat(OCLintOptionCategory));
+static llvm::cl::opt<bool> argNoAnalytics("no-analytics",
+    llvm::cl::desc("Disable the anonymous analytics"),
+    llvm::cl::init(false),
+    llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<bool> argEnableVerbose("verbose",
     llvm::cl::desc("Enable verbose output"),
     llvm::cl::init(false),
@@ -123,6 +128,12 @@ void updateArgIfSet(llvm::cl::opt<T> &argValue, const llvm::Optional<T> &configV
     }
 }
 
+static void consumeRuleConfiguration(std::string key, std::string value)
+{
+  oclint::RuleConfiguration::addConfiguration(key, value);
+  oclint::Analytics::ruleConfiguration(key, value);
+}
+
 static std::vector<std::string> configFilePaths()
 {
     std::vector<std::string> paths;
@@ -139,7 +150,7 @@ static void processConfigFile(const std::string &path)
     oclint::option::ConfigFile config(path);
     for (const oclint::option::RuleConfigurationPair &ruleConfig : config.ruleConfigurations())
     {
-        oclint::RuleConfiguration::addConfiguration(ruleConfig.key(), ruleConfig.value());
+        consumeRuleConfiguration(ruleConfig.key(), ruleConfig.value());
     }
     for (const llvm::StringRef &rulePath : config.rulePaths())
     {
@@ -212,7 +223,7 @@ void oclint::option::process(const char *argv)
         std::string key = configuration.substr(0, indexOfSeparator);
         std::string value = configuration.substr(indexOfSeparator + 1,
             configuration.size() - indexOfSeparator - 1);
-        oclint::RuleConfiguration::addConfiguration(key, value);
+        consumeRuleConfiguration(key, value);
     }
 
     filter.enableRules(argEnabledRules.begin(), argEnabledRules.end());
@@ -319,6 +330,11 @@ bool oclint::option::enableClangChecker()
 bool oclint::option::allowDuplicatedViolations()
 {
     return argDuplications;
+}
+
+bool oclint::option::disableAnalytics()
+{
+  return argNoAnalytics;
 }
 
 bool oclint::option::enableVerbose()

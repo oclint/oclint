@@ -43,6 +43,9 @@ def build_module(module_name):
     if module_name == "rules":
         module_extras['OCLINT_METRICS_SOURCE_DIR'] = path.source.metrics_dir
         module_extras['OCLINT_METRICS_BUILD_DIR'] = path.build.metrics_build_dir
+    if module_name == "driver":
+        module_extras['COUNTLY_SOURCE_DIR'] = path.source.countly_dir
+        module_extras['COUNTLY_BUILD_DIR'] = path.build.countly_build_dir
 
     command = build_command(module_extras, source_path)
 

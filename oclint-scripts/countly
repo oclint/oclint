@@ -1,0 +1,61 @@
+#! /usr/bin/env python
+
+import argparse
+import shutil
+import subprocess
+import sys
+import os
+
+from oclintscripts import cmake
+from oclintscripts import environment
+from oclintscripts import path
+from oclintscripts import process
+from oclintscripts import version
+
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument('task_name', choices=['checkout', 'co', 'build'])
+arg_parser.add_argument('-clean', '--clean', action="store_true")
+arg_parser.add_argument('-j', type=int, default=0)
+arg_parser.add_argument('-use-system-compiler', '--use-system-compiler', action="store_true", default=environment.is_linux())
+args = arg_parser.parse_args()
+
+def clean_module():
+    build_path = path.build.countly_build_dir
+    path.rm_f(build_path)
+
+def build_command():
+    cmd_build = cmake.builder(path.source.countly_dir)
+    cmd_build.append('CMAKE_BUILD_TYPE', 'Release')
+    if environment.is_unix() and not args.use_system_compiler:
+        cmd_build.use_local_clang_compiler()
+    return cmd_build.str()
+
+def build_module(multiple_thread):
+    build_path = path.build.countly_build_dir
+    command = build_command()
+    current_dir = os.getcwd()
+    path.mkdir_p(build_path)
+    path.cd(build_path)
+    process.call(command)
+    process.call('make -j ' + multiple_thread)
+    path.cd(current_dir)
+
+def checkout_countly():
+    if path.is_dir(path.source.countly_dir):
+        sys.exit('Countly folder exists!')
+    current_dir = os.getcwd()
+    path.cd(path.root_dir)
+    process.call('git clone --branch ' + version.countly_cpp_tag() + ' --depth 1 ' + path.url.countly_cpp + ' countly')
+    path.cd(current_dir)
+
+if args.task_name == 'checkout' or args.task_name == 'co':
+    checkout_countly()
+
+multiple_thread = environment.cpu_count()
+if not args.j is 0:
+    multiple_thread = args.j
+
+if args.task_name == 'build':
+    if args.clean:
+        clean_module()
+    build_module(str(multiple_thread))

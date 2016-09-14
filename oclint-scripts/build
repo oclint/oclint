@@ -16,6 +16,7 @@ OCLINT_MODULES = ['core', 'metrics', 'rules', 'reporters', 'driver']
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('module_name', nargs='?', choices=['all'] + OCLINT_MODULES, default='all')
 arg_parser.add_argument('-docgen', '--docgen', action='store_true')
+arg_parser.add_argument('-no-analytics', '--no-analytics', action='store_true')
 arg_parser.add_argument('-release', '--release', action="store_true")
 arg_parser.add_argument('-clean', '--clean', action="store_true")
 arg_parser.add_argument('-j', type=int, default=0)
@@ -27,19 +28,21 @@ def clean_module(module_name):
     build_path = path.oclint_module_build_dir(module_name)
     path.rm_f(build_path)
 
-def build_command(llvm_root, is_release, is_docgen, module_extras, source_path):
+def build_command(module_name, llvm_root, is_release, is_docgen, no_analytics, module_extras, source_path):
     cmd_build = cmake.builder(source_path)
     if is_release:
         cmd_build.release_build()
     if is_docgen:
         cmd_build.doc_gen_build()
+    if module_name == "driver" and no_analytics and not is_docgen:
+        cmd_build.no_analytics_build()
     if environment.is_unix() and not args.use_system_compiler:
         cmd_build.use_local_clang_compiler(llvm_root)
     extras = {'LLVM_ROOT': llvm_root}
     extras.update(module_extras)
     return cmd_build.append_dict(extras).str()
 
-def build_module(module_name, llvm_root, is_release, is_docgen, multiple_thread):
+def build_module(module_name, llvm_root, is_release, no_analytics, is_docgen, multiple_thread):
     build_path = path.oclint_module_build_dir(module_name)
     source_path = path.oclint_module_source_dir(module_name)
 
@@ -50,8 +53,11 @@ def build_module(module_name, llvm_root, is_release, is_docgen, multiple_thread)
     if module_name == "rules":
         module_extras['OCLINT_METRICS_SOURCE_DIR'] = path.source.metrics_dir
         module_extras['OCLINT_METRICS_BUILD_DIR'] = path.build.metrics_build_dir
+    if module_name == "driver" and not (no_analytics or is_docgen):
+        module_extras['COUNTLY_SOURCE_DIR'] = path.source.countly_dir
+        module_extras['COUNTLY_BUILD_DIR'] = path.build.countly_build_dir
 
-    command = build_command(llvm_root, is_release, is_docgen, module_extras, source_path)
+    command = build_command(module_name, llvm_root, is_release, is_docgen, no_analytics, module_extras, source_path)
 
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
@@ -77,4 +83,4 @@ if not args.j is 0:
     multiple_thread = args.j
 
 for module in build_modules:
-    build_module(module, args.llvm_root, args.release, args.docgen, str(multiple_thread))
+    build_module(module, args.llvm_root, args.release, args.no_analytics, args.docgen, str(multiple_thread))
