@@ -60,11 +60,19 @@ TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
     )
 
 IF((NOT NO_ANALYTICS) AND (NOT MINGW) AND (NOT DOC_GEN_BUILD) AND (NOT TEST_BUILD))
-    TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
-        Countly
-        ssl
-        crypto
-        )
+    IF(APPLE)
+        TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
+            Countly
+            /usr/local/opt/openssl/lib/libssl.a
+            /usr/local/opt/openssl/lib/libcrypto.a
+            )
+    ELSE()
+        TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
+            Countly
+            ssl
+            crypto
+            )
+    ENDIF()
 ENDIF()
 
 IF(TEST_BUILD)
