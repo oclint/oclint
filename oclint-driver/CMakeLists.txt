@@ -69,8 +69,8 @@ IF((NOT NO_ANALYTICS) AND (NOT MINGW) AND (NOT DOC_GEN_BUILD) AND (NOT TEST_BUIL
     ELSE()
         TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
             Countly
-            ssl
-            crypto
+            /usr/lib/x86_64-linux-gnu/libssl.a
+            /usr/lib/x86_64-linux-gnu/libcrypto.a
             )
     ENDIF()
 ENDIF()
