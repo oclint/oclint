@@ -67,10 +67,12 @@ IF((NOT NO_ANALYTICS) AND (NOT MINGW) AND (NOT DOC_GEN_BUILD) AND (NOT TEST_BUIL
             /usr/local/opt/openssl/lib/libcrypto.a
             )
     ELSE()
+        FIND_LIBRARY(SSL_STATIC_LIB NAMES libssl.a)
+        FIND_LIBRARY(CRYPTO_STATIC_LIB NAMES libcrypto.a)
         TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
             Countly
-            /usr/lib/x86_64-linux-gnu/libssl.a
-            /usr/lib/x86_64-linux-gnu/libcrypto.a
+            ${SSL_STATIC_LIB}
+            ${CRYPTO_STATIC_LIB}
             )
     ENDIF()
 ENDIF()
