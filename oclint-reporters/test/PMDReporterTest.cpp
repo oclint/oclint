@@ -62,7 +62,7 @@ TEST_F(PMDReporterTest, WriteViolation)
 
 TEST_F(PMDReporterTest, WriteCheckerBug)
 {
-    Violation violation(nullptr, "test path", 1, 2, 3, 4, "test message");
+    Violation violation(nullptr, "test path", 1, 2, 3, 4, "test <message>");
     std::ostringstream oss;
     reporter.writeCheckerBug(oss, violation);
     EXPECT_THAT(oss.str(), HasSubstr("<file name=\"test path\">"));
@@ -73,6 +73,7 @@ TEST_F(PMDReporterTest, WriteCheckerBug)
     EXPECT_THAT(oss.str(), HasSubstr("endline=\"3\""));
     EXPECT_THAT(oss.str(), HasSubstr("priority=\"2\""));
     EXPECT_THAT(oss.str(), HasSubstr("clang static analyzer"));
+    EXPECT_THAT(oss.str(), HasSubstr("test &lt;message&gt;"));
 }
 
 int main(int argc, char **argv)
