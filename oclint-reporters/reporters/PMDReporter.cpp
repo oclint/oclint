@@ -8,6 +8,27 @@ using namespace oclint;
 
 class PMDReporter : public Reporter
 {
+private:
+    std::string xmlEscape(const std::string &data)
+    {
+        std::string output;
+        output.reserve(data.size());
+        for (const auto &c : data)
+        {
+            switch(c)
+            {
+                case '<':
+                    output += "&lt;";
+                    break;
+                case '>':
+                    output += "&gt;";
+                    break;
+                default:
+                    output += c;
+            }
+        }
+        return output;
+    }
 public:
     virtual const std::string name() const override
     {
@@ -74,7 +95,7 @@ public:
         out << "rule=\"" << "clang static analyzer" << "\" ";
         out << "ruleset=\"" << "cland static analyzer" << "\" ";
         out << ">" << std::endl;
-        out << violation.message << std::endl;
+        out << xmlEscape(violation.message) << std::endl;
         out << "</violation>" << std::endl;
         out << "</file>" << std::endl;
     }
