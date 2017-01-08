@@ -5,34 +5,6 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
-      env: BUILD="test" MODULE="core" COMPILER="gcc4"
-    - os: linux
-      dist: trusty
-      sudo: required
-      env: BUILD="test" MODULE="metrics" COMPILER="gcc4"
-    - os: linux
-      dist: trusty
-      sudo: required
-      env: BUILD="test" MODULE="rules" DEP="core metrics" COMPILER="gcc4"
-    - os: linux
-      dist: trusty
-      sudo: required
-      env: BUILD="test" MODULE="reporters" DEP="core" COMPILER="gcc4"
-    - os: linux
-      dist: trusty
-      sudo: required
-      env: BUILD="test" MODULE="driver" DEP="core" COMPILER="gcc4"
-    - os: linux
-      dist: trusty
-      sudo: required
-      env: BUILD="build" COMPILER="gcc4"
-    - os: linux
-      dist: trusty
-      sudo: required
-      env: BUILD="docgen" COMPILER="gcc4"
-    - os: linux
-      dist: trusty
-      sudo: required
       env: BUILD="test" MODULE="core" COMPILER="gcc5"
     - os: linux
       dist: trusty
@@ -54,24 +26,10 @@ matrix:
       dist: trusty
       sudo: required
       env: BUILD="build" COMPILER="gcc5"
-    - os: osx
-      osx_image: xcode7.3
-      env: BUILD="test" MODULE="core" COMPILER="apple7"
-    - os: osx
-      osx_image: xcode7.3
-      env: BUILD="test" MODULE="metrics" COMPILER="apple7"
-    - os: osx
-      osx_image: xcode7.3
-      env: BUILD="test" MODULE="rules" DEP="core metrics" COMPILER="apple7"
-    - os: osx
-      osx_image: xcode7.3
-      env: BUILD="test" MODULE="reporters" DEP="core" COMPILER="apple7"
-    - os: osx
-      osx_image: xcode7.3
-      env: BUILD="test" MODULE="driver" DEP="core" COMPILER="apple7"
-    - os: osx
-      osx_image: xcode7.3
-      env: BUILD="build" COMPILER="apple7"
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: BUILD="docgen" COMPILER="gcc5"
     - os: osx
       osx_image: xcode8
       env: BUILD="test" MODULE="core" COMPILER="apple8"

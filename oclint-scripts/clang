@@ -96,14 +96,12 @@ def setup_prebuilt_binary():
     build_path = path.build.clang_build_dir
     install_path = path.build.clang_install_dir
 
-    if environment.is_xcode8():
+    if environment.is_darwin():
         binary_url = path.url.clang_prebuilt_binary_for_xcode_8
-    elif environment.is_darwin():
-        binary_url = path.url.clang_prebuilt_binary_for_xcode_7
-    elif environment.is_linux() and environment.linux_distribution()[1] == '16.04':
+    elif environment.is_linux():
         binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts_16
     else:
-        binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts_14
+        binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts_16
 
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
