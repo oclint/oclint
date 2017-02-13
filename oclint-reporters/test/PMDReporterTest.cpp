@@ -73,6 +73,23 @@ TEST_F(PMDReporterTest, WriteViolation)
     delete rule;
 }
 
+TEST_F(PMDReporterTest, WriteViolationWithoutRule)
+{
+    Violation violation(nullptr, "test path", 1, 2, 3, 4, "test <message>");
+    std::ostringstream oss;
+    reporter.writeViolation(oss, violation);
+    EXPECT_THAT(oss.str(), HasSubstr("<file name=\"test path\">"));
+    EXPECT_THAT(oss.str(), HasSubstr("<violation"));
+    EXPECT_THAT(oss.str(), HasSubstr("begincolumn=\"2\""));
+    EXPECT_THAT(oss.str(), HasSubstr("endcolumn=\"4\""));
+    EXPECT_THAT(oss.str(), HasSubstr("beginline=\"1\""));
+    EXPECT_THAT(oss.str(), HasSubstr("endline=\"3\""));
+    EXPECT_THAT(oss.str(), Not(HasSubstr("priority")));
+    EXPECT_THAT(oss.str(), Not(HasSubstr("rule")));
+    EXPECT_THAT(oss.str(), Not(HasSubstr("ruleset")));
+    EXPECT_THAT(oss.str(), HasSubstr("test &lt;message&gt;"));
+}
+
 TEST_F(PMDReporterTest, WriteCheckerBug)
 {
     Violation violation(nullptr, "test path", 1, 2, 3, 4, "test <message>");
