@@ -27,25 +27,53 @@ private:
                 : name(name), category(category), priority(pmdPriority) {}
     };
 
-    std::string xmlEscape(const std::string &data)
+    void writeHeader(std::ostream &out, std::string version)
     {
-        std::string output;
-        output.reserve(data.size());
-        for (const auto &c : data)
+        out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
+        out << "<pmd version=\"oclint-" << version << "\">";
+    }
+
+    void writeFooter(std::ostream &out)
+    {
+        out << "</pmd>";
+    }
+
+    void writeCompilerError(std::ostream &out, const Violation &compilerError)
+    {
+        auto ruleDescription = PMDRuleDescription("compiler error",
+                                                  "compiler",
+                                                  1);
+        writeViolation(out, compilerError, &ruleDescription);
+    }
+
+    void writeCompilerWarning(std::ostream &out, const Violation &compilerWarning)
+    {
+        auto ruleDescription = PMDRuleDescription("compiler warning",
+                                                  "compiler",
+                                                  2);
+        writeViolation(out, compilerWarning, &ruleDescription);
+    }
+
+    void writeViolation(std::ostream &out, const Violation &violation)
+    {
+        const RuleBase * const rule = violation.rule;
+        if (rule)
         {
-            switch(c)
-            {
-                case '<':
-                    output += "&lt;";
-                    break;
-                case '>':
-                    output += "&gt;";
-                    break;
-                default:
-                    output += c;
-            }
+            auto ruleDescription = PMDRuleDescription(rule);
+            writeViolation(out, violation, &ruleDescription);
         }
-        return output;
+        else
+        {
+            writeViolation(out, violation, nullptr);
+        }
+    }
+
+    void writeCheckerBug(std::ostream &out, const Violation &violation)
+    {
+        auto ruleDescription = PMDRuleDescription("clang static analyzer",
+                                                  "clang static analyzer",
+                                                  2);
+        writeViolation(out, violation, &ruleDescription);
     }
 
     void writeViolation(std::ostream &out,
@@ -70,6 +98,27 @@ private:
         out << "</file>" << std::endl;
     }
 
+    std::string xmlEscape(const std::string &data)
+    {
+        std::string output;
+        output.reserve(data.size());
+        for (const auto &c : data)
+        {
+            switch(c)
+            {
+                case '<':
+                    output += "&lt;";
+                    break;
+                case '>':
+                    output += "&gt;";
+                    break;
+                default:
+                    output += c;
+            }
+        }
+        return output;
+    }
+
 public:
     virtual const std::string name() const override
     {
@@ -79,6 +128,16 @@ public:
     virtual void report(Results* results, std::ostream& out) override
     {
         writeHeader(out, Version::identifier());
+        for (const auto& compilerError : results->allErrors())
+        {
+            writeCompilerError(out, compilerError);
+            out << std::endl;
+        }
+        for (const auto& compilerWarning : results->allWarnings())
+        {
+            writeCompilerWarning(out, compilerWarning);
+            out << std::endl;
+        }
         for (const auto& violation : results->allViolations())
         {
             writeViolation(out, violation);
@@ -90,39 +149,6 @@ public:
             out << std::endl;
         }
         writeFooter(out);
-    }
-
-    void writeHeader(std::ostream &out, std::string version)
-    {
-        out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
-        out << "<pmd version=\"oclint-" << version << "\">";
-    }
-
-    void writeFooter(std::ostream &out)
-    {
-        out << "</pmd>";
-    }
-
-    void writeViolation(std::ostream &out, const Violation &violation)
-    {
-        const RuleBase * const rule = violation.rule;
-        if (rule)
-        {
-            auto ruleDescription = PMDRuleDescription(rule);
-            writeViolation(out, violation, &ruleDescription);
-        }
-        else
-        {
-            writeViolation(out, violation, nullptr);
-        }
-    }
-
-    void writeCheckerBug(std::ostream &out, const Violation &violation)
-    {
-        auto ruleDescription = PMDRuleDescription("clang static analyzer",
-                                                  "clang static analyzer",
-                                                  2);
-        writeViolation(out, violation, &ruleDescription);
     }
 };
 
