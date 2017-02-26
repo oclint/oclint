@@ -25,6 +25,13 @@ private:
                            const std::string &category,
                            int pmdPriority)
                 : name(name), category(category), priority(pmdPriority) {}
+
+        void write(std::ostream &out) const
+        {
+            out << "priority=\"" << priority << "\" ";
+            out << "rule=\"" << name << "\" ";
+            out << "ruleset=\"" << category << "\" ";
+        }
     };
 
     void writeHeader(std::ostream &out, std::string version)
@@ -88,9 +95,7 @@ private:
         out << "endline=\"" << violation.endLine << "\" ";
         if (ruleDescription)
         {
-            out << "priority=\"" << ruleDescription->priority << "\" ";
-            out << "rule=\"" << ruleDescription->name << "\" ";
-            out << "ruleset=\"" << ruleDescription->category << "\" ";
+            ruleDescription->write(out);
         }
         out << ">" << std::endl;
         out << xmlEscape(violation.message) << std::endl;
