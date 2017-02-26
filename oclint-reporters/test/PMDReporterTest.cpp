@@ -10,11 +10,22 @@ using namespace oclint;
 
 class MockRuleBase : public RuleBase
 {
+private:
+    std::string _name;
+    std::string _category;
+    int _priority;
+
 public:
-    MOCK_METHOD0(apply, void());
-    MOCK_CONST_METHOD0(name, const std::string());
-    MOCK_CONST_METHOD0(priority, int());
-    MOCK_CONST_METHOD0(category, const std::string());
+    MockRuleBase(std::string name, std::string category, int priority)
+        : _name(std::move(name)),
+          _category(std::move(category)),
+          _priority(priority) {}
+
+    virtual void apply() override {}
+
+    virtual const std::string name() const override { return _name; }
+    virtual const std::string category() const override { return _category; }
+    virtual int priority() const override { return _priority; }
 };
 
 class PMDReporterTest : public ::testing::Test
@@ -45,8 +56,8 @@ TEST_F(PMDReporterTest, WriteFooter)
 
 TEST_F(PMDReporterTest, WriteViolation)
 {
-    RuleBase *rule = new MockRuleBase();
-    Violation violation(rule, "test path", 1, 2, 3, 4, "test message");
+    RuleBase *rule = new MockRuleBase("rule name", "rule category", 3);
+    Violation violation(rule, "test path", 1, 2, 3, 4, "test <message>");
     std::ostringstream oss;
     reporter.writeViolation(oss, violation);
     EXPECT_THAT(oss.str(), HasSubstr("<file name=\"test path\">"));
@@ -55,9 +66,28 @@ TEST_F(PMDReporterTest, WriteViolation)
     EXPECT_THAT(oss.str(), HasSubstr("endcolumn=\"4\""));
     EXPECT_THAT(oss.str(), HasSubstr("beginline=\"1\""));
     EXPECT_THAT(oss.str(), HasSubstr("endline=\"3\""));
-    EXPECT_THAT(oss.str(), HasSubstr("priority=\"-1\""));
-    EXPECT_THAT(oss.str(), HasSubstr("rule"));
-    EXPECT_THAT(oss.str(), HasSubstr("test message"));
+    EXPECT_THAT(oss.str(), HasSubstr("priority=\"5\""));
+    EXPECT_THAT(oss.str(), HasSubstr("rule=\"rule name\""));
+    EXPECT_THAT(oss.str(), HasSubstr("ruleset=\"rule category\""));
+    EXPECT_THAT(oss.str(), HasSubstr("test &lt;message&gt;"));
+    delete rule;
+}
+
+TEST_F(PMDReporterTest, WriteViolationWithoutRule)
+{
+    Violation violation(nullptr, "test path", 1, 2, 3, 4, "test <message>");
+    std::ostringstream oss;
+    reporter.writeViolation(oss, violation);
+    EXPECT_THAT(oss.str(), HasSubstr("<file name=\"test path\">"));
+    EXPECT_THAT(oss.str(), HasSubstr("<violation"));
+    EXPECT_THAT(oss.str(), HasSubstr("begincolumn=\"2\""));
+    EXPECT_THAT(oss.str(), HasSubstr("endcolumn=\"4\""));
+    EXPECT_THAT(oss.str(), HasSubstr("beginline=\"1\""));
+    EXPECT_THAT(oss.str(), HasSubstr("endline=\"3\""));
+    EXPECT_THAT(oss.str(), Not(HasSubstr("priority")));
+    EXPECT_THAT(oss.str(), Not(HasSubstr("rule")));
+    EXPECT_THAT(oss.str(), Not(HasSubstr("ruleset")));
+    EXPECT_THAT(oss.str(), HasSubstr("test &lt;message&gt;"));
 }
 
 TEST_F(PMDReporterTest, WriteCheckerBug)
@@ -72,7 +102,8 @@ TEST_F(PMDReporterTest, WriteCheckerBug)
     EXPECT_THAT(oss.str(), HasSubstr("beginline=\"1\""));
     EXPECT_THAT(oss.str(), HasSubstr("endline=\"3\""));
     EXPECT_THAT(oss.str(), HasSubstr("priority=\"2\""));
-    EXPECT_THAT(oss.str(), HasSubstr("clang static analyzer"));
+    EXPECT_THAT(oss.str(), HasSubstr("rule=\"clang static analyzer\""));
+    EXPECT_THAT(oss.str(), HasSubstr("ruleset=\"clang static analyzer\""));
     EXPECT_THAT(oss.str(), HasSubstr("test &lt;message&gt;"));
 }
 

@@ -9,6 +9,24 @@ using namespace oclint;
 class PMDReporter : public Reporter
 {
 private:
+    class PMDRuleDescription
+    {
+    public:
+        const std::string name;
+        const std::string category;
+        const int priority;
+
+        PMDRuleDescription(const RuleBase *rule)
+                : name(rule->name()),
+                  category(rule->category()),
+                  priority(2 * rule->priority() - 1) {}
+
+        PMDRuleDescription(const std::string &name,
+                           const std::string &category,
+                           int pmdPriority)
+                : name(name), category(category), priority(pmdPriority) {}
+    };
+
     std::string xmlEscape(const std::string &data)
     {
         std::string output;
@@ -29,6 +47,29 @@ private:
         }
         return output;
     }
+
+    void writeViolation(std::ostream &out,
+                        const Violation &violation,
+                        const PMDRuleDescription *ruleDescription)
+    {
+        out << "<file name=\"" << violation.path << "\">" << std::endl;
+        out << "<violation ";
+        out << "begincolumn=\"" << violation.startColumn << "\" ";
+        out << "endcolumn=\"" << violation.endColumn << "\" ";
+        out << "beginline=\"" << violation.startLine << "\" ";
+        out << "endline=\"" << violation.endLine << "\" ";
+        if (ruleDescription)
+        {
+            out << "priority=\"" << ruleDescription->priority << "\" ";
+            out << "rule=\"" << ruleDescription->name << "\" ";
+            out << "ruleset=\"" << ruleDescription->category << "\" ";
+        }
+        out << ">" << std::endl;
+        out << xmlEscape(violation.message) << std::endl;
+        out << "</violation>" << std::endl;
+        out << "</file>" << std::endl;
+    }
+
 public:
     virtual const std::string name() const override
     {
@@ -64,40 +105,24 @@ public:
 
     void writeViolation(std::ostream &out, const Violation &violation)
     {
-        out << "<file name=\"" << violation.path << "\">" << std::endl;
-        out << "<violation ";
-        out << "begincolumn=\"" << violation.startColumn << "\" ";
-        out << "endcolumn=\"" << violation.endColumn << "\" ";
-        out << "beginline=\"" << violation.startLine << "\" ";
-        out << "endline=\"" << violation.endLine << "\" ";
-        const RuleBase *rule = violation.rule;
+        const RuleBase * const rule = violation.rule;
         if (rule)
         {
-            out << "priority=\"" << 2 * rule->priority() - 1 << "\" ";
-            out << "rule=\"" << rule->name() << "\" ";
-            out << "ruleset=\"" << rule->category() << "\" ";
+            auto ruleDescription = PMDRuleDescription(rule);
+            writeViolation(out, violation, &ruleDescription);
         }
-        out << ">" << std::endl;
-        out << violation.message << std::endl;
-        out << "</violation>" << std::endl;
-        out << "</file>" << std::endl;
+        else
+        {
+            writeViolation(out, violation, nullptr);
+        }
     }
 
     void writeCheckerBug(std::ostream &out, const Violation &violation)
     {
-        out << "<file name=\"" << violation.path << "\">" << std::endl;
-        out << "<violation ";
-        out << "begincolumn=\"" << violation.startColumn << "\" ";
-        out << "endcolumn=\"" << violation.endColumn << "\" ";
-        out << "beginline=\"" << violation.startLine << "\" ";
-        out << "endline=\"" << violation.endLine << "\" ";
-        out << "priority=\"" << 2 << "\" ";
-        out << "rule=\"" << "clang static analyzer" << "\" ";
-        out << "ruleset=\"" << "cland static analyzer" << "\" ";
-        out << ">" << std::endl;
-        out << xmlEscape(violation.message) << std::endl;
-        out << "</violation>" << std::endl;
-        out << "</file>" << std::endl;
+        auto ruleDescription = PMDRuleDescription("clang static analyzer",
+                                                  "clang static analyzer",
+                                                  2);
+        writeViolation(out, violation, &ruleDescription);
     }
 };
 
