@@ -46,11 +46,11 @@ TEST_F(LongVariableNameRuleTest, ThreeCharsName)
 TEST_F(LongVariableNameRuleTest, FourCharsName)
 {
     testRuleOnCode(new LongVariableNameRule(), "void aMethod(int iiii) {}",
-        0, 1, 14, 1, 18, "Variable name with 4 characters is longer than the threshold of 3");
+        0, 1, 14, 1, 18, "Variable name with 4 characters (iiii) is longer than the threshold of 3");
 }
 
 TEST_F(LongVariableNameRuleTest, FiveCharsName)
 {
     testRuleOnCode(new LongVariableNameRule(), "void aMethod() { int iiiii; }",
-        0, 1, 18, 1, 22, "Variable name with 5 characters is longer than the threshold of 3");
+        0, 1, 18, 1, 22, "Variable name with 5 (iiiii) characters is longer than the threshold of 3");
 }
