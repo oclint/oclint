@@ -64,7 +64,7 @@ public:
         if (nameLength > threshold)
         {
             string description = "Variable name with " + toString<int>(nameLength) +
-                " characters is longer than the threshold of " + toString<int>(threshold);
+                " characters (" + varDecl->getNameAsString() + ") is longer than the threshold of " + toString<int>(threshold);
             addViolation(varDecl, this, description);
         }
 
