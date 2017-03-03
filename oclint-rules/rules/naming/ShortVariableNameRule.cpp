@@ -121,7 +121,7 @@ public:
         }
 
         string description = "Variable name with " + toString<int>(nameLength) +
-            " characters is shorter than the threshold of " + toString<int>(threshold);
+            " characters (" + varDecl->getNameAsString() + ") is shorter than the threshold of " + toString<int>(threshold);
         addViolation(varDecl, this, description);
 
         return true;
