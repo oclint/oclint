@@ -103,7 +103,8 @@ public:
 
     bool VisitVarDecl(VarDecl *varDecl)
     {
-        int nameLength = varDecl->getNameAsString().size();
+        std::string varName = varDecl->getNameAsString();
+        int nameLength = varName.size();
         int threshold = RuleConfiguration::intForKey("SHORT_VARIABLE_NAME", 3);
         if (nameLength <= 0 || nameLength >= threshold)
         {
@@ -120,8 +121,7 @@ public:
             }
         }
 
-        string description = "Variable name with " + toString<int>(nameLength) +
-            " characters (" + varDecl->getNameAsString() + ") is shorter than the threshold of " + toString<int>(threshold);
+        string description = "Length of variable name `" + varName + "` is " + toString<int>(nameLength) + ", which is shorter than the threshold of " + toString<int>(threshold);
         addViolation(varDecl, this, description);
 
         return true;
