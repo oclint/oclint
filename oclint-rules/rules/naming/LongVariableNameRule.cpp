@@ -1,3 +1,4 @@
+#include <string>
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleConfiguration.h"
 #include "oclint/RuleSet.h"
@@ -64,6 +65,7 @@ public:
         int threshold = RuleConfiguration::intForKey("LONG_VARIABLE_NAME", 20);
         if (nameLength > threshold)
         {
+            if (nameLength > threshold + 10) varName = varName.substr(0, threshold + 5) + "[...]";
             string description = "Length of variable name `" + varName + "` is " + toString<int>(nameLength) + ", which is longer than the threshold of " + toString<int>(threshold);
             addViolation(varDecl, this, description);
         }
