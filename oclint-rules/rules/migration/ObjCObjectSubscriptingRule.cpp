@@ -71,23 +71,23 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.7";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "This rule locates the places that can be migrated to the "
             "new Objective-C literals with object subscripting.";
     }
 
-    virtual const std::string fileName() const override
+    virtual const string fileName() const override
     {
         return "ObjCObjectSubscriptingRule.cpp";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: objective-c

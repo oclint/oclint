@@ -34,18 +34,18 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.10.1";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "Giving virtual functions default argument initializers tends to "
             "defeat polymorphism and introduce unnecessary complexity into a class hierarchy.";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp

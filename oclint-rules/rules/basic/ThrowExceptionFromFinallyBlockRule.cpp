@@ -84,18 +84,18 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.6";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "Throwing exceptions within a ``finally`` block "
             "may mask other exceptions or code defects.";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: objective-c

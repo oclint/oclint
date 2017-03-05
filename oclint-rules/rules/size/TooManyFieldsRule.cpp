@@ -29,18 +29,18 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.7";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "A class with too many fields indicates it does too many things "
             "and lacks proper abstraction. It can be redesigned to have fewer fields.";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp
@@ -60,9 +60,9 @@ public:
         )rst";
     }
 
-    virtual const std::map<std::string, std::string> thresholds() const override
+    virtual const map<string, string> thresholds() const override
     {
-        std::map<std::string, std::string> thresholdMapping;
+        map<string, string> thresholdMapping;
         thresholdMapping["TOO_MANY_FIELDS"] =
             "The reporting threshold for too many fields, default value is 20.";
         return thresholdMapping;

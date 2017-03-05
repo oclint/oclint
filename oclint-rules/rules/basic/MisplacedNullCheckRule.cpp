@@ -79,24 +79,24 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.7";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "The null check is misplaced. "
             "In C and C++, sending a message to a null pointer could crash the program. "
             "When null is misplaced, either the check is useless or it's incorrect.";
     }
 
-    virtual const std::string fileName() const override
+    virtual const string fileName() const override
     {
         return "MisplacedNullCheckRule.cpp";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp
@@ -148,24 +148,24 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.7";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "The nil check is misplaced. "
             "In Objective-C, sending a message to a nil pointer simply does nothing. "
             "But code readers may be confused about the misplaced nil check.";
     }
 
-    virtual const std::string fileName() const override
+    virtual const string fileName() const override
     {
         return "MisplacedNullCheckRule.cpp";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: objective-c

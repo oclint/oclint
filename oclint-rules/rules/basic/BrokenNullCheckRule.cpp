@@ -79,17 +79,17 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.7";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "The broken null check itself will crash the program.";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp
@@ -141,23 +141,23 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.7";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "The broken nil check in Objective-C in some cases "
             "returns just the opposite result.";
     }
 
-    virtual const std::string fileName() const override
+    virtual const string fileName() const override
     {
         return "BrokenNullCheckRule.cpp";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: objective-c

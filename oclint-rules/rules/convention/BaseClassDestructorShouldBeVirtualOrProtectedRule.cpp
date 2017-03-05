@@ -1,7 +1,9 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
+using namespace std;
 using namespace clang;
+using namespace oclint;
 
 static bool hasVirtualOrProtectedDestructor(const CXXRecordDecl& cxxRecordDecl)
 {
@@ -15,7 +17,7 @@ static bool hasVirtualOrProtectedDestructor(const CXXRecordDecl& cxxRecordDecl)
         || cxxDestructorDecl->getAccess() == AS_protected;
 }
 
-static std::string getMessageViolation(const CXXRecordDecl& base, const CXXRecordDecl& child)
+static string getMessageViolation(const CXXRecordDecl& base, const CXXRecordDecl& child)
 {
     return "~" + base.getNameAsString() + "() should be protected or virtual"
         " according to class " + child.getNameAsString();
@@ -29,19 +31,19 @@ static std::string getMessageViolation(const CXXRecordDecl& base, const CXXRecor
  * If base class destructor is virtual, so the correct destructor is called.
  * If base class destructor is protected, it cannot be called from outside.
  *
- * To avoid false positive with 'type traits' class as std::true_type
+ * To avoid false positive with 'type traits' class as true_type
  * only check parents of polymorphic classes.
  */
 class BaseClassDestructorShouldBeVirtualOrProtectedRule :
-    public oclint::AbstractASTVisitorRule<BaseClassDestructorShouldBeVirtualOrProtectedRule>
+    public AbstractASTVisitorRule<BaseClassDestructorShouldBeVirtualOrProtectedRule>
 {
 public:
-    virtual const std::string name() const override
+    virtual const string name() const override
     {
         return "base class destructor should be virtual or protected";
     }
 
-    virtual const std::string identifier() const override
+    virtual const string identifier() const override
     {
         return "ProblematicBaseClassDestructor";
     }
@@ -51,33 +53,33 @@ public:
         return 2;
     }
 
-    virtual const std::string category() const override
+    virtual const string category() const override
     {
         return "convention";
     }
 
     unsigned int supportedLanguages() const override
     {
-        return oclint::LANG_CXX;
+        return LANG_CXX;
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.10.2";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "Make base class destructor public and virtual, or protected and nonvirtual";
     }
 
-    virtual const std::string fileName() const override
+    virtual const string fileName() const override
     {
         return "BaseClassDestructorShouldBeVirtualOrProtectedRule.cpp";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp
@@ -94,7 +96,7 @@ public:
         )rst";
     }
 
-    virtual const std::string additionalDocument() const override
+    virtual const string additionalDocument() const override
     {
         return R"rst(
 **References:**
@@ -149,4 +151,4 @@ private:
     }
 };
 
-static oclint::RuleSet rules(new BaseClassDestructorShouldBeVirtualOrProtectedRule());
+static RuleSet rules(new BaseClassDestructorShouldBeVirtualOrProtectedRule());

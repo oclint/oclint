@@ -34,22 +34,22 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.8";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "When ``isEqual`` method is overridden, ``hash`` method must be overridden, too.";
     }
 
-    virtual const std::string fileName() const override
+    virtual const string fileName() const override
     {
         return "ObjCVerifyIsEqualHashRule.cpp";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: objective-c

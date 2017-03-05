@@ -59,12 +59,12 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.4";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return R"rst(
 NPath complexity is determined by the number of execution paths through that method.
@@ -77,12 +77,12 @@ an NPath threshold value of 200 has been established for a method.
         )rst";
     }
 
-    virtual const std::string fileName() const override
+    virtual const string fileName() const override
     {
         return "NPathComplexityRule.cpp";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp
@@ -94,15 +94,15 @@ an NPath threshold value of 200 has been established for a method.
         )rst";
     }
 
-    virtual const std::map<std::string, std::string> thresholds() const override
+    virtual const map<string, string> thresholds() const override
     {
-        std::map<std::string, std::string> thresholdMapping;
+        map<string, string> thresholdMapping;
         thresholdMapping["NPATH_COMPLEXITY"] =
             "The NPath complexity reporting threshold, default value is 200.";
         return thresholdMapping;
     }
 
-    virtual const std::string additionalDocument() const override
+    virtual const string additionalDocument() const override
     {
         return R"rst(
 **References:**

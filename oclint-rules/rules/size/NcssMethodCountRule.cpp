@@ -40,12 +40,12 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.6";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "This rule counts number of lines for a method by "
             "counting Non Commenting Source Statements (NCSS). "
@@ -55,12 +55,12 @@ public:
             "Meanwhile, a statement that is broken into multiple lines contribute only one count.";
     }
 
-    virtual const std::string fileName() const override
+    virtual const string fileName() const override
     {
         return "NcssMethodCountRule.cpp";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp
@@ -77,9 +77,9 @@ public:
         )rst";
     }
 
-    virtual const std::map<std::string, std::string> thresholds() const override
+    virtual const map<string, string> thresholds() const override
     {
-        std::map<std::string, std::string> thresholdMapping;
+        map<string, string> thresholdMapping;
         thresholdMapping["NCSS_METHOD"] =
             "The high NCSS method reporting threshold, default value is 30.";
         return thresholdMapping;
