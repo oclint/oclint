@@ -75,11 +75,10 @@ void disposeOutStream(ostream* out)
 
 void listRules()
 {
-    cerr << "Enabled rules:\n";
+    cout << "Enabled rules:" << endl;
     for (const std::string &ruleName : oclint::option::rulesetFilter().filteredRuleNames())
-    {
-        cerr << "- " << ruleName << "\n";
-    }
+        cout << " - " << ruleName;
+    cout << endl;
 }
 
 void printErrorLine(const char *errorMessage)

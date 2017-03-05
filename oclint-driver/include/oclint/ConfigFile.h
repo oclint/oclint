@@ -40,8 +40,12 @@ private:
     int _maxP1;
     int _maxP2;
     int _maxP3;
+    TriState _listEnabledRules = UNDEFINED;
     TriState _clangChecker = UNDEFINED;
     TriState _allowDuplicatedViolations = UNDEFINED;
+    TriState _enableGlobalAnalysis = UNDEFINED;
+    TriState _noAnalytics = UNDEFINED;
+    TriState _enableVerbose = UNDEFINED;
 
 public:
     explicit ConfigFile(const std::string &path);
@@ -56,8 +60,12 @@ public:
     llvm::Optional<int> maxP1() const;
     llvm::Optional<int> maxP2() const;
     llvm::Optional<int> maxP3() const;
+    llvm::Optional<bool> listEnabledRules() const;
     llvm::Optional<bool> clangChecker() const;
     llvm::Optional<bool> allowDuplicatedViolations() const;
+    llvm::Optional<bool> enableGlobalAnalysis() const;
+    llvm::Optional<bool> noAnalytics() const;
+    llvm::Optional<bool> enableVerbose() const;
 
     void mapping(llvm::yaml::IO& io);
 };
