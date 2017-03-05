@@ -19,6 +19,10 @@ arg_parser.add_argument('-j', type=int, default=0)
 arg_parser.add_argument('-use-system-compiler', '--use-system-compiler', action="store_true", default=environment.is_linux())
 args = arg_parser.parse_args()
 
+multiple_thread = environment.cpu_count()
+if environment.is_mingw32(): multiple_thread = "1"
+if not args.j is 0: multiple_thread = str(args.j)
+
 def clean_module():
     build_path = path.build.countly_build_dir
     path.rm_f(build_path)
@@ -37,7 +41,7 @@ def build_module(multiple_thread):
     path.mkdir_p(build_path)
     path.cd(build_path)
     process.call(command)
-    process.call('make -j ' + multiple_thread)
+    process.call('make -j' + multiple_thread)
     path.cd(current_dir)
 
 def checkout_countly():
@@ -50,10 +54,6 @@ def checkout_countly():
 
 if args.task_name == 'checkout' or args.task_name == 'co':
     checkout_countly()
-
-multiple_thread = environment.cpu_count()
-if not args.j is 0:
-    multiple_thread = args.j
 
 if args.task_name == 'build':
     if args.clean:
