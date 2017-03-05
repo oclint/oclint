@@ -47,7 +47,7 @@ def display_test_result(module_name):
     with open(testresult_path, 'r') as testresult_file:
         print(testresult_file.read())
 
-def test_module(module_name, no_ninja, multiple_thread):
+def test_module(module_name, no_ninja, j):
     build_path = path.oclint_module_test_dir(module_name)
     source_path = path.oclint_module_source_dir(module_name)
 
@@ -66,9 +66,9 @@ def test_module(module_name, no_ninja, multiple_thread):
     path.cd(build_path)
     process.call(command)
     if no_ninja:
-        process.call('make -j ' + multiple_thread)
+        process.make(j)
     else:
-        process.call('ninja')
+        process.ninja()
     if not args.as_dep:
         run_ctest_command = 'ctest --output-on-failure > ' + test_result_path(module_name)
         ctest_exit_code = subprocess.call(run_ctest_command, shell=True)
@@ -92,11 +92,5 @@ if args.clean:
     for module in build_modules:
         clean_module(module)
 
-multiple_thread = environment.cpu_count()
-if environment.is_mingw32():
-    multiple_thread = 1
-if not args.j is 0:
-    multiple_thread = args.j
-
 for module in build_modules:
-    test_module(module, args.no_ninja, str(multiple_thread))
+    test_module(module, args.no_ninja, args.j)

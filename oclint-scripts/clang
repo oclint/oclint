@@ -42,7 +42,7 @@ def build_command(is_release):
     cmd_build.append('CMAKE_INSTALL_PREFIX', path.build.clang_install_dir, environment.is_mingw32())
     return cmd_build.str()
 
-def build_module(is_release, multiple_thread):
+def build_module(is_release, j):
     build_path = path.build.clang_build_dir
 
     command = build_command(is_release)
@@ -51,7 +51,7 @@ def build_module(is_release, multiple_thread):
     path.mkdir_p(build_path)
     path.cd(build_path)
     process.call(command)
-    process.call('make -j ' + multiple_thread)
+    process.make(j)
     process.call('make install')
     path.cd(current_dir)
 
@@ -126,15 +126,9 @@ if args.task_name == 'update' or args.task_name == 'up':
 if args.task_name == 'prebuilt':
     setup_prebuilt_binary()
 
-multiple_thread = environment.cpu_count()
-if environment.is_mingw32():
-    multiple_thread = 1
-if not args.j is 0:
-    multiple_thread = args.j
-
 if args.task_name == 'build':
     if args.clean:
         clean_module()
-    build_module(args.release, str(multiple_thread))
+    build_module(args.release, args.j)
     if environment.is_darwin():
         copy_cpp_headers()
