@@ -85,7 +85,7 @@ protected:
         return isImplicitDeclRef(expr);
     }
 
-    string extractIdentifierFromImplicitCastExpr(clang::ImplicitCastExpr *implicitCastExpr)
+    std::string extractIdentifierFromImplicitCastExpr(clang::ImplicitCastExpr *implicitCastExpr)
     {
         if (!implicitCastExpr)
         {
@@ -101,7 +101,7 @@ protected:
         return declRefExpr ? declRefExpr->getFoundDecl()->getNameAsString() : "";
     }
 
-    string extractIdentifierFromBinaryOperator(clang::BinaryOperator *binaryOperator)
+    std::string extractIdentifierFromBinaryOperator(clang::BinaryOperator *binaryOperator)
     {
         clang::Expr *refExpr = binaryOperator->getLHS();
         if (isNullToPointer(refExpr))
@@ -112,13 +112,13 @@ protected:
             clang::dyn_cast_or_null<clang::ImplicitCastExpr>(refExpr));
     }
 
-    string extractIdentifierFromUnaryOperator(clang::UnaryOperator *unaryOperator)
+    std::string extractIdentifierFromUnaryOperator(clang::UnaryOperator *unaryOperator)
     {
         return extractIdentifierFromImplicitCastExpr(
             clang::dyn_cast_or_null<clang::ImplicitCastExpr>(unaryOperator->getSubExpr()));
     }
 
-    string extractIdentifierFromExpr(clang::Expr *expr)
+    std::string extractIdentifierFromExpr(clang::Expr *expr)
     {
         if (!expr)
         {
@@ -145,11 +145,11 @@ protected:
         public clang::RecursiveASTVisitor<VariableOfInterestInMemberExpr>
     {
     private:
-        string _variableName;
+        std::string _variableName;
         AbstractNullCheckRule *_rule;
 
     public:
-        bool hasVariableInExpr(string name, clang::Expr *expr, AbstractNullCheckRule *rule)
+        bool hasVariableInExpr(std::string name, clang::Expr *expr, AbstractNullCheckRule *rule)
         {
             _variableName = name;
             _rule = rule;
@@ -168,15 +168,16 @@ protected:
         }
     };
 
+
     class VariableOfInterestInObjCMessageExpr :
         public clang::RecursiveASTVisitor<VariableOfInterestInObjCMessageExpr>
     {
     private:
-        string _variableName;
+        std::string _variableName;
         AbstractNullCheckRule *_rule;
 
     public:
-        bool hasVariableInExpr(string name, clang::Expr *expr, AbstractNullCheckRule *rule)
+        bool hasVariableInExpr(std::string name, clang::Expr *expr, AbstractNullCheckRule *rule)
         {
             _variableName = name;
             _rule = rule;
