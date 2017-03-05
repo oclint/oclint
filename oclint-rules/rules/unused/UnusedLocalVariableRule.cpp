@@ -39,7 +39,7 @@ public:
     UnusedLocalVariableRule()
     {
         string defKeys = RuleConfiguration::stringForKey("RAII_DEFAULT_CLASSES",
-            "lock_guard, unique_lock");
+            "std::lock_guard, std::unique_lock");
         string cusKeys = RuleConfiguration::stringForKey("RAII_CUSTOM_CLASSES", "");
 
         resetSkippedTypes({ defKeys, cusKeys });
