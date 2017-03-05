@@ -171,11 +171,15 @@ static void processConfigFile(const std::string &path)
 
     updateArgIfSet(argOutput, config.output());
     updateArgIfSet(argReportType, config.reportType());
+    updateArgIfSet(argListEnabledRules, config.listEnabledRules());
     updateArgIfSet(argMaxP1, config.maxP1());
     updateArgIfSet(argMaxP2, config.maxP2());
     updateArgIfSet(argMaxP3, config.maxP3());
+    updateArgIfSet(argGlobalAnalysis, config.enableGlobalAnalysis());
     updateArgIfSet(argClangChecker, config.clangChecker());
     updateArgIfSet(argDuplications, config.allowDuplicatedViolations());
+    updateArgIfSet(argNoAnalytics, config.noAnalytics());
+    updateArgIfSet(argEnableVerbose, config.enableVerbose());
 }
 
 static void processConfigFiles()
