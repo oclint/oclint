@@ -17,7 +17,12 @@ arg_parser.add_argument('-setup', '--setup', action="store_true")
 arg_parser.add_argument('-llvm-branch', '--llvm-branch', nargs='?', choices=version.llvm_branches(), default=version.llvm_default_branch())
 arg_parser.add_argument('-release', '--release', action="store_true")
 arg_parser.add_argument('-archive', '--archive', action="store_true")
+arg_parser.add_argument('-j', type=int, default=0)
 args = arg_parser.parse_args()
+
+multiple_thread = environment.cpu_count()
+if environment.is_mingw32(): multiple_thread = "1"
+if not args.j is 0: multiple_thread = str(args.j)
 
 def upload_snapshot():
     process.call('python upload')
@@ -38,21 +43,21 @@ if args.setup:
     if environment.is_darwin():
         process.call('git clone ' + path.url.xcodebuild)
     path.cd(current_dir)
-    process.call('python clang co -branch ' + args.llvm_branch)
-    process.call('python countly co')
+    process.call('python clang co -branch ' + args.llvm_branch + '-j' + multiple_thread)
+    process.call('python countly co -j' + multiple_thread)
     if args.release:
-        process.call('python clang build -release -clean')
+        process.call('python clang build -release -clean -j' + multiple_thread)
     else:
-        process.call('python googleTest co')
-        process.call('python clang build -clean')
-        process.call('python googleTest build -clean')
-    process.call('python countly build')
+        process.call('python googleTest co -j' + multiple_thread)
+        process.call('python clang build -clean -j' + multiple_thread)
+        process.call('python googleTest build -clean -j' + multiple_thread)
+    process.call('python countly build -j' + multiple_thread)
 
 if args.release:
-    process.call('python build -clean -release')
+    process.call('python build -clean -release -j' + multiple_thread)
 else:
-    process.call('python test -clean')
-    process.call('python build -clean')
+    process.call('python test -clean -j' + multiple_thread)
+    process.call('python build -clean -j' + multiple_thread)
 process.call('python bundle')
 if environment.is_unix() and not args.release:
     process.call('python dogFooding -enable-clang-static-analyzer')
