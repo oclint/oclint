@@ -20,21 +20,17 @@ using namespace llvm;
 using namespace clang;
 using namespace clang::tooling;
 
-void consumeArgRulesPath()
-{
-    for (const auto& rulePath : oclint::option::rulesPath())
-    {
+void consumeArgRulesPath() {
+    for (const auto &rulePath : oclint::option::rulesPath()) {
         dynamicLoadRules(rulePath);
     }
 }
 
-vector<oclint::RuleBase *> allRules()
-{
+vector<oclint::RuleBase *> allRules() {
     std::vector<oclint::RuleBase *> allRules;
 
     for (int ruleIdx = 0, numRules = oclint::RuleSet::numberOfRules();
-        ruleIdx < numRules; ruleIdx++)
-    {
+            ruleIdx < numRules; ruleIdx++) {
         oclint::RuleBase *rule = oclint::RuleSet::getRuleAtIndex(ruleIdx);
         allRules.push_back(rule);
     }
@@ -42,30 +38,23 @@ vector<oclint::RuleBase *> allRules()
     return allRules;
 }
 
-void printErrorLine(const char *errorMessage)
-{
+void printErrorLine(const char *errorMessage) {
     cerr << endl << "oclint: error: " << errorMessage << endl;
 }
 
-enum ExitCode
-{
+enum ExitCode {
     SUCCESS,
     RULE_NOT_FOUND
 };
 
-int prepare()
-{
-    try
-    {
+int prepare() {
+    try {
         consumeArgRulesPath();
-    }
-    catch (const exception& e)
-    {
+    } catch (const exception &e) {
         printErrorLine(e.what());
         return RULE_NOT_FOUND;
     }
-    if (oclint::RuleSet::numberOfRules() <= 0)
-    {
+    if (oclint::RuleSet::numberOfRules() <= 0) {
         printErrorLine("no rule loaded");
         return RULE_NOT_FOUND;
     }
@@ -73,8 +62,7 @@ int prepare()
     return SUCCESS;
 }
 
-static void oclintDocGenVersionPrinter()
-{
+static void oclintDocGenVersionPrinter() {
     cout << "OCLint DocGen (http://oclint.org/docs/):\n";
     cout << "  OCLint DocGen version " << oclint::Version::identifier() << ".\n";
     cout << "  Built " << __DATE__ << " (" << __TIME__ << ").\n";
@@ -82,8 +70,7 @@ static void oclintDocGenVersionPrinter()
 
 extern llvm::cl::OptionCategory OCLintOptionCategory;
 
-void writeIndexHeader(ofstream& out)
-{
+void writeIndexHeader(ofstream &out) {
     out << "Rule Index" << endl
         << "==========" << endl
         << endl
@@ -94,31 +81,26 @@ void writeIndexHeader(ofstream& out)
         << endl;
 }
 
-void writeCategoryToIndex(ofstream& out, string category)
-{
+void writeCategoryToIndex(ofstream &out, string category) {
     out << "   " << category << endl;
 }
 
-void writeCategoryHeader(ofstream& out, string category)
-{
+void writeCategoryHeader(ofstream &out, string category) {
     category[0] = toupper(category[0]);
     out << category << endl;
-    for (int i = 0; i < category.size(); i++)
-    {
+    for (int i = 0; i < category.size(); i++) {
         out << "=";
     }
     out << endl << endl;
 }
 
-void writeRuleToCategory(ofstream& out, oclint::RuleBase* rule)
-{
+void writeRuleToCategory(ofstream &out, oclint::RuleBase *rule) {
     auto ruleIdentifier = rule->identifier();
     auto ruleCategory = rule->category();
     auto fileName = rule->fileName();
 
     out << ruleIdentifier << endl;
-    for (int i = 0; i < ruleIdentifier.size(); i++)
-    {
+    for (int i = 0; i < ruleIdentifier.size(); i++) {
         out << "-";
     }
     out << endl << endl;
@@ -139,19 +121,16 @@ void writeRuleToCategory(ofstream& out, oclint::RuleBase* rule)
     out << rule->example() << endl << endl;
 
     auto thresholdMapping = rule->thresholds();
-    if (thresholdMapping.size() > 0)
-    {
+    if (thresholdMapping.size() > 0) {
         out << "**Thresholds:**" << endl << endl;
-        for (auto entry : thresholdMapping)
-        {
+        for (auto entry : thresholdMapping) {
             out << entry.first << endl
                 << "    " << entry.second << endl;
         }
         out << endl;
     }
 
-    if (rule->enableSuppress())
-    {
+    if (rule->enableSuppress()) {
         out << "**Suppress:**" << endl << endl;
         out << ".. code-block:: cpp" << endl << endl;
         out << "    __attribute__((annotate(\"oclint:suppress[" << rule->attributeName() << "]\")))"
@@ -159,48 +138,40 @@ void writeRuleToCategory(ofstream& out, oclint::RuleBase* rule)
     }
 
     auto additionalDoc = rule->additionalDocument();
-    if (additionalDoc.size() > 0)
-    {
+    if (additionalDoc.size() > 0) {
         out << additionalDoc << endl;
     }
 }
 
-void writeFooter(ofstream& out)
-{
+void writeFooter(ofstream &out) {
     time_t timeT = time(NULL);
-    struct tm * currentTime = localtime(&timeT);
+    struct tm *currentTime = localtime(&timeT);
     out << endl;
     out << ".. Generated on " << asctime(currentTime);
     out << endl;
 }
 
-int main(int argc, const char **argv)
-{
+int main(int argc, const char **argv) {
     llvm::cl::AddExtraVersionPrinter(&oclintDocGenVersionPrinter);
     CommonOptionsParser optionsParser(argc, argv, OCLintOptionCategory);
     oclint::option::process(argv[0]);
 
     int prepareStatus = prepare();
-    if (prepareStatus)
-    {
+    if (prepareStatus) {
         return prepareStatus;
     }
 
     vector<string> categories;
     map<string, vector<oclint::RuleBase *>> rulesMapping;
 
-    for (auto rule : allRules())
-    {
+    for (auto rule : allRules()) {
         auto category = rule->category();
-        if (std::find(categories.begin(), categories.end(), category) == categories.end())
-        {
+        if (std::find(categories.begin(), categories.end(), category) == categories.end()) {
             vector<oclint::RuleBase *> rulesForCategory;
             rulesForCategory.push_back(rule);
             rulesMapping[category] = rulesForCategory;
             categories.push_back(category);
-        }
-        else
-        {
+        } else {
             auto rulesForCategory = rulesMapping[category];
             rulesForCategory.push_back(rule);
             rulesMapping[category] = rulesForCategory;
@@ -214,8 +185,7 @@ int main(int argc, const char **argv)
 
     writeIndexHeader(*indexOut);
 
-    for (auto category : categories)
-    {
+    for (auto category : categories) {
         writeCategoryToIndex(*indexOut, category);
 
         string categoryPath = docRulePath + category + ".rst";
@@ -224,8 +194,7 @@ int main(int argc, const char **argv)
         writeCategoryHeader(*categoryOut, category);
 
         auto rulesForCategory = rulesMapping[category];
-        for (auto rule : rulesForCategory)
-        {
+        for (auto rule : rulesForCategory) {
             writeRuleToCategory(*categoryOut, rule);
         }
 

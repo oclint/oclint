@@ -32,319 +32,271 @@ static string objcNSStringPrefix = "\n\
 + (id)stringWithUTF8String:(const char *)nullTerminatedCString;\n\
 @end\n";
 
-TEST(ObjCBoxedExpressionsRuleTest, PropertyTest)
-{
+TEST(ObjCBoxedExpressionsRuleTest, PropertyTest) {
     ObjCBoxedExpressionsRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("use boxed expression", rule.name());
     EXPECT_EQ("migration", rule.category());
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, CharacterLiteral)
-{
+TEST(ObjCBoxedExpressionsRuleTest, CharacterLiteral) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *theLetterZ = @'Z'; }");
+                       "void m() { NSNumber *theLetterZ = @'Z'; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithChar)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithChar) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *theLetterZ = [NSNumber numberWithChar:'Z']; }");
+                       "void m() { NSNumber *theLetterZ = [NSNumber numberWithChar:'Z']; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithCharButInteger)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithCharButInteger) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *theLetterZ = [NSNumber numberWithChar:15]; }");
+                       "void m() { NSNumber *theLetterZ = [NSNumber numberWithChar:15]; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedChar)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedChar) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "char getZ() { return 'Z'; } void m() { NSNumber *theLetterZ = [NSNumber numberWithChar:(getZ())]; }",
-        0, 17, 63, 17, 96);
+                       "char getZ() { return 'Z'; } void m() { NSNumber *theLetterZ = [NSNumber numberWithChar:(getZ())]; }",
+                       0, 17, 63, 17, 96);
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, IntLiteral)
-{
+TEST(ObjCBoxedExpressionsRuleTest, IntLiteral) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwo = @42; }");
+                       "void m() { NSNumber *fortyTwo = @42; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithInt)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithInt) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwo = [NSNumber numberWithInt:42]; }");
+                       "void m() { NSNumber *fortyTwo = [NSNumber numberWithInt:42]; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedInt)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedInt) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwo = [NSNumber numberWithInt:(43 - 1)]; }",
-        0, 17, 33, 17, 65);
+                       "void m() { NSNumber *fortyTwo = [NSNumber numberWithInt:(43 - 1)]; }",
+                       0, 17, 33, 17, 65);
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, UnsignedIntLiteral)
-{
+TEST(ObjCBoxedExpressionsRuleTest, UnsignedIntLiteral) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsigned = @42U; }");
+                       "void m() { NSNumber *fortyTwoUnsigned = @42U; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithUnsignedInt)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithUnsignedInt) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsigned = [NSNumber numberWithUnsignedInt:42U]; }");
+                       "void m() { NSNumber *fortyTwoUnsigned = [NSNumber numberWithUnsignedInt:42U]; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedUnsignedIntButInterger)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedUnsignedIntButInterger) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsigned = [NSNumber numberWithUnsignedInt:42]; }");
+                       "void m() { NSNumber *fortyTwoUnsigned = [NSNumber numberWithUnsignedInt:42]; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedUnsignedInt)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedUnsignedInt) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsigned = [NSNumber numberWithUnsignedInt:(43U - 1U)]; }",
-        0, 17, 41, 17, 83);
+                       "void m() { NSNumber *fortyTwoUnsigned = [NSNumber numberWithUnsignedInt:(43U - 1U)]; }",
+                       0, 17, 41, 17, 83);
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, LongLiteral)
-{
+TEST(ObjCBoxedExpressionsRuleTest, LongLiteral) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoLong = @42L; }");
+                       "void m() { NSNumber *fortyTwoLong = @42L; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithLong)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithLong) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoLong = [NSNumber numberWithLong:42L]; }");
+                       "void m() { NSNumber *fortyTwoLong = [NSNumber numberWithLong:42L]; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedLong)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedLong) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoLong = [NSNumber numberWithLong:(43L - 1L)]; }",
-        0, 17, 37, 17, 72);
+                       "void m() { NSNumber *fortyTwoLong = [NSNumber numberWithLong:(43L - 1L)]; }",
+                       0, 17, 37, 17, 72);
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, UnsignedLongLiteral)
-{
+TEST(ObjCBoxedExpressionsRuleTest, UnsignedLongLiteral) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsignedLong = @42UL; }");
+                       "void m() { NSNumber *fortyTwoUnsignedLong = @42UL; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithUnsignedLong)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithUnsignedLong) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsignedLong = [NSNumber numberWithUnsignedLong:42UL]; }");
+                       "void m() { NSNumber *fortyTwoUnsignedLong = [NSNumber numberWithUnsignedLong:42UL]; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedUnsignedLong)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedUnsignedLong) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsignedLong = [NSNumber numberWithUnsignedLong:(43UL - 1UL)]; }",
-        0, 17, 45, 17, 90);
+                       "void m() { NSNumber *fortyTwoUnsignedLong = [NSNumber numberWithUnsignedLong:(43UL - 1UL)]; }",
+                       0, 17, 45, 17, 90);
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, LongLongLiteral)
-{
+TEST(ObjCBoxedExpressionsRuleTest, LongLongLiteral) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoLongLong = @42LL; }");
+                       "void m() { NSNumber *fortyTwoLongLong = @42LL; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithLongLong)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithLongLong) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoLongLong = [NSNumber numberWithLongLong:42LL]; }");
+                       "void m() { NSNumber *fortyTwoLongLong = [NSNumber numberWithLongLong:42LL]; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedLongLong)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedLongLong) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoLongLong = [NSNumber numberWithLongLong:(43LL - 1LL)]; }",
-        0, 17, 41, 17, 82);
+                       "void m() { NSNumber *fortyTwoLongLong = [NSNumber numberWithLongLong:(43LL - 1LL)]; }",
+                       0, 17, 41, 17, 82);
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, UnsignedLongLongLiteral)
-{
+TEST(ObjCBoxedExpressionsRuleTest, UnsignedLongLongLiteral) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsignedLongLong = @42ULL; }");
+                       "void m() { NSNumber *fortyTwoUnsignedLongLong = @42ULL; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithUnsignedLongLong)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithUnsignedLongLong) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsignedLongLong = [NSNumber numberWithUnsignedLongLong:42ULL]; }");
+                       "void m() { NSNumber *fortyTwoUnsignedLongLong = [NSNumber numberWithUnsignedLongLong:42ULL]; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedUnsignedLongLong)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedUnsignedLongLong) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsignedLongLong = [NSNumber numberWithUnsignedLongLong:(43ULL - 1ULL)]; }",
-        0, 17, 49, 17, 100);
+                       "void m() { NSNumber *fortyTwoUnsignedLongLong = [NSNumber numberWithUnsignedLongLong:(43ULL - 1ULL)]; }",
+                       0, 17, 49, 17, 100);
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, FloatLiteral)
-{
+TEST(ObjCBoxedExpressionsRuleTest, FloatLiteral) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoFloat = @3.1415926535F; }");
+                       "void m() { NSNumber *fortyTwoFloat = @3.1415926535F; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithFloat)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithFloat) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoFloat = [NSNumber numberWithFloat:3.1415926535F]; }");
+                       "void m() { NSNumber *fortyTwoFloat = [NSNumber numberWithFloat:3.1415926535F]; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedFloat)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedFloat) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoFloat = [NSNumber numberWithFloat:(4.1415926535F - 1.0F)]; }",
-        0, 17, 38, 17, 86);
+                       "void m() { NSNumber *fortyTwoFloat = [NSNumber numberWithFloat:(4.1415926535F - 1.0F)]; }",
+                       0, 17, 38, 17, 86);
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, DoubleLiteral)
-{
+TEST(ObjCBoxedExpressionsRuleTest, DoubleLiteral) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoDouble = @3.1415926535; }");
+                       "void m() { NSNumber *fortyTwoDouble = @3.1415926535; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithDouble)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithDouble) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoDouble = [NSNumber numberWithDouble:3.1415926535]; }");
+                       "void m() { NSNumber *fortyTwoDouble = [NSNumber numberWithDouble:3.1415926535]; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedDouble)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedDouble) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoDouble = [NSNumber numberWithDouble:(4.1415926535 - 1.0)]; }",
-        0, 17, 39, 17, 86);
+                       "void m() { NSNumber *fortyTwoDouble = [NSNumber numberWithDouble:(4.1415926535 - 1.0)]; }",
+                       0, 17, 39, 17, 86);
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, BOOLYesLiteral_newBOOLDef)
-{
+TEST(ObjCBoxedExpressionsRuleTest, BOOLYesLiteral_newBOOLDef) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix + newBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = @YES; }");
+                       "void m() { NSNumber *fortyTwoBOOL = @YES; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoolYes_newBOOLDef)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoolYes_newBOOLDef) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix + newBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:YES]; }");
+                       "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:YES]; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedBOOLYes_newBOOLDef)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedBOOLYes_newBOOLDef) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix + newBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!YES)]; }",
-        0, 20, 37, 20, 68);
+                       "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!YES)]; }",
+                       0, 20, 37, 20, 68);
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, BOOLNoLiteral_newBOOLDef)
-{
+TEST(ObjCBoxedExpressionsRuleTest, BOOLNoLiteral_newBOOLDef) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix + newBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = @NO; }");
+                       "void m() { NSNumber *fortyTwoBOOL = @NO; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoolNo_newBOOLDef)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoolNo_newBOOLDef) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix + newBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:NO]; }");
+                       "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:NO]; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedBOOLNo_newBOOLDef)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedBOOLNo_newBOOLDef) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix + newBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!NO)]; }",
-        0, 20, 37, 20, 67);
+                       "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!NO)]; }",
+                       0, 20, 37, 20, 67);
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, BOOLYesLiteral_oldBOOLDef)
-{
+TEST(ObjCBoxedExpressionsRuleTest, BOOLYesLiteral_oldBOOLDef) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix + oldBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = @YES; }");
+                       "void m() { NSNumber *fortyTwoBOOL = @YES; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoolYes_oldBOOLDef)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoolYes_oldBOOLDef) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix + oldBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:YES]; }");
+                       "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:YES]; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedBOOLYes_oldBOOLDef)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedBOOLYes_oldBOOLDef) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix + oldBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!YES)]; }",
-        0, 20, 37, 20, 68);
+                       "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!YES)]; }",
+                       0, 20, 37, 20, 68);
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, BOOLNoLiteral_oldBOOLDef)
-{
+TEST(ObjCBoxedExpressionsRuleTest, BOOLNoLiteral_oldBOOLDef) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix + oldBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = @NO; }");
+                       "void m() { NSNumber *fortyTwoBOOL = @NO; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoolNo_oldBOOLDef)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoolNo_oldBOOLDef) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix + oldBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:NO]; }");
+                       "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:NO]; }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedBOOLNo_oldBOOLDef)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedBOOLNo_oldBOOLDef) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix + oldBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!NO)]; }",
-        0, 20, 37, 20, 67);
+                       "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!NO)]; }",
+                       0, 20, 37, 20, 67);
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithEnumBoxed)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithEnumBoxed) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "typedef enum { Red, Green, Blue } Color; void m() { NSNumber *color = @(Green); }");
+                       "typedef enum { Red, Green, Blue } Color; void m() { NSNumber *color = @(Green); }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithEnum)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithEnum) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "typedef enum { Red, Green, Blue } Color; void m() { NSNumber *color = [NSNumber numberWithInt:Green]; }",
-        0, 17, 71, 17, 100);
+                       "typedef enum { Red, Green, Blue } Color; void m() { NSNumber *color = [NSNumber numberWithInt:Green]; }",
+                       0, 17, 71, 17, 100);
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "typedef enum { Red, Green, Blue } Color; void m() { NSNumber *color = [NSNumber numberWithInt:(Green)]; }",
-        0, 17, 71, 17, 102);
+                       "typedef enum { Red, Green, Blue } Color; void m() { NSNumber *color = [NSNumber numberWithInt:(Green)]; }",
+                       0, 17, 71, 17, 102);
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithEnumTypedefBoxed)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithEnumTypedefBoxed) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "enum { Red, Green, Blue }; void m() { NSNumber *color = @(Red); }");
+                       "enum { Red, Green, Blue }; void m() { NSNumber *color = @(Red); }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, NumberWithEnumTypedef)
-{
+TEST(ObjCBoxedExpressionsRuleTest, NumberWithEnumTypedef) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "enum { Red, Green, Blue }; void m() { NSNumber *color = [NSNumber numberWithInt:Red]; }",
-        0, 17, 57, 17, 84);
+                       "enum { Red, Green, Blue }; void m() { NSNumber *color = [NSNumber numberWithInt:Red]; }",
+                       0, 17, 57, 17, 84);
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
-        "enum { Red, Green, Blue }; void m() { NSNumber *color = [NSNumber numberWithInt:(Red)]; }",
-        0, 17, 57, 17, 86);
+                       "enum { Red, Green, Blue }; void m() { NSNumber *color = [NSNumber numberWithInt:(Red)]; }",
+                       0, 17, 57, 17, 86);
 }
 
 // TODO: fixed underlying type enum like typedef enum : unsigned char { Red, Green, Blue } Color;
 
-TEST(ObjCBoxedExpressionsRuleTest, StringWithUTF8StringBoxed)
-{
+TEST(ObjCBoxedExpressionsRuleTest, StringWithUTF8StringBoxed) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSStringPrefix +
-        "char* getenv (const char* name); void m() { NSString *env = @(getenv(\"PATH\")); }");
+                       "char* getenv (const char* name); void m() { NSString *env = @(getenv(\"PATH\")); }");
 }
 
-TEST(ObjCBoxedExpressionsRuleTest, StringWithUTF8String)
-{
+TEST(ObjCBoxedExpressionsRuleTest, StringWithUTF8String) {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSStringPrefix +
-        "char* getenv (const char* name); void m() { NSString *env = [NSString stringWithUTF8String:getenv(\"PATH\")]; }",
-        0, 7, 61, 7, 106);
+                       "char* getenv (const char* name); void m() { NSString *env = [NSString stringWithUTF8String:getenv(\"PATH\")]; }",
+                       0, 7, 61, 7, 106);
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSStringPrefix +
-        "char* getenv (const char* name); void m() { NSString *env = [NSString stringWithUTF8String:(getenv(\"PATH\"))]; }",
-        0, 7, 61, 7, 108);
+                       "char* getenv (const char* name); void m() { NSString *env = [NSString stringWithUTF8String:(getenv(\"PATH\"))]; }",
+                       0, 7, 61, 7, 108);
 }

@@ -5,47 +5,38 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class UselessParenthesesRule : public AbstractASTVisitorRule<UselessParenthesesRule>
-{
-private:
-    void addParenExprToViolation(Expr *expr)
-    {
-        if (expr && isa<ParenExpr>(expr))
-        {
-            addViolation(expr, this);
+class UselessParenthesesRule : public AbstractASTVisitorRule<UselessParenthesesRule> {
+    private:
+        void addParenExprToViolation(Expr *expr) {
+            if (expr && isa<ParenExpr>(expr)) {
+                addViolation(expr, this);
+            }
         }
-    }
 
-public:
-    virtual const string name() const override
-    {
-        return "useless parentheses";
-    }
+    public:
+        virtual const string name() const override {
+            return "useless parentheses";
+        }
 
-    virtual int priority() const override
-    {
-        return 3;
-    }
+        virtual int priority() const override {
+            return 3;
+        }
 
-    virtual const string category() const override
-    {
-        return "redundant";
-    }
+        virtual const string category() const override {
+            return "redundant";
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.6";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.6";
+        }
 
-    virtual const string description() const override
-    {
-        return "This rule detects useless parentheses.";
-    }
+        virtual const string description() const override {
+            return "This rule detects useless parentheses.";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: cpp
 
     int example(int a)
@@ -58,29 +49,26 @@ public:
         return (0);         // return 0;
     }
         )rst";
-    }
-#endif
+        }
+        #endif
 
-    bool VisitIfStmt(IfStmt *ifStmt)
-    {
-        addParenExprToViolation(ifStmt->getCond());
+        bool VisitIfStmt(IfStmt *ifStmt) {
+            addParenExprToViolation(ifStmt->getCond());
 
-        return true;
-    }
+            return true;
+        }
 
-    bool VisitReturnStmt(ReturnStmt *returnStmt)
-    {
-        addParenExprToViolation(returnStmt->getRetValue());
+        bool VisitReturnStmt(ReturnStmt *returnStmt) {
+            addParenExprToViolation(returnStmt->getRetValue());
 
-        return true;
-    }
+            return true;
+        }
 
-    bool VisitVarDecl(VarDecl *varDecl)
-    {
-        addParenExprToViolation(varDecl->getInit());
+        bool VisitVarDecl(VarDecl *varDecl) {
+            addParenExprToViolation(varDecl->getInit());
 
-        return true;
-    }
+            return true;
+        }
 };
 
 static RuleSet rules(new UselessParenthesesRule());

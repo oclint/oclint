@@ -8,40 +8,34 @@
 using namespace ::testing;
 using namespace oclint;
 
-class MockRuleBaseOne : public RuleBase
-{
-public:
-    MOCK_METHOD0(apply, void());
-    MOCK_CONST_METHOD0(name, const std::string());
-    MOCK_CONST_METHOD0(category, const std::string());
+class MockRuleBaseOne : public RuleBase {
+    public:
+        MOCK_METHOD0(apply, void());
+        MOCK_CONST_METHOD0(name, const std::string());
+        MOCK_CONST_METHOD0(category, const std::string());
 
-    virtual int priority() const
-    {
-        return 1;
-    }
+        virtual int priority() const {
+            return 1;
+        }
 };
 
-class MockRuleBaseTwo : public RuleBase
-{
-public:
-    MOCK_METHOD0(apply, void());
-    MOCK_CONST_METHOD0(name, const std::string());
-    MOCK_CONST_METHOD0(category, const std::string());
+class MockRuleBaseTwo : public RuleBase {
+    public:
+        MOCK_METHOD0(apply, void());
+        MOCK_CONST_METHOD0(name, const std::string());
+        MOCK_CONST_METHOD0(category, const std::string());
 
-    virtual int priority() const
-    {
-        return 2;
-    }
+        virtual int priority() const {
+            return 2;
+        }
 };
 
-class ResultCollectorTest_ResultCollectorStub : public ResultCollector
-{
-public:
-    ResultCollectorTest_ResultCollectorStub() : ResultCollector() {}
+class ResultCollectorTest_ResultCollectorStub : public ResultCollector {
+    public:
+        ResultCollectorTest_ResultCollectorStub() : ResultCollector() {}
 };
 
-TEST(ResultCollectorTest, EmptyResults)
-{
+TEST(ResultCollectorTest, EmptyResults) {
     ResultCollector *results = ResultCollector::getInstance();
 
     EXPECT_TRUE(results->getCollection().empty());
@@ -50,8 +44,7 @@ TEST(ResultCollectorTest, EmptyResults)
     EXPECT_EQ(0, results->getClangStaticCheckerBugSet()->numberOfViolations());
 }
 
-TEST(ResultCollectorTest, NumberOfViolationSets)
-{
+TEST(ResultCollectorTest, NumberOfViolationSets) {
     ResultCollector *results = new ResultCollectorTest_ResultCollectorStub();
     results->add(new ViolationSet());
     EXPECT_EQ(1, results->getCollection().size());
@@ -59,8 +52,7 @@ TEST(ResultCollectorTest, NumberOfViolationSets)
     EXPECT_EQ(2, results->getCollection().size());
 }
 
-TEST(ResultCollectorTest, ViolationSetsInCollection)
-{
+TEST(ResultCollectorTest, ViolationSetsInCollection) {
     ResultCollector *results = new ResultCollectorTest_ResultCollectorStub();
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
     Violation violation1(new MockRuleBaseOne(), "", 1, 2, 3, 4);
@@ -81,8 +73,7 @@ TEST(ResultCollectorTest, ViolationSetsInCollection)
     EXPECT_EQ(*violationSetWithTwoViolations, *results->getCollection()[2]);
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     ::testing::InitGoogleMock(&argc, argv);
     return RUN_ALL_TESTS();
 }

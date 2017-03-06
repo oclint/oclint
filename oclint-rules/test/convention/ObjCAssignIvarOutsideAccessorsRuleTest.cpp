@@ -3,39 +3,39 @@
 #include "rules/convention/ObjCAssignIvarOutsideAccessorsRule.cpp"
 
 #if defined(__APPLE__) || defined(__MACH__)
-static std::string testPreamble = "\
-                                                        \n\
-#define nil ((id)0)                                     \n\
-                                                        \n\
-@interface NSObject\n@end                               \n\
-                                                        \n\
-@interface Foo : NSObject                               \n\
-                                                        \n\
-@property (assign, nonatomic) int bar;                  \n\
-@property (strong, nonatomic) Foo* foo;                 \n\
-                                                        \n\
-@end                                                    \n\
-                                                        \n\
-@implementation Foo                                     \n\
-";
+    static std::string testPreamble = "\
+    \n\
+    #define nil ((id)0)                                     \n\
+    \n\
+    @interface NSObject\n@end                               \n\
+    \n\
+    @interface Foo : NSObject                               \n\
+    \n\
+    @property (assign, nonatomic) int bar;                  \n\
+    @property (strong, nonatomic) Foo* foo;                 \n\
+    \n\
+    @end                                                    \n\
+    \n\
+    @implementation Foo                                     \n\
+    ";
 
 #else
 
-static std::string testPreamble = "\
-#define nil ((id)0)                                     \n\
-@interface NSObject\n@end                               \n\
-@interface Foo : NSObject                               \n\
-{                                                       \n\
+    static std::string testPreamble = "\
+    #define nil ((id)0)                                     \n\
+    @interface NSObject\n@end                               \n\
+    @interface Foo : NSObject                               \n\
+    {                                                       \n\
     int _bar;                                           \n\
     Foo* _foo;                                          \n\
-}                                                       \n\
-@property (assign, nonatomic) int bar;                  \n\
-@property (strong, nonatomic) Foo* foo;                 \n\
-@end                                                    \n\
-@implementation Foo                                     \n\
-@synthesize foo = _foo;                                 \n\
-@synthesize bar = _bar;                                 \n\
-";
+    }                                                       \n\
+    @property (assign, nonatomic) int bar;                  \n\
+    @property (strong, nonatomic) Foo* foo;                 \n\
+    @end                                                    \n\
+    @implementation Foo                                     \n\
+    @synthesize foo = _foo;                                 \n\
+    @synthesize bar = _bar;                                 \n\
+    ";
 
 #endif
 
@@ -86,40 +86,33 @@ static std::string testChildPropertyAccess = testPreamble + "\
 @end                                                    \n\
 ";
 
-TEST(ObjCAssignIvarOutsideAccessorsRuleTest, PropertyTest)
-{
+TEST(ObjCAssignIvarOutsideAccessorsRuleTest, PropertyTest) {
     ObjCAssignIvarOutsideAccessorsRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("ivar assignment outside accessors or init", rule.name());
     EXPECT_EQ("convention", rule.category());
 }
 
-TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestInit)
-{
+TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestInit) {
     testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testChangeInit);
 }
 
-TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestInitWith)
-{
+TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestInitWith) {
     testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testChangeInitWith);
 }
 
-TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestChangeGetter)
-{
+TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestChangeGetter) {
     testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testChangeGetter);
 }
 
-TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestChangeSetter)
-{
+TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestChangeSetter) {
     testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testChangeSetter);
 }
 
-TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestOtherMethod)
-{
+TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestOtherMethod) {
     testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testOtherMethod, 0, 16, 5, 16, 5);
 }
 
-TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestChildPropertyAccess)
-{
+TEST(ObjCAssignIvarOutsideAccessorsRuleTest, TestChildPropertyAccess) {
     testRuleOnObjCCode(new ObjCAssignIvarOutsideAccessorsRule(), testChildPropertyAccess);
 }

@@ -5,22 +5,19 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-static bool hasVirtualOrProtectedDestructor(const CXXRecordDecl& cxxRecordDecl)
-{
-    const CXXDestructorDecl* cxxDestructorDecl = cxxRecordDecl.getDestructor();
+static bool hasVirtualOrProtectedDestructor(const CXXRecordDecl &cxxRecordDecl) {
+    const CXXDestructorDecl *cxxDestructorDecl = cxxRecordDecl.getDestructor();
 
-    if (cxxDestructorDecl == nullptr)
-    {
+    if (cxxDestructorDecl == nullptr) {
         return false;
     }
     return cxxDestructorDecl->isVirtual()
-        || cxxDestructorDecl->getAccess() == AS_protected;
+           || cxxDestructorDecl->getAccess() == AS_protected;
 }
 
-static string getMessageViolation(const CXXRecordDecl& base, const CXXRecordDecl& child)
-{
+static string getMessageViolation(const CXXRecordDecl &base, const CXXRecordDecl &child) {
     return "~" + base.getNameAsString() + "() should be protected or virtual"
-        " according to class " + child.getNameAsString();
+           " according to class " + child.getNameAsString();
 }
 
 /*
@@ -35,53 +32,43 @@ static string getMessageViolation(const CXXRecordDecl& base, const CXXRecordDecl
  * only check parents of polymorphic classes.
  */
 class BaseClassDestructorShouldBeVirtualOrProtectedRule :
-    public AbstractASTVisitorRule<BaseClassDestructorShouldBeVirtualOrProtectedRule>
-{
-public:
-    virtual const string name() const override
-    {
-        return "base class destructor should be virtual or protected";
-    }
+    public AbstractASTVisitorRule<BaseClassDestructorShouldBeVirtualOrProtectedRule> {
+    public:
+        virtual const string name() const override {
+            return "base class destructor should be virtual or protected";
+        }
 
-    virtual const string identifier() const override
-    {
-        return "ProblematicBaseClassDestructor";
-    }
+        virtual const string identifier() const override {
+            return "ProblematicBaseClassDestructor";
+        }
 
-    virtual int priority() const override
-    {
-        return 2;
-    }
+        virtual int priority() const override {
+            return 2;
+        }
 
-    virtual const string category() const override
-    {
-        return "convention";
-    }
+        virtual const string category() const override {
+            return "convention";
+        }
 
-    unsigned int supportedLanguages() const override
-    {
-        return LANG_CXX;
-    }
+        unsigned int supportedLanguages() const override {
+            return LANG_CXX;
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.10.2";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.10.2";
+        }
 
-    virtual const string description() const override
-    {
-        return "Make base class destructor public and virtual, or protected and nonvirtual";
-    }
+        virtual const string description() const override {
+            return "Make base class destructor public and virtual, or protected and nonvirtual";
+        }
 
-    virtual const string fileName() const override
-    {
-        return "BaseClassDestructorShouldBeVirtualOrProtectedRule.cpp";
-    }
+        virtual const string fileName() const override {
+            return "BaseClassDestructorShouldBeVirtualOrProtectedRule.cpp";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: cpp
 
     class Base
@@ -94,61 +81,52 @@ public:
         virtual ~C();
     }
         )rst";
-    }
+        }
 
-    virtual const string additionalDocument() const override
-    {
-        return R"rst(
+        virtual const string additionalDocument() const override {
+            return R"rst(
 **References:**
 
 Sutter & Alexandrescu (November 2004).
 `"C++ Coding Standards: 101 Rules, Guidelines, and Best Practices"
 <http://gotw.ca/publications/c++cs.htm>`_. *Addison-Wesley Professional*
         )rst";
-    }
-#endif
-
-    bool VisitCXXRecordDecl(const CXXRecordDecl* cxxRecordDecl)
-    {
-        if (cxxRecordDecl != nullptr
-            && cxxRecordDecl->hasDefinition()
-            && cxxRecordDecl->isPolymorphic())
-        {
-            check(*cxxRecordDecl, cxxRecordDecl->bases_begin(), cxxRecordDecl->bases_end());
         }
-        return true;
-    }
+        #endif
 
-private:
-    typedef CXXRecordDecl::base_class_const_iterator base_class_const_iterator;
+        bool VisitCXXRecordDecl(const CXXRecordDecl *cxxRecordDecl) {
+            if (cxxRecordDecl != nullptr
+                    && cxxRecordDecl->hasDefinition()
+                    && cxxRecordDecl->isPolymorphic()) {
+                check(*cxxRecordDecl, cxxRecordDecl->bases_begin(), cxxRecordDecl->bases_end());
+            }
+            return true;
+        }
 
-    void check(const CXXRecordDecl& childClass,
-               base_class_const_iterator begin,
-               base_class_const_iterator end)
-    {
-        for (auto it = begin; it != end; ++it)
-        {
-            if (it->getAccessSpecifier() != AS_public)
-            {
-                continue;
-            }
-            const CXXRecordDecl* baseClass = it->getType()->getAsCXXRecordDecl();
+    private:
+        typedef CXXRecordDecl::base_class_const_iterator base_class_const_iterator;
 
-            if (baseClass == nullptr || !baseClass->hasDefinition())
-            {
-                continue;
-            }
-            if (!hasVirtualOrProtectedDestructor(*baseClass))
-            {
-                addViolation(baseClass, this, getMessageViolation(*baseClass, childClass));
-            }
-            // Avoid to have duplicated violation from linked parents
-            if (!baseClass->isPolymorphic())
-            {
-                check(childClass, baseClass->bases_begin(), baseClass->bases_end());
+        void check(const CXXRecordDecl &childClass,
+                   base_class_const_iterator begin,
+                   base_class_const_iterator end) {
+            for (auto it = begin; it != end; ++it) {
+                if (it->getAccessSpecifier() != AS_public) {
+                    continue;
+                }
+                const CXXRecordDecl *baseClass = it->getType()->getAsCXXRecordDecl();
+
+                if (baseClass == nullptr || !baseClass->hasDefinition()) {
+                    continue;
+                }
+                if (!hasVirtualOrProtectedDestructor(*baseClass)) {
+                    addViolation(baseClass, this, getMessageViolation(*baseClass, childClass));
+                }
+                // Avoid to have duplicated violation from linked parents
+                if (!baseClass->isPolymorphic()) {
+                    check(childClass, baseClass->bases_begin(), baseClass->bases_end());
+                }
             }
         }
-    }
 };
 
 static RuleSet rules(new BaseClassDestructorShouldBeVirtualOrProtectedRule());

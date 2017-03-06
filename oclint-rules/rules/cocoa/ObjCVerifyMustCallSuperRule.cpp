@@ -9,101 +9,86 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class ContainsCallToSuperMethod : public RecursiveASTVisitor<ContainsCallToSuperMethod>
-{
-private:
-    string _selector;
+class ContainsCallToSuperMethod : public RecursiveASTVisitor<ContainsCallToSuperMethod> {
+    private:
+        string _selector;
 
-    // Location to save found ivar accesses
-    bool _foundSuperCall;
-public:
-    explicit ContainsCallToSuperMethod(string selectorString)
-        : _selector(move(selectorString))
-    {
-        _foundSuperCall = false;
-    }
-
-    bool VisitObjCMessageExpr(ObjCMessageExpr* expr)
-    {
-        if(expr->getSelector().getAsString() == _selector
-        && expr->getReceiverKind() == ObjCMessageExpr::SuperInstance) {
-            _foundSuperCall = true;
+        // Location to save found ivar accesses
+        bool _foundSuperCall;
+    public:
+        explicit ContainsCallToSuperMethod(string selectorString)
+            : _selector(move(selectorString)) {
+            _foundSuperCall = false;
         }
-        return true;
-    }
 
-    bool foundSuperCall() const {
-        return _foundSuperCall;
-    }
+        bool VisitObjCMessageExpr(ObjCMessageExpr *expr) {
+            if (expr->getSelector().getAsString() == _selector
+                    && expr->getReceiverKind() == ObjCMessageExpr::SuperInstance) {
+                _foundSuperCall = true;
+            }
+            return true;
+        }
+
+        bool foundSuperCall() const {
+            return _foundSuperCall;
+        }
 };
 
 
-class ObjCVerifyMustCallSuperRule : public AbstractASTVisitorRule<ObjCVerifyMustCallSuperRule>
-{
-private:
-    bool declRequiresSuperCall(ObjCMethodDecl* decl) {
-        if(decl->isOverriding()) {
-            SmallVector<const ObjCMethodDecl*, 4> overridden;
-            decl->getOverriddenMethods(overridden);
-            for (auto& elem : overridden)
-            {
-                if (declHasEnforceAttribute(elem, *this))
-                {
-                    return true;
+class ObjCVerifyMustCallSuperRule : public AbstractASTVisitorRule<ObjCVerifyMustCallSuperRule> {
+    private:
+        bool declRequiresSuperCall(ObjCMethodDecl *decl) {
+            if (decl->isOverriding()) {
+                SmallVector<const ObjCMethodDecl *, 4> overridden;
+                decl->getOverriddenMethods(overridden);
+                for (auto &elem : overridden) {
+                    if (declHasEnforceAttribute(elem, *this)) {
+                        return true;
+                    }
                 }
             }
+            return false;
         }
-        return false;
-    }
 
-public:
-    virtual const string name() const override
-    {
-        return "missing call to base method";
-    }
+    public:
+        virtual const string name() const override {
+            return "missing call to base method";
+        }
 
-    virtual const string attributeName() const override
-    {
-        return "base method";
-    }
+        virtual const string attributeName() const override {
+            return "base method";
+        }
 
-    virtual int priority() const override
-    {
-        return 1;
-    }
+        virtual int priority() const override {
+            return 1;
+        }
 
-    virtual const string category() const override
-    {
-        return "cocoa";
-    }
+        virtual const string category() const override {
+            return "cocoa";
+        }
 
-    virtual unsigned int supportedLanguages() const override
-    {
-        return LANG_OBJC;
-    }
+        virtual unsigned int supportedLanguages() const override {
+            return LANG_OBJC;
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.8";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.8";
+        }
 
-    virtual const string description() const override
-    {
-        return "When a method is declared with "
-            "``__attribute__((annotate(\"oclint:enforce[base method]\")))`` annotation, "
-            "all of its implementations (including its own and its sub classes) "
-            "must call the method implementation in super class.";
-    }
+        virtual const string description() const override {
+            return "When a method is declared with "
+                   "``__attribute__((annotate(\"oclint:enforce[base method]\")))`` annotation, "
+                   "all of its implementations (including its own and its sub classes) "
+                   "must call the method implementation in super class.";
+        }
 
-    virtual const string fileName() const override
-    {
-        return "ObjCVerifyMustCallSuperRule.cpp";
-    }
+        virtual const string fileName() const override {
+            return "ObjCVerifyMustCallSuperRule.cpp";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: objective-c
 
     @interface UIView (OCLintStaticChecks)
@@ -121,26 +106,26 @@ public:
 
     @end
     )rst";
-    }
-#endif
-
-    bool VisitObjCMethodDecl(ObjCMethodDecl* decl) {
-        // Save the method name
-        string selectorName = decl->getSelector().getAsString();
-
-        // Figure out if anything in the super chain is marked
-        if(declRequiresSuperCall(decl)) {
-            // If so, start a separate checker to look for method sends just in the method body
-            ContainsCallToSuperMethod checker(selectorName);
-            checker.TraverseDecl(decl);
-            if(!checker.foundSuperCall()) {
-                string message = "overridden method " + selectorName + " must call super";
-                addViolation(decl, this, message);
-            }
         }
+        #endif
 
-        return true;
-    }
+        bool VisitObjCMethodDecl(ObjCMethodDecl *decl) {
+            // Save the method name
+            string selectorName = decl->getSelector().getAsString();
+
+            // Figure out if anything in the super chain is marked
+            if (declRequiresSuperCall(decl)) {
+                // If so, start a separate checker to look for method sends just in the method body
+                ContainsCallToSuperMethod checker(selectorName);
+                checker.TraverseDecl(decl);
+                if (!checker.foundSuperCall()) {
+                    string message = "overridden method " + selectorName + " must call super";
+                    addViolation(decl, this, message);
+                }
+            }
+
+            return true;
+        }
 
 };
 

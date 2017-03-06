@@ -2,16 +2,14 @@
 
 #include "rules/convention/CoveredSwitchStatementsDontNeedDefaultRule.cpp"
 
-TEST(CoveredSwitchStatementsDontNeedDefaultRuleTest, PropertyTest)
-{
+TEST(CoveredSwitchStatementsDontNeedDefaultRuleTest, PropertyTest) {
     CoveredSwitchStatementsDontNeedDefaultRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("unnecessary default statement in covered switch statement", rule.name());
     EXPECT_EQ("convention", rule.category());
 }
 
-TEST(CoveredSwitchStatementsDontNeedDefaultRuleTest, SwitchHasDefaultButNotCovered)
-{
+TEST(CoveredSwitchStatementsDontNeedDefaultRuleTest, SwitchHasDefaultButNotCovered) {
     testRuleOnCode(new CoveredSwitchStatementsDontNeedDefaultRule(), "typedef enum { \n\
 value1 = 0,                               \n\
 value2 = 1,                               \n\
@@ -27,8 +25,7 @@ default:                                  \n\
 } }");
 }
 
-TEST(CoveredSwitchStatementsDontNeedDefaultRuleTest, SwitchHasDefaultButCovered)
-{
+TEST(CoveredSwitchStatementsDontNeedDefaultRuleTest, SwitchHasDefaultButCovered) {
     testRuleOnCode(new CoveredSwitchStatementsDontNeedDefaultRule(), "typedef enum { \n\
 value1 = 0,                               \n\
 value2 = 1                                \n\
@@ -41,11 +38,10 @@ case value2:                              \n\
 default:                                  \n\
 \tbreak;                                  \n\
 } }",
-        0, 5, 27, 12, 1);
+                   0, 5, 27, 12, 1);
 }
 
-TEST(CoveredSwitchStatementsDontNeedDefaultRuleTest, SwitchNoDefaultButCovered)
-{
+TEST(CoveredSwitchStatementsDontNeedDefaultRuleTest, SwitchNoDefaultButCovered) {
     testRuleOnCode(new CoveredSwitchStatementsDontNeedDefaultRule(), "typedef enum { \n\
 value1 = 0,                               \n\
 value2 = 1                                \n\

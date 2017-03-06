@@ -6,73 +6,59 @@ using namespace clang;
 using namespace oclint;
 
 class MissingBreakInSwitchStatementRule :
-    public AbstractASTVisitorRule<MissingBreakInSwitchStatementRule>
-{
-    class FindingBreak : public RecursiveASTVisitor<FindingBreak>
-    {
+    public AbstractASTVisitorRule<MissingBreakInSwitchStatementRule> {
+        class FindingBreak : public RecursiveASTVisitor<FindingBreak> {
+            public:
+                bool findBreak(SwitchCase *switchCaseStmt) {
+                    return !TraverseStmt(switchCaseStmt);
+                }
+
+                bool VisitBreakStmt(BreakStmt *) {
+                    return false;
+                }
+
+                bool VisitReturnStmt(ReturnStmt *) {
+                    return false;
+                }
+
+                bool VisitContinueStmt(ContinueStmt *) {
+                    return false;
+                }
+
+                bool VisitCXXThrowExpr(CXXThrowExpr *) {
+                    return false;
+                }
+
+                bool VisitObjCAtThrowStmt(ObjCAtThrowStmt *) {
+                    return false;
+                }
+        };
+
     public:
-        bool findBreak(SwitchCase *switchCaseStmt)
-        {
-            return !TraverseStmt(switchCaseStmt);
+        virtual const string name() const override {
+            return "missing break in switch statement";
         }
 
-        bool VisitBreakStmt(BreakStmt *)
-        {
-            return false;
+        virtual int priority() const override {
+            return 2;
         }
 
-        bool VisitReturnStmt(ReturnStmt *)
-        {
-            return false;
+        virtual const string category() const override {
+            return "convention";
         }
 
-        bool VisitContinueStmt(ContinueStmt *)
-        {
-            return false;
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.6";
         }
 
-        bool VisitCXXThrowExpr(CXXThrowExpr *)
-        {
-            return false;
+        virtual const string description() const override {
+            return "A switch statement without a break statement has a very large chance "
+                   "to contribute a bug.";
         }
 
-        bool VisitObjCAtThrowStmt(ObjCAtThrowStmt *)
-        {
-            return false;
-        }
-    };
-
-public:
-    virtual const string name() const override
-    {
-        return "missing break in switch statement";
-    }
-
-    virtual int priority() const override
-    {
-        return 2;
-    }
-
-    virtual const string category() const override
-    {
-        return "convention";
-    }
-
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.6";
-    }
-
-    virtual const string description() const override
-    {
-        return "A switch statement without a break statement has a very large chance "
-            "to contribute a bug.";
-    }
-
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: cpp
 
     void example(int a)
@@ -87,60 +73,51 @@ public:
         }
     }
         )rst";
-    }
-#endif
+        }
+        #endif
 
-    bool isSwitchCase(Stmt *stmt)
-    {
-        return stmt && isa<SwitchCase>(stmt);
-    }
+        bool isSwitchCase(Stmt *stmt) {
+            return stmt && isa<SwitchCase>(stmt);
+        }
 
-    bool isBreakingPoint(Stmt *stmt)
-    {
-        return stmt && (isa<BreakStmt>(stmt) ||
-                        isa<ReturnStmt>(stmt) ||
-                        isa<CXXThrowExpr>(stmt) ||
-                        isa<ContinueStmt>(stmt) ||
-                        isa<ObjCAtThrowStmt>(stmt));
-    }
+        bool isBreakingPoint(Stmt *stmt) {
+            return stmt && (isa<BreakStmt>(stmt) ||
+                            isa<ReturnStmt>(stmt) ||
+                            isa<CXXThrowExpr>(stmt) ||
+                            isa<ContinueStmt>(stmt) ||
+                            isa<ObjCAtThrowStmt>(stmt));
+        }
 
-    bool VisitSwitchStmt(SwitchStmt *switchStmt)
-    {
-        CompoundStmt *compoundStmt = dyn_cast_or_null<CompoundStmt>(switchStmt->getBody());
-        if (!compoundStmt)
-        {
+        bool VisitSwitchStmt(SwitchStmt *switchStmt) {
+            CompoundStmt *compoundStmt = dyn_cast_or_null<CompoundStmt>(switchStmt->getBody());
+            if (!compoundStmt) {
+                return true;
+            }
+
+            bool breakFound = true;
+            for (CompoundStmt::body_iterator body = compoundStmt->body_begin(),
+                    bodyEnd = compoundStmt->body_end(); body != bodyEnd; body++) {
+                Stmt *bodyStmt = dyn_cast<Stmt>(*body);
+                if (isBreakingPoint(bodyStmt)) {
+                    breakFound = true;
+                    continue;
+                }
+                if (isSwitchCase(bodyStmt)) {
+                    if (!breakFound) {
+                        addViolation(switchStmt, this);
+                        break;
+                    }
+
+                    FindingBreak findingBreak;
+                    breakFound = findingBreak.findBreak(dyn_cast<SwitchCase>(bodyStmt));
+                }
+            }
+            if (!breakFound) {
+                addViolation(switchStmt, this);
+            }
+
             return true;
         }
-
-        bool breakFound = true;
-        for (CompoundStmt::body_iterator body = compoundStmt->body_begin(),
-            bodyEnd = compoundStmt->body_end(); body != bodyEnd; body++)
-        {
-            Stmt *bodyStmt = dyn_cast<Stmt>(*body);
-            if (isBreakingPoint(bodyStmt))
-            {
-                breakFound = true;
-                continue;
-            }
-            if (isSwitchCase(bodyStmt))
-            {
-                if (!breakFound)
-                {
-                    addViolation(switchStmt, this);
-                    break;
-                }
-
-                FindingBreak findingBreak;
-                breakFound = findingBreak.findBreak(dyn_cast<SwitchCase>(bodyStmt));
-            }
-        }
-        if (!breakFound)
-        {
-            addViolation(switchStmt, this);
-        }
-
-        return true;
-    }
 };
 
 static RuleSet rules(new MissingBreakInSwitchStatementRule());

@@ -2,7 +2,6 @@
 
 using namespace oclint;
 
-std::string Version::identifier()
-{
+std::string Version::identifier() {
     return "0.11.1";
 }

@@ -7,47 +7,39 @@ using namespace clang::ast_matchers;
 using namespace oclint;
 
 namespace clang {
-namespace ast_matchers {
-AST_MATCHER(ParmVarDecl, hasDefaultArg)
-{
-    return Node.hasDefaultArg();
-}
-} // namespace ast_matchers
+    namespace ast_matchers {
+        AST_MATCHER(ParmVarDecl, hasDefaultArg) {
+            return Node.hasDefaultArg();
+        }
+    } // namespace ast_matchers
 } // namespace clang
 
-class AvoidDefaultArgumentsOnVirtualMethodsRule : public AbstractASTMatcherRule
-{
-public:
-    virtual const string name() const override
-    {
-        return "avoid default arguments on virtual methods";
-    }
+class AvoidDefaultArgumentsOnVirtualMethodsRule : public AbstractASTMatcherRule {
+    public:
+        virtual const string name() const override {
+            return "avoid default arguments on virtual methods";
+        }
 
-    virtual int priority() const override
-    {
-        return 3;
-    }
+        virtual int priority() const override {
+            return 3;
+        }
 
-    virtual const string category() const override
-    {
-        return "design";
-    }
+        virtual const string category() const override {
+            return "design";
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.10.1";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.10.1";
+        }
 
-    virtual const string description() const override
-    {
-        return "Giving virtual functions default argument initializers tends to "
-            "defeat polymorphism and introduce unnecessary complexity into a class hierarchy.";
-    }
+        virtual const string description() const override {
+            return "Giving virtual functions default argument initializers tends to "
+                   "defeat polymorphism and introduce unnecessary complexity into a class hierarchy.";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: cpp
 
     class Foo
@@ -70,26 +62,23 @@ public:
     foo->a();   // default of 3
     bar->a();   // compile time error!
         )rst";
-    }
-#endif
+        }
+        #endif
 
-    virtual unsigned int supportedLanguages() const override
-    {
-        return LANG_CXX;
-    }
+        virtual unsigned int supportedLanguages() const override {
+            return LANG_CXX;
+        }
 
-    virtual void callback(const MatchFinder::MatchResult &result) override
-    {
-        const CXXMethodDecl *method = result.Nodes.getNodeAs<CXXMethodDecl>("cxxMethod");
-        addViolation(method, this);
-    }
+        virtual void callback(const MatchFinder::MatchResult &result) override {
+            const CXXMethodDecl *method = result.Nodes.getNodeAs<CXXMethodDecl>("cxxMethod");
+            addViolation(method, this);
+        }
 
-    virtual void setUpMatcher() override
-    {
-        addMatcher(
-            cxxMethodDecl(isVirtual(), hasAnyParameter(hasDefaultArg()))
-            .bind("cxxMethod"));
-    }
+        virtual void setUpMatcher() override {
+            addMatcher(
+                cxxMethodDecl(isVirtual(), hasAnyParameter(hasDefaultArg()))
+                .bind("cxxMethod"));
+        }
 };
 
 static RuleSet rules(new AvoidDefaultArgumentsOnVirtualMethodsRule());

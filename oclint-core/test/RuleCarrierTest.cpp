@@ -9,25 +9,22 @@
 using namespace ::testing;
 using namespace oclint;
 
-class MockRuleBase : public RuleBase
-{
-public:
-    MOCK_METHOD0(apply, void());
-    MOCK_CONST_METHOD0(name, const std::string());
-    MOCK_CONST_METHOD0(priority, int());
-    MOCK_CONST_METHOD0(category, const std::string());
+class MockRuleBase : public RuleBase {
+    public:
+        MOCK_METHOD0(apply, void());
+        MOCK_CONST_METHOD0(name, const std::string());
+        MOCK_CONST_METHOD0(priority, int());
+        MOCK_CONST_METHOD0(category, const std::string());
 };
 
-TEST(RuleCarrierTest, Initializationasdf)
-{
+TEST(RuleCarrierTest, Initializationasdf) {
     ViolationSet *violationSet = new ViolationSet();
     RuleCarrier *carrier = new RuleCarrier(NULL, violationSet);
     EXPECT_THAT(carrier->getASTContext(), IsNull());
     EXPECT_THAT(violationSet->numberOfViolations(), Eq(0));
 }
 
-TEST(RuleCarrierTest, AddViolation)
-{
+TEST(RuleCarrierTest, AddViolation) {
     ViolationSet *violationSet = new ViolationSet();
     RuleCarrier *carrier = new RuleCarrier(NULL, violationSet);
     RuleBase *rule = new MockRuleBase();
@@ -43,8 +40,7 @@ TEST(RuleCarrierTest, AddViolation)
     EXPECT_THAT(compareViolation.endColumn, Eq(4));
 }
 
-TEST(RuleCarrierTest, AddViolationWithEmptyFilePath)
-{
+TEST(RuleCarrierTest, AddViolationWithEmptyFilePath) {
     ViolationSet *violationSet = new ViolationSet();
     RuleCarrier *carrier = new RuleCarrier(NULL, violationSet);
     RuleBase *rule = new MockRuleBase();
@@ -52,8 +48,7 @@ TEST(RuleCarrierTest, AddViolationWithEmptyFilePath)
     EXPECT_THAT(violationSet->numberOfViolations(), Eq(0));
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     ::testing::InitGoogleMock(&argc, argv);
     return RUN_ALL_TESTS();
 }

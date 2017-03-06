@@ -5,11 +5,9 @@
 using namespace oclint;
 
 GenericException::GenericException(std::string desc)
-    : description(std::move(desc))
-{
+    : description(std::move(desc)) {
 }
 
-const char *GenericException::what() const throw()
-{
+const char *GenericException::what() const throw() {
     return description.c_str();
 }

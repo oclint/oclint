@@ -3,19 +3,17 @@
 
 #include <clang/Basic/Diagnostic.h>
 
-namespace oclint
-{
+namespace oclint {
 
-class DiagnosticDispatcher : public clang::DiagnosticConsumer
-{
-private:
-    bool _isCheckerCustomer;
+    class DiagnosticDispatcher : public clang::DiagnosticConsumer {
+        private:
+            bool _isCheckerCustomer;
 
-public:
-    explicit DiagnosticDispatcher(bool runClangChecker);
-    void HandleDiagnostic(clang::DiagnosticsEngine::Level diagnosticLevel,
-                          const clang::Diagnostic& diagnosticInfo) override;
-};
+        public:
+            explicit DiagnosticDispatcher(bool runClangChecker);
+            void HandleDiagnostic(clang::DiagnosticsEngine::Level diagnosticLevel,
+                                  const clang::Diagnostic &diagnosticInfo) override;
+    };
 
 } // end namespace oclint
 

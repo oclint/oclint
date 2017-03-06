@@ -9,76 +9,67 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class ObjCVerifyProhibitedCallRule : public AbstractASTVisitorRule<ObjCVerifyProhibitedCallRule>
-{
-public:
-    bool VisitCallExpr(const CallExpr* call) {
-        const auto function = call->getDirectCallee();
-        string comment;
-        if(declHasEnforceAttribute(function, *this, &comment)) {
-            string description = "calling prohibited function " + function->getNameAsString();
-            if(!comment.empty()) {
-                description = description + " instead use " + comment;
+class ObjCVerifyProhibitedCallRule : public AbstractASTVisitorRule<ObjCVerifyProhibitedCallRule> {
+    public:
+        bool VisitCallExpr(const CallExpr *call) {
+            const auto function = call->getDirectCallee();
+            string comment;
+            if (declHasEnforceAttribute(function, *this, &comment)) {
+                string description = "calling prohibited function " + function->getNameAsString();
+                if (!comment.empty()) {
+                    description = description + " instead use " + comment;
+                }
+                addViolation(call, this, description);
             }
-            addViolation(call, this, description);
+            return true;
         }
-        return true;
-    }
 
-    bool VisitObjCMessageExpr(const ObjCMessageExpr* expr) {
-        const auto method = expr->getMethodDecl();
-        string comment;
-        if(declHasEnforceAttribute(method, *this, &comment)) {
-            string description = "calling prohibited method " + expr->getSelector().getAsString();
-            if(!comment.empty()) {
-                description = description + " instead use " + comment;
+        bool VisitObjCMessageExpr(const ObjCMessageExpr *expr) {
+            const auto method = expr->getMethodDecl();
+            string comment;
+            if (declHasEnforceAttribute(method, *this, &comment)) {
+                string description = "calling prohibited method " + expr->getSelector().getAsString();
+                if (!comment.empty()) {
+                    description = description + " instead use " + comment;
+                }
+                addViolation(expr, this, description);
             }
-            addViolation(expr, this, description);
+            return true;
         }
-        return true;
-    }
 
-    virtual const string name() const override
-    {
-        return "calling prohibited method";
-    }
+        virtual const string name() const override {
+            return "calling prohibited method";
+        }
 
-    virtual const string attributeName() const override
-    {
-        return "prohibited method";
-    }
+        virtual const string attributeName() const override {
+            return "prohibited method";
+        }
 
-    virtual int priority() const override
-    {
-        return 1;
-    }
+        virtual int priority() const override {
+            return 1;
+        }
 
-    virtual const string category() const override
-    {
-        return "cocoa";
-    }
+        virtual const string category() const override {
+            return "cocoa";
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.10.1";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.10.1";
+        }
 
-    virtual const string description() const override
-    {
-         return "When a method is declared with "
-            "``__attribute__((annotate(\"oclint:enforce[prohibited method]\")))`` "
-            "annotation, all of its usages will be prohibited.";
-    }
+        virtual const string description() const override {
+            return "When a method is declared with "
+                   "``__attribute__((annotate(\"oclint:enforce[prohibited method]\")))`` "
+                   "annotation, all of its usages will be prohibited.";
+        }
 
-    virtual const string fileName() const override
-    {
-        return "ObjCVerifyProhibitedCallRule.cpp";
-    }
+        virtual const string fileName() const override {
+            return "ObjCVerifyProhibitedCallRule.cpp";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: objective-c
 
     @interface A : NSObject
@@ -93,8 +84,8 @@ public:
     }
     @end
     )rst";
-    }
-#endif
+        }
+        #endif
 };
 
 

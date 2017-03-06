@@ -36,12 +36,11 @@ TEST(ObjCVerifyProhibitedCallRule, OutsideCallerTest)
     @end
     )END";
 
-    testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testOutsideCaller, 0, 16, 9, 16, 20,
-        "calling prohibited method foo");
+testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testOutsideCaller, 0, 16, 9, 16, 20,
+                   "calling prohibited method foo");
 }
 
-TEST(ObjCVerifyProhibitedCallRule, InsideClassTest)
-{
+TEST(ObjCVerifyProhibitedCallRule, InsideClassTest) {
     const string testInsideClass = testBase + R"END(
     @implementation A
     - (void)foo {
@@ -53,11 +52,10 @@ TEST(ObjCVerifyProhibitedCallRule, InsideClassTest)
     )END";
 
     testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testInsideClass, 0, 18, 9, 18, 18,
-        "calling prohibited method foo");
+                       "calling prohibited method foo");
 }
 
-TEST(ObjCVerifyProhibitedCallRule, InsideChildTest)
-{
+TEST(ObjCVerifyProhibitedCallRule, InsideChildTest) {
     const string testInsideChild = testBase + R"END(
     @interface C : A
     @end
@@ -71,11 +69,10 @@ TEST(ObjCVerifyProhibitedCallRule, InsideChildTest)
     @end
     )END";
     testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testInsideChild, 0, 21, 9, 21, 18,
-        "calling prohibited method foo");
+                       "calling prohibited method foo");
 }
 
-TEST(ObjCVerifyProhibitedCallRule, InheritedMarkerTest)
-{
+TEST(ObjCVerifyProhibitedCallRule, InheritedMarkerTest) {
     const string testInheritedMarker = testBase + R"END(
     @interface C : A
     @end
@@ -89,11 +86,10 @@ TEST(ObjCVerifyProhibitedCallRule, InheritedMarkerTest)
     @end
     )END";
     testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testInheritedMarker, 0, 21, 9, 21, 20,
-        "calling prohibited method foo");
+                       "calling prohibited method foo");
 }
 
-TEST(ObjCVerifyProhibitedCallRule, ProtectedPropertyGetterOutside)
-{
+TEST(ObjCVerifyProhibitedCallRule, ProtectedPropertyGetterOutside) {
     const string testGetterOutside = testBase + R"END(
     @interface C : NSObject
     @property (strong) A* a
@@ -109,13 +105,12 @@ TEST(ObjCVerifyProhibitedCallRule, ProtectedPropertyGetterOutside)
     @end
     )END";
     testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testGetterOutside, 0, 23, 23, 23, 23,
-        "calling prohibited method a");
+                       "calling prohibited method a");
 }
 
 
 
-TEST(ObjCVerifyProhibitedCallRule, ProtectedPropertySetterOutside)
-{
+TEST(ObjCVerifyProhibitedCallRule, ProtectedPropertySetterOutside) {
     const string testSetterOutside = testBase + R"END(
     @interface C : NSObject
     @property (strong) A* a
@@ -131,12 +126,11 @@ TEST(ObjCVerifyProhibitedCallRule, ProtectedPropertySetterOutside)
     @end
     )END";
     testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testSetterOutside, 0, 23, 16, 23, 16,
-        "calling prohibited method setA:");
+                       "calling prohibited method setA:");
 }
 
 
-TEST(ObjCVerifyProhibitedCallRule, ProtectedPropertyGetterInside)
-{
+TEST(ObjCVerifyProhibitedCallRule, ProtectedPropertyGetterInside) {
     const string testGetterInside = testBase + R"END(
     @interface C : NSObject
     @property (strong) A* a
@@ -151,11 +145,11 @@ TEST(ObjCVerifyProhibitedCallRule, ProtectedPropertyGetterInside)
     }
     @end
     )END";
-    testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testGetterInside, 0, 23, 23, 23, 23, "calling prohibited method a");
+    testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testGetterInside, 0, 23, 23, 23, 23,
+                       "calling prohibited method a");
 }
 
-TEST(ObjCVerifyProhibitedCallRule, ProtectedPropertySetterInside)
-{
+TEST(ObjCVerifyProhibitedCallRule, ProtectedPropertySetterInside) {
     const string testSetterInside = testBase + R"END(
     @interface C : NSObject
     @property (strong) A* a
@@ -170,12 +164,12 @@ TEST(ObjCVerifyProhibitedCallRule, ProtectedPropertySetterInside)
     }
     @end
     )END";
-    testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testSetterInside, 0, 23, 16, 23, 16, "calling prohibited method setA:");
+    testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testSetterInside, 0, 23, 16, 23, 16,
+                       "calling prohibited method setA:");
 }
 
 
-TEST(ObjCVerifyProhibitedCallRule, UnmarkedSetterTest)
-{
+TEST(ObjCVerifyProhibitedCallRule, UnmarkedSetterTest) {
     const string testUnmarkedSetter = testBase + R"END(
     @interface C : NSObject
     @property (strong) A* a;
@@ -189,8 +183,7 @@ TEST(ObjCVerifyProhibitedCallRule, UnmarkedSetterTest)
     testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testUnmarkedSetter);
 }
 
-TEST(ObjCVerifyProhibitedCallRule, UnmarkedGetterTest)
-{
+TEST(ObjCVerifyProhibitedCallRule, UnmarkedGetterTest) {
     const string testUnmarkedGetter = testBase + R"END(
     @interface C : NSObject
     @property (strong) A* a;
@@ -204,8 +197,7 @@ TEST(ObjCVerifyProhibitedCallRule, UnmarkedGetterTest)
     testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testUnmarkedGetter);
 }
 
-TEST(ObjCVerifyProhibitedCallRule, UnmarkedCallTest)
-{
+TEST(ObjCVerifyProhibitedCallRule, UnmarkedCallTest) {
     const string testUnmarkedMethod = testBase + R"END(
     @interface C : NSObject
     @property (strong) A* a;
@@ -220,8 +212,7 @@ TEST(ObjCVerifyProhibitedCallRule, UnmarkedCallTest)
 }
 
 
-TEST(ObjCVerifyProhibitedCallRule, PropertyCategoryOutside)
-{
+TEST(ObjCVerifyProhibitedCallRule, PropertyCategoryOutside) {
     const string testCategory = testBase + R"END(
     @interface C : NSObject
     -(void)setA:(A*)a;
@@ -240,11 +231,10 @@ TEST(ObjCVerifyProhibitedCallRule, PropertyCategoryOutside)
     @end
     )END";
     testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testCategory, 0, 26, 9, 26, 24,
-        "calling prohibited method setA:");
+                       "calling prohibited method setA:");
 }
 
-TEST(ObjCVerifyProhibitedCallRule, ProhibitedFunctionCall)
-{
+TEST(ObjCVerifyProhibitedCallRule, ProhibitedFunctionCall) {
     const string testFunction = R"END(
     void foo(int x) __attribute__((annotate("oclint:enforce[prohibited method]")));
     int main(int argc, char* argv[]) {
@@ -253,11 +243,10 @@ TEST(ObjCVerifyProhibitedCallRule, ProhibitedFunctionCall)
     }
     )END";
     testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testFunction, 0, 4, 9, 4, 14,
-        "calling prohibited function foo");
+                       "calling prohibited function foo");
 }
 
-TEST(ObjCVerifyProhibitedCallRule, RedeclareFunctionCallBefore)
-{
+TEST(ObjCVerifyProhibitedCallRule, RedeclareFunctionCallBefore) {
     const string testFunction = R"END(
     void foo(int x);
     void foo(int x) __attribute__((annotate("oclint:enforce[prohibited method]")));
@@ -267,11 +256,10 @@ TEST(ObjCVerifyProhibitedCallRule, RedeclareFunctionCallBefore)
     }
     )END";
     testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testFunction, 0, 5, 9, 5, 14,
-        "calling prohibited function foo");
+                       "calling prohibited function foo");
 }
 
-TEST(ObjCVerifyProhibitedCallRule, RedeclareFunctionCallAfter)
-{
+TEST(ObjCVerifyProhibitedCallRule, RedeclareFunctionCallAfter) {
     const string testFunction = R"END(
     void foo(int x) __attribute__((annotate("oclint:enforce[prohibited method]")));
     void foo(int x);
@@ -281,11 +269,10 @@ TEST(ObjCVerifyProhibitedCallRule, RedeclareFunctionCallAfter)
     }
     )END";
     testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testFunction, 0, 5, 9, 5, 14,
-        "calling prohibited function foo");
+                       "calling prohibited function foo");
 }
 
-TEST(ObjCVerifyProhibitedCallRule, CommentFunction)
-{
+TEST(ObjCVerifyProhibitedCallRule, CommentFunction) {
     const string testFunction = R"END(
     void foo(int x) __attribute__((annotate("oclint:enforce[prohibited method][bar]")));
     int main(int argc, char* argv[]) {
@@ -294,11 +281,10 @@ TEST(ObjCVerifyProhibitedCallRule, CommentFunction)
     }
     )END";
     testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testFunction, 0, 4, 9, 4, 14,
-        "calling prohibited function foo instead use bar");
+                       "calling prohibited function foo instead use bar");
 }
 
-TEST(ObjCVerifyProhibitedCallRule, CommentMethod)
-{
+TEST(ObjCVerifyProhibitedCallRule, CommentMethod) {
     const string testMethod = R"END(
     @interface NSObject
 
@@ -319,11 +305,10 @@ TEST(ObjCVerifyProhibitedCallRule, CommentMethod)
     @end
     )END";
     testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), testMethod, 0, 16, 9, 16, 20,
-        "calling prohibited method foo instead use bar");
+                       "calling prohibited method foo instead use bar");
 }
 
-TEST(ObjCVerifyProhibitedCallRule, ProtocolNoAnnotation)
-{
+TEST(ObjCVerifyProhibitedCallRule, ProtocolNoAnnotation) {
     const string test = R"END(
         typedef int SEL;
         @protocol NSObject
@@ -342,8 +327,7 @@ TEST(ObjCVerifyProhibitedCallRule, ProtocolNoAnnotation)
     testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), test);
 }
 
-TEST(ObjCVerifyProhibitedCallRule, ProtocolAnnotation)
-{
+TEST(ObjCVerifyProhibitedCallRule, ProtocolAnnotation) {
     std::string test = R"END(
         typedef int SEL;
         @protocol NSObject
@@ -361,5 +345,5 @@ TEST(ObjCVerifyProhibitedCallRule, ProtocolAnnotation)
         @end
     )END";
     testRuleOnObjCCode(new ObjCVerifyProhibitedCallRule(), test, 0, 13, 30, 13, 69,
-        "calling prohibited method respondsToSelector:");
+                       "calling prohibited method respondsToSelector:");
 }

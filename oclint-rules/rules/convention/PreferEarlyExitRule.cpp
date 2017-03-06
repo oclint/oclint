@@ -7,105 +7,86 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class PreferEarlyExitRule : public AbstractASTVisitorRule<PreferEarlyExitRule>
-{
-private:
-    int _threshold;
+class PreferEarlyExitRule : public AbstractASTVisitorRule<PreferEarlyExitRule> {
+    private:
+        int _threshold;
 
-    bool isLongIfWithoutElse(const Stmt* statement) const
-    {
-        if (auto ifStmt = dyn_cast_or_null<IfStmt>(statement))
-        {
-            if (ifStmt->getElse())
-            {
-                return false;
+        bool isLongIfWithoutElse(const Stmt *statement) const {
+            if (auto ifStmt = dyn_cast_or_null<IfStmt>(statement)) {
+                if (ifStmt->getElse()) {
+                    return false;
+                }
+
+                const int lineCount =
+                    getLineCount(ifStmt->getSourceRange(), _carrier->getSourceManager());
+                return lineCount > _threshold;
             }
 
-            const int lineCount =
-                getLineCount(ifStmt->getSourceRange(), _carrier->getSourceManager());
-            return lineCount > _threshold;
-        }
-
-        return false;
-    }
-
-    void addViolationIfStmtIsLongIf(const Stmt* stmt)
-    {
-        if (isLongIfWithoutElse(stmt))
-        {
-            addViolation(stmt, this, getMessage());
-        }
-    }
-
-    Stmt* getLastStatement(Stmt* stmt) const
-    {
-        if (auto compoundStmt = dyn_cast_or_null<CompoundStmt>(stmt))
-        {
-            return compoundStmt->body_back();
-        }
-        return stmt;
-    }
-
-    bool isFlowOfControlInterrupt(const Stmt* stmt) const
-    {
-        if (stmt == nullptr)
-        {
             return false;
         }
 
-        return isa<BreakStmt>(stmt) || isa<ContinueStmt>(stmt)
-            || isa<GotoStmt>(stmt)  || isa<IndirectGotoStmt>(stmt)
-            || isa<ReturnStmt>(stmt);
-    }
+        void addViolationIfStmtIsLongIf(const Stmt *stmt) {
+            if (isLongIfWithoutElse(stmt)) {
+                addViolation(stmt, this, getMessage());
+            }
+        }
 
-    bool VisitLoopBody(Stmt* loopBody)
-    {
-        addViolationIfStmtIsLongIf(getLastStatement(loopBody));
-        return true;
-    }
+        Stmt *getLastStatement(Stmt *stmt) const {
+            if (auto compoundStmt = dyn_cast_or_null<CompoundStmt>(stmt)) {
+                return compoundStmt->body_back();
+            }
+            return stmt;
+        }
 
-public:
-    virtual const string name() const override
-    {
-        return "prefer early exits and continue";
-    }
+        bool isFlowOfControlInterrupt(const Stmt *stmt) const {
+            if (stmt == nullptr) {
+                return false;
+            }
 
-    virtual const string identifier() const override
-    {
-        return "PreferEarlyExit";
-    }
+            return isa<BreakStmt>(stmt) || isa<ContinueStmt>(stmt)
+                   || isa<GotoStmt>(stmt)  || isa<IndirectGotoStmt>(stmt)
+                   || isa<ReturnStmt>(stmt);
+        }
 
-    virtual int priority() const override
-    {
-        return 3;
-    }
+        bool VisitLoopBody(Stmt *loopBody) {
+            addViolationIfStmtIsLongIf(getLastStatement(loopBody));
+            return true;
+        }
 
-    virtual const string category() const override
-    {
-        return "convention";
-    }
+    public:
+        virtual const string name() const override {
+            return "prefer early exits and continue";
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.8";
-    }
+        virtual const string identifier() const override {
+            return "PreferEarlyExit";
+        }
 
-    virtual const string description() const override
-    {
-        return "Early exits can reduce the indentation of a block of code, "
-            "so that reader do not have to remember all the previous decisions, "
-            "therefore, makes it easier to understand the code.";
-    }
+        virtual int priority() const override {
+            return 3;
+        }
 
-    virtual const string fileName() const override
-    {
-        return "PreferEarlyExitRule.cpp";
-    }
+        virtual const string category() const override {
+            return "convention";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.8";
+        }
+
+        virtual const string description() const override {
+            return "Early exits can reduce the indentation of a block of code, "
+                   "so that reader do not have to remember all the previous decisions, "
+                   "therefore, makes it easier to understand the code.";
+        }
+
+        virtual const string fileName() const override {
+            return "PreferEarlyExitRule.cpp";
+        }
+
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: cpp
 
     int *doSomething(int a) {
@@ -134,49 +115,41 @@ public:
       // ... some long code ....
     }
         )rst";
-    }
-#endif
+        }
+        #endif
 
-    virtual void setUp() override
-    {
-        _threshold = RuleConfiguration::intForKey("MAXIMUM_IF_LENGTH", 15);
-    }
+        virtual void setUp() override {
+            _threshold = RuleConfiguration::intForKey("MAXIMUM_IF_LENGTH", 15);
+        }
 
-    static string getMessage()
-    {
-        return "Use early exit/continue to simplify code and reduce indentation";
-    }
+        static string getMessage() {
+            return "Use early exit/continue to simplify code and reduce indentation";
+        }
 
-    bool VisitCompoundStmt(CompoundStmt* compoundStmt)
-    {
-        if (compoundStmt->size() < 2)
-        {
+        bool VisitCompoundStmt(CompoundStmt *compoundStmt) {
+            if (compoundStmt->size() < 2) {
+                return true;
+            }
+
+            auto last = compoundStmt->body_rbegin();
+            if (isFlowOfControlInterrupt(*last)) {
+                addViolationIfStmtIsLongIf(*++last);
+            }
+
             return true;
         }
 
-        auto last = compoundStmt->body_rbegin();
-        if (isFlowOfControlInterrupt(*last))
-        {
-            addViolationIfStmtIsLongIf(*++last);
+        bool VisitForStmt(ForStmt *forStmt) {
+            return VisitLoopBody(forStmt->getBody());
         }
 
-        return true;
-    }
+        bool VisitWhileStmt(WhileStmt *whileStmt) {
+            return VisitLoopBody(whileStmt->getBody());
+        }
 
-    bool VisitForStmt(ForStmt* forStmt)
-    {
-        return VisitLoopBody(forStmt->getBody());
-    }
-
-    bool VisitWhileStmt(WhileStmt* whileStmt)
-    {
-        return VisitLoopBody(whileStmt->getBody());
-    }
-
-    bool VisitDoStmt(DoStmt* doStmt)
-    {
-        return VisitLoopBody(doStmt->getBody());
-    }
+        bool VisitDoStmt(DoStmt *doStmt) {
+            return VisitLoopBody(doStmt->getBody());
+        }
 };
 
 static RuleSet rules(new PreferEarlyExitRule());

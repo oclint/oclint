@@ -7,91 +7,75 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class BrokenNullCheckBaseRule : public AbstractNullCheckRule<BrokenNullCheckBaseRule>
-{
-private:
-    bool isEqNullCheckBroken(BinaryOperator *binaryOperator)
-    {
-        return binaryOperator->getOpcode() == BO_LOr && isNeNullCheck(binaryOperator->getLHS());
-    }
-
-    bool isNeNullCheckBroken(BinaryOperator *binaryOperator)
-    {
-        return binaryOperator->getOpcode() == BO_LAnd && isEqNullCheck(binaryOperator->getLHS());
-    }
-
-    bool isNullCheckBroken(BinaryOperator *binaryOperator)
-    {
-        return isEqNullCheckBroken(binaryOperator) || isNeNullCheckBroken(binaryOperator);
-    }
-
-    bool isSameVariableBroken(BinaryOperator *binaryOperator)
-    {
-        string variableOfInterest = extractIdentifierFromExpr(binaryOperator->getLHS());
-        return variableOfInterest == "" ? false :
-            hasVariableInExpr(variableOfInterest, binaryOperator->getRHS());
-    }
-
-protected:
-    virtual bool hasVariableInExpr(string variableOfInterest, Expr *expr) = 0;
-
-public:
-    bool VisitBinaryOperator(BinaryOperator *binaryOperator)
-    {
-        if (isNullCheckBroken(binaryOperator) && isSameVariableBroken(binaryOperator))
-        {
-            addViolation(binaryOperator, this);
+class BrokenNullCheckBaseRule : public AbstractNullCheckRule<BrokenNullCheckBaseRule> {
+    private:
+        bool isEqNullCheckBroken(BinaryOperator *binaryOperator) {
+            return binaryOperator->getOpcode() == BO_LOr && isNeNullCheck(binaryOperator->getLHS());
         }
 
-        return true;
-    }
+        bool isNeNullCheckBroken(BinaryOperator *binaryOperator) {
+            return binaryOperator->getOpcode() == BO_LAnd && isEqNullCheck(binaryOperator->getLHS());
+        }
+
+        bool isNullCheckBroken(BinaryOperator *binaryOperator) {
+            return isEqNullCheckBroken(binaryOperator) || isNeNullCheckBroken(binaryOperator);
+        }
+
+        bool isSameVariableBroken(BinaryOperator *binaryOperator) {
+            string variableOfInterest = extractIdentifierFromExpr(binaryOperator->getLHS());
+            return variableOfInterest == "" ? false :
+                   hasVariableInExpr(variableOfInterest, binaryOperator->getRHS());
+        }
+
+    protected:
+        virtual bool hasVariableInExpr(string variableOfInterest, Expr *expr) = 0;
+
+    public:
+        bool VisitBinaryOperator(BinaryOperator *binaryOperator) {
+            if (isNullCheckBroken(binaryOperator) && isSameVariableBroken(binaryOperator)) {
+                addViolation(binaryOperator, this);
+            }
+
+            return true;
+        }
 };
 
-class BrokenNullCheckRule : public BrokenNullCheckBaseRule
-{
-protected:
-    virtual bool hasVariableInExpr(string variableOfInterest, Expr* expr)
-        override
-    {
-        VariableOfInterestInMemberExpr seekingVariable;
-        return seekingVariable.hasVariableInExpr(variableOfInterest, expr, this);
-    }
+class BrokenNullCheckRule : public BrokenNullCheckBaseRule {
+    protected:
+        virtual bool hasVariableInExpr(string variableOfInterest, Expr *expr)
+        override {
+            VariableOfInterestInMemberExpr seekingVariable;
+            return seekingVariable.hasVariableInExpr(variableOfInterest, expr, this);
+        }
 
-public:
-    virtual const string name() const override
-    {
-        return "broken null check";
-    }
+    public:
+        virtual const string name() const override {
+            return "broken null check";
+        }
 
-    virtual int priority() const override
-    {
-        return 1;
-    }
+        virtual int priority() const override {
+            return 1;
+        }
 
-    virtual const string category() const override
-    {
-        return "basic";
-    }
+        virtual const string category() const override {
+            return "basic";
+        }
 
-    virtual unsigned int supportedLanguages() const override
-    {
-        return LANG_C | LANG_CXX;
-    }
+        virtual unsigned int supportedLanguages() const override {
+            return LANG_C | LANG_CXX;
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.7";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.7";
+        }
 
-    virtual const string description() const override
-    {
-        return "The broken null check itself will crash the program.";
-    }
+        virtual const string description() const override {
+            return "The broken null check itself will crash the program.";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: cpp
 
     void m(A *a, B *b)
@@ -105,61 +89,51 @@ public:
         }
     }
     )rst";
-    }
-#endif
+        }
+        #endif
 };
 
-class BrokenNilCheckRule : public BrokenNullCheckBaseRule
-{
-protected:
-    virtual bool hasVariableInExpr(string variableOfInterest, Expr* expr)
-        override
-    {
-        VariableOfInterestInObjCMessageExpr seekingVariable;
-        return seekingVariable.hasVariableInExpr(variableOfInterest, expr, this);
-    }
+class BrokenNilCheckRule : public BrokenNullCheckBaseRule {
+    protected:
+        virtual bool hasVariableInExpr(string variableOfInterest, Expr *expr)
+        override {
+            VariableOfInterestInObjCMessageExpr seekingVariable;
+            return seekingVariable.hasVariableInExpr(variableOfInterest, expr, this);
+        }
 
-public:
-    virtual const string name() const override
-    {
-        return "broken nil check";
-    }
+    public:
+        virtual const string name() const override {
+            return "broken nil check";
+        }
 
-    virtual int priority() const override
-    {
-        return 2;
-    }
+        virtual int priority() const override {
+            return 2;
+        }
 
-    virtual const string category() const override
-    {
-        return "basic";
-    }
+        virtual const string category() const override {
+            return "basic";
+        }
 
-    virtual unsigned int supportedLanguages() const override
-    {
-        return LANG_OBJC;
-    }
+        virtual unsigned int supportedLanguages() const override {
+            return LANG_OBJC;
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.7";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.7";
+        }
 
-    virtual const string description() const override
-    {
-        return "The broken nil check in Objective-C in some cases "
-            "returns just the opposite result.";
-    }
+        virtual const string description() const override {
+            return "The broken nil check in Objective-C in some cases "
+                   "returns just the opposite result.";
+        }
 
-    virtual const string fileName() const override
-    {
-        return "BrokenNullCheckRule.cpp";
-    }
+        virtual const string fileName() const override {
+            return "BrokenNullCheckRule.cpp";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: objective-c
 
     + (void)compare:(A *)obj1 withOther:(A *)obj2
@@ -173,8 +147,8 @@ public:
         }
     }
     )rst";
-    }
-#endif
+        }
+        #endif
 };
 
 static RuleSet rulesForBrokenNull(new BrokenNullCheckRule());

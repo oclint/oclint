@@ -24,82 +24,82 @@ llvm::cl::OptionCategory OCLintOptionCategory("OCLint options");
    ---------------- */
 
 static llvm::cl::opt<std::string> argOutput("o",
-    llvm::cl::desc("Write output to <path>"),
-    llvm::cl::value_desc("path"),
-    llvm::cl::init("-"),
-    llvm::cl::cat(OCLintOptionCategory));
+        llvm::cl::desc("Write output to <path>"),
+        llvm::cl::value_desc("path"),
+        llvm::cl::init("-"),
+        llvm::cl::cat(OCLintOptionCategory));
 
 /* --------------------
    oclint configuration
    -------------------- */
 
 static llvm::cl::opt<std::string> argReportType("report-type",
-    llvm::cl::desc("Change output report type"),
-    llvm::cl::value_desc("name"),
-    llvm::cl::init("text"),
-    llvm::cl::cat(OCLintOptionCategory));
+        llvm::cl::desc("Change output report type"),
+        llvm::cl::value_desc("name"),
+        llvm::cl::init("text"),
+        llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::list<std::string> argRulesPath("R",
-    llvm::cl::Prefix,
-    llvm::cl::desc("Add directory to rule loading path"),
-    llvm::cl::value_desc("directory"),
-    llvm::cl::ZeroOrMore,
-    llvm::cl::cat(OCLintOptionCategory));
+        llvm::cl::Prefix,
+        llvm::cl::desc("Add directory to rule loading path"),
+        llvm::cl::value_desc("directory"),
+        llvm::cl::ZeroOrMore,
+        llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::list<std::string> argRuleConfiguration("rc",
-    llvm::cl::desc("Override the default behavior of rules"),
-    llvm::cl::value_desc("parameter>=<value"),
-    llvm::cl::ZeroOrMore,
-    llvm::cl::cat(OCLintOptionCategory));
+        llvm::cl::desc("Override the default behavior of rules"),
+        llvm::cl::value_desc("parameter>=<value"),
+        llvm::cl::ZeroOrMore,
+        llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::list<std::string> argEnabledRules("rule",
-    llvm::cl::desc("Explicitly pick rules"),
-    llvm::cl::value_desc("rule name"),
-    llvm::cl::ZeroOrMore,
-    llvm::cl::cat(OCLintOptionCategory));
+        llvm::cl::desc("Explicitly pick rules"),
+        llvm::cl::value_desc("rule name"),
+        llvm::cl::ZeroOrMore,
+        llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::list<std::string> argDisabledRules("disable-rule",
-    llvm::cl::desc("Disable rules"),
-    llvm::cl::value_desc("rule name"),
-    llvm::cl::ZeroOrMore,
-    llvm::cl::cat(OCLintOptionCategory));
+        llvm::cl::desc("Disable rules"),
+        llvm::cl::value_desc("rule name"),
+        llvm::cl::ZeroOrMore,
+        llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<bool> argListEnabledRules("list-enabled-rules",
-    llvm::cl::desc("List enabled rules"),
-    llvm::cl::init(false),
-    llvm::cl::cat(OCLintOptionCategory));
+        llvm::cl::desc("List enabled rules"),
+        llvm::cl::init(false),
+        llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<int> argMaxP1("max-priority-1",
-    llvm::cl::desc("The max allowed number of priority 1 violations"),
-    llvm::cl::value_desc("threshold"),
-    llvm::cl::init(0),
-    llvm::cl::cat(OCLintOptionCategory));
+                                   llvm::cl::desc("The max allowed number of priority 1 violations"),
+                                   llvm::cl::value_desc("threshold"),
+                                   llvm::cl::init(0),
+                                   llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<int> argMaxP2("max-priority-2",
-    llvm::cl::desc("The max allowed number of priority 2 violations"),
-    llvm::cl::value_desc("threshold"),
-    llvm::cl::init(10),
-    llvm::cl::cat(OCLintOptionCategory));
+                                   llvm::cl::desc("The max allowed number of priority 2 violations"),
+                                   llvm::cl::value_desc("threshold"),
+                                   llvm::cl::init(10),
+                                   llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<int> argMaxP3("max-priority-3",
-    llvm::cl::desc("The max allowed number of priority 3 violations"),
-    llvm::cl::value_desc("threshold"),
-    llvm::cl::init(20),
-    llvm::cl::cat(OCLintOptionCategory));
+                                   llvm::cl::desc("The max allowed number of priority 3 violations"),
+                                   llvm::cl::value_desc("threshold"),
+                                   llvm::cl::init(20),
+                                   llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<bool> argGlobalAnalysis("enable-global-analysis",
-    llvm::cl::desc("Compile every source, and analyze across global contexts "
-        "(depends on number of source files, could results in high memory load)"),
-    llvm::cl::init(false),
-    llvm::cl::cat(OCLintOptionCategory));
+        llvm::cl::desc("Compile every source, and analyze across global contexts "
+                       "(depends on number of source files, could results in high memory load)"),
+        llvm::cl::init(false),
+        llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<bool> argClangChecker("enable-clang-static-analyzer",
-    llvm::cl::desc("Enable Clang Static Analyzer, and integrate results into OCLint report"),
-    llvm::cl::init(false),
-    llvm::cl::cat(OCLintOptionCategory));
+        llvm::cl::desc("Enable Clang Static Analyzer, and integrate results into OCLint report"),
+        llvm::cl::init(false),
+        llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<bool> argDuplications("allow-duplicated-violations",
-    llvm::cl::desc("Allow duplicated violations in the OCLint report"),
-    llvm::cl::init(false),
-    llvm::cl::cat(OCLintOptionCategory));
+        llvm::cl::desc("Allow duplicated violations in the OCLint report"),
+        llvm::cl::init(false),
+        llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<bool> argNoAnalytics("no-analytics",
-    llvm::cl::desc("Disable the anonymous analytics"),
-    llvm::cl::init(false),
-    llvm::cl::cat(OCLintOptionCategory));
+        llvm::cl::desc("Disable the anonymous analytics"),
+        llvm::cl::init(false),
+        llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<bool> argEnableVerbose("verbose",
-    llvm::cl::desc("Enable verbose output"),
-    llvm::cl::init(false),
-    llvm::cl::Hidden,
-    llvm::cl::cat(OCLintOptionCategory));
+        llvm::cl::desc("Enable verbose output"),
+        llvm::cl::init(false),
+        llvm::cl::Hidden,
+        llvm::cl::cat(OCLintOptionCategory));
 
 /* -------------
    libTooling cl
@@ -120,22 +120,18 @@ static std::string absoluteWorkingPath("");
 static std::string executablePath("");
 
 template <typename T>
-void updateArgIfSet(llvm::cl::opt<T> &argValue, const llvm::Optional<T> &configValue)
-{
-    if (configValue.hasValue() && argValue.getNumOccurrences() == 0)
-    {
+void updateArgIfSet(llvm::cl::opt<T> &argValue, const llvm::Optional<T> &configValue) {
+    if (configValue.hasValue() && argValue.getNumOccurrences() == 0) {
         argValue.setValue(configValue.getValue());
     }
 }
 
-static void consumeRuleConfiguration(std::string key, std::string value)
-{
-  oclint::RuleConfiguration::addConfiguration(key, value);
-  oclint::Analytics::ruleConfiguration(key, value);
+static void consumeRuleConfiguration(std::string key, std::string value) {
+    oclint::RuleConfiguration::addConfiguration(key, value);
+    oclint::Analytics::ruleConfiguration(key, value);
 }
 
-static std::vector<std::string> configFilePaths()
-{
+static std::vector<std::string> configFilePaths() {
     std::vector<std::string> paths;
     paths.push_back(oclint::option::etcPath() + "/oclint");
     if (oclint::option::homePath().length() > 0) {
@@ -145,26 +141,21 @@ static std::vector<std::string> configFilePaths()
     return paths;
 }
 
-static void processConfigFile(const std::string &path)
-{
+static void processConfigFile(const std::string &path) {
     oclint::option::ConfigFile config(path);
-    for (const oclint::option::RuleConfigurationPair &ruleConfig : config.ruleConfigurations())
-    {
+    for (const oclint::option::RuleConfigurationPair &ruleConfig : config.ruleConfigurations()) {
         consumeRuleConfiguration(ruleConfig.key(), ruleConfig.value());
     }
-    for (const llvm::StringRef &rulePath : config.rulePaths())
-    {
+    for (const llvm::StringRef &rulePath : config.rulePaths()) {
         argRulesPath.push_back(rulePath.str());
     }
     std::vector<std::string> enableRules;
-    for (auto rule : config.rules())
-    {
+    for (auto rule : config.rules()) {
         enableRules.push_back(rule.str());
     }
     filter.enableRules(enableRules.begin(), enableRules.end());
     std::vector<std::string> disableRules;
-    for (auto rule : config.disableRules())
-    {
+    for (auto rule : config.disableRules()) {
         disableRules.push_back(rule.str());
     }
     filter.disableRules(disableRules.begin(), disableRules.end());
@@ -182,30 +173,24 @@ static void processConfigFile(const std::string &path)
     updateArgIfSet(argEnableVerbose, config.enableVerbose());
 }
 
-static void processConfigFiles()
-{
+static void processConfigFiles() {
     std::vector<std::string> paths = configFilePaths();
     for_each(paths.begin(), paths.end(), processConfigFile);
 }
 
-static void preserveWorkingPath()
-{
+static void preserveWorkingPath() {
     char path[300];
-    if (getcwd(path, 300))
-    {
+    if (getcwd(path, 300)) {
         absoluteWorkingPath = std::string(path);
     }
 }
 
-static void preserveExecutablePath(const char *argv)
-{
+static void preserveExecutablePath(const char *argv) {
     llvm::SmallString<128> installedPath(argv);
-    if (llvm::sys::path::filename(installedPath) == installedPath)
-    {
+    if (llvm::sys::path::filename(installedPath) == installedPath) {
         auto intermediatePath =
             llvm::sys::findProgramByName(llvm::sys::path::filename(installedPath.str()));
-        if (intermediatePath)
-        {
+        if (intermediatePath) {
             installedPath = *intermediatePath;
         }
     }
@@ -214,19 +199,17 @@ static void preserveExecutablePath(const char *argv)
     executablePath = std::string(installedPath.c_str());
 }
 
-void oclint::option::process(const char *argv)
-{
+void oclint::option::process(const char *argv) {
     preserveWorkingPath();
     preserveExecutablePath(argv);
 
     processConfigFiles();
-    for (unsigned i = 0; i < argRuleConfiguration.size(); ++i)
-    {
+    for (unsigned i = 0; i < argRuleConfiguration.size(); ++i) {
         std::string configuration = argRuleConfiguration[i];
         int indexOfSeparator = configuration.find_last_of("=");
         std::string key = configuration.substr(0, indexOfSeparator);
         std::string value = configuration.substr(indexOfSeparator + 1,
-            configuration.size() - indexOfSeparator - 1);
+                            configuration.size() - indexOfSeparator - 1);
         consumeRuleConfiguration(key, value);
     }
 
@@ -234,41 +217,33 @@ void oclint::option::process(const char *argv)
     filter.disableRules(argDisabledRules.begin(), argDisabledRules.end());
 }
 
-std::string oclint::option::workingPath()
-{
+std::string oclint::option::workingPath() {
     return absoluteWorkingPath;
 }
 
-std::string oclint::option::installPrefix()
-{
+std::string oclint::option::installPrefix() {
     return binPath() + "/..";
 }
 
-std::string oclint::option::binPath()
-{
+std::string oclint::option::binPath() {
     return executablePath;
 }
 
-std::string oclint::option::libPath()
-{
+std::string oclint::option::libPath() {
     return installPrefix() + "/lib";
 }
 
-std::string oclint::option::etcPath()
-{
+std::string oclint::option::etcPath() {
     return installPrefix() + "/etc";
 }
 
-std::string oclint::option::homePath()
-{
+std::string oclint::option::homePath() {
     const char *home = getenv("HOME");
     return home ? std::string(home) : std::string();
 }
 
-std::vector<std::string> oclint::option::rulesPath()
-{
-    if (argRulesPath.size() > 0)
-    {
+std::vector<std::string> oclint::option::rulesPath() {
+    if (argRulesPath.size() > 0) {
         return argRulesPath;
     }
     std::string defaultRulePath = libPath() + "/oclint/rules";
@@ -276,72 +251,58 @@ std::vector<std::string> oclint::option::rulesPath()
     return defaultRulesPath;
 }
 
-std::string oclint::option::reporterPath()
-{
+std::string oclint::option::reporterPath() {
     return libPath() + "/oclint/reporters";
 }
 
-bool oclint::option::hasOutputPath()
-{
+bool oclint::option::hasOutputPath() {
     return argOutput != "-";
 }
 
-std::string oclint::option::outputPath()
-{
+std::string oclint::option::outputPath() {
     return argOutput.at(0) == '/' ? argOutput : workingPath() + "/" + argOutput;
 }
 
-std::string oclint::option::reportType()
-{
+std::string oclint::option::reportType() {
     return argReportType;
 }
 
-const oclint::RulesetFilter &oclint::option::rulesetFilter()
-{
+const oclint::RulesetFilter &oclint::option::rulesetFilter() {
     return filter;
 }
 
-int oclint::option::maxP1()
-{
+int oclint::option::maxP1() {
     return argMaxP1;
 }
 
-int oclint::option::maxP2()
-{
+int oclint::option::maxP2() {
     return argMaxP2;
 }
 
-int oclint::option::maxP3()
-{
+int oclint::option::maxP3() {
     return argMaxP3;
 }
 
-bool oclint::option::showEnabledRules()
-{
+bool oclint::option::showEnabledRules() {
     return argListEnabledRules;
 }
 
-bool oclint::option::enableGlobalAnalysis()
-{
+bool oclint::option::enableGlobalAnalysis() {
     return argGlobalAnalysis;
 }
 
-bool oclint::option::enableClangChecker()
-{
+bool oclint::option::enableClangChecker() {
     return argClangChecker;
 }
 
-bool oclint::option::allowDuplicatedViolations()
-{
+bool oclint::option::allowDuplicatedViolations() {
     return argDuplications;
 }
 
-bool oclint::option::disableAnalytics()
-{
-  return argNoAnalytics;
+bool oclint::option::disableAnalytics() {
+    return argNoAnalytics;
 }
 
-bool oclint::option::enableVerbose()
-{
+bool oclint::option::enableVerbose() {
     return argEnableVerbose;
 }

@@ -6,51 +6,42 @@ using namespace clang;
 using namespace oclint;
 
 class CoveredSwitchStatementsDontNeedDefaultRule :
-    public AbstractASTVisitorRule<CoveredSwitchStatementsDontNeedDefaultRule>
-{
-public:
-    virtual const string name() const override
-    {
-        return "unnecessary default statement in covered switch statement";
-    }
+    public AbstractASTVisitorRule<CoveredSwitchStatementsDontNeedDefaultRule> {
+    public:
+        virtual const string name() const override {
+            return "unnecessary default statement in covered switch statement";
+        }
 
-    virtual const string identifier() const override
-    {
-        return "UnnecessaryDefaultStatement";
-    }
+        virtual const string identifier() const override {
+            return "UnnecessaryDefaultStatement";
+        }
 
-    virtual int priority() const override
-    {
-        return 3;
-    }
+        virtual int priority() const override {
+            return 3;
+        }
 
-    virtual const string category() const override
-    {
-        return "convention";
-    }
+        virtual const string category() const override {
+            return "convention";
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.8";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.8";
+        }
 
-    virtual const string description() const override
-    {
-        return "When a switch statement covers all possible cases, "
-            "a default label is not needed and should be removed. "
-            "If the switch is not fully covered, "
-            "the SwitchStatementsShouldHaveDefault rule will report.";
-    }
+        virtual const string description() const override {
+            return "When a switch statement covers all possible cases, "
+                   "a default label is not needed and should be removed. "
+                   "If the switch is not fully covered, "
+                   "the SwitchStatementsShouldHaveDefault rule will report.";
+        }
 
-    virtual const string fileName() const override
-    {
-        return "CoveredSwitchStatementsDontNeedDefaultRule.cpp";
-    }
+        virtual const string fileName() const override {
+            return "CoveredSwitchStatementsDontNeedDefaultRule.cpp";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: cpp
 
     typedef enum {
@@ -71,29 +62,25 @@ public:
         }
     }
         )rst";
-    }
-#endif
+        }
+        #endif
 
-    bool VisitSwitchStmt(SwitchStmt *switchStmt)
-    {
-        SwitchCase *currentSwitchCase = switchStmt->getSwitchCaseList();
-        bool hasDefault = false;
-        while (currentSwitchCase)
-        {
-            if (isa<DefaultStmt>(currentSwitchCase))
-            {
-                hasDefault = true;
-                break;
+        bool VisitSwitchStmt(SwitchStmt *switchStmt) {
+            SwitchCase *currentSwitchCase = switchStmt->getSwitchCaseList();
+            bool hasDefault = false;
+            while (currentSwitchCase) {
+                if (isa<DefaultStmt>(currentSwitchCase)) {
+                    hasDefault = true;
+                    break;
+                }
+                currentSwitchCase = currentSwitchCase->getNextSwitchCase();
             }
-            currentSwitchCase = currentSwitchCase->getNextSwitchCase();
-        }
-        if (hasDefault && switchStmt->isAllEnumCasesCovered())
-        {
-            addViolation(switchStmt, this);
-        }
+            if (hasDefault && switchStmt->isAllEnumCasesCovered()) {
+                addViolation(switchStmt, this);
+            }
 
-        return true;
-    }
+            return true;
+        }
 };
 
 static RuleSet rules(new CoveredSwitchStatementsDontNeedDefaultRule());

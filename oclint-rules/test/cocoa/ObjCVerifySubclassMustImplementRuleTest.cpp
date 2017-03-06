@@ -61,39 +61,33 @@ static string testNormalDoesNotImplement = testNormalBase + doesNotImplement;
 static string testNormalDoesImplement = testNormalBase + doesImplement;
 
 
-TEST(ObjcVerifySubclassMustImplementRuleTest, PropertyTest)
-{
+TEST(ObjcVerifySubclassMustImplementRuleTest, PropertyTest) {
     ObjCVerifySubclassMustImplementRule rule;
     EXPECT_EQ(1, rule.priority());
     EXPECT_EQ("missing abstract method implementation", rule.name());
     EXPECT_EQ("cocoa", rule.category());
 }
 
-TEST(ObjcVerifySubclassMustImplementRuleTest, AnnotationDoesNotImplementation)
-{
+TEST(ObjcVerifySubclassMustImplementRuleTest, AnnotationDoesNotImplementation) {
     testRuleOnObjCCode(new ObjCVerifySubclassMustImplementRule(),
-        testAnnotationDoesNotImplement, 0, 12, 1, 14, 1,
-            "subclasses of Parent must implement someAbstractMethod");
+                       testAnnotationDoesNotImplement, 0, 12, 1, 14, 1,
+                       "subclasses of Parent must implement someAbstractMethod");
 }
 
-TEST(ObjcVerifySubclassMustImplementRuleTest, AnnotationDoesImplement)
-{
+TEST(ObjcVerifySubclassMustImplementRuleTest, AnnotationDoesImplement) {
     testRuleOnObjCCode(new ObjCVerifySubclassMustImplementRule(),
-        testAnnotationDoesImplement);
+                       testAnnotationDoesImplement);
 }
 
-TEST(ObjcVerifySubclassMustImplementRuleTest, NormalDoesNotImplement)
-{
+TEST(ObjcVerifySubclassMustImplementRuleTest, NormalDoesNotImplement) {
     testRuleOnObjCCode(new ObjCVerifySubclassMustImplementRule(), testNormalDoesNotImplement);
 }
 
-TEST(ObjcVerifySubclassMustImplementRuleTest, NormalDoesImplement)
-{
+TEST(ObjcVerifySubclassMustImplementRuleTest, NormalDoesImplement) {
     testRuleOnObjCCode(new ObjCVerifySubclassMustImplementRule(), testNormalDoesImplement);
 }
 
 
-TEST(ObjcVerifySubclassMustImplementRuleTest, SubChildUnaffected)
-{
+TEST(ObjcVerifySubclassMustImplementRuleTest, SubChildUnaffected) {
     testRuleOnObjCCode(new ObjCVerifySubclassMustImplementRule(), testSubChildUnaffected);
 }

@@ -10,28 +10,26 @@
  *   IEEE Transactions on Software Engineering: 308–320
  */
 
-namespace oclint
-{
+namespace oclint {
 
-class CyclomaticComplexityMetric : public clang::RecursiveASTVisitor<CyclomaticComplexityMetric>
-{
-private:
-    int _count;
+    class CyclomaticComplexityMetric : public clang::RecursiveASTVisitor<CyclomaticComplexityMetric> {
+        private:
+            int _count;
 
-public:
-    int calculate(clang::Decl *decl);
+        public:
+            int calculate(clang::Decl *decl);
 
-    bool VisitIfStmt(clang::IfStmt *stmt);
-    bool VisitForStmt(clang::ForStmt *stmt);
-    bool VisitObjCForCollectionStmt(clang::ObjCForCollectionStmt *stmt);
-    bool VisitWhileStmt(clang::WhileStmt *stmt);
-    bool VisitDoStmt(clang::DoStmt *stmt);
-    bool VisitCaseStmt(clang::CaseStmt *stmt);
-    bool VisitObjCAtCatchStmt(clang::ObjCAtCatchStmt *stmt);
-    bool VisitCXXCatchStmt(clang::CXXCatchStmt *stmt);
-    bool VisitConditionalOperator(clang::ConditionalOperator *op);
-    bool VisitBinaryOperator(clang::BinaryOperator *op);
-};
+            bool VisitIfStmt(clang::IfStmt *stmt);
+            bool VisitForStmt(clang::ForStmt *stmt);
+            bool VisitObjCForCollectionStmt(clang::ObjCForCollectionStmt *stmt);
+            bool VisitWhileStmt(clang::WhileStmt *stmt);
+            bool VisitDoStmt(clang::DoStmt *stmt);
+            bool VisitCaseStmt(clang::CaseStmt *stmt);
+            bool VisitObjCAtCatchStmt(clang::ObjCAtCatchStmt *stmt);
+            bool VisitCXXCatchStmt(clang::CXXCatchStmt *stmt);
+            bool VisitConditionalOperator(clang::ConditionalOperator *op);
+            bool VisitBinaryOperator(clang::BinaryOperator *op);
+    };
 
 } // end namespace oclint
 

@@ -2,157 +2,134 @@
 
 #include "rules/redundant/RedundantConditionalOperatorRule.cpp"
 
-TEST(RedundantConditionalOperatorRuleTest, PropertyTest)
-{
+TEST(RedundantConditionalOperatorRuleTest, PropertyTest) {
     RedundantConditionalOperatorRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("redundant conditional operator", rule.name());
     EXPECT_EQ("redundant", rule.category());
 }
 
-TEST(RedundantConditionalOperatorRuleTest, GoodConditionalOperator)
-{
+TEST(RedundantConditionalOperatorRuleTest, GoodConditionalOperator) {
     testRuleOnCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b) { int c = a > b ? a : b; }");
+                   "void m(int a, int b) { int c = a > b ? a : b; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, CppTrueExprIsTrueAndFalseExprIsFalse)
-{
+TEST(RedundantConditionalOperatorRuleTest, CppTrueExprIsTrueAndFalseExprIsFalse) {
     testRuleOnCXXCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b) { bool c = " VIOLATION_START "a > b ? true : " VIOLATION_END "false; }");
+                      "void m(int a, int b) { bool c = " VIOLATION_START "a > b ? true : " VIOLATION_END "false; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, CppTrueExprIsFalseAndFalseExprIsTrue)
-{
+TEST(RedundantConditionalOperatorRuleTest, CppTrueExprIsFalseAndFalseExprIsTrue) {
     testRuleOnCXXCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b) { bool c = " VIOLATION_START "a > b ? false : " VIOLATION_END "true; }");
+                      "void m(int a, int b) { bool c = " VIOLATION_START "a > b ? false : " VIOLATION_END "true; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, ObjCTrueExprIsYesAndFalseExprIsNo)
-{
+TEST(RedundantConditionalOperatorRuleTest, ObjCTrueExprIsYesAndFalseExprIsNo) {
     testRuleOnObjCCode(new RedundantConditionalOperatorRule(),
-        "typedef signed char    BOOL;    \n"
-        "#define YES             (BOOL)1 \n"
-        "#define NO              (BOOL)0 \n"
-        "void m(int a, int b) { BOOL c = " VIOLATION_START "a > b ? YES : " VIOLATION_END "NO; }");
+                       "typedef signed char    BOOL;    \n"
+                       "#define YES             (BOOL)1 \n"
+                       "#define NO              (BOOL)0 \n"
+                       "void m(int a, int b) { BOOL c = " VIOLATION_START "a > b ? YES : " VIOLATION_END "NO; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, ObjCTrueExprIsNoAndFalseExprIsYes)
-{
+TEST(RedundantConditionalOperatorRuleTest, ObjCTrueExprIsNoAndFalseExprIsYes) {
     testRuleOnObjCCode(new RedundantConditionalOperatorRule(),
-        "typedef signed char    BOOL;    \n"
-        "#define YES             (BOOL)1 \n"
-        "#define NO              (BOOL)0 \n"
-        "void m(int a, int b) { BOOL c = " VIOLATION_START "a > b ? NO : " VIOLATION_END "YES; }");
+                       "typedef signed char    BOOL;    \n"
+                       "#define YES             (BOOL)1 \n"
+                       "#define NO              (BOOL)0 \n"
+                       "void m(int a, int b) { BOOL c = " VIOLATION_START "a > b ? NO : " VIOLATION_END "YES; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, ObjCTrueExprIsYesAndFalseExprIsNo_HasFeatureObjCBOOL)
-{
+TEST(RedundantConditionalOperatorRuleTest, ObjCTrueExprIsYesAndFalseExprIsNo_HasFeatureObjCBOOL) {
     testRuleOnObjCCode(new RedundantConditionalOperatorRule(),
-        "typedef signed char    BOOL;    \n"
-        "#define YES             __objc_yes \n"
-        "#define NO              __objc_no \n"
-        "void m(int a, int b) { BOOL c = " VIOLATION_START "a > b ? YES : " VIOLATION_END "NO; }");
+                       "typedef signed char    BOOL;    \n"
+                       "#define YES             __objc_yes \n"
+                       "#define NO              __objc_no \n"
+                       "void m(int a, int b) { BOOL c = " VIOLATION_START "a > b ? YES : " VIOLATION_END "NO; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, ObjCTrueExprIsNoAndFalseExprIsYes_HasFeatureObjCBOOL)
-{
+TEST(RedundantConditionalOperatorRuleTest, ObjCTrueExprIsNoAndFalseExprIsYes_HasFeatureObjCBOOL) {
     testRuleOnObjCCode(new RedundantConditionalOperatorRule(),
-        "typedef signed char    BOOL;    \n"
-        "#define YES             __objc_yes \n"
-        "#define NO              __objc_no \n"
-        "void m(int a, int b) { BOOL c = " VIOLATION_START "a > b ? NO : " VIOLATION_END "YES; }");
+                       "typedef signed char    BOOL;    \n"
+                       "#define YES             __objc_yes \n"
+                       "#define NO              __objc_no \n"
+                       "void m(int a, int b) { BOOL c = " VIOLATION_START "a > b ? NO : " VIOLATION_END "YES; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, SameIntegerLiteral)
-{
+TEST(RedundantConditionalOperatorRuleTest, SameIntegerLiteral) {
     testRuleOnCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b) { int c = " VIOLATION_START "a > b ? 1 : " VIOLATION_END "1; }");
+                   "void m(int a, int b) { int c = " VIOLATION_START "a > b ? 1 : " VIOLATION_END "1; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, DifferentIntegerLiteral)
-{
+TEST(RedundantConditionalOperatorRuleTest, DifferentIntegerLiteral) {
     testRuleOnCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b) { int c = a > b ? 1 : 2; }");
+                   "void m(int a, int b) { int c = a > b ? 1 : 2; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, SameFloatingLiteral)
-{
+TEST(RedundantConditionalOperatorRuleTest, SameFloatingLiteral) {
     testRuleOnCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b) { float f = " VIOLATION_START "a > b ? 1.0f : " VIOLATION_END "1.0f; }");
+                   "void m(int a, int b) { float f = " VIOLATION_START "a > b ? 1.0f : " VIOLATION_END "1.0f; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, DifferentFloatingLiteralSameValue)
-{
+TEST(RedundantConditionalOperatorRuleTest, DifferentFloatingLiteralSameValue) {
     testRuleOnCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b) { float f = " VIOLATION_START "a > b ? 1.0 : " VIOLATION_END "1.00; }");
+                   "void m(int a, int b) { float f = " VIOLATION_START "a > b ? 1.0 : " VIOLATION_END "1.00; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, DifferentFloatingLiteralDifferentValue)
-{
+TEST(RedundantConditionalOperatorRuleTest, DifferentFloatingLiteralDifferentValue) {
     testRuleOnCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b) { float f = a > b ? 1.0 : 1.01; }");
+                   "void m(int a, int b) { float f = a > b ? 1.0 : 1.01; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, SameCharacterLiteral)
-{
+TEST(RedundantConditionalOperatorRuleTest, SameCharacterLiteral) {
     testRuleOnCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b) { char c = " VIOLATION_START "a > b ? 'c' : " VIOLATION_END "'c'; }");
+                   "void m(int a, int b) { char c = " VIOLATION_START "a > b ? 'c' : " VIOLATION_END "'c'; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, DifferentCharacterLiteral)
-{
+TEST(RedundantConditionalOperatorRuleTest, DifferentCharacterLiteral) {
     testRuleOnCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b) { char c = a > b ? 'c' : 's'; }");
+                   "void m(int a, int b) { char c = a > b ? 'c' : 's'; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, SameStringLiteral)
-{
+TEST(RedundantConditionalOperatorRuleTest, SameStringLiteral) {
     testRuleOnCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b) { char* c = " VIOLATION_START "a > b ? \"a\" : " VIOLATION_END "\"a\"; }");
+                   "void m(int a, int b) { char* c = " VIOLATION_START "a > b ? \"a\" : " VIOLATION_END "\"a\"; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, SameEmptyStringLiteral)
-{
+TEST(RedundantConditionalOperatorRuleTest, SameEmptyStringLiteral) {
     testRuleOnCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b) { char* c = " VIOLATION_START "a > b ? \"\" : " VIOLATION_END "\"\"; }");
+                   "void m(int a, int b) { char* c = " VIOLATION_START "a > b ? \"\" : " VIOLATION_END "\"\"; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, DifferentStringLiteral)
-{
+TEST(RedundantConditionalOperatorRuleTest, DifferentStringLiteral) {
     testRuleOnCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b) { char* c = a > b ? \"a\" : \"b\"; }");
+                   "void m(int a, int b) { char* c = a > b ? \"a\" : \"b\"; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, WithOneEmptyStringLiteral)
-{
+TEST(RedundantConditionalOperatorRuleTest, WithOneEmptyStringLiteral) {
     testRuleOnCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b) { char* c = a > b ? \"a\" : \"\"; }");
+                   "void m(int a, int b) { char* c = a > b ? \"a\" : \"\"; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, CppSameBoolean)
-{
+TEST(RedundantConditionalOperatorRuleTest, CppSameBoolean) {
     testRuleOnCXXCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b) { bool c = " VIOLATION_START "a > b ? true : " VIOLATION_END "true; }");
+                      "void m(int a, int b) { bool c = " VIOLATION_START "a > b ? true : " VIOLATION_END "true; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, ObjCSameBoolean)
-{
+TEST(RedundantConditionalOperatorRuleTest, ObjCSameBoolean) {
     testRuleOnObjCCode(new RedundantConditionalOperatorRule(),
-        "typedef signed char    BOOL;    \n"
-        "#define YES             (BOOL)1 \n"
-        "#define NO              (BOOL)0 \n"
-        "void m(int a, int b) { BOOL c = " VIOLATION_START "a > b ? NO : " VIOLATION_END "NO; }");
+                       "typedef signed char    BOOL;    \n"
+                       "#define YES             (BOOL)1 \n"
+                       "#define NO              (BOOL)0 \n"
+                       "void m(int a, int b) { BOOL c = " VIOLATION_START "a > b ? NO : " VIOLATION_END "NO; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, SameVariable)
-{
+TEST(RedundantConditionalOperatorRuleTest, SameVariable) {
     testRuleOnCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b, int d) { int c = " VIOLATION_START "a > b ? d : " VIOLATION_END "d; }");
+                   "void m(int a, int b, int d) { int c = " VIOLATION_START "a > b ? d : " VIOLATION_END "d; }");
 }
 
-TEST(RedundantConditionalOperatorRuleTest, DifferentVariable)
-{
+TEST(RedundantConditionalOperatorRuleTest, DifferentVariable) {
     testRuleOnCode(new RedundantConditionalOperatorRule(),
-        "void m(int a, int b, int d, int e) { int c = a > b ? d : e; }");
+                   "void m(int a, int b, int d, int e) { int c = a > b ? d : e; }");
 }

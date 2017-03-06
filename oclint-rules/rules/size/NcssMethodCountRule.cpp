@@ -8,61 +8,51 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class NcssMethodCountRule : public AbstractASTVisitorRule<NcssMethodCountRule>
-{
-private:
-    void applyDecl(Decl *decl)
-    {
-        int ncss = getNcssCount(decl);
-        int threshold = RuleConfiguration::intForKey("NCSS_METHOD", 30);
-        if (ncss > threshold)
-        {
-            string description = "Method of " + toString<int>(ncss) +
-                " non-commenting source statements exceeds limit of " + toString<int>(threshold);
-            addViolation(decl, this, description);
+class NcssMethodCountRule : public AbstractASTVisitorRule<NcssMethodCountRule> {
+    private:
+        void applyDecl(Decl *decl) {
+            int ncss = getNcssCount(decl);
+            int threshold = RuleConfiguration::intForKey("NCSS_METHOD", 30);
+            if (ncss > threshold) {
+                string description = "Method of " + toString<int>(ncss) +
+                                     " non-commenting source statements exceeds limit of " + toString<int>(threshold);
+                addViolation(decl, this, description);
+            }
         }
-    }
 
-public:
-    virtual const string name() const override
-    {
-        return "high ncss method";
-    }
+    public:
+        virtual const string name() const override {
+            return "high ncss method";
+        }
 
-    virtual int priority() const override
-    {
-        return 2;
-    }
+        virtual int priority() const override {
+            return 2;
+        }
 
-    virtual const string category() const override
-    {
-        return "size";
-    }
+        virtual const string category() const override {
+            return "size";
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.6";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.6";
+        }
 
-    virtual const string description() const override
-    {
-        return "This rule counts number of lines for a method by "
-            "counting Non Commenting Source Statements (NCSS). "
-            "NCSS only takes actual statements into consideration, "
-            "in other words, ignores empty statements, empty blocks, "
-            "closing brackets or semicolons after closing brackets. "
-            "Meanwhile, a statement that is broken into multiple lines contribute only one count.";
-    }
+        virtual const string description() const override {
+            return "This rule counts number of lines for a method by "
+                   "counting Non Commenting Source Statements (NCSS). "
+                   "NCSS only takes actual statements into consideration, "
+                   "in other words, ignores empty statements, empty blocks, "
+                   "closing brackets or semicolons after closing brackets. "
+                   "Meanwhile, a statement that is broken into multiple lines contribute only one count.";
+        }
 
-    virtual const string fileName() const override
-    {
-        return "NcssMethodCountRule.cpp";
-    }
+        virtual const string fileName() const override {
+            return "NcssMethodCountRule.cpp";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: cpp
 
     void example()          // 1
@@ -75,33 +65,29 @@ public:
         }
     }
         )rst";
-    }
+        }
 
-    virtual const map<string, string> thresholds() const override
-    {
-        map<string, string> thresholdMapping;
-        thresholdMapping["NCSS_METHOD"] =
-            "The high NCSS method reporting threshold, default value is 30.";
-        return thresholdMapping;
-    }
+        virtual const map<string, string> thresholds() const override {
+            map<string, string> thresholdMapping;
+            thresholdMapping["NCSS_METHOD"] =
+                "The high NCSS method reporting threshold, default value is 30.";
+            return thresholdMapping;
+        }
 
-    virtual bool enableSuppress() const override
-    {
-        return true;
-    }
-#endif
+        virtual bool enableSuppress() const override {
+            return true;
+        }
+        #endif
 
-    bool VisitObjCMethodDecl(ObjCMethodDecl *decl)
-    {
-        applyDecl(decl);
-        return true;
-    }
+        bool VisitObjCMethodDecl(ObjCMethodDecl *decl) {
+            applyDecl(decl);
+            return true;
+        }
 
-    bool VisitFunctionDecl(FunctionDecl *decl)
-    {
-        applyDecl(decl);
-        return true;
-    }
+        bool VisitFunctionDecl(FunctionDecl *decl) {
+            applyDecl(decl);
+            return true;
+        }
 };
 
 static RuleSet rules(new NcssMethodCountRule());

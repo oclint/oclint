@@ -7,59 +7,49 @@ using namespace clang;
 using namespace oclint;
 
 class TooFewBranchesInSwitchStatementRule :
-    public AbstractASTVisitorRule<TooFewBranchesInSwitchStatementRule>
-{
-    class CountCaseStmts : public RecursiveASTVisitor<CountCaseStmts>
-    {
-    private:
-        int _count;
+    public AbstractASTVisitorRule<TooFewBranchesInSwitchStatementRule> {
+        class CountCaseStmts : public RecursiveASTVisitor<CountCaseStmts> {
+            private:
+                int _count;
+
+            public:
+                int count(SwitchStmt *switchStmt) {
+                    _count = 0;
+                    (void) /* explicitly ignore the return of this function */ TraverseStmt(switchStmt);
+                    return _count;
+                }
+
+                bool VisitCaseStmt(CaseStmt *) {
+                    _count++;
+                    return true;
+                }
+        };
 
     public:
-        int count(SwitchStmt *switchStmt)
-        {
-            _count = 0;
-            (void) /* explicitly ignore the return of this function */ TraverseStmt(switchStmt);
-            return _count;
+        virtual const string name() const override {
+            return "too few branches in switch statement";
         }
 
-        bool VisitCaseStmt(CaseStmt *)
-        {
-            _count++;
-            return true;
+        virtual int priority() const override {
+            return 3;
         }
-    };
 
-public:
-    virtual const string name() const override
-    {
-        return "too few branches in switch statement";
-    }
+        virtual const string category() const override {
+            return "convention";
+        }
 
-    virtual int priority() const override
-    {
-        return 3;
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.6";
+        }
 
-    virtual const string category() const override
-    {
-        return "convention";
-    }
+        virtual const string description() const override {
+            return "To increase code readability, when a switch consists of only a few branches, "
+                   "it's much better to use an if statement instead.";
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.6";
-    }
-
-    virtual const string description() const override
-    {
-        return "To increase code readability, when a switch consists of only a few branches, "
-            "it's much better to use an if statement instead.";
-    }
-
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: cpp
 
     void example(int a)
@@ -72,30 +62,27 @@ public:
         } // Better to use an if statement and check if variable a equals 1.
     }
         )rst";
-    }
-
-    virtual const map<string, string> thresholds() const override
-    {
-        map<string, string> thresholdMapping;
-        thresholdMapping["MINIMUM_CASES_IN_SWITCH"] =
-            "The reporting threshold for count of case statements in a switch statement, "
-            "default value is 3.";
-        return thresholdMapping;
-    }
-#endif
-
-    bool VisitSwitchStmt(SwitchStmt *switchStmt)
-    {
-        CountCaseStmts countCaseStmts;
-        int numberOfCaseStmts = countCaseStmts.count(switchStmt);
-        int threshold = RuleConfiguration::intForKey("MINIMUM_CASES_IN_SWITCH", 3);
-        if (numberOfCaseStmts < threshold)
-        {
-            addViolation(switchStmt, this);
         }
 
-        return true;
-    }
+        virtual const map<string, string> thresholds() const override {
+            map<string, string> thresholdMapping;
+            thresholdMapping["MINIMUM_CASES_IN_SWITCH"] =
+                "The reporting threshold for count of case statements in a switch statement, "
+                "default value is 3.";
+            return thresholdMapping;
+        }
+        #endif
+
+        bool VisitSwitchStmt(SwitchStmt *switchStmt) {
+            CountCaseStmts countCaseStmts;
+            int numberOfCaseStmts = countCaseStmts.count(switchStmt);
+            int threshold = RuleConfiguration::intForKey("MINIMUM_CASES_IN_SWITCH", 3);
+            if (numberOfCaseStmts < threshold) {
+                addViolation(switchStmt, this);
+            }
+
+            return true;
+        }
 };
 
 static RuleSet rules(new TooFewBranchesInSwitchStatementRule());

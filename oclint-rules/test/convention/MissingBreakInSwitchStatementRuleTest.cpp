@@ -2,16 +2,14 @@
 
 #include "rules/convention/MissingBreakInSwitchStatementRule.cpp"
 
-TEST(MissingBreakInSwitchStatementRuleTest, PropertyTest)
-{
+TEST(MissingBreakInSwitchStatementRuleTest, PropertyTest) {
     MissingBreakInSwitchStatementRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("missing break in switch statement", rule.name());
     EXPECT_EQ("convention", rule.category());
 }
 
-TEST(MissingBreakInSwitchStatementRuleTest, CasesHaveBreaks)
-{
+TEST(MissingBreakInSwitchStatementRuleTest, CasesHaveBreaks) {
     testRuleOnCode(new MissingBreakInSwitchStatementRule(), "void aMethod(int a) { switch(a){\n\
 case 1:     \n\
 \tbreak;    \n\
@@ -24,8 +22,7 @@ case 4:     \n\
 } }");
 }
 
-TEST(MissingBreakInSwitchStatementRuleTest, OneCaseWithBreak)
-{
+TEST(MissingBreakInSwitchStatementRuleTest, OneCaseWithBreak) {
     testRuleOnCode(new MissingBreakInSwitchStatementRule(), "void m(); void aMethod(int a) { \n\
 switch(a){  \n\
 case 1:     \n\
@@ -34,9 +31,9 @@ case 1:     \n\
 } }");
 }
 
-TEST(MissingBreakInSwitchStatementRuleTest, OneCaseHasNoBreak)
-{
-    testRuleOnCode(new MissingBreakInSwitchStatementRule(), "void m(); void aMethod(int a) { switch(a){\n\
+TEST(MissingBreakInSwitchStatementRuleTest, OneCaseHasNoBreak) {
+    testRuleOnCode(new MissingBreakInSwitchStatementRule(),
+                   "void m(); void aMethod(int a) { switch(a){\n\
 case 1:     \n\
 \tm();      \n\
 \tbreak;    \n\
@@ -45,12 +42,12 @@ case 2:     \n\
 case 3:     \n\
 \tbreak;    \n\
 } }",
-        0, 1, 33, 9, 1);
+                   0, 1, 33, 9, 1);
 }
 
-TEST(MissingBreakInSwitchStatementRuleTest, TwoCasesHaveNoBreak)
-{
-    testRuleOnCode(new MissingBreakInSwitchStatementRule(), "void m(); void aMethod(int a) { switch(a){\n\
+TEST(MissingBreakInSwitchStatementRuleTest, TwoCasesHaveNoBreak) {
+    testRuleOnCode(new MissingBreakInSwitchStatementRule(),
+                   "void m(); void aMethod(int a) { switch(a){\n\
 case 1:     \n\
 \tm();      \n\
 case 2:     \n\
@@ -58,12 +55,12 @@ case 2:     \n\
 case 3:     \n\
 \tbreak;    \n\
 } }",
-        0, 1, 33, 8, 1);
+                   0, 1, 33, 8, 1);
 }
 
-TEST(MissingBreakInSwitchStatementRuleTest, DefaultHasNoBreak)
-{
-    testRuleOnCode(new MissingBreakInSwitchStatementRule(), "void m(); void aMethod(int a) { switch(a){\n\
+TEST(MissingBreakInSwitchStatementRuleTest, DefaultHasNoBreak) {
+    testRuleOnCode(new MissingBreakInSwitchStatementRule(),
+                   "void m(); void aMethod(int a) { switch(a){\n\
 case 1:     \n\
 \tm();      \n\
 \tbreak;    \n\
@@ -72,16 +69,14 @@ case 2:     \n\
 default:    \n\
 \tm();      \n\
 } }",
-        0, 1, 33, 9, 1);
+                   0, 1, 33, 9, 1);
 }
 
-TEST(MissingBreakInSwitchStatementRuleTest, NoCase)
-{
+TEST(MissingBreakInSwitchStatementRuleTest, NoCase) {
     testRuleOnCode(new MissingBreakInSwitchStatementRule(), "void aMethod(int a) { switch(a){} }");
 }
 
-TEST(MissingBreakInSwitchStatementRuleTest, SkipCasesWithNoStatement)
-{
+TEST(MissingBreakInSwitchStatementRuleTest, SkipCasesWithNoStatement) {
     testRuleOnCode(new MissingBreakInSwitchStatementRule(), "void aMethod(int a) { switch(a){\n\
 case 1:     \n\
 case 2:     \n\
@@ -91,8 +86,7 @@ default:    \n\
 } }");
 }
 
-TEST(MissingBreakInSwitchStatementRuleTest, SkipCasesWithReturn)
-{
+TEST(MissingBreakInSwitchStatementRuleTest, SkipCasesWithReturn) {
     testRuleOnCode(new MissingBreakInSwitchStatementRule(), "int aMethod(int a) { switch(a){\n\
 case 1:     \n\
 \treturn 1; \n\
@@ -103,8 +97,7 @@ default:    \n\
 } }");
 }
 
-TEST(MissingBreakInSwitchStatementRuleTest, SkipCasesWithCXXThrow)
-{
+TEST(MissingBreakInSwitchStatementRuleTest, SkipCasesWithCXXThrow) {
     testRuleOnCXXCode(new MissingBreakInSwitchStatementRule(), "int aMethod(int a) { switch(a){\n\
 case 1:     \n\
 \tthrow 1;  \n\
@@ -115,9 +108,9 @@ default:    \n\
 } }");
 }
 
-TEST(MissingBreakInSwitchStatementRuleTest, SkipCasesWithObjCThrow)
-{
-    testRuleOnObjCCode(new MissingBreakInSwitchStatementRule(), "int aMethod(int a) { id ex1, ex2; switch(a){\n\
+TEST(MissingBreakInSwitchStatementRuleTest, SkipCasesWithObjCThrow) {
+    testRuleOnObjCCode(new MissingBreakInSwitchStatementRule(),
+                       "int aMethod(int a) { id ex1, ex2; switch(a){\n\
 case 1:       \n\
 \t@throw ex1; \n\
 case 2:       \n\
@@ -127,8 +120,7 @@ default:      \n\
 } }");
 }
 
-TEST(MissingBreakInSwitchStatementRuleTest, SkipCasesWithContinue)
-{
+TEST(MissingBreakInSwitchStatementRuleTest, SkipCasesWithContinue) {
     testRuleOnCode(new MissingBreakInSwitchStatementRule(), "int aMethod(int a) {\n\
 for(int i=0;i<2;++i) {\n\
 \tswitch(a){  \n\
@@ -146,8 +138,7 @@ for(int i=0;i<2;++i) {\n\
  Details at https://github.com/oclint/oclint/issues/16
 */
 
-TEST(MissingBreakInSwitchStatementRuleTest, CasesHaveAssignmentAndBreak)
-{
+TEST(MissingBreakInSwitchStatementRuleTest, CasesHaveAssignmentAndBreak) {
     testRuleOnCode(new MissingBreakInSwitchStatementRule(), "void aMethod(int a) { \n\
 int i;      \n\
 switch(a){  \n\

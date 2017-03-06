@@ -6,64 +6,52 @@ using namespace clang;
 using namespace oclint;
 
 class AvoidBranchingStatementAsLastInLoopRule :
-    public AbstractASTVisitorRule<AvoidBranchingStatementAsLastInLoopRule>
-{
-private:
-    bool isBranchingStatement(Stmt *stmt)
-    {
-        return stmt && (isa<BreakStmt>(stmt) || isa<ContinueStmt>(stmt) || isa<ReturnStmt>(stmt));
-    }
-
-    void applyLoopCompoundStmt(CompoundStmt *compoundStmt)
-    {
-        Stmt *lastStmt = compoundStmt->body_back();
-        if (isBranchingStatement(lastStmt))
-        {
-            addViolation(lastStmt, this);
+    public AbstractASTVisitorRule<AvoidBranchingStatementAsLastInLoopRule> {
+    private:
+        bool isBranchingStatement(Stmt *stmt) {
+            return stmt && (isa<BreakStmt>(stmt) || isa<ContinueStmt>(stmt) || isa<ReturnStmt>(stmt));
         }
-    }
 
-    template <typename T>
-    void applyStmt(T *stmt)
-    {
-        CompoundStmt *compoundStmt = dyn_cast_or_null<CompoundStmt>(stmt->getBody());
-        if (compoundStmt)
-        {
-            applyLoopCompoundStmt(compoundStmt);
+        void applyLoopCompoundStmt(CompoundStmt *compoundStmt) {
+            Stmt *lastStmt = compoundStmt->body_back();
+            if (isBranchingStatement(lastStmt)) {
+                addViolation(lastStmt, this);
+            }
         }
-    }
 
-public:
-    virtual const string name() const override
-    {
-        return "avoid branching statement as last in loop";
-    }
+        template <typename T>
+        void applyStmt(T *stmt) {
+            CompoundStmt *compoundStmt = dyn_cast_or_null<CompoundStmt>(stmt->getBody());
+            if (compoundStmt) {
+                applyLoopCompoundStmt(compoundStmt);
+            }
+        }
 
-    virtual int priority() const override
-    {
-        return 2;
-    }
+    public:
+        virtual const string name() const override {
+            return "avoid branching statement as last in loop";
+        }
 
-    virtual const string category() const override
-    {
-        return "convention";
-    }
+        virtual int priority() const override {
+            return 2;
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.7";
-    }
+        virtual const string category() const override {
+            return "convention";
+        }
 
-    virtual const string description() const override
-    {
-        return "Having branching statement as the last statement inside a loop is very confusing, "
-            "and could largely be forgetting of something and turning into a bug.";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.7";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string description() const override {
+            return "Having branching statement as the last statement inside a loop is very confusing, "
+                   "and could largely be forgetting of something and turning into a bug.";
+        }
+
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: cpp
 
     void example()
@@ -78,36 +66,32 @@ public:
         }
     }
         )rst";
-    }
-#endif
+        }
+        #endif
 
-    bool VisitForStmt(ForStmt *stmt)
-    {
-        applyStmt<ForStmt>(stmt);
+        bool VisitForStmt(ForStmt *stmt) {
+            applyStmt<ForStmt>(stmt);
 
-        return true;
-    }
+            return true;
+        }
 
-    bool VisitObjCForCollectionStmt(ObjCForCollectionStmt *stmt)
-    {
-        applyStmt<ObjCForCollectionStmt>(stmt);
+        bool VisitObjCForCollectionStmt(ObjCForCollectionStmt *stmt) {
+            applyStmt<ObjCForCollectionStmt>(stmt);
 
-        return true;
-    }
+            return true;
+        }
 
-    bool VisitDoStmt(DoStmt* stmt)
-    {
-        applyStmt<DoStmt>(stmt);
+        bool VisitDoStmt(DoStmt *stmt) {
+            applyStmt<DoStmt>(stmt);
 
-        return true;
-    }
+            return true;
+        }
 
-    bool VisitWhileStmt(WhileStmt* stmt)
-    {
-        applyStmt<WhileStmt>(stmt);
+        bool VisitWhileStmt(WhileStmt *stmt) {
+            applyStmt<WhileStmt>(stmt);
 
-        return true;
-    }
+            return true;
+        }
 };
 
 static RuleSet rules(new AvoidBranchingStatementAsLastInLoopRule());

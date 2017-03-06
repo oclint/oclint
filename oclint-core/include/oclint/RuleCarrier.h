@@ -3,8 +3,7 @@
 
 #include <string>
 
-namespace clang
-{
+namespace clang {
     class ASTContext;
     class SourceManager;
     class TranslationUnitDecl;
@@ -12,25 +11,23 @@ namespace clang
 
 #include "oclint/ViolationSet.h"
 
-namespace oclint
-{
+namespace oclint {
 
-class RuleCarrier
-{
-private:
-    ViolationSet *_violationSet;
-    clang::ASTContext *_astContext;
+    class RuleCarrier {
+        private:
+            ViolationSet *_violationSet;
+            clang::ASTContext *_astContext;
 
-public:
-    RuleCarrier(clang::ASTContext *astContext, ViolationSet *violationSet);
-    clang::ASTContext* getASTContext();
-    clang::SourceManager& getSourceManager();
-    std::string getMainFilePath();
-    clang::TranslationUnitDecl* getTranslationUnitDecl();
+        public:
+            RuleCarrier(clang::ASTContext *astContext, ViolationSet *violationSet);
+            clang::ASTContext *getASTContext();
+            clang::SourceManager &getSourceManager();
+            std::string getMainFilePath();
+            clang::TranslationUnitDecl *getTranslationUnitDecl();
 
-    void addViolation(std::string filePath, int startLine, int startColumn,
-        int endLine, int endColumn, RuleBase *rule, const std::string& message = "");
-};
+            void addViolation(std::string filePath, int startLine, int startColumn,
+                              int endLine, int endColumn, RuleBase *rule, const std::string &message = "");
+    };
 
 } // end namespace oclint
 

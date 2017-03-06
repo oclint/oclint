@@ -14,48 +14,40 @@ using namespace oclint;
  *   IEEE Transactions on Software Engineering: 308–320
  */
 
-class CyclomaticComplexityRule : public AbstractASTVisitorRule<CyclomaticComplexityRule>
-{
-private:
-    void applyDecl(Decl *decl)
-    {
-        int ccn = getCyclomaticComplexity(decl);
+class CyclomaticComplexityRule : public AbstractASTVisitorRule<CyclomaticComplexityRule> {
+    private:
+        void applyDecl(Decl *decl) {
+            int ccn = getCyclomaticComplexity(decl);
 
-        // In McBABE, 1976, A Complexity Measure, he suggested a reasonable number of 10
-        int threshold = RuleConfiguration::intForKey("CYCLOMATIC_COMPLEXITY", 10);
-        if (ccn > threshold)
-        {
-            string description = "Cyclomatic Complexity Number " +
-                toString<int>(ccn) + " exceeds limit of " + toString<int>(threshold);
-            addViolation(decl, this, description);
+            // In McBABE, 1976, A Complexity Measure, he suggested a reasonable number of 10
+            int threshold = RuleConfiguration::intForKey("CYCLOMATIC_COMPLEXITY", 10);
+            if (ccn > threshold) {
+                string description = "Cyclomatic Complexity Number " +
+                                     toString<int>(ccn) + " exceeds limit of " + toString<int>(threshold);
+                addViolation(decl, this, description);
+            }
         }
-    }
 
-public:
-    virtual const string name() const override
-    {
-        return "high cyclomatic complexity";
-    }
+    public:
+        virtual const string name() const override {
+            return "high cyclomatic complexity";
+        }
 
-    virtual int priority() const override
-    {
-        return 2;
-    }
+        virtual int priority() const override {
+            return 2;
+        }
 
-    virtual const string category() const override
-    {
-        return "size";
-    }
+        virtual const string category() const override {
+            return "size";
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.4";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.4";
+        }
 
-    virtual const string description() const override
-    {
-        return R"rst(
+        virtual const string description() const override {
+            return R"rst(
 Cyclomatic complexity is determined by the number of linearly independent paths
 through a program's source code. In other words, cyclomatic complexity of a method
 is measured by the number of decision points, like ``if``, ``while``, and ``for`` statements,
@@ -65,16 +57,14 @@ The experiments McCabe, the author of cyclomatic complexity, conclude that
 methods in the 3 to 7 complexity range are quite well structured. He also suggest
 the cyclomatic complexity of 10 is a reasonable upper limit.
         )rst";
-    }
+        }
 
-    virtual const string fileName() const override
-    {
-        return "CyclomaticComplexityRule.cpp";
-    }
+        virtual const string fileName() const override {
+            return "CyclomaticComplexityRule.cpp";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: cpp
 
     void example(int a, int b, int c) // 1
@@ -105,43 +95,38 @@ the cyclomatic complexity of 10 is a reasonable upper limit.
         }
     }
         )rst";
-    }
+        }
 
-    virtual const map<string, string> thresholds() const override
-    {
-        map<string, string> thresholdMapping;
-        thresholdMapping["CYCLOMATIC_COMPLEXITY"] =
-            "The cyclomatic complexity reporting threshold, default value is 10.";
-        return thresholdMapping;
-    }
+        virtual const map<string, string> thresholds() const override {
+            map<string, string> thresholdMapping;
+            thresholdMapping["CYCLOMATIC_COMPLEXITY"] =
+                "The cyclomatic complexity reporting threshold, default value is 10.";
+            return thresholdMapping;
+        }
 
-    virtual const string additionalDocument() const override
-    {
-        return R"rst(
+        virtual const string additionalDocument() const override {
+            return R"rst(
 **References:**
 
 McCabe (December 1976). `"A Complexity Measure" <http://www.literateprogramming.com/mccabe.pdf>`_.
 *IEEE Transactions on Software Engineering: 308–320*
         )rst";
-    }
+        }
 
-    virtual bool enableSuppress() const override
-    {
-        return true;
-    }
-#endif
+        virtual bool enableSuppress() const override {
+            return true;
+        }
+        #endif
 
-    bool VisitObjCMethodDecl(ObjCMethodDecl *decl)
-    {
-        applyDecl(decl);
-        return true;
-    }
+        bool VisitObjCMethodDecl(ObjCMethodDecl *decl) {
+            applyDecl(decl);
+            return true;
+        }
 
-    bool VisitFunctionDecl(FunctionDecl *decl)
-    {
-        applyDecl(decl);
-        return true;
-    }
+        bool VisitFunctionDecl(FunctionDecl *decl) {
+            applyDecl(decl);
+            return true;
+        }
 };
 
 static RuleSet rules(new CyclomaticComplexityRule());

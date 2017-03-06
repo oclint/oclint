@@ -4,19 +4,17 @@
 #include <exception>
 #include <string>
 
-namespace oclint
-{
+namespace oclint {
 
-class GenericException : public std::exception
-{
-public:
-    explicit GenericException(std::string desc);
-    virtual ~GenericException() throw() {}
-    virtual const char* what() const throw() override;
+    class GenericException : public std::exception {
+        public:
+            explicit GenericException(std::string desc);
+            virtual ~GenericException() throw() {}
+            virtual const char *what() const throw() override;
 
-private:
-    std::string description;
-};
+        private:
+            std::string description;
+    };
 
 } // end namespace oclint
 

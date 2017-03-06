@@ -6,57 +6,47 @@ using namespace clang;
 using namespace oclint;
 
 class NonCaseLabelInSwitchStatementRule :
-    public AbstractASTVisitorRule<NonCaseLabelInSwitchStatementRule>
-{
-    class ExtractLabelStmts : public RecursiveASTVisitor<ExtractLabelStmts>
-    {
-    private:
-        vector<LabelStmt*> *_labels;
+    public AbstractASTVisitorRule<NonCaseLabelInSwitchStatementRule> {
+        class ExtractLabelStmts : public RecursiveASTVisitor<ExtractLabelStmts> {
+            private:
+                vector<LabelStmt *> *_labels;
+
+            public:
+                void extract(SwitchStmt *switchStmt, vector<LabelStmt *> *labels) {
+                    _labels = labels;
+                    (void) /* explicitly ignore the return of this function */ TraverseStmt(switchStmt);
+                }
+
+                bool VisitLabelStmt(LabelStmt *labelStmt) {
+                    _labels->push_back(labelStmt);
+                    return true;
+                }
+        };
 
     public:
-        void extract(SwitchStmt *switchStmt, vector<LabelStmt*> *labels)
-        {
-            _labels = labels;
-            (void) /* explicitly ignore the return of this function */ TraverseStmt(switchStmt);
+        virtual const string name() const override {
+            return "non case label in switch statement";
         }
 
-        bool VisitLabelStmt(LabelStmt *labelStmt)
-        {
-            _labels->push_back(labelStmt);
-            return true;
+        virtual int priority() const override {
+            return 3;
         }
-    };
 
-public:
-    virtual const string name() const override
-    {
-        return "non case label in switch statement";
-    }
+        virtual const string category() const override {
+            return "convention";
+        }
 
-    virtual int priority() const override
-    {
-        return 3;
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.6";
+        }
 
-    virtual const string category() const override
-    {
-        return "convention";
-    }
+        virtual const string description() const override {
+            return "It is very confusing when label becomes part of the switch statement.";
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.6";
-    }
-
-    virtual const string description() const override
-    {
-        return "It is very confusing when label becomes part of the switch statement.";
-    }
-
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: cpp
 
     void example(int a)
@@ -71,21 +61,19 @@ public:
         }
     }
         )rst";
-    }
-#endif
-
-    bool VisitSwitchStmt(SwitchStmt *switchStmt)
-    {
-        vector<LabelStmt*> labels;
-        ExtractLabelStmts extractLabelStmts;
-        extractLabelStmts.extract(switchStmt, &labels);
-        for (const auto& labelStmt : labels)
-        {
-            addViolation(labelStmt, this);
         }
+        #endif
 
-        return true;
-    }
+        bool VisitSwitchStmt(SwitchStmt *switchStmt) {
+            vector<LabelStmt *> labels;
+            ExtractLabelStmts extractLabelStmts;
+            extractLabelStmts.extract(switchStmt, &labels);
+            for (const auto &labelStmt : labels) {
+                addViolation(labelStmt, this);
+            }
+
+            return true;
+        }
 };
 
 static RuleSet rules(new NonCaseLabelInSwitchStatementRule());

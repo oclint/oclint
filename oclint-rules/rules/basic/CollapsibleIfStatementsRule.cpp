@@ -5,68 +5,55 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class CollapsibleIfStatementsRule : public AbstractASTVisitorRule<CollapsibleIfStatementsRule>
-{
-private:
-    bool compoundStmtContainsOnlyOneIfStmt(CompoundStmt *compoundStmt)
-    {
-        return compoundStmt->size() == 1 && isa<IfStmt>(*(compoundStmt->body_begin()));
-    }
-
-    IfStmt *getInnerIfStmt(IfStmt *ifStmt)
-    {
-        Stmt *thenStmt = ifStmt->getThen();
-        if (thenStmt && isa<IfStmt>(thenStmt))
-        {
-            return dyn_cast<IfStmt>(thenStmt);
+class CollapsibleIfStatementsRule : public AbstractASTVisitorRule<CollapsibleIfStatementsRule> {
+    private:
+        bool compoundStmtContainsOnlyOneIfStmt(CompoundStmt *compoundStmt) {
+            return compoundStmt->size() == 1 && isa<IfStmt>(*(compoundStmt->body_begin()));
         }
-        if (thenStmt && isa<CompoundStmt>(thenStmt))
-        {
-            CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(thenStmt);
-            if (compoundStmtContainsOnlyOneIfStmt(compoundStmt))
-            {
-                return dyn_cast<IfStmt>(*(compoundStmt->body_begin()));
+
+        IfStmt *getInnerIfStmt(IfStmt *ifStmt) {
+            Stmt *thenStmt = ifStmt->getThen();
+            if (thenStmt && isa<IfStmt>(thenStmt)) {
+                return dyn_cast<IfStmt>(thenStmt);
             }
+            if (thenStmt && isa<CompoundStmt>(thenStmt)) {
+                CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(thenStmt);
+                if (compoundStmtContainsOnlyOneIfStmt(compoundStmt)) {
+                    return dyn_cast<IfStmt>(*(compoundStmt->body_begin()));
+                }
+            }
+            return nullptr;
         }
-        return nullptr;
-    }
 
-    bool checkElseBranch(IfStmt *outerIf, IfStmt *innerIf)
-    {
-        return outerIf->getElse() || innerIf->getElse();
-    }
+        bool checkElseBranch(IfStmt *outerIf, IfStmt *innerIf) {
+            return outerIf->getElse() || innerIf->getElse();
+        }
 
-public:
-    virtual const string name() const override
-    {
-        return "collapsible if statements";
-    }
+    public:
+        virtual const string name() const override {
+            return "collapsible if statements";
+        }
 
-    virtual int priority() const override
-    {
-        return 3;
-    }
+        virtual int priority() const override {
+            return 3;
+        }
 
-    virtual const string category() const override
-    {
-        return "basic";
-    }
+        virtual const string category() const override {
+            return "basic";
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.6";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.6";
+        }
 
-    virtual const string description() const override
-    {
-        return "This rule detects instances where the conditions of two consecutive if statements "
-            "can be combined into one in order to increase code cleanness and readability.";
-    }
+        virtual const string description() const override {
+            return "This rule detects instances where the conditions of two consecutive if statements "
+                   "can be combined into one in order to increase code cleanness and readability.";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: cpp
 
     void example(bool x, bool y)
@@ -80,19 +67,17 @@ public:
         }
     }
     )rst";
-    }
-#endif
-
-    bool VisitIfStmt(IfStmt *ifStmt)
-    {
-        IfStmt *innerIf = getInnerIfStmt(ifStmt);
-        if (innerIf && !checkElseBranch(ifStmt, innerIf))
-        {
-            addViolation(ifStmt, this);
         }
+        #endif
 
-        return true;
-    }
+        bool VisitIfStmt(IfStmt *ifStmt) {
+            IfStmt *innerIf = getInnerIfStmt(ifStmt);
+            if (innerIf && !checkElseBranch(ifStmt, innerIf)) {
+                addViolation(ifStmt, this);
+            }
+
+            return true;
+        }
 };
 
 static RuleSet rules(new CollapsibleIfStatementsRule());

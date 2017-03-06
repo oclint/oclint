@@ -1,8 +1,7 @@
 #ifndef OCLINT_EXITCODE_H
 #define OCLINT_EXITCODE_H
 
-enum ExitCode
-{
+enum ExitCode {
     SUCCESS,
     RULE_NOT_FOUND,
     REPORTER_NOT_FOUND,

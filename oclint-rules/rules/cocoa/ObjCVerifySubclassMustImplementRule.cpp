@@ -11,56 +11,46 @@ using namespace oclint;
 
 
 class ObjCVerifySubclassMustImplementRule : public
-    AbstractASTVisitorRule<ObjCVerifySubclassMustImplementRule>
-{
-public:
-    virtual const string name() const override
-    {
-        return "missing abstract method implementation";
-    }
+    AbstractASTVisitorRule<ObjCVerifySubclassMustImplementRule> {
+    public:
+        virtual const string name() const override {
+            return "missing abstract method implementation";
+        }
 
-    virtual const string attributeName() const override
-    {
-        return "abstract method";
-    }
+        virtual const string attributeName() const override {
+            return "abstract method";
+        }
 
-    virtual int priority() const override
-    {
-        return 1;
-    }
+        virtual int priority() const override {
+            return 1;
+        }
 
-    virtual const string category() const override
-    {
-        return "cocoa";
-    }
+        virtual const string category() const override {
+            return "cocoa";
+        }
 
-    virtual unsigned int supportedLanguages() const override
-    {
-        return LANG_OBJC;
-    }
+        virtual unsigned int supportedLanguages() const override {
+            return LANG_OBJC;
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.8";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.8";
+        }
 
-    virtual const string description() const override
-    {
-        return "Due to the Objective-C language tries to postpone the decision makings "
-            "to the runtime as much as possible, an abstract method is okay to be declared "
-            "but without implementations. This rule tries to verify the subclass implement "
-            "the correct abstract method.";
-    }
+        virtual const string description() const override {
+            return "Due to the Objective-C language tries to postpone the decision makings "
+                   "to the runtime as much as possible, an abstract method is okay to be declared "
+                   "but without implementations. This rule tries to verify the subclass implement "
+                   "the correct abstract method.";
+        }
 
-    virtual const string fileName() const override
-    {
-        return "ObjCVerifySubclassMustImplementRule.cpp";
-    }
+        virtual const string fileName() const override {
+            return "ObjCVerifySubclassMustImplementRule.cpp";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: objective-c
 
     @interface Parent
@@ -81,29 +71,29 @@ public:
 
     @end
     )rst";
-    }
-#endif
-
-    bool VisitObjCImplementationDecl(ObjCImplementationDecl* implementation) {
-        const auto parent = implementation->getClassInterface()->getSuperClass();
-        if(!parent) {
-            return true;
         }
-        // Look through the parent for marked methods
-        for(auto it = parent->meth_begin(), end = parent->meth_end(); it != end; ++it) {
-            const auto method = *it;
-            if(declHasEnforceAttribute(method, *this)) {
-                const auto selector = method->getSelector();
-                if(!implementation->getMethod(selector, method->isInstanceMethod())) {
-                    const string className = parent->getNameAsString();
-                    const string methodName = selector.getAsString();
-                    addViolation(implementation, this,
-                        "subclasses of " + className + " must implement " + methodName);
+        #endif
+
+        bool VisitObjCImplementationDecl(ObjCImplementationDecl *implementation) {
+            const auto parent = implementation->getClassInterface()->getSuperClass();
+            if (!parent) {
+                return true;
+            }
+            // Look through the parent for marked methods
+            for (auto it = parent->meth_begin(), end = parent->meth_end(); it != end; ++it) {
+                const auto method = *it;
+                if (declHasEnforceAttribute(method, *this)) {
+                    const auto selector = method->getSelector();
+                    if (!implementation->getMethod(selector, method->isInstanceMethod())) {
+                        const string className = parent->getNameAsString();
+                        const string methodName = selector.getAsString();
+                        addViolation(implementation, this,
+                                     "subclasses of " + className + " must implement " + methodName);
+                    }
                 }
             }
+            return true;
         }
-        return true;
-    }
 
 };
 

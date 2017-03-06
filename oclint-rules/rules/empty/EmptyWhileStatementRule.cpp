@@ -7,38 +7,31 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class EmptyWhileStatementRule : public AbstractEmptyBlockStmtRule<EmptyWhileStatementRule>
-{
-public:
-    virtual const string name() const override
-    {
-        return "empty while statement";
-    }
+class EmptyWhileStatementRule : public AbstractEmptyBlockStmtRule<EmptyWhileStatementRule> {
+    public:
+        virtual const string name() const override {
+            return "empty while statement";
+        }
 
-    virtual int priority() const override
-    {
-        return 2;
-    }
+        virtual int priority() const override {
+            return 2;
+        }
 
-    virtual const string category() const override
-    {
-        return "empty";
-    }
+        virtual const string category() const override {
+            return "empty";
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.6";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.6";
+        }
 
-    virtual const string description() const override
-    {
-        return "This rule detects instances where a while statement does nothing.";
-    }
+        virtual const string description() const override {
+            return "This rule detects instances where a while statement does nothing.";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: cpp
 
     void example(int a)
@@ -48,13 +41,12 @@ public:
         }
     }
         )rst";
-    }
-#endif
+        }
+        #endif
 
-    bool VisitWhileStmt(WhileStmt *whileStmt)
-    {
-        return checkLexicalEmptyStmt(whileStmt->getBody(), this);
-    }
+        bool VisitWhileStmt(WhileStmt *whileStmt) {
+            return checkLexicalEmptyStmt(whileStmt->getBody(), this);
+        }
 };
 
 static RuleSet rules(new EmptyWhileStatementRule());

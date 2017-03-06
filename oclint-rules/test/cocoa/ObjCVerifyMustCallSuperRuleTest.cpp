@@ -90,32 +90,27 @@ static const string testNormalMethod = "\
                                                     \n\
 ";
 
-TEST(ObjcVerifyMustCallSuperRuleTest, PropertyTest)
-{
+TEST(ObjcVerifyMustCallSuperRuleTest, PropertyTest) {
     ObjCVerifyMustCallSuperRule rule;
     EXPECT_EQ(1, rule.priority());
     EXPECT_EQ("missing call to base method", rule.name());
     EXPECT_EQ("cocoa", rule.category());
 }
 
-TEST(ObjcVerifyMustCallSuperRuleTest, AnnotationDoesCall)
-{
+TEST(ObjcVerifyMustCallSuperRuleTest, AnnotationDoesCall) {
     testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(), testAnnotationDoesCall);
 }
 
-TEST(ObjcVerifyMustCallSuperRuleTest, AnnotationDoesNotCall)
-{
+TEST(ObjcVerifyMustCallSuperRuleTest, AnnotationDoesNotCall) {
     testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(),
-        testAnnotationDoesNotCall, 0, 19, 1, 20, 1,
-        "overridden method viewWillAppear: must call super");
+                       testAnnotationDoesNotCall, 0, 19, 1, 20, 1,
+                       "overridden method viewWillAppear: must call super");
 }
 
-TEST(ObjcVerifyMustCallSuperRuleTest, AnnotationSuppression)
-{
+TEST(ObjcVerifyMustCallSuperRuleTest, AnnotationSuppression) {
     testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(), testAnnotationSuppression);
 }
 
-TEST(ObjcVerifyMustCallSuperRuleTest, NormalMethod)
-{
+TEST(ObjcVerifyMustCallSuperRuleTest, NormalMethod) {
     testRuleOnObjCCode(new ObjCVerifyMustCallSuperRule(), testNormalMethod);
 }

@@ -7,97 +7,82 @@ using namespace clang;
 using namespace oclint;
 
 class ThrowExceptionFromFinallyBlockRule :
-    public AbstractASTVisitorRule<ThrowExceptionFromFinallyBlockRule>
-{
-    class ExtractObjCAtThrowStmts : public RecursiveASTVisitor<ExtractObjCAtThrowStmts>
-    {
-    private:
-        vector<ObjCAtThrowStmt*> *_throws;
+    public AbstractASTVisitorRule<ThrowExceptionFromFinallyBlockRule> {
+        class ExtractObjCAtThrowStmts : public RecursiveASTVisitor<ExtractObjCAtThrowStmts> {
+            private:
+                vector<ObjCAtThrowStmt *> *_throws;
+
+            public:
+                void extract(ObjCAtFinallyStmt *finallyStmt, vector<ObjCAtThrowStmt *> *throws) {
+                    _throws = throws;
+                    (void) /* explicitly ignore the return of this function */ TraverseStmt(finallyStmt);
+                }
+
+                bool VisitObjCAtThrowStmt(ObjCAtThrowStmt *throwStmt) {
+                    _throws->push_back(throwStmt);
+                    return true;
+                }
+        };
+
+        class ExtractNSExceptionRaiser : public RecursiveASTVisitor<ExtractNSExceptionRaiser> {
+            private:
+                vector<ObjCMessageExpr *> *_raisers;
+
+            public:
+                void extract(ObjCAtFinallyStmt *finallyStmt, vector<ObjCMessageExpr *> *raisers) {
+                    _raisers = raisers;
+                    (void) /* explicitly ignore the return of this function */ TraverseStmt(finallyStmt);
+                }
+
+                bool VisitObjCMessageExpr(ObjCMessageExpr *objCMsgExpr) {
+                    string selectorString = objCMsgExpr->getSelector().getAsString();
+                    vector<string> selectorStrings;
+                    selectorStrings.push_back("raise");
+                    selectorStrings.push_back("raise:format:");
+                    selectorStrings.push_back("raise:format:arguments:");
+                    bool isRaiseMethod = vectorContains<string>(selectorString, selectorStrings);
+
+                    ObjCInterfaceDecl *objCInterfaceDecl = objCMsgExpr->getReceiverInterface();
+                    bool isNSExceptionClass = objCInterfaceDecl &&
+                                              objCInterfaceDecl->getNameAsString() == "NSException";
+
+                    if (isRaiseMethod && isNSExceptionClass) {
+                        _raisers->push_back(objCMsgExpr);
+                    }
+
+                    return true;
+                }
+        };
 
     public:
-        void extract(ObjCAtFinallyStmt *finallyStmt, vector<ObjCAtThrowStmt*> *throws)
-        {
-            _throws = throws;
-            (void) /* explicitly ignore the return of this function */ TraverseStmt(finallyStmt);
+        virtual const string name() const override {
+            return "throw exception from finally block";
         }
 
-        bool VisitObjCAtThrowStmt(ObjCAtThrowStmt *throwStmt)
-        {
-            _throws->push_back(throwStmt);
-            return true;
-        }
-    };
-
-    class ExtractNSExceptionRaiser : public RecursiveASTVisitor<ExtractNSExceptionRaiser>
-    {
-    private:
-        vector<ObjCMessageExpr*> *_raisers;
-
-    public:
-        void extract(ObjCAtFinallyStmt *finallyStmt, vector<ObjCMessageExpr*> *raisers)
-        {
-            _raisers = raisers;
-            (void) /* explicitly ignore the return of this function */ TraverseStmt(finallyStmt);
+        virtual int priority() const override {
+            return 2;
         }
 
-        bool VisitObjCMessageExpr(ObjCMessageExpr *objCMsgExpr)
-        {
-            string selectorString = objCMsgExpr->getSelector().getAsString();
-            vector<string> selectorStrings;
-            selectorStrings.push_back("raise");
-            selectorStrings.push_back("raise:format:");
-            selectorStrings.push_back("raise:format:arguments:");
-            bool isRaiseMethod = vectorContains<string>(selectorString, selectorStrings);
-
-            ObjCInterfaceDecl *objCInterfaceDecl = objCMsgExpr->getReceiverInterface();
-            bool isNSExceptionClass = objCInterfaceDecl &&
-                objCInterfaceDecl->getNameAsString() == "NSException";
-
-            if (isRaiseMethod && isNSExceptionClass)
-            {
-                _raisers->push_back(objCMsgExpr);
-            }
-
-            return true;
+        virtual const string category() const override {
+            return "basic";
         }
-    };
 
-public:
-    virtual const string name() const override
-    {
-        return "throw exception from finally block";
-    }
+        virtual unsigned int supportedLanguages() const override {
+            return LANG_OBJC;
+        }
 
-    virtual int priority() const override
-    {
-        return 2;
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.6";
+        }
 
-    virtual const string category() const override
-    {
-        return "basic";
-    }
+        virtual const string description() const override {
+            return "Throwing exceptions within a ``finally`` block "
+                   "may mask other exceptions or code defects.";
+        }
 
-    virtual unsigned int supportedLanguages() const override
-    {
-        return LANG_OBJC;
-    }
-
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.6";
-    }
-
-    virtual const string description() const override
-    {
-        return "Throwing exceptions within a ``finally`` block "
-            "may mask other exceptions or code defects.";
-    }
-
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: objective-c
 
     void example()
@@ -112,29 +97,26 @@ public:
         }
     }
     )rst";
-    }
-#endif
-
-    bool VisitObjCAtFinallyStmt(ObjCAtFinallyStmt *finallyStmt)
-    {
-        vector<ObjCAtThrowStmt*> throws;
-        ExtractObjCAtThrowStmts extractThrowStmts;
-        extractThrowStmts.extract(finallyStmt, &throws);
-        for (const auto& throwStmt : throws)
-        {
-            addViolation(throwStmt, this);
         }
+        #endif
 
-        vector<ObjCMessageExpr*> exceptionRaisers;
-        ExtractNSExceptionRaiser extractExceptions;
-        extractExceptions.extract(finallyStmt, &exceptionRaisers);
-        for (const auto& raiseExpr : exceptionRaisers)
-        {
-            addViolation(raiseExpr, this);
+        bool VisitObjCAtFinallyStmt(ObjCAtFinallyStmt *finallyStmt) {
+            vector<ObjCAtThrowStmt *> throws;
+            ExtractObjCAtThrowStmts extractThrowStmts;
+            extractThrowStmts.extract(finallyStmt, &throws);
+            for (const auto &throwStmt : throws) {
+                addViolation(throwStmt, this);
+            }
+
+            vector<ObjCMessageExpr *> exceptionRaisers;
+            ExtractNSExceptionRaiser extractExceptions;
+            extractExceptions.extract(finallyStmt, &exceptionRaisers);
+            for (const auto &raiseExpr : exceptionRaisers) {
+                addViolation(raiseExpr, this);
+            }
+
+            return true;
         }
-
-        return true;
-    }
 };
 
 static RuleSet rules(new ThrowExceptionFromFinallyBlockRule());

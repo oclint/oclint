@@ -7,38 +7,31 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class EmptyForStatementRule : public AbstractEmptyBlockStmtRule<EmptyForStatementRule>
-{
-public:
-    virtual const string name() const override
-    {
-        return "empty for statement";
-    }
+class EmptyForStatementRule : public AbstractEmptyBlockStmtRule<EmptyForStatementRule> {
+    public:
+        virtual const string name() const override {
+            return "empty for statement";
+        }
 
-    virtual int priority() const override
-    {
-        return 2;
-    }
+        virtual int priority() const override {
+            return 2;
+        }
 
-    virtual const string category() const override
-    {
-        return "empty";
-    }
+        virtual const string category() const override {
+            return "empty";
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.6";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.6";
+        }
 
-    virtual const string description() const override
-    {
-        return "This rule detects instances where a for statement does nothing.";
-    }
+        virtual const string description() const override {
+            return "This rule detects instances where a for statement does nothing.";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: objective-c
 
     void example(NSArray *array)
@@ -52,18 +45,16 @@ public:
         }
     }
         )rst";
-    }
-#endif
+        }
+        #endif
 
-    bool VisitForStmt(ForStmt *forStmt)
-    {
-        return checkLexicalEmptyStmt(forStmt->getBody(), this);
-    }
+        bool VisitForStmt(ForStmt *forStmt) {
+            return checkLexicalEmptyStmt(forStmt->getBody(), this);
+        }
 
-    bool VisitObjCForCollectionStmt(ObjCForCollectionStmt *forStmt)
-    {
-        return checkLexicalEmptyStmt(forStmt->getBody(), this);
-    }
+        bool VisitObjCForCollectionStmt(ObjCForCollectionStmt *forStmt) {
+            return checkLexicalEmptyStmt(forStmt->getBody(), this);
+        }
 };
 
 static RuleSet rules(new EmptyForStatementRule());

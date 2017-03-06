@@ -29,287 +29,245 @@ typedef signed char BOOL;\n\
 // there is no constant representation for short int and unsigned short int
 // since long double is not supported by NSNumber yet, so @3.14L is not supported
 
-TEST(ObjCNSNumberLiteralsRuleTest, PropertyTest)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, PropertyTest) {
     ObjCNSNumberLiteralsRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("use number literal", rule.name());
     EXPECT_EQ("migration", rule.category());
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, CharacterLiteral)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, CharacterLiteral) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *theLetterZ = @'Z'; }");
+                       "void m() { NSNumber *theLetterZ = @'Z'; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithChar)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithChar) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *theLetterZ = [NSNumber numberWithChar:'Z']; }",
-        0, 17, 35, 17, 63);
+                       "void m() { NSNumber *theLetterZ = [NSNumber numberWithChar:'Z']; }",
+                       0, 17, 35, 17, 63);
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithCharButInteger)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithCharButInteger) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *theLetterZ = [NSNumber numberWithChar:15]; }");
+                       "void m() { NSNumber *theLetterZ = [NSNumber numberWithChar:15]; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedChar)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedChar) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "char getZ() { return 'Z'; } void m() { NSNumber *theLetterZ = [NSNumber numberWithChar:(getZ())]; }");
+                       "char getZ() { return 'Z'; } void m() { NSNumber *theLetterZ = [NSNumber numberWithChar:(getZ())]; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, IntLiteral)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, IntLiteral) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwo = @42; }");
+                       "void m() { NSNumber *fortyTwo = @42; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithInt)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithInt) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwo = [NSNumber numberWithInt:42]; }",
-        0, 17, 33, 17, 59);
+                       "void m() { NSNumber *fortyTwo = [NSNumber numberWithInt:42]; }",
+                       0, 17, 33, 17, 59);
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedInt)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedInt) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwo = [NSNumber numberWithInt:(43 - 1)]; }");
+                       "void m() { NSNumber *fortyTwo = [NSNumber numberWithInt:(43 - 1)]; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, UnsignedIntLiteral)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, UnsignedIntLiteral) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsigned = @42U; }");
+                       "void m() { NSNumber *fortyTwoUnsigned = @42U; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithUnsignedInt)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithUnsignedInt) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsigned = [NSNumber numberWithUnsignedInt:42U]; }",
-        0, 17, 41, 17, 76);
+                       "void m() { NSNumber *fortyTwoUnsigned = [NSNumber numberWithUnsignedInt:42U]; }",
+                       0, 17, 41, 17, 76);
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsigned = [NSNumber numberWithUnsignedInt:42u]; }",
-        0, 17, 41, 17, 76);
+                       "void m() { NSNumber *fortyTwoUnsigned = [NSNumber numberWithUnsignedInt:42u]; }",
+                       0, 17, 41, 17, 76);
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedUnsignedIntButInterger)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedUnsignedIntButInterger) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsigned = [NSNumber numberWithUnsignedInt:42]; }");
+                       "void m() { NSNumber *fortyTwoUnsigned = [NSNumber numberWithUnsignedInt:42]; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedUnsignedInt)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedUnsignedInt) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsigned = [NSNumber numberWithUnsignedInt:(43U - 1U)]; }");
+                       "void m() { NSNumber *fortyTwoUnsigned = [NSNumber numberWithUnsignedInt:(43U - 1U)]; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, LongLiteral)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, LongLiteral) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoLong = @42L; }");
+                       "void m() { NSNumber *fortyTwoLong = @42L; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithLong)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithLong) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoLong = [NSNumber numberWithLong:42L]; }",
-        0, 17, 37, 17, 65);
+                       "void m() { NSNumber *fortyTwoLong = [NSNumber numberWithLong:42L]; }",
+                       0, 17, 37, 17, 65);
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoLong = [NSNumber numberWithLong:42l]; }",
-        0, 17, 37, 17, 65);
+                       "void m() { NSNumber *fortyTwoLong = [NSNumber numberWithLong:42l]; }",
+                       0, 17, 37, 17, 65);
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedLong)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedLong) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoLong = [NSNumber numberWithLong:(43L - 1L)]; }");
+                       "void m() { NSNumber *fortyTwoLong = [NSNumber numberWithLong:(43L - 1L)]; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, UnsignedLongLiteral)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, UnsignedLongLiteral) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsignedLong = @42UL; }");
+                       "void m() { NSNumber *fortyTwoUnsignedLong = @42UL; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithUnsignedLong)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithUnsignedLong) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsignedLong = [NSNumber numberWithUnsignedLong:42UL]; }",
-        0, 17, 45, 17, 82);
+                       "void m() { NSNumber *fortyTwoUnsignedLong = [NSNumber numberWithUnsignedLong:42UL]; }",
+                       0, 17, 45, 17, 82);
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsignedLong = [NSNumber numberWithUnsignedLong:42ul]; }",
-        0, 17, 45, 17, 82);
+                       "void m() { NSNumber *fortyTwoUnsignedLong = [NSNumber numberWithUnsignedLong:42ul]; }",
+                       0, 17, 45, 17, 82);
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedUnsignedLong)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedUnsignedLong) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsignedLong = [NSNumber numberWithUnsignedLong:(43UL - 1UL)]; }");
+                       "void m() { NSNumber *fortyTwoUnsignedLong = [NSNumber numberWithUnsignedLong:(43UL - 1UL)]; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, LongLongLiteral)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, LongLongLiteral) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoLongLong = @42LL; }");
+                       "void m() { NSNumber *fortyTwoLongLong = @42LL; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithLongLong)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithLongLong) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoLongLong = [NSNumber numberWithLongLong:42LL]; }",
-        0, 17, 41, 17, 74);
+                       "void m() { NSNumber *fortyTwoLongLong = [NSNumber numberWithLongLong:42LL]; }",
+                       0, 17, 41, 17, 74);
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoLongLong = [NSNumber numberWithLongLong:42ll]; }",
-        0, 17, 41, 17, 74);
+                       "void m() { NSNumber *fortyTwoLongLong = [NSNumber numberWithLongLong:42ll]; }",
+                       0, 17, 41, 17, 74);
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedLongLong)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedLongLong) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoLongLong = [NSNumber numberWithLongLong:(43LL - 1LL)]; }");
+                       "void m() { NSNumber *fortyTwoLongLong = [NSNumber numberWithLongLong:(43LL - 1LL)]; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, UnsignedLongLongLiteral)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, UnsignedLongLongLiteral) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsignedLongLong = @42ULL; }");
+                       "void m() { NSNumber *fortyTwoUnsignedLongLong = @42ULL; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithUnsignedLongLong)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithUnsignedLongLong) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsignedLongLong = [NSNumber numberWithUnsignedLongLong:42ULL]; }",
-        0, 17, 49, 17, 91);
+                       "void m() { NSNumber *fortyTwoUnsignedLongLong = [NSNumber numberWithUnsignedLongLong:42ULL]; }",
+                       0, 17, 49, 17, 91);
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsignedLongLong = [NSNumber numberWithUnsignedLongLong:42ull]; }",
-        0, 17, 49, 17, 91);
+                       "void m() { NSNumber *fortyTwoUnsignedLongLong = [NSNumber numberWithUnsignedLongLong:42ull]; }",
+                       0, 17, 49, 17, 91);
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedUnsignedLongLong)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedUnsignedLongLong) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoUnsignedLongLong = [NSNumber numberWithUnsignedLongLong:(43ULL - 1ULL)]; }");
+                       "void m() { NSNumber *fortyTwoUnsignedLongLong = [NSNumber numberWithUnsignedLongLong:(43ULL - 1ULL)]; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, FloatLiteral)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, FloatLiteral) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoFloat = @3.1415926535F; }");
+                       "void m() { NSNumber *fortyTwoFloat = @3.1415926535F; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithFloat)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithFloat) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoFloat = [NSNumber numberWithFloat:3.1415926535F]; }",
-        0, 17, 38, 17, 77);
+                       "void m() { NSNumber *fortyTwoFloat = [NSNumber numberWithFloat:3.1415926535F]; }",
+                       0, 17, 38, 17, 77);
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoFloat = [NSNumber numberWithFloat:3.1415926535f]; }",
-        0, 17, 38, 17, 77);
+                       "void m() { NSNumber *fortyTwoFloat = [NSNumber numberWithFloat:3.1415926535f]; }",
+                       0, 17, 38, 17, 77);
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedFloat)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedFloat) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoFloat = [NSNumber numberWithFloat:(4.1415926535F - 1.0F)]; }");
+                       "void m() { NSNumber *fortyTwoFloat = [NSNumber numberWithFloat:(4.1415926535F - 1.0F)]; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, DoubleLiteral)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, DoubleLiteral) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoDouble = @3.1415926535; }");
+                       "void m() { NSNumber *fortyTwoDouble = @3.1415926535; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithDouble)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithDouble) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoDouble = [NSNumber numberWithDouble:3.1415926535]; }",
-        0, 17, 39, 17, 78);
+                       "void m() { NSNumber *fortyTwoDouble = [NSNumber numberWithDouble:3.1415926535]; }",
+                       0, 17, 39, 17, 78);
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedDouble)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedDouble) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix +
-        "void m() { NSNumber *fortyTwoDouble = [NSNumber numberWithDouble:(4.1415926535 - 1.0)]; }");
+                       "void m() { NSNumber *fortyTwoDouble = [NSNumber numberWithDouble:(4.1415926535 - 1.0)]; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, BOOLYesLiteral_newBOOLDef)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, BOOLYesLiteral_newBOOLDef) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix + newBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = @YES; }");
+                       "void m() { NSNumber *fortyTwoBOOL = @YES; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoolYes_newBOOLDef)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoolYes_newBOOLDef) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix + newBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:YES]; }",
-        0, 20, 37, 20, 65);
+                       "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:YES]; }",
+                       0, 20, 37, 20, 65);
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedBOOLYes_newBOOLDef)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedBOOLYes_newBOOLDef) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix + newBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!YES)]; }");
+                       "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!YES)]; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, BOOLNoLiteral_newBOOLDef)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, BOOLNoLiteral_newBOOLDef) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix + newBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = @NO; }");
+                       "void m() { NSNumber *fortyTwoBOOL = @NO; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoolNo_newBOOLDef)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoolNo_newBOOLDef) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix + newBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:NO]; }",
-        0, 20, 37, 20, 64);
+                       "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:NO]; }",
+                       0, 20, 37, 20, 64);
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedBOOLNo_newBOOLDef)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedBOOLNo_newBOOLDef) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix + newBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!NO)]; }");
+                       "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!NO)]; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, BOOLYesLiteral_oldBOOLDef)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, BOOLYesLiteral_oldBOOLDef) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix + oldBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = @YES; }");
+                       "void m() { NSNumber *fortyTwoBOOL = @YES; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoolYes_oldBOOLDef)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoolYes_oldBOOLDef) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix + oldBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:YES]; }",
-        0, 20, 37, 20, 65);
+                       "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:YES]; }",
+                       0, 20, 37, 20, 65);
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedBOOLYes_oldBOOLDef)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedBOOLYes_oldBOOLDef) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix + oldBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!YES)]; }");
+                       "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!YES)]; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, BOOLNoLiteral_oldBOOLDef)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, BOOLNoLiteral_oldBOOLDef) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix + oldBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = @NO; }");
+                       "void m() { NSNumber *fortyTwoBOOL = @NO; }");
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoolNo_oldBOOLDef)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoolNo_oldBOOLDef) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix + oldBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:NO]; }",
-        0, 20, 37, 20, 64);
+                       "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:NO]; }",
+                       0, 20, 37, 20, 64);
 }
 
-TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedBOOLNo_oldBOOLDef)
-{
+TEST(ObjCNSNumberLiteralsRuleTest, NumberWithBoxedBOOLNo_oldBOOLDef) {
     testRuleOnObjCCode(new ObjCNSNumberLiteralsRule(), objcNSNumberPrefix + oldBOOLDef +
-        "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!NO)]; }");
+                       "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!NO)]; }");
 }

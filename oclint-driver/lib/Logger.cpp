@@ -6,10 +6,8 @@
 
 #ifndef NDEBUG
 
-llvm::raw_ostream &oclint::logger::debugStream()
-{
-    if (llvm::DebugFlag)
-    {
+llvm::raw_ostream &oclint::logger::debugStream() {
+    if (llvm::DebugFlag) {
         return llvm::dbgs();
     }
     return llvm::nulls();
@@ -17,13 +15,12 @@ llvm::raw_ostream &oclint::logger::debugStream()
 
 #endif
 
-llvm::raw_ostream &oclint::logger::verboseStream()
-{
-#ifndef NDEBUG
+llvm::raw_ostream &oclint::logger::verboseStream() {
+    #ifndef NDEBUG
     if (llvm::DebugFlag || oclint::option::enableVerbose())
-#else
+    #else
     if (oclint::option::enableVerbose())
-#endif
+    #endif
     {
         return llvm::outs();
     }

@@ -7,38 +7,31 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class EmptyTryStatementRule : public AbstractEmptyBlockStmtRule<EmptyTryStatementRule>
-{
-public:
-    virtual const string name() const override
-    {
-        return "empty try statement";
-    }
+class EmptyTryStatementRule : public AbstractEmptyBlockStmtRule<EmptyTryStatementRule> {
+    public:
+        virtual const string name() const override {
+            return "empty try statement";
+        }
 
-    virtual int priority() const override
-    {
-        return 2;
-    }
+        virtual int priority() const override {
+            return 2;
+        }
 
-    virtual const string category() const override
-    {
-        return "empty";
-    }
+        virtual const string category() const override {
+            return "empty";
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.6";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.6";
+        }
 
-    virtual const string description() const override
-    {
-        return "This rule detects instances where a try statement is empty.";
-    }
+        virtual const string description() const override {
+            return "This rule detects instances where a try statement is empty.";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: cpp
 
     void example()
@@ -52,18 +45,16 @@ public:
         }
     }
         )rst";
-    }
-#endif
+        }
+        #endif
 
-    bool VisitCXXTryStmt(CXXTryStmt *tryStmt)
-    {
-        return checkLexicalEmptyStmt(tryStmt->getTryBlock(), this);
-    }
+        bool VisitCXXTryStmt(CXXTryStmt *tryStmt) {
+            return checkLexicalEmptyStmt(tryStmt->getTryBlock(), this);
+        }
 
-    bool VisitObjCAtTryStmt(ObjCAtTryStmt *tryStmt)
-    {
-        return checkLexicalEmptyStmt(tryStmt->getTryBody(), this);
-    }
+        bool VisitObjCAtTryStmt(ObjCAtTryStmt *tryStmt) {
+            return checkLexicalEmptyStmt(tryStmt->getTryBody(), this);
+        }
 };
 
 static RuleSet rules(new EmptyTryStatementRule());

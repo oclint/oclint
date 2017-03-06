@@ -2,39 +2,33 @@
 
 #include "rules/convention/PreferEarlyExitRule.cpp"
 
-class PreferEarlyExitRuleTest : public ::testing::Test
-{
-protected:
-    virtual void SetUp() override
-    {
-        RuleConfiguration::addConfiguration("MAXIMUM_IF_LENGTH", "3");
-    }
-
-    virtual void TearDown() override
-    {
-        RuleConfiguration::removeAll();
-    }
-
-    std::string filler(const std::string& filling, int count)
-    {
-        std::string result;
-        result.reserve(filling.size() * count);
-        for (int i = 0; i != count; ++i)
-        {
-            result += filling;
+class PreferEarlyExitRuleTest : public ::testing::Test {
+    protected:
+        virtual void SetUp() override {
+            RuleConfiguration::addConfiguration("MAXIMUM_IF_LENGTH", "3");
         }
-        return result;
-    }
+
+        virtual void TearDown() override {
+            RuleConfiguration::removeAll();
+        }
+
+        std::string filler(const std::string &filling, int count) {
+            std::string result;
+            result.reserve(filling.size() * count);
+            for (int i = 0; i != count; ++i) {
+                result += filling;
+            }
+            return result;
+        }
 };
 
-struct Loop
-{
-    const char* name;
-    const char* start;
-    const char* end;
+struct Loop {
+    const char *name;
+    const char *start;
+    const char *end;
 };
 
-::std::ostream& operator<<(::std::ostream& os, const Loop& loop) {
+::std::ostream &operator<<(::std::ostream &os, const Loop &loop) {
     return os << loop.name;
 }
 
@@ -60,81 +54,71 @@ const Loop loops[] = {
 };
 
 class LoopsTest : public PreferEarlyExitRuleTest,
-                  public ::testing::WithParamInterface<Loop>
-{
-protected:
-    std::string getTestCode(int ifStatementBodyLength)
-    {
-        const Loop loop = GetParam();
-        std::string code = "int test(int a) {\n";
-        code += loop.start;
-        code += "if (a) {\n";
-        code += filler("a *= 2;\n", ifStatementBodyLength);
-        code += "}\n";
-        code += loop.end;
-        code += "return a;\n";
-        code += "}\n";
-        return code;
-    }
+    public ::testing::WithParamInterface<Loop> {
+    protected:
+        std::string getTestCode(int ifStatementBodyLength) {
+            const Loop loop = GetParam();
+            std::string code = "int test(int a) {\n";
+            code += loop.start;
+            code += "if (a) {\n";
+            code += filler("a *= 2;\n", ifStatementBodyLength);
+            code += "}\n";
+            code += loop.end;
+            code += "return a;\n";
+            code += "}\n";
+            return code;
+        }
 };
 
 class FlowControlStatementsTest : public PreferEarlyExitRuleTest,
-                                  public ::testing::WithParamInterface<const char*>
-{
-protected:
-    std::string getTestCode(int ifStatementBodyLength)
-    {
-        std::string code = "int test(int a) {\n";
-        code += "void const* label_ptr = &&LABEL;\n";
-        code += "LABEL:\n";
-        code += "for (;;) {\n";
-        code += "  int i = 2;\n";
-        code += "  if (a) {\n";
-        code += filler("i *= 2;\n", ifStatementBodyLength);
-        code += "  }\n";
-        code += GetParam();
-        code += "\n}\n";
-        code += "}\n";
-        return code;
-    }
+    public ::testing::WithParamInterface<const char *> {
+    protected:
+        std::string getTestCode(int ifStatementBodyLength) {
+            std::string code = "int test(int a) {\n";
+            code += "void const* label_ptr = &&LABEL;\n";
+            code += "LABEL:\n";
+            code += "for (;;) {\n";
+            code += "  int i = 2;\n";
+            code += "  if (a) {\n";
+            code += filler("i *= 2;\n", ifStatementBodyLength);
+            code += "  }\n";
+            code += GetParam();
+            code += "\n}\n";
+            code += "}\n";
+            return code;
+        }
 };
 
-TEST_F(PreferEarlyExitRuleTest, PropertyTest)
-{
+TEST_F(PreferEarlyExitRuleTest, PropertyTest) {
     PreferEarlyExitRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("prefer early exits and continue", rule.name());
     EXPECT_EQ("convention", rule.category());
 }
 
-TEST_P(LoopsTest, LoopWithShortIf)
-{
+TEST_P(LoopsTest, LoopWithShortIf) {
     std::string code = getTestCode(1);
     testRuleOnCode(new PreferEarlyExitRule(), code);
 }
 
-TEST_P(LoopsTest, LoopWithLongIf)
-{
+TEST_P(LoopsTest, LoopWithLongIf) {
     std::string code = getTestCode(2);
     testRuleOnCode(new PreferEarlyExitRule(), code, 0, 4, 1, 7, 1,
                    PreferEarlyExitRule::getMessage());
 }
 
-TEST_P(FlowControlStatementsTest, FunctionWithShortIf)
-{
+TEST_P(FlowControlStatementsTest, FunctionWithShortIf) {
     std::string code = getTestCode(1);
     testRuleOnCode(new PreferEarlyExitRule(), code);
 }
 
-TEST_P(FlowControlStatementsTest, FunctionWithLongIf)
-{
+TEST_P(FlowControlStatementsTest, FunctionWithLongIf) {
     std::string code = getTestCode(2);
     testRuleOnCode(new PreferEarlyExitRule(), code, 0, 6, 3, 9, 3,
                    PreferEarlyExitRule::getMessage());
 }
 
-TEST_F(PreferEarlyExitRuleTest, LongIfAndReturnInsideBlock)
-{
+TEST_F(PreferEarlyExitRuleTest, LongIfAndReturnInsideBlock) {
     std::string code = "int test(int a) {\n";
     code += "  int i = 2;\n";
     code += "  if (a) {\n";

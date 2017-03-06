@@ -3,26 +3,24 @@
 
 #include <llvm/Support/raw_ostream.h>
 
-namespace oclint
-{
-namespace logger
-{
+namespace oclint {
+    namespace logger {
 #ifndef NDEBUG
     llvm::raw_ostream &debugStream();
 #endif
-    llvm::raw_ostream &verboseStream();
-} // end namespace logger
+        llvm::raw_ostream &verboseStream();
+    } // end namespace logger
 } // end namespace oclint
 
 #ifndef NDEBUG
 
-#define LOG_DEBUG(MSG) oclint::logger::debugStream() << MSG
-#define LOG_DEBUG_LINE(MSG) LOG_DEBUG(MSG << "\n")
+    #define LOG_DEBUG(MSG) oclint::logger::debugStream() << MSG
+    #define LOG_DEBUG_LINE(MSG) LOG_DEBUG(MSG << "\n")
 
 #else
 
-#define LOG_DEBUG(MSG)
-#define LOG_DEBUG_LINE(MSG)
+    #define LOG_DEBUG(MSG)
+    #define LOG_DEBUG_LINE(MSG)
 
 #endif
 

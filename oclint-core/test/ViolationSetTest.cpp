@@ -7,41 +7,35 @@
 using namespace ::testing;
 using namespace oclint;
 
-class MockRuleBase : public RuleBase
-{
-public:
-    MOCK_METHOD0(apply, void());
-    MOCK_CONST_METHOD0(name, const std::string());
-    MOCK_CONST_METHOD0(priority, int());
-    MOCK_CONST_METHOD0(category, const std::string());
+class MockRuleBase : public RuleBase {
+    public:
+        MOCK_METHOD0(apply, void());
+        MOCK_CONST_METHOD0(name, const std::string());
+        MOCK_CONST_METHOD0(priority, int());
+        MOCK_CONST_METHOD0(category, const std::string());
 };
 
-class ViolationSetTest : public ::testing::Test
-{
-protected:
-    virtual void SetUp() override
-    {
+class ViolationSetTest : public ::testing::Test {
+    protected:
+        virtual void SetUp() override {
+            ViolationSet ViolationSetTest_violationSet;
+            rule = new MockRuleBase();
+        }
+
+        virtual void TearDown() override {
+            delete rule;
+        }
+
         ViolationSet ViolationSetTest_violationSet;
-        rule = new MockRuleBase();
-    }
 
-    virtual void TearDown() override
-    {
-        delete rule;
-    }
-
-    ViolationSet ViolationSetTest_violationSet;
-
-    RuleBase* rule;
+        RuleBase *rule;
 };
 
-TEST_F(ViolationSetTest, EmptySet)
-{
+TEST_F(ViolationSetTest, EmptySet) {
     EXPECT_THAT(ViolationSetTest_violationSet.numberOfViolations(), Eq(0));
 }
 
-TEST_F(ViolationSetTest, AddViolation)
-{
+TEST_F(ViolationSetTest, AddViolation) {
     RuleBase *rule = new MockRuleBase();
     Violation violation(rule, "test path", 1, 2, 3, 4, "test message");
     ViolationSetTest_violationSet.addViolation(violation);
@@ -56,8 +50,7 @@ TEST_F(ViolationSetTest, AddViolation)
     EXPECT_THAT(compareViolation.endColumn, Eq(4));
 }
 
-TEST_F(ViolationSetTest, EqualSameEntry)
-{
+TEST_F(ViolationSetTest, EqualSameEntry) {
     ViolationSet set1;
     ViolationSet set2;
     EXPECT_TRUE(set1 == set2);
@@ -72,8 +65,7 @@ TEST_F(ViolationSetTest, EqualSameEntry)
     EXPECT_TRUE(set2 == set1);
 }
 
-TEST_F(ViolationSetTest, EqualDifferentEntry)
-{
+TEST_F(ViolationSetTest, EqualDifferentEntry) {
     ViolationSet set1;
     ViolationSet set2;
     EXPECT_TRUE(set1 == set2);
@@ -88,8 +80,7 @@ TEST_F(ViolationSetTest, EqualDifferentEntry)
     EXPECT_FALSE(set2 == set1);
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     ::testing::InitGoogleMock(&argc, argv);
     return RUN_ALL_TESTS();
 }

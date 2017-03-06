@@ -7,38 +7,31 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class EmptyFinallyStatementRule : public AbstractEmptyBlockStmtRule<EmptyFinallyStatementRule>
-{
-public:
-    virtual const string name() const override
-    {
-        return "empty finally statement";
-    }
+class EmptyFinallyStatementRule : public AbstractEmptyBlockStmtRule<EmptyFinallyStatementRule> {
+    public:
+        virtual const string name() const override {
+            return "empty finally statement";
+        }
 
-    virtual int priority() const override
-    {
-        return 2;
-    }
+        virtual int priority() const override {
+            return 2;
+        }
 
-    virtual const string category() const override
-    {
-        return "empty";
-    }
+        virtual const string category() const override {
+            return "empty";
+        }
 
-#ifdef DOCGEN
-    virtual const string since() const override
-    {
-        return "0.6";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.6";
+        }
 
-    virtual const string description() const override
-    {
-        return "This rule detects instances where a finally statement does nothing.";
-    }
+        virtual const string description() const override {
+            return "This rule detects instances where a finally statement does nothing.";
+        }
 
-    virtual const string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: objective-c
 
     void example()
@@ -57,13 +50,12 @@ public:
         }
     }
         )rst";
-    }
-#endif
+        }
+        #endif
 
-    bool VisitObjCAtFinallyStmt(ObjCAtFinallyStmt *finallyStmt)
-    {
-        return checkLexicalEmptyStmt(finallyStmt->getFinallyBody(), this);
-    }
+        bool VisitObjCAtFinallyStmt(ObjCAtFinallyStmt *finallyStmt) {
+            return checkLexicalEmptyStmt(finallyStmt->getFinallyBody(), this);
+        }
 };
 
 static RuleSet rules(new EmptyFinallyStatementRule());
