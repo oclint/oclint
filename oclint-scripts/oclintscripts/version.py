@@ -28,14 +28,13 @@ def llvm_branches():
     return [llvm_master_branch(), llvm_latest_release_branch()]
 
 def llvm_default_branch():
-    return llvm_master_branch()
-    # return llvm_latest_release_branch()
+    return llvm_latest_release_branch()
 
 def llvm_master_branch():
     return 'trunk'
 
 def llvm_latest_release_branch():
-    return 'tags/RELEASE_391/final'
+    return 'tags/RELEASE_400/final'
 
 def countly_cpp_tag():
     return '16.9.1'
