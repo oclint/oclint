@@ -201,7 +201,8 @@ static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *
     clang::FileManager *fileManager, bool runClangChecker = false)
 {
     auto compilerInstance = new oclint::CompilerInstance();
-    compilerInstance->setInvocation(compilerInvocation);
+    auto invocation = std::make_shared<clang::CompilerInvocation>(*compilerInvocation);
+    compilerInstance->setInvocation(std::move(invocation));
     compilerInstance->setFileManager(fileManager);
     compilerInstance->createDiagnostics(new DiagnosticDispatcher(runClangChecker));
     if (!compilerInstance->hasDiagnostics())
