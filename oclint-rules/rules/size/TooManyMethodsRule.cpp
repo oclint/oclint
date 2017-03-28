@@ -7,43 +7,36 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class TooManyMethodsRule : public AbstractASTVisitorRule<TooManyMethodsRule>
-{
-private:
-    int _threshold;
+class TooManyMethodsRule : public AbstractASTVisitorRule<TooManyMethodsRule> {
+    private:
+        int _threshold;
 
-public:
-    virtual const string name() const override
-    {
-        return "too many methods";
-    }
+    public:
+        virtual const string name() const override {
+            return "too many methods";
+        }
 
-    virtual int priority() const override
-    {
-        return 3;
-    }
+        virtual int priority() const override {
+            return 3;
+        }
 
-    virtual const string category() const override
-    {
-        return "size";
-    }
+        virtual const string category() const override {
+            return "size";
+        }
 
-#ifdef DOCGEN
-    virtual const std::string since() const override
-    {
-        return "0.7";
-    }
+        #ifdef DOCGEN
+        virtual const string since() const override {
+            return "0.7";
+        }
 
-    virtual const std::string description() const override
-    {
-        return "A class with too many methods indicates it does too many things "
-            "and is hard to read and understand. "
-            "It usually contains complicated code, and should be refactored.";
-    }
+        virtual const string description() const override {
+            return "A class with too many methods indicates it does too many things "
+                   "and is hard to read and understand. "
+                   "It usually contains complicated code, and should be refactored.";
+        }
 
-    virtual const std::string example() const override
-    {
-        return R"rst(
+        virtual const string example() const override {
+            return R"rst(
 .. code-block:: cpp
 
     class c
@@ -66,45 +59,39 @@ public:
         int ae();
     };
         )rst";
-    }
-
-    virtual const std::map<std::string, std::string> thresholds() const override
-    {
-        std::map<std::string, std::string> thresholdMapping;
-        thresholdMapping["TOO_MANY_METHODS"] =
-            "The reporting threshold for too many methods, default value is 30.";
-        return thresholdMapping;
-    }
-#endif
-
-    virtual void setUp() override
-    {
-        _threshold = RuleConfiguration::intForKey("TOO_MANY_METHODS", 30);
-    }
-
-    bool VisitObjCImplDecl(ObjCImplDecl *decl)
-    {
-        int methodCount = distance(decl->meth_begin(), decl->meth_end());
-        if (methodCount > _threshold)
-        {
-            string description = "Objective-C implementation with " + toString<int>(methodCount) +
-                " methods exceeds limit of " + toString<int>(_threshold);
-            addViolation(decl, this, description);
         }
-        return true;
-    }
 
-    bool VisitCXXRecordDecl(CXXRecordDecl *decl)
-    {
-        int methodCount = distance(decl->method_begin(), decl->method_end());
-        if (methodCount > _threshold)
-        {
-            string description = "C++ class with " + toString<int>(methodCount) +
-                " methods exceeds limit of " + toString<int>(_threshold);
-            addViolation(decl, this, description);
+        virtual const map<string, string> thresholds() const override {
+            map<string, string> thresholdMapping;
+            thresholdMapping["TOO_MANY_METHODS"] =
+                "The reporting threshold for too many methods, default value is 30.";
+            return thresholdMapping;
         }
-        return true;
-    }
+        #endif
+
+        virtual void setUp() override {
+            _threshold = RuleConfiguration::intForKey("TOO_MANY_METHODS", 30);
+        }
+
+        bool VisitObjCImplDecl(ObjCImplDecl *decl) {
+            int methodCount = distance(decl->meth_begin(), decl->meth_end());
+            if (methodCount > _threshold) {
+                string description = "Objective-C implementation with " + toString<int>(methodCount) +
+                                     " methods exceeds limit of " + toString<int>(_threshold);
+                addViolation(decl, this, description);
+            }
+            return true;
+        }
+
+        bool VisitCXXRecordDecl(CXXRecordDecl *decl) {
+            int methodCount = distance(decl->method_begin(), decl->method_end());
+            if (methodCount > _threshold) {
+                string description = "C++ class with " + toString<int>(methodCount) +
+                                     " methods exceeds limit of " + toString<int>(_threshold);
+                addViolation(decl, this, description);
+            }
+            return true;
+        }
 };
 
 static RuleSet rules(new TooManyMethodsRule());

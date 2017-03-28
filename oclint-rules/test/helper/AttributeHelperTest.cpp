@@ -8,187 +8,167 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class AttributeHelperTestCallRule : public AbstractASTVisitorRule<AttributeHelperTestCallRule>
-{
-public:
-    virtual const string name() const override
-    {
-        return "test ast rule";
-    }
-
-    virtual const string attributeName() const override {
-        return "test attribute";
-    }
-
-    virtual int priority() const override
-    {
-        return 0;
-    }
-
-    virtual const string category() const override
-    {
-        return "test";
-    }
-
-    bool VisitObjCMessageExpr(ObjCMessageExpr* expr)
-    {
-        const auto method = expr->getMethodDecl();
-        if(declHasActionAttribute(method, "enforce", *this)) {
-            addViolation(expr, this);
+class AttributeHelperTestCallRule : public AbstractASTVisitorRule<AttributeHelperTestCallRule> {
+    public:
+        virtual const string name() const override {
+            return "test ast rule";
         }
-        return true;
-    }
 
-    bool VisitCallExpr(CallExpr* expr)
-    {
-        if(declHasActionAttribute(expr->getCalleeDecl(), "enforce", *this)) {
-            addViolation(expr, this);
+        virtual const string attributeName() const override {
+            return "test attribute";
         }
-        return true;
-    }
+
+        virtual int priority() const override {
+            return 0;
+        }
+
+        virtual const string category() const override {
+            return "test";
+        }
+
+        bool VisitObjCMessageExpr(ObjCMessageExpr *expr) {
+            const auto method = expr->getMethodDecl();
+            if (declHasActionAttribute(method, "enforce", *this)) {
+                addViolation(expr, this);
+            }
+            return true;
+        }
+
+        bool VisitCallExpr(CallExpr *expr) {
+            if (declHasActionAttribute(expr->getCalleeDecl(), "enforce", *this)) {
+                addViolation(expr, this);
+            }
+            return true;
+        }
 };
 
-class AttributeHelperTestCallCommentRule : public AbstractASTVisitorRule<AttributeHelperTestCallCommentRule>
-{
-public:
-    virtual const string name() const override
-    {
-        return "test ast rule";
-    }
-
-    virtual const string attributeName() const override {
-        return "test attribute";
-    }
-
-    virtual int priority() const override
-    {
-        return 0;
-    }
-
-    virtual const string category() const override
-    {
-        return "test";
-    }
-
-    bool VisitCallExpr(CallExpr* expr)
-    {
-        std::string comment;
-        if(declHasActionAttribute(expr->getCalleeDecl(), "enforce", *this, &comment)) {
-            if(!comment.empty()) {
-                addViolation(expr, this, comment);
-            }
-            else {
-                addViolation(expr, this, "no comment");
-            }
+class AttributeHelperTestCallCommentRule : public
+    AbstractASTVisitorRule<AttributeHelperTestCallCommentRule> {
+    public:
+        virtual const string name() const override {
+            return "test ast rule";
         }
-        return true;
-    }
+
+        virtual const string attributeName() const override {
+            return "test attribute";
+        }
+
+        virtual int priority() const override {
+            return 0;
+        }
+
+        virtual const string category() const override {
+            return "test";
+        }
+
+        bool VisitCallExpr(CallExpr *expr) {
+            std::string comment;
+            if (declHasActionAttribute(expr->getCalleeDecl(), "enforce", *this, &comment)) {
+                if (!comment.empty()) {
+                    addViolation(expr, this, comment);
+                } else {
+                    addViolation(expr, this, "no comment");
+                }
+            }
+            return true;
+        }
 };
 
-TEST(AttributeHelperTestCallRuleTest, PropertyTest)
-{
+TEST(AttributeHelperTestCallRuleTest, PropertyTest) {
     AttributeHelperTestCallRule rule;
     EXPECT_EQ(0, rule.priority());
     EXPECT_EQ("test ast rule", rule.name());
     EXPECT_EQ("test attribute", rule.attributeName());
 }
 
-TEST(AttributeHelperTestCallRuleTest, NoAttributeFunctionCall)
-{
+TEST(AttributeHelperTestCallRuleTest, NoAttributeFunctionCall) {
     AttributeHelperTestCallRule rule;
     testRuleOnCode(&rule,
-        R"END(
+                   R"END(
             void a();
             void b() {
                 a();
             }
         )END"
-    );
+                  );
 }
 
-TEST(AttributeHelperTestCallRuleTest, AttributeFunctionCall)
-{
+TEST(AttributeHelperTestCallRuleTest, AttributeFunctionCall) {
     AttributeHelperTestCallRule rule;
     testRuleOnCode(&rule,
-        R"END(
+                   R"END(
             void a() __attribute__((annotate("oclint:enforce[test attribute]")));
             void b() {
                 a();
             }
         )END",
-        0, 4, 17, 4, 19);
+                   0, 4, 17, 4, 19);
 }
 
-TEST(AttributeHelperTestCallRuleTest, IncorrectAction)
-{
+TEST(AttributeHelperTestCallRuleTest, IncorrectAction) {
     AttributeHelperTestCallRule rule;
     testRuleOnCode(&rule,
-        R"END(
+                   R"END(
             void a() __attribute__((annotate("oclint:wrong[test attribute]")));
             void b() {
                 a();
             }
         )END"
-    );
+                  );
 }
 
-TEST(AttributeHelperTestCallRuleTest, BadFormat)
-{
+TEST(AttributeHelperTestCallRuleTest, BadFormat) {
     AttributeHelperTestCallRule rule;
     testRuleOnCode(&rule,
-        R"END(
+                   R"END(
             void a() __attribute__((annotate("oclint-sfdklj]")));
             void b() {
                 a();
             }
         )END"
-    );
+                  );
 }
 
-TEST(AttributeHelperTestCallRuleTest, IncorrectAttribute)
-{
+TEST(AttributeHelperTestCallRuleTest, IncorrectAttribute) {
     AttributeHelperTestCallRule rule;
     testRuleOnCode(&rule,
-        R"END(
+                   R"END(
             void a() __attribute__((annotate("oclint:enforce[wrong attribute]")));
             void b() {
                 a();
             }
         )END"
-    );
+                  );
 }
 
-TEST(AttributeHelperTestCallRuleTest, ExtraFunctionDeclBefore)
-{
+TEST(AttributeHelperTestCallRuleTest, ExtraFunctionDeclBefore) {
     AttributeHelperTestCallRule rule;
     testRuleOnCode(&rule,
-        R"END(
+                   R"END(
             void a();
             void a() __attribute__((annotate("oclint:enforce[test attribute]")));
             void b() {
                 a();
             })END",
-        0, 5, 17, 5, 19);
+                   0, 5, 17, 5, 19);
 }
 
-TEST(AttributeHelperTestCallRuleTest, ExtraFunctionDeclAfter)
-{
+TEST(AttributeHelperTestCallRuleTest, ExtraFunctionDeclAfter) {
     AttributeHelperTestCallRule rule;
     testRuleOnCode(&rule,
-        R"END(
+                   R"END(
             void a() __attribute__((annotate("oclint:enforce[test attribute]")));
             void a();
             void b() {
                 a();
             })END",
-        0, 5, 17, 5, 19);
+                   0, 5, 17, 5, 19);
 }
 
-TEST(AttributeHelperTestCallRuleTest, MethodNoAttribute)
-{
+TEST(AttributeHelperTestCallRuleTest, MethodNoAttribute) {
     AttributeHelperTestCallRule rule;
     testRuleOnObjCCode(&rule,
-       R"END(
+                       R"END(
             __attribute__((objc_root_class))
             @interface SomeObject
             @end
@@ -199,14 +179,13 @@ TEST(AttributeHelperTestCallRuleTest, MethodNoAttribute)
             }
             @end
         )END"
-    );
+                      );
 }
 
-TEST(AttributeHelperTestCallRuleTest, MethodAttribute)
-{
+TEST(AttributeHelperTestCallRuleTest, MethodAttribute) {
     AttributeHelperTestCallRule rule;
     testRuleOnObjCCode(&rule,
-       R"END(
+                       R"END(
             __attribute__((objc_root_class))
             @interface SomeObject
             - (void)foo __attribute__((annotate("oclint:enforce[test attribute]")));
@@ -218,14 +197,13 @@ TEST(AttributeHelperTestCallRuleTest, MethodAttribute)
             }
             @end
         )END",
-    0, 9, 17, 9, 26);
+                       0, 9, 17, 9, 26);
 }
 
-TEST(AttributeHelperTestCallRuleTest, CategoryAttribute)
-{
+TEST(AttributeHelperTestCallRuleTest, CategoryAttribute) {
     AttributeHelperTestCallRule rule;
     testRuleOnObjCCode(&rule,
-       R"END(
+                       R"END(
             __attribute__((objc_root_class))
             @interface SomeObject
             - (void)foo;
@@ -241,14 +219,13 @@ TEST(AttributeHelperTestCallRuleTest, CategoryAttribute)
             }
             @end
         )END",
-    0, 13, 17, 13, 26);
+                       0, 13, 17, 13, 26);
 }
 
-TEST(AttributeHelperTestCallRuleTest, PropertyAttribute)
-{
+TEST(AttributeHelperTestCallRuleTest, PropertyAttribute) {
     AttributeHelperTestCallRule rule;
     testRuleOnObjCCode(&rule,
-       R"END(
+                       R"END(
             __attribute__((objc_root_class))
             @interface SomeObject
             @property (strong, nonatomic) SomeObject* foo __attribute__((annotate("oclint:enforce[test attribute]")));
@@ -260,15 +237,14 @@ TEST(AttributeHelperTestCallRuleTest, PropertyAttribute)
             }
             @end
         )END",
-    0, 9, 22, 9, 22);
+                       0, 9, 22, 9, 22);
 }
 
 
-TEST(AttributeHelperTestCallRuleTest, ProtocolAttribute)
-{
+TEST(AttributeHelperTestCallRuleTest, ProtocolAttribute) {
     AttributeHelperTestCallRule rule;
     testRuleOnObjCCode(&rule,
-       R"END(
+                       R"END(
             @protocol SomeProtocol
             - (void)foo __attribute__((annotate("oclint:enforce[test attribute]")));
             @end
@@ -283,14 +259,13 @@ TEST(AttributeHelperTestCallRuleTest, ProtocolAttribute)
             }
             @end
         )END",
-    0, 12, 17, 12, 26);
+                       0, 12, 17, 12, 26);
 }
 
-TEST(AttributeHelperTestCallRuleTest, CategoryPropertyAttribute)
-{
+TEST(AttributeHelperTestCallRuleTest, CategoryPropertyAttribute) {
     AttributeHelperTestCallRule rule;
     testRuleOnObjCCode(&rule,
-       R"END(
+                       R"END(
             __attribute__((objc_root_class))
             @interface SomeObject
             @property (strong, nonatomic) SomeObject* foo;
@@ -306,14 +281,13 @@ TEST(AttributeHelperTestCallRuleTest, CategoryPropertyAttribute)
             }
             @end
         )END",
-    0, 13, 22, 13, 22);
+                       0, 13, 22, 13, 22);
 }
 
-TEST(AttributeHelperTestCallRuleTest, CategoryPropertyRedeclaredAttribute)
-{
+TEST(AttributeHelperTestCallRuleTest, CategoryPropertyRedeclaredAttribute) {
     AttributeHelperTestCallRule rule;
     testRuleOnObjCCode(&rule,
-       R"END(
+                       R"END(
             __attribute__((objc_root_class))
             @interface SomeObject
             @property (strong, nonatomic) SomeObject* foo __attribute__((annotate("oclint:enforce[test attribute]")));
@@ -329,83 +303,77 @@ TEST(AttributeHelperTestCallRuleTest, CategoryPropertyRedeclaredAttribute)
             }
             @end
         )END",
-    0, 13, 22, 13, 22);
+                       0, 13, 22, 13, 22);
 }
 
-TEST(AttributeHelperTestCallRuleTest, CorrectComment)
-{
+TEST(AttributeHelperTestCallRuleTest, CorrectComment) {
     AttributeHelperTestCallCommentRule rule;
     testRuleOnCode(&rule,
-        R"END(
+                   R"END(
             void a() __attribute__((annotate("oclint:enforce[test attribute][foo]")));
             void b() {
                 a();
             }
         )END"
-    , 0, 4, 17, 4, 19, "foo");
+                   , 0, 4, 17, 4, 19, "foo");
 }
 
-TEST(AttributeHelperTestCallRuleTest, MissingClose)
-{
+TEST(AttributeHelperTestCallRuleTest, MissingClose) {
     AttributeHelperTestCallCommentRule rule;
     testRuleOnCode(&rule,
-        R"END(
+                   R"END(
             void a() __attribute__((annotate("oclint:enforce[test attribute][foo")));
             void b() {
                 a();
             }
         )END"
-    , 0, 4, 17, 4, 19, "no comment");
+                   , 0, 4, 17, 4, 19, "no comment");
 }
 
-TEST(AttributeHelperTestCallRuleTest, ExtraClose)
-{
+TEST(AttributeHelperTestCallRuleTest, ExtraClose) {
     AttributeHelperTestCallCommentRule rule;
     testRuleOnCode(&rule,
-        R"END(
+                   R"END(
             void a() __attribute__((annotate("oclint:enforce[test attribute][foo]]")));
             void b() {
                 a();
             }
         )END"
-    , 0, 4, 17, 4, 19, "foo]");
+                   , 0, 4, 17, 4, 19, "foo]");
 }
 
-TEST(AttributeHelperTestCallRuleTest, NoComment)
-{
+TEST(AttributeHelperTestCallRuleTest, NoComment) {
     AttributeHelperTestCallCommentRule rule;
     testRuleOnCode(&rule,
-        R"END(
+                   R"END(
             void a() __attribute__((annotate("oclint:enforce[test attribute]")));
             void b() {
                 a();
             }
         )END"
-    , 0, 4, 17, 4, 19, "no comment");
+                   , 0, 4, 17, 4, 19, "no comment");
 }
 
-TEST(AttributeHelperTestCallRuleTest, ParensComment)
-{
+TEST(AttributeHelperTestCallRuleTest, ParensComment) {
     AttributeHelperTestCallCommentRule rule;
     testRuleOnCode(&rule,
-        R"END(
+                   R"END(
             void a() __attribute__((annotate("oclint:enforce[test attribute](comment)")));
             void b() {
                 a();
             }
         )END"
-    , 0, 4, 17, 4, 19, "no comment");
+                   , 0, 4, 17, 4, 19, "no comment");
 }
 
-TEST(AttributeHelperTestCallRuleTest, ExtraJunk)
-{
+TEST(AttributeHelperTestCallRuleTest, ExtraJunk) {
     AttributeHelperTestCallCommentRule rule;
     testRuleOnCode(&rule,
-        R"END(
+                   R"END(
             void a() __attribute__((annotate("oclint:enforce[test attribute]sdkjfl")));
             void b() {
                 a();
             }
         )END"
-    , 0, 4, 17, 4, 19, "no comment");
+                   , 0, 4, 17, 4, 19, "no comment");
 }

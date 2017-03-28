@@ -6,12 +6,11 @@
 
 using namespace oclint;
 
-Violation::Violation(RuleBase* violatedRule, std::string violationFilePath,
+Violation::Violation(RuleBase *violatedRule, std::string violationFilePath,
                      int violationStartLine, int violationStartColumn,
                      int violationEndLine, int violationEndColumn,
                      std::string violationMessage)
-    : path(std::move(violationFilePath)), message(std::move(violationMessage))
-{
+    : path(std::move(violationFilePath)), message(std::move(violationMessage)) {
     rule = violatedRule;
     startLine = violationStartLine;
     startColumn = violationStartColumn;
@@ -19,13 +18,12 @@ Violation::Violation(RuleBase* violatedRule, std::string violationFilePath,
     endColumn = violationEndColumn;
 }
 
-bool Violation::operator==(const oclint::Violation &rhs) const
-{
+bool Violation::operator==(const oclint::Violation &rhs) const {
     return (rule == rhs.rule)
-            && (path == rhs.path)
-            && (startLine == rhs.startLine)
-            && (startColumn == rhs.startColumn)
-            && (endLine == rhs.endLine)
-            && (endColumn == rhs.endColumn)
-            && (message == rhs.message);
+           && (path == rhs.path)
+           && (startLine == rhs.startLine)
+           && (startColumn == rhs.startColumn)
+           && (endLine == rhs.endLine)
+           && (endColumn == rhs.endColumn)
+           && (message == rhs.message);
 }

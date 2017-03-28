@@ -10,42 +10,36 @@
 using namespace ::testing;
 using namespace oclint;
 
-class MockRuleBaseOne : public RuleBase
-{
-public:
-    MOCK_METHOD0(apply, void());
-    MOCK_CONST_METHOD0(name, const std::string());
-    MOCK_CONST_METHOD0(category, const std::string());
+class MockRuleBaseOne : public RuleBase {
+    public:
+        MOCK_METHOD0(apply, void());
+        MOCK_CONST_METHOD0(name, const std::string());
+        MOCK_CONST_METHOD0(category, const std::string());
 
-    virtual int priority() const
-    {
-        return 1;
-    }
+        virtual int priority() const {
+            return 1;
+        }
 };
 
-class MockRuleBaseTwo : public RuleBase
-{
-public:
-    MOCK_METHOD0(apply, void());
-    MOCK_CONST_METHOD0(name, const std::string());
-    MOCK_CONST_METHOD0(category, const std::string());
+class MockRuleBaseTwo : public RuleBase {
+    public:
+        MOCK_METHOD0(apply, void());
+        MOCK_CONST_METHOD0(name, const std::string());
+        MOCK_CONST_METHOD0(category, const std::string());
 
-    virtual int priority() const
-    {
-        return 2;
-    }
+        virtual int priority() const {
+            return 2;
+        }
 };
 
-class ResultsTest_ResultsStub : public ResultCollector
-{
-public:
-    ResultsTest_ResultsStub() : ResultCollector() {}
+class ResultsTest_ResultsStub : public ResultCollector {
+    public:
+        ResultsTest_ResultsStub() : ResultCollector() {}
 
-    ~ResultsTest_ResultsStub() {}
+        ~ResultsTest_ResultsStub() {}
 };
 
-TEST(ResultsTest, EmptyResults)
-{
+TEST(ResultsTest, EmptyResults) {
     ResultsTest_ResultsStub collector;
     RawResults results(collector);
     EXPECT_THAT(results.numberOfViolations(), Eq(0));
@@ -62,8 +56,7 @@ TEST(ResultsTest, EmptyResults)
     EXPECT_FALSE(results.hasCheckerBugs());
 }
 
-TEST(ResultsTest, NumberOfFiles)
-{
+TEST(ResultsTest, NumberOfFiles) {
     ResultsTest_ResultsStub collector;
     RawResults results(collector);
     collector.add(new ViolationSet());
@@ -73,8 +66,7 @@ TEST(ResultsTest, NumberOfFiles)
     EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(0));
 }
 
-TEST(ResultsTest, NumberOfFilesWithViolations)
-{
+TEST(ResultsTest, NumberOfFilesWithViolations) {
     ResultsTest_ResultsStub collector;
     RawResults results(collector);
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
@@ -102,8 +94,7 @@ TEST(ResultsTest, NumberOfFilesWithViolations)
     EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(2));
 }
 
-TEST(ResultsTest, NumberOfViolations)
-{
+TEST(ResultsTest, NumberOfViolations) {
     ResultsTest_ResultsStub collector;
     RawResults results(collector);
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
@@ -122,8 +113,7 @@ TEST(ResultsTest, NumberOfViolations)
     EXPECT_THAT(results.numberOfViolations(), Eq(3));
 }
 
-TEST(ResultsTest, NumberOfViolationsWithPriority)
-{
+TEST(ResultsTest, NumberOfViolationsWithPriority) {
     ResultsTest_ResultsStub collector;
     RawResults results(collector);
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
@@ -145,8 +135,7 @@ TEST(ResultsTest, NumberOfViolationsWithPriority)
     EXPECT_THAT(results.numberOfViolationsWithPriority(2), Eq(1));
 }
 
-TEST(ResultsTest, CompilerErrors)
-{
+TEST(ResultsTest, CompilerErrors) {
     ResultsTest_ResultsStub collector;
     RawResults results(collector);
     Violation violation1(0, "test error path", 1, 2, 0, 0, "test error message");
@@ -184,8 +173,7 @@ TEST(ResultsTest, CompilerErrors)
     EXPECT_FALSE(results.hasCheckerBugs());
 }
 
-TEST(ResultsTest, CompilerWarnings)
-{
+TEST(ResultsTest, CompilerWarnings) {
     ResultsTest_ResultsStub collector;
     RawResults results(collector);
     Violation violation1(0, "test warning path", 1, 2, 0, 0, "test warning message");
@@ -223,8 +211,7 @@ TEST(ResultsTest, CompilerWarnings)
     EXPECT_FALSE(results.hasCheckerBugs());
 }
 
-TEST(ResultsTest, CheckerBugs)
-{
+TEST(ResultsTest, CheckerBugs) {
     ResultsTest_ResultsStub collector;
     RawResults results(collector);
     Violation violation1(0, "test checker bug path", 1, 2, 0, 0, "test checker bug message");
@@ -262,8 +249,7 @@ TEST(ResultsTest, CheckerBugs)
     EXPECT_FALSE(results.hasWarnings());
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     ::testing::InitGoogleMock(&argc, argv);
     return RUN_ALL_TESTS();
 }

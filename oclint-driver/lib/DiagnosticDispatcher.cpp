@@ -10,20 +10,17 @@
 
 using namespace oclint;
 
-DiagnosticDispatcher::DiagnosticDispatcher(bool runClangChecker)
-{
+DiagnosticDispatcher::DiagnosticDispatcher(bool runClangChecker) {
     _isCheckerCustomer = runClangChecker;
 }
 
-struct LocalSourceLocation
-{
+struct LocalSourceLocation {
     int line;
     int column;
     std::string filename;
 };
 
-LocalSourceLocation emptySourceLocation()
-{
+LocalSourceLocation emptySourceLocation() {
     LocalSourceLocation sourceLoc;
     sourceLoc.line = 0;
     sourceLoc.column = 0;
@@ -31,8 +28,7 @@ LocalSourceLocation emptySourceLocation()
     return sourceLoc;
 }
 
-LocalSourceLocation populateSourceLocation(const clang::Diagnostic &diagnosticInfo)
-{
+LocalSourceLocation populateSourceLocation(const clang::Diagnostic &diagnosticInfo) {
     LocalSourceLocation sourceLoc = emptySourceLocation();
 
     if (!diagnosticInfo.hasSourceManager()) {
@@ -44,14 +40,11 @@ LocalSourceLocation populateSourceLocation(const clang::Diagnostic &diagnosticIn
 
     llvm::StringRef sourceFilename = sourceManager->getFilename(location);
     // If we didn't match, and we have a macro location try to expand it
-    if (sourceFilename.empty() && location.isMacroID())
-    {
+    if (sourceFilename.empty() && location.isMacroID()) {
         clang::SourceLocation macroLocation = sourceManager->getExpansionLoc(location);
         llvm::StringRef expansionFilename = sourceManager->getFilename(macroLocation);
         sourceLoc.filename = expansionFilename.str();
-    }
-    else
-    {
+    } else {
         sourceLoc.filename = sourceFilename.str();
     }
 
@@ -62,8 +55,7 @@ LocalSourceLocation populateSourceLocation(const clang::Diagnostic &diagnosticIn
 }
 
 void DiagnosticDispatcher::HandleDiagnostic(clang::DiagnosticsEngine::Level diagnosticLevel,
-    const clang::Diagnostic &diagnosticInfo)
-{
+        const clang::Diagnostic &diagnosticInfo) {
     clang::DiagnosticConsumer::HandleDiagnostic(diagnosticLevel, diagnosticInfo);
 
     clang::SmallString<100> diagnosticMessage;
@@ -72,23 +64,18 @@ void DiagnosticDispatcher::HandleDiagnostic(clang::DiagnosticsEngine::Level diag
     LocalSourceLocation localSourceLocation = populateSourceLocation(diagnosticInfo);
 
     Violation violation(nullptr,
-        localSourceLocation.filename, localSourceLocation.line, localSourceLocation.column,
-        0, 0, diagnosticMessage.str().str());
+                        localSourceLocation.filename, localSourceLocation.line, localSourceLocation.column,
+                        0, 0, diagnosticMessage.str().str());
 
     ResultCollector *results = ResultCollector::getInstance();
-    if (_isCheckerCustomer)
-    {
+    if (_isCheckerCustomer) {
         results->addCheckerBug(violation);
-    }
-    else
-    {
-        if (diagnosticLevel == clang::DiagnosticsEngine::Warning)
-        {
+    } else {
+        if (diagnosticLevel == clang::DiagnosticsEngine::Warning) {
             results->addWarning(violation);
         }
         if (diagnosticLevel == clang::DiagnosticsEngine::Error ||
-            diagnosticLevel == clang::DiagnosticsEngine::Fatal)
-        {
+                diagnosticLevel == clang::DiagnosticsEngine::Fatal) {
             results->addError(violation);
         }
     }

@@ -9,62 +9,53 @@
 using namespace ::testing;
 using namespace oclint;
 
-class MockRuleBaseOne : public RuleBase
-{
-public:
-    MOCK_METHOD0(apply, void());
-    MOCK_CONST_METHOD0(name, const std::string());
-    MOCK_CONST_METHOD0(category, const std::string());
+class MockRuleBaseOne : public RuleBase {
+    public:
+        MOCK_METHOD0(apply, void());
+        MOCK_CONST_METHOD0(name, const std::string());
+        MOCK_CONST_METHOD0(category, const std::string());
 
-    virtual int priority() const
-    {
-        return 1;
-    }
+        virtual int priority() const {
+            return 1;
+        }
 };
 
-class MockRuleBaseTwo : public RuleBase
-{
-public:
-    MOCK_METHOD0(apply, void());
-    MOCK_CONST_METHOD0(name, const std::string());
-    MOCK_CONST_METHOD0(category, const std::string());
+class MockRuleBaseTwo : public RuleBase {
+    public:
+        MOCK_METHOD0(apply, void());
+        MOCK_CONST_METHOD0(name, const std::string());
+        MOCK_CONST_METHOD0(category, const std::string());
 
-    virtual int priority() const
-    {
-        return 2;
-    }
+        virtual int priority() const {
+            return 2;
+        }
 };
 
-class ResultsTest_ResultsStub : public ResultCollector
-{
-public:
-    ResultsTest_ResultsStub() : ResultCollector() {}
+class ResultsTest_ResultsStub : public ResultCollector {
+    public:
+        ResultsTest_ResultsStub() : ResultCollector() {}
 
-    ~ResultsTest_ResultsStub() {}
+        ~ResultsTest_ResultsStub() {}
 };
 
-class UniqueResultsTest : public ::testing::Test
-{
-protected:
-    virtual void SetUp() override
-    {
-        ruleOne = new MockRuleBaseOne;
-        ruleTwo = new MockRuleBaseTwo;
-    }
+class UniqueResultsTest : public ::testing::Test {
+    protected:
+        virtual void SetUp() override {
+            ruleOne = new MockRuleBaseOne;
+            ruleTwo = new MockRuleBaseTwo;
+        }
 
-    virtual void TearDown() override
-    {
-        delete ruleOne;
-        delete ruleTwo;
-    }
+        virtual void TearDown() override {
+            delete ruleOne;
+            delete ruleTwo;
+        }
 
-    RuleBase* ruleOne;
-    RuleBase* ruleTwo;
+        RuleBase *ruleOne;
+        RuleBase *ruleTwo;
 };
 
 
-TEST_F(UniqueResultsTest, EmptyResults)
-{
+TEST_F(UniqueResultsTest, EmptyResults) {
     ResultsTest_ResultsStub collector;
     UniqueResults results(collector);
     EXPECT_THAT(results.numberOfViolations(), Eq(0));
@@ -81,8 +72,7 @@ TEST_F(UniqueResultsTest, EmptyResults)
     EXPECT_FALSE(results.hasCheckerBugs());
 }
 
-TEST_F(UniqueResultsTest, NumberOfFiles)
-{
+TEST_F(UniqueResultsTest, NumberOfFiles) {
     ResultsTest_ResultsStub collector;
     UniqueResults results(collector);
     collector.add(new ViolationSet());
@@ -92,8 +82,7 @@ TEST_F(UniqueResultsTest, NumberOfFiles)
     EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(0));
 }
 
-TEST_F(UniqueResultsTest, NumberOfFilesWithViolations)
-{
+TEST_F(UniqueResultsTest, NumberOfFilesWithViolations) {
     ResultsTest_ResultsStub collector;
     UniqueResults results(collector);
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
@@ -112,8 +101,7 @@ TEST_F(UniqueResultsTest, NumberOfFilesWithViolations)
     EXPECT_THAT(results.numberOfFilesWithViolations(), Eq(2));
 }
 
-TEST_F(UniqueResultsTest, NumberOfViolations1)
-{
+TEST_F(UniqueResultsTest, NumberOfViolations1) {
     ResultsTest_ResultsStub collector;
     UniqueResults results(collector);
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
@@ -123,8 +111,7 @@ TEST_F(UniqueResultsTest, NumberOfViolations1)
     EXPECT_THAT(results.numberOfViolations(), Eq(1));
 }
 
-TEST_F(UniqueResultsTest, NumberOfViolations2)
-{
+TEST_F(UniqueResultsTest, NumberOfViolations2) {
     ResultsTest_ResultsStub collector;
     UniqueResults results(collector);
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
@@ -135,8 +122,7 @@ TEST_F(UniqueResultsTest, NumberOfViolations2)
     EXPECT_THAT(results.numberOfViolations(), Eq(1));
 }
 
-TEST_F(UniqueResultsTest, NumberOfViolations3)
-{
+TEST_F(UniqueResultsTest, NumberOfViolations3) {
     ResultsTest_ResultsStub collector;
     UniqueResults results(collector);
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
@@ -153,8 +139,7 @@ TEST_F(UniqueResultsTest, NumberOfViolations3)
     EXPECT_THAT(results.numberOfViolations(), Eq(2));
 }
 
-TEST_F(UniqueResultsTest, NumberOfViolationsWithPriority1)
-{
+TEST_F(UniqueResultsTest, NumberOfViolationsWithPriority1) {
     ResultsTest_ResultsStub collector;
     UniqueResults results(collector);
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
@@ -165,8 +150,7 @@ TEST_F(UniqueResultsTest, NumberOfViolationsWithPriority1)
     EXPECT_THAT(results.numberOfViolationsWithPriority(2), Eq(0));
 }
 
-TEST_F(UniqueResultsTest, NumberOfViolationsWithPriority2)
-{
+TEST_F(UniqueResultsTest, NumberOfViolationsWithPriority2) {
     ResultsTest_ResultsStub collector;
     UniqueResults results(collector);
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
@@ -178,8 +162,7 @@ TEST_F(UniqueResultsTest, NumberOfViolationsWithPriority2)
     EXPECT_THAT(results.numberOfViolationsWithPriority(2), Eq(0));
 }
 
-TEST_F(UniqueResultsTest, NumberOfViolationsWithPriority3)
-{
+TEST_F(UniqueResultsTest, NumberOfViolationsWithPriority3) {
     ResultsTest_ResultsStub collector;
     UniqueResults results(collector);
     ViolationSet *violationSetWithOneViolation = new ViolationSet();
@@ -197,8 +180,7 @@ TEST_F(UniqueResultsTest, NumberOfViolationsWithPriority3)
     EXPECT_THAT(results.numberOfViolationsWithPriority(2), Eq(1));
 }
 
-TEST_F(UniqueResultsTest, CompilerErrors)
-{
+TEST_F(UniqueResultsTest, CompilerErrors) {
     ResultsTest_ResultsStub collector;
     UniqueResults results(collector);
     Violation violation(0, "test error path", 1, 2, 0, 0, "test error message");
@@ -228,8 +210,7 @@ TEST_F(UniqueResultsTest, CompilerErrors)
     EXPECT_FALSE(results.hasCheckerBugs());
 }
 
-TEST_F(UniqueResultsTest, CompilerWarnings)
-{
+TEST_F(UniqueResultsTest, CompilerWarnings) {
     ResultsTest_ResultsStub collector;
     UniqueResults results(collector);
     Violation violation(0, "test warning path", 1, 2, 0, 0, "test warning message");
@@ -259,8 +240,7 @@ TEST_F(UniqueResultsTest, CompilerWarnings)
     EXPECT_FALSE(results.hasCheckerBugs());
 }
 
-TEST_F(UniqueResultsTest, CheckerBugs)
-{
+TEST_F(UniqueResultsTest, CheckerBugs) {
     ResultsTest_ResultsStub collector;
     UniqueResults results(collector);
     Violation violation(0, "test checker bug path", 1, 2, 0, 0, "test checker bug message");
@@ -290,8 +270,7 @@ TEST_F(UniqueResultsTest, CheckerBugs)
     EXPECT_FALSE(results.hasWarnings());
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     ::testing::InitGoogleMock(&argc, argv);
     return RUN_ALL_TESTS();
 }

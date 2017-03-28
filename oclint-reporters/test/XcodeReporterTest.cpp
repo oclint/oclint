@@ -9,28 +9,24 @@
 using namespace ::testing;
 using namespace oclint;
 
-class MockRuleBase : public RuleBase
-{
-public:
-    MOCK_METHOD0(apply, void());
-    MOCK_CONST_METHOD0(name, const std::string());
-    MOCK_CONST_METHOD0(priority, int());
-    MOCK_CONST_METHOD0(category, const std::string());
+class MockRuleBase : public RuleBase {
+    public:
+        MOCK_METHOD0(apply, void());
+        MOCK_CONST_METHOD0(name, const std::string());
+        MOCK_CONST_METHOD0(priority, int());
+        MOCK_CONST_METHOD0(category, const std::string());
 };
 
-class XcodeReporterTest : public ::testing::Test
-{
-protected:
-    XcodeReporter reporter;
+class XcodeReporterTest : public ::testing::Test {
+    protected:
+        XcodeReporter reporter;
 };
 
-TEST_F(XcodeReporterTest, PropertyTest)
-{
+TEST_F(XcodeReporterTest, PropertyTest) {
     EXPECT_THAT(reporter.name(), StrEq("xcode"));
 }
 
-TEST_F(XcodeReporterTest, WriteViolation)
-{
+TEST_F(XcodeReporterTest, WriteViolation) {
     RuleBase *rule = new MockRuleBase();
     Violation violation(rule, "test path", 1, 2, 3, 4, "test message");
     std::ostringstream oss;
@@ -41,8 +37,7 @@ TEST_F(XcodeReporterTest, WriteViolation)
     EXPECT_THAT(oss.str(), HasSubstr("test message"));
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     ::testing::InitGoogleMock(&argc, argv);
     return RUN_ALL_TESTS();
 }

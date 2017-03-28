@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-TEST(CanaryTest, AlwaysTrue)
-{
+TEST(CanaryTest, AlwaysTrue) {
     EXPECT_TRUE(true);
 }

@@ -8,54 +8,48 @@
 using namespace ::testing;
 using namespace oclint;
 
-class MockRuleBase : public RuleBase
-{
-private:
-    std::string _name;
-    std::string _category;
-    int _priority;
+class MockRuleBase : public RuleBase {
+    private:
+        std::string _name;
+        std::string _category;
+        int _priority;
 
-public:
-    MockRuleBase(std::string name, std::string category, int priority)
-        : _name(std::move(name)),
-          _category(std::move(category)),
-          _priority(priority) {}
+    public:
+        MockRuleBase(std::string name, std::string category, int priority)
+            : _name(std::move(name)),
+              _category(std::move(category)),
+              _priority(priority) {}
 
-    virtual void apply() override {}
+        virtual void apply() override {}
 
-    virtual const std::string name() const override { return _name; }
-    virtual const std::string category() const override { return _category; }
-    virtual int priority() const override { return _priority; }
+        virtual const std::string name() const override { return _name; }
+        virtual const std::string category() const override { return _category; }
+        virtual int priority() const override { return _priority; }
 };
 
-class PMDReporterTest : public ::testing::Test
-{
-protected:
-    PMDReporter reporter;
+class PMDReporterTest : public ::testing::Test {
+    protected:
+        PMDReporter reporter;
 };
 
-TEST_F(PMDReporterTest, PropertyTest)
-{
+TEST_F(PMDReporterTest, PropertyTest) {
     EXPECT_THAT(reporter.name(), StrEq("pmd"));
 }
 
-TEST_F(PMDReporterTest, WriteHeader)
-{
+TEST_F(PMDReporterTest, WriteHeader) {
     std::ostringstream oss;
     reporter.writeHeader(oss, "test");
     EXPECT_THAT(oss.str(), HasSubstr("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
     EXPECT_THAT(oss.str(), HasSubstr("<pmd version=\"oclint-test\">"));
 }
 
-TEST_F(PMDReporterTest, WriteFooter)
-{
+TEST_F(PMDReporterTest, WriteFooter) {
     std::ostringstream oss;
     reporter.writeFooter(oss);
     EXPECT_THAT(oss.str(), StrEq("</pmd>"));
 }
 
-TEST_F(PMDReporterTest, WriteViolation)
-{
+TEST_F(PMDReporterTest, WriteViolation) {
     RuleBase *rule = new MockRuleBase("rule name", "rule category", 3);
     Violation violation(rule, "test path", 1, 2, 3, 4, "test <message>");
     std::ostringstream oss;
@@ -73,8 +67,7 @@ TEST_F(PMDReporterTest, WriteViolation)
     delete rule;
 }
 
-TEST_F(PMDReporterTest, WriteViolationWithoutRule)
-{
+TEST_F(PMDReporterTest, WriteViolationWithoutRule) {
     Violation violation(nullptr, "test path", 1, 2, 3, 4, "test <message>");
     std::ostringstream oss;
     reporter.writeViolation(oss, violation);
@@ -90,8 +83,7 @@ TEST_F(PMDReporterTest, WriteViolationWithoutRule)
     EXPECT_THAT(oss.str(), HasSubstr("test &lt;message&gt;"));
 }
 
-TEST_F(PMDReporterTest, WriteCheckerBug)
-{
+TEST_F(PMDReporterTest, WriteCheckerBug) {
     Violation violation(nullptr, "test path", 1, 2, 3, 4, "test <message>");
     std::ostringstream oss;
     reporter.writeCheckerBug(oss, violation);
@@ -107,8 +99,7 @@ TEST_F(PMDReporterTest, WriteCheckerBug)
     EXPECT_THAT(oss.str(), HasSubstr("test &lt;message&gt;"));
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     ::testing::InitGoogleMock(&argc, argv);
     return RUN_ALL_TESTS();
 }

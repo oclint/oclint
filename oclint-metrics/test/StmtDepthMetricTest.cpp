@@ -6,35 +6,28 @@ using namespace oclint;
 
 DeclarationMatcher functionDeclMatcher = functionDecl(hasName("m")).bind("functionDecl");
 
-class StmtDepthCallback : public MatchFinder::MatchCallback
-{
-private:
-    int _depth;
+class StmtDepthCallback : public MatchFinder::MatchCallback {
+    private:
+        int _depth;
 
-public:
-    StmtDepthCallback(int expectedDepth)
-    {
-        _depth = expectedDepth;
-    }
+    public:
+        StmtDepthCallback(int expectedDepth) {
+            _depth = expectedDepth;
+        }
 
-    virtual void run(const MatchFinder::MatchResult &results)
-    {
-        FunctionDecl *functionDecl = (FunctionDecl *)
-            results.Nodes.getNodeAs<FunctionDecl>("functionDecl");
-        if (functionDecl)
-        {
-            StmtDepthMetric stmtDepthMetric;
-            EXPECT_EQ(_depth, stmtDepthMetric.depth(functionDecl->getBody()));
+        virtual void run(const MatchFinder::MatchResult &results) {
+            FunctionDecl *functionDecl = (FunctionDecl *)
+                                         results.Nodes.getNodeAs<FunctionDecl>("functionDecl");
+            if (functionDecl) {
+                StmtDepthMetric stmtDepthMetric;
+                EXPECT_EQ(_depth, stmtDepthMetric.depth(functionDecl->getBody()));
+            } else {
+                FAIL();
+            }
         }
-        else
-        {
-            FAIL();
-        }
-    }
 };
 
-TEST(StmtDepthMetricTest, EmptyFunction)
-{
+TEST(StmtDepthMetricTest, EmptyFunction) {
     StmtDepthCallback depthCallback(1);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
@@ -42,8 +35,7 @@ TEST(StmtDepthMetricTest, EmptyFunction)
     testMatcherOnCode(finder, "void m() {}");
 }
 
-TEST(StmtDepthMetricTest, TwoLevelBlock)
-{
+TEST(StmtDepthMetricTest, TwoLevelBlock) {
     StmtDepthCallback depthCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
@@ -51,8 +43,7 @@ TEST(StmtDepthMetricTest, TwoLevelBlock)
     testMatcherOnCode(finder, "void m() {{}}");
 }
 
-TEST(StmtDepthMetricTest, ChooseTheDeepest)
-{
+TEST(StmtDepthMetricTest, ChooseTheDeepest) {
     StmtDepthCallback depthCallback(4);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
@@ -60,8 +51,7 @@ TEST(StmtDepthMetricTest, ChooseTheDeepest)
     testMatcherOnCode(finder, "void m() {{}{{{}}}{{}}}");
 }
 
-TEST(StmtDepthMetricTest, IfStatement)
-{
+TEST(StmtDepthMetricTest, IfStatement) {
     StmtDepthCallback depthCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
@@ -69,8 +59,7 @@ TEST(StmtDepthMetricTest, IfStatement)
     testMatcherOnCode(finder, "void m() { if (1) {} }");
 }
 
-TEST(StmtDepthMetricTest, IfStatementWithElse)
-{
+TEST(StmtDepthMetricTest, IfStatementWithElse) {
     StmtDepthCallback depthCallback(4);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
@@ -78,8 +67,7 @@ TEST(StmtDepthMetricTest, IfStatementWithElse)
     testMatcherOnCode(finder, "void m() { if (1) {} else {{{}}} }");
 }
 
-TEST(StmtDepthMetricTest, ForStatement)
-{
+TEST(StmtDepthMetricTest, ForStatement) {
     StmtDepthCallback depthCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
@@ -87,8 +75,7 @@ TEST(StmtDepthMetricTest, ForStatement)
     testMatcherOnCode(finder, "void m() { for(;;) {} }");
 }
 
-TEST(StmtDepthMetricTest, ObjCForCollectionStatement)
-{
+TEST(StmtDepthMetricTest, ObjCForCollectionStatement) {
     StmtDepthCallback depthCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
@@ -96,8 +83,7 @@ TEST(StmtDepthMetricTest, ObjCForCollectionStatement)
     testMatcherOnObjCCode(finder, "void m() { id array; for(id one in array) {} }");
 }
 
-TEST(StmtDepthMetricTest, WhileStatement)
-{
+TEST(StmtDepthMetricTest, WhileStatement) {
     StmtDepthCallback depthCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
@@ -105,8 +91,7 @@ TEST(StmtDepthMetricTest, WhileStatement)
     testMatcherOnCode(finder, "void m() { while(1) {} }");
 }
 
-TEST(StmtDepthMetricTest, DoStatement)
-{
+TEST(StmtDepthMetricTest, DoStatement) {
     StmtDepthCallback depthCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
@@ -114,8 +99,7 @@ TEST(StmtDepthMetricTest, DoStatement)
     testMatcherOnCode(finder, "void m() { do {} while(1); }");
 }
 
-TEST(StmtDepthMetricTest, CXXTryCatch)
-{
+TEST(StmtDepthMetricTest, CXXTryCatch) {
     StmtDepthCallback depthCallback(4);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
@@ -123,8 +107,7 @@ TEST(StmtDepthMetricTest, CXXTryCatch)
     testMatcherOnCXXCode(finder, "void m() { try { int a = 1; } catch (...) { int b = 2; {{}}} }");
 }
 
-TEST(StmtDepthMetricTest, ObjCTryCatch)
-{
+TEST(StmtDepthMetricTest, ObjCTryCatch) {
     StmtDepthCallback depthCallback(4);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
@@ -132,17 +115,16 @@ TEST(StmtDepthMetricTest, ObjCTryCatch)
     testMatcherOnObjCCode(finder, "void m() { @try {} @catch (id ex) {{{}}} }");
 }
 
-TEST(StmtDepthMetricTest, ObjCTryCatchFinally)
-{
+TEST(StmtDepthMetricTest, ObjCTryCatchFinally) {
     StmtDepthCallback depthCallback(4);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
 
-    testMatcherOnObjCCode(finder, "void m() { @try { int c = 3; } @catch (id ex) { int a = 1; } @finally { int b = 2; {{}}} }");
+    testMatcherOnObjCCode(finder,
+                          "void m() { @try { int c = 3; } @catch (id ex) { int a = 1; } @finally { int b = 2; {{}}} }");
 }
 
-TEST(StmtDepthMetricTest, ObjCAutoreleasePool)
-{
+TEST(StmtDepthMetricTest, ObjCAutoreleasePool) {
     StmtDepthCallback depthCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
@@ -150,8 +132,7 @@ TEST(StmtDepthMetricTest, ObjCAutoreleasePool)
     testMatcherOnObjCCode(finder, "void m() { @autoreleasepool { int a = 1; } }");
 }
 
-TEST(StmtDepthMetricTest, ObjCSynchronized)
-{
+TEST(StmtDepthMetricTest, ObjCSynchronized) {
     StmtDepthCallback depthCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
@@ -159,8 +140,7 @@ TEST(StmtDepthMetricTest, ObjCSynchronized)
     testMatcherOnObjCCode(finder, "void m() { id res; @synchronized(res) { int a = 1; } }");
 }
 
-TEST(StmtDepthMetricTest, OneCaseStatement)
-{
+TEST(StmtDepthMetricTest, OneCaseStatement) {
     StmtDepthCallback depthCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
@@ -168,8 +148,7 @@ TEST(StmtDepthMetricTest, OneCaseStatement)
     testMatcherOnCode(finder, "void m() { int i = 1; switch (i) { case 1: break; } }");
 }
 
-TEST(StmtDepthMetricTest, TwoCaseStatements)
-{
+TEST(StmtDepthMetricTest, TwoCaseStatements) {
     StmtDepthCallback depthCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
@@ -177,17 +156,16 @@ TEST(StmtDepthMetricTest, TwoCaseStatements)
     testMatcherOnCode(finder, "void m() { int i = 1; switch (i) { case 1: case 2: break; } }");
 }
 
-TEST(StmtDepthMetricTest, TwoCaseStatementsAndDefault)
-{
+TEST(StmtDepthMetricTest, TwoCaseStatementsAndDefault) {
     StmtDepthCallback depthCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &depthCallback);
 
-    testMatcherOnCode(finder, "void m() { int i = 1; switch (i) { case 1: i = 2; break; case 2: break; default: break; } }");
+    testMatcherOnCode(finder,
+                      "void m() { int i = 1; switch (i) { case 1: i = 2; break; case 2: break; default: break; } }");
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     ::testing::InitGoogleMock(&argc, argv);
     return RUN_ALL_TESTS();
 }

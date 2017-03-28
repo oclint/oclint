@@ -12,7 +12,7 @@ std::string removeUnderscores(std::string str) {
 }
 
 std::string capitalizeFirstLetter(std::string str) {
-    if(str.length() > 0) {
+    if (str.length() > 0) {
         std::transform(str.begin(), str.begin() + 1, str.begin(), ::toupper);
     }
     return str;

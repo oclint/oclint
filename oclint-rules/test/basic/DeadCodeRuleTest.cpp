@@ -2,66 +2,56 @@
 
 #include "rules/basic/DeadCodeRule.cpp"
 
-TEST(DeadCodeRuleTest, PropertyTest)
-{
+TEST(DeadCodeRuleTest, PropertyTest) {
     DeadCodeRule rule;
     EXPECT_EQ(2, rule.priority());
     EXPECT_EQ("dead code", rule.name());
     EXPECT_EQ("basic", rule.category());
 }
 
-TEST(DeadCodeRuleTest, CleanCode)
-{
+TEST(DeadCodeRuleTest, CleanCode) {
     testRuleOnCode(new DeadCodeRule(), "void a() { int b; }");
 }
 
-TEST(DeadCodeRuleTest, CodeAfterReturn)
-{
+TEST(DeadCodeRuleTest, CodeAfterReturn) {
     testRuleOnCode(new DeadCodeRule(),
-        "void a() { return; " LOC_START "int b" LOC_END "; }");
+                   "void a() { return; " LOC_START "int b" LOC_END "; }");
 }
 
-TEST(DeadCodeRuleTest, CodeAfterGoto)
-{
+TEST(DeadCodeRuleTest, CodeAfterGoto) {
     testRuleOnCode(new DeadCodeRule(),
-        "void a() { goto end; " LOC_START "int b" LOC_END "; end: return; }");
+                   "void a() { goto end; " LOC_START "int b" LOC_END "; end: return; }");
 }
 
-TEST(DeadCodeRuleTest, CodeAfterCXXThrow)
-{
+TEST(DeadCodeRuleTest, CodeAfterCXXThrow) {
     testRuleOnCXXCode(new DeadCodeRule(),
-        "void a() { throw 0; " LOC_START "int b" LOC_END "; }");
+                      "void a() { throw 0; " LOC_START "int b" LOC_END "; }");
 }
 
-TEST(DeadCodeRuleTest, CodeAfterObjCThrow)
-{
+TEST(DeadCodeRuleTest, CodeAfterObjCThrow) {
     testRuleOnObjCCode(new DeadCodeRule(),
-        "void a() { id ex; @throw ex; " LOC_START "int b" LOC_END "; }");
+                       "void a() { id ex; @throw ex; " LOC_START "int b" LOC_END "; }");
 }
 
-TEST(DeadCodeRuleTest, CodeAfterBreakInWhileLoop)
-{
+TEST(DeadCodeRuleTest, CodeAfterBreakInWhileLoop) {
     testRuleOnCode(new DeadCodeRule(),
-        "void a() { while (1) { break; " LOC_START "int b" LOC_END "; } }");
+                   "void a() { while (1) { break; " LOC_START "int b" LOC_END "; } }");
 }
 
-TEST(DeadCodeRuleTest, CodeAfterContinueInForLoop)
-{
+TEST(DeadCodeRuleTest, CodeAfterContinueInForLoop) {
     testRuleOnCode(new DeadCodeRule(),
-        "void a() { for (;;) { continue; " LOC_START "int b" LOC_END "; } }");
+                   "void a() { for (;;) { continue; " LOC_START "int b" LOC_END "; } }");
 }
 
-TEST(DeadCodeRuleTest, CodeAfterBreakInDoLoop)
-{
+TEST(DeadCodeRuleTest, CodeAfterBreakInDoLoop) {
     testRuleOnCode(new DeadCodeRule(),
-        "void a() { do { break; " LOC_START "int b" LOC_END "; } while (1); }");
+                   "void a() { do { break; " LOC_START "int b" LOC_END "; } while (1); }");
 }
 
-TEST(DeadCodeRuleTest, CodeAfterContinueInForObjCForEachLoop)
-{
+TEST(DeadCodeRuleTest, CodeAfterContinueInForObjCForEachLoop) {
     testRuleOnObjCCode(new DeadCodeRule(),
-        "void a() { id collection; for (id it in collection) {"
-        "    continue; " LOC_START "int b" LOC_END "; } }");
+                       "void a() { id collection; for (id it in collection) {"
+                       "    continue; " LOC_START "int b" LOC_END "; } }");
 }
 
 /*
@@ -69,8 +59,7 @@ TEST(DeadCodeRuleTest, CodeAfterContinueInForObjCForEachLoop)
  Details at https://github.com/oclint/oclint/issues/24
 */
 
-TEST(DeadCodeRuleTest, ReturnFollowedByCaseLabel)
-{
+TEST(DeadCodeRuleTest, ReturnFollowedByCaseLabel) {
     const std::string code =
         "void a(int i, int j) {\n"
         "    switch(i) {\n"
@@ -83,8 +72,7 @@ TEST(DeadCodeRuleTest, ReturnFollowedByCaseLabel)
     testRuleOnObjCCode(new DeadCodeRule(), code);
 }
 
-TEST(DeadCodeRuleTest, ReturnFollowedByDefault)
-{
+TEST(DeadCodeRuleTest, ReturnFollowedByDefault) {
     const std::string code =
         "void a(int i, int j) {\n"
         "    switch(i) {\n"
@@ -96,8 +84,7 @@ TEST(DeadCodeRuleTest, ReturnFollowedByDefault)
     testRuleOnObjCCode(new DeadCodeRule(), code);
 }
 
-TEST(DeadCodeRuleTest, BreakFollowedByCaseLabel)
-{
+TEST(DeadCodeRuleTest, BreakFollowedByCaseLabel) {
     const std::string code =
         "void a(int i, int j) {\n"
         "    switch(i) {\n"
@@ -109,8 +96,7 @@ TEST(DeadCodeRuleTest, BreakFollowedByCaseLabel)
     testRuleOnObjCCode(new DeadCodeRule(), code);
 }
 
-TEST(DeadCodeRuleTest, BreakFollowedByStmt)
-{
+TEST(DeadCodeRuleTest, BreakFollowedByStmt) {
     const std::string code =
         "void f(int c) {"
         "    switch (c) {\n"
@@ -122,8 +108,7 @@ TEST(DeadCodeRuleTest, BreakFollowedByStmt)
     testRuleOnCode(new DeadCodeRule(), code);
 }
 
-TEST(DeadCodeRuleTest, ReturnFollowedBy2Stmt)
-{
+TEST(DeadCodeRuleTest, ReturnFollowedBy2Stmt) {
     const std::string code =
         "void f(int c) {"
         "    switch (c) {\n"
@@ -135,14 +120,12 @@ TEST(DeadCodeRuleTest, ReturnFollowedBy2Stmt)
     testRuleOnCode(new DeadCodeRule(), code);
 }
 
-TEST(DeadCodeRuleTest, ReturnFollowedByStatementsInForStmt)
-{
+TEST(DeadCodeRuleTest, ReturnFollowedByStatementsInForStmt) {
     testRuleOnCode(new DeadCodeRule(),
-        "void a() { for (;;) { return; " LOC_START "int b" LOC_END "; } }");
+                   "void a() { for (;;) { return; " LOC_START "int b" LOC_END "; } }");
 }
 
-TEST(DeadCodeRuleTest, ReturnFollowedByLabelStatements)
-{
+TEST(DeadCodeRuleTest, ReturnFollowedByLabelStatements) {
     const std::string code =
         "void f(int var) {\n"
         "    if (var == 42) goto end;\n"
@@ -154,8 +137,7 @@ TEST(DeadCodeRuleTest, ReturnFollowedByLabelStatements)
     testRuleOnCode(new DeadCodeRule, code);
 }
 
-TEST(DeadCodeRuleTest, ReturnInSubBlock)
-{
+TEST(DeadCodeRuleTest, ReturnInSubBlock) {
     const std::string code =
         "void f() {\n"
         "    { return; }\n"
@@ -165,8 +147,7 @@ TEST(DeadCodeRuleTest, ReturnInSubBlock)
     testRuleOnCode(new DeadCodeRule, code);
 }
 
-TEST(DeadCodeRuleTest, ReturnInIfNoElseFollowed)
-{
+TEST(DeadCodeRuleTest, ReturnInIfNoElseFollowed) {
     const std::string code =
         "void f(int i) {\n"
         "    if (i) { return; }\n"
@@ -176,8 +157,7 @@ TEST(DeadCodeRuleTest, ReturnInIfNoElseFollowed)
     testRuleOnCode(new DeadCodeRule, code);
 }
 
-TEST(DeadCodeRuleTest, ReturnInIfNotInElseFollowed)
-{
+TEST(DeadCodeRuleTest, ReturnInIfNotInElseFollowed) {
     const std::string code =
         "void f(int i) {\n"
         "    if (i) { return; } else ;\n"
@@ -187,8 +167,7 @@ TEST(DeadCodeRuleTest, ReturnInIfNotInElseFollowed)
     testRuleOnCode(new DeadCodeRule, code);
 }
 
-TEST(DeadCodeRuleTest, ReturnInIfElseFollowed)
-{
+TEST(DeadCodeRuleTest, ReturnInIfElseFollowed) {
     const std::string code =
         "void f(int i) {\n"
         "    if (i) { return; } else { return; }\n"
@@ -199,8 +178,7 @@ TEST(DeadCodeRuleTest, ReturnInIfElseFollowed)
 }
 
 // TODO: support more dead code
-TEST(DeadCodeRuleTest, NotSupported)
-{
+TEST(DeadCodeRuleTest, NotSupported) {
     const std::string codes[] = {
         "void f() { for( ; ; ) {} int b; }",
         "void f(int i) { while (i) { return; } int b; }",
@@ -209,8 +187,7 @@ TEST(DeadCodeRuleTest, NotSupported)
         "void abort() /* with attribute 'noReturn' */; void f() { abort(); int b; }"
     };
 
-    for (const auto& code : codes)
-    {
+    for (const auto &code : codes) {
         testRuleOnCode(new DeadCodeRule, code);
     }
     const std::string cppcode =

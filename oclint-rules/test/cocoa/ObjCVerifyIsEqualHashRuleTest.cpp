@@ -67,28 +67,24 @@ BOOL YES = 1;                                       \n\
                                                     \n\
 ";
 
-TEST(ObjCVerifyIsEqualHashRuleTest, PropertyTest)
-{
+TEST(ObjCVerifyIsEqualHashRuleTest, PropertyTest) {
     ObjCVerifyIsEqualHashRule rule;
     EXPECT_EQ(1, rule.priority());
     EXPECT_EQ("missing hash method", rule.name());
     EXPECT_EQ("cocoa", rule.category());
 }
 
-TEST(ObjCVerifyIsEqualHashRuleTest, HashEqualMethod)
-{
+TEST(ObjCVerifyIsEqualHashRuleTest, HashEqualMethod) {
     testRuleOnObjCCode(new ObjCVerifyIsEqualHashRule(), testHashAndIsEqual);
 }
 
-TEST(ObjCVerifyIsEqualHashRuleTest, HashMethod)
-{
+TEST(ObjCVerifyIsEqualHashRuleTest, HashMethod) {
     testRuleOnObjCCode(new ObjCVerifyIsEqualHashRule(), testHashOnly);
 }
 
-TEST(ObjCVerifyIsEqualHashRuleTest, EqualMethod)
-{
+TEST(ObjCVerifyIsEqualHashRuleTest, EqualMethod) {
     testRuleOnObjCCode(new ObjCVerifyIsEqualHashRule(),
-        testIsEqualOnly,
-        0, 11, 1, 17, 1,
-        "If you override isEqual you must override hash too.");
+                       testIsEqualOnly,
+                       0, 11, 1, 17, 1,
+                       "If you override isEqual you must override hash too.");
 }

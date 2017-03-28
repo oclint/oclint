@@ -8,19 +8,17 @@
 #include "oclint/RuleBase.h"
 
 using namespace oclint;
-class TestRule : public RuleBase
-{
-    void apply() {}
-    const std::string name() const
-    { return "test rule"; }
-    const std::string category() const
-    { return "test"; }
-    int priority() const
-    { return 0; }
+class TestRule : public RuleBase {
+        void apply() {}
+        const std::string name() const
+        { return "test rule"; }
+        const std::string category() const
+        { return "test"; }
+        int priority() const
+        { return 0; }
 };
 
-TEST(RulesetFilterTest, FilteredRulesTest)
-{
+TEST(RulesetFilterTest, FilteredRulesTest) {
     RulesetFilter filter;
     TestRule rule;
     RuleSet set(&rule);
@@ -31,8 +29,7 @@ TEST(RulesetFilterTest, FilteredRulesTest)
     EXPECT_TRUE(filter.filteredRules().empty());
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     ::testing::InitGoogleMock(&argc, argv);
     return RUN_ALL_TESTS();
 }

@@ -5,23 +5,20 @@
 
 #include <clang/Frontend/CompilerInstance.h>
 
-namespace clang
-{
+namespace clang {
     class FrontendAction;
 }
 
-namespace oclint
-{
+namespace oclint {
 
-class CompilerInstance : public clang::CompilerInstance
-{
-public:
-    void start();
-    void end();
+    class CompilerInstance : public clang::CompilerInstance {
+        public:
+            void start();
+            void end();
 
-private:
-    std::vector<std::unique_ptr<clang::FrontendAction>> _actions;
-};
+        private:
+            std::vector<std::unique_ptr<clang::FrontendAction>> _actions;
+    };
 
 } // end namespace oclint
 

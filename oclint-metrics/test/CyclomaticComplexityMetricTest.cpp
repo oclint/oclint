@@ -6,35 +6,28 @@ using namespace oclint;
 
 DeclarationMatcher functionDeclMatcher = functionDecl().bind("functionDecl");
 
-class CyclomaticCallback : public MatchFinder::MatchCallback
-{
-private:
-    int _ccn;
+class CyclomaticCallback : public MatchFinder::MatchCallback {
+    private:
+        int _ccn;
 
-public:
-    CyclomaticCallback(int expectedCCN)
-    {
-        _ccn = expectedCCN;
-    }
+    public:
+        CyclomaticCallback(int expectedCCN) {
+            _ccn = expectedCCN;
+        }
 
-    virtual void run(const MatchFinder::MatchResult &results)
-    {
-        FunctionDecl *functionDecl = (FunctionDecl *)
-            results.Nodes.getNodeAs<FunctionDecl>("functionDecl");
-        if (functionDecl)
-        {
-            CyclomaticComplexityMetric ccnMetric;
-            EXPECT_EQ(_ccn, ccnMetric.calculate(functionDecl));
+        virtual void run(const MatchFinder::MatchResult &results) {
+            FunctionDecl *functionDecl = (FunctionDecl *)
+                                         results.Nodes.getNodeAs<FunctionDecl>("functionDecl");
+            if (functionDecl) {
+                CyclomaticComplexityMetric ccnMetric;
+                EXPECT_EQ(_ccn, ccnMetric.calculate(functionDecl));
+            } else {
+                FAIL();
+            }
         }
-        else
-        {
-            FAIL();
-        }
-    }
 };
 
-TEST(CyclomaticComplexityMetricTest, EmptyFunction)
-{
+TEST(CyclomaticComplexityMetricTest, EmptyFunction) {
     CyclomaticCallback ccnCallback(1);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &ccnCallback);
@@ -42,8 +35,7 @@ TEST(CyclomaticComplexityMetricTest, EmptyFunction)
     testMatcherOnCode(finder, "void m() {}");
 }
 
-TEST(CyclomaticComplexityMetricTest, OneIfStatement)
-{
+TEST(CyclomaticComplexityMetricTest, OneIfStatement) {
     CyclomaticCallback ccnCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &ccnCallback);
@@ -51,8 +43,7 @@ TEST(CyclomaticComplexityMetricTest, OneIfStatement)
     testMatcherOnCode(finder, "void aMethod() { if (1) {} }");
 }
 
-TEST(CyclomaticComplexityMetricTest, OneForStatement)
-{
+TEST(CyclomaticComplexityMetricTest, OneForStatement) {
     CyclomaticCallback ccnCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &ccnCallback);
@@ -60,8 +51,7 @@ TEST(CyclomaticComplexityMetricTest, OneForStatement)
     testMatcherOnCode(finder, "void aMethod() { for(;;) {} }");
 }
 
-TEST(CyclomaticComplexityMetricTest, OneObjCForCollectionStatement)
-{
+TEST(CyclomaticComplexityMetricTest, OneObjCForCollectionStatement) {
     CyclomaticCallback ccnCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &ccnCallback);
@@ -69,8 +59,7 @@ TEST(CyclomaticComplexityMetricTest, OneObjCForCollectionStatement)
     testMatcherOnObjCCode(finder, "void aMethod() { id array; for(id one in array) {} }");
 }
 
-TEST(CyclomaticComplexityMetricTest, OneWhileStatement)
-{
+TEST(CyclomaticComplexityMetricTest, OneWhileStatement) {
     CyclomaticCallback ccnCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &ccnCallback);
@@ -78,8 +67,7 @@ TEST(CyclomaticComplexityMetricTest, OneWhileStatement)
     testMatcherOnCode(finder, "void aMethod() { while(1) {} }");
 }
 
-TEST(CyclomaticComplexityMetricTest, OneDoStatement)
-{
+TEST(CyclomaticComplexityMetricTest, OneDoStatement) {
     CyclomaticCallback ccnCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &ccnCallback);
@@ -87,8 +75,7 @@ TEST(CyclomaticComplexityMetricTest, OneDoStatement)
     testMatcherOnCode(finder, "void aMethod() { do {} while(1); }");
 }
 
-TEST(CyclomaticComplexityMetricTest, OneCaseStatement)
-{
+TEST(CyclomaticComplexityMetricTest, OneCaseStatement) {
     CyclomaticCallback ccnCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &ccnCallback);
@@ -96,8 +83,7 @@ TEST(CyclomaticComplexityMetricTest, OneCaseStatement)
     testMatcherOnCode(finder, "void aMethod() { int i = 1; switch (i) { case 1: break; } }");
 }
 
-TEST(CyclomaticComplexityMetricTest, TwoCaseStatements)
-{
+TEST(CyclomaticComplexityMetricTest, TwoCaseStatements) {
     CyclomaticCallback ccnCallback(3);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &ccnCallback);
@@ -105,8 +91,7 @@ TEST(CyclomaticComplexityMetricTest, TwoCaseStatements)
     testMatcherOnCode(finder, "void aMethod() { int i = 1; switch (i) { case 1: case 2: break; } }");
 }
 
-TEST(CyclomaticComplexityMetricTest, OneCXXCatchStatement)
-{
+TEST(CyclomaticComplexityMetricTest, OneCXXCatchStatement) {
     CyclomaticCallback ccnCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &ccnCallback);
@@ -114,8 +99,7 @@ TEST(CyclomaticComplexityMetricTest, OneCXXCatchStatement)
     testMatcherOnCXXCode(finder, "void aMethod() { try {} catch (...) {} }");
 }
 
-TEST(CyclomaticComplexityMetricTest, OneObjCAtCatchStatement)
-{
+TEST(CyclomaticComplexityMetricTest, OneObjCAtCatchStatement) {
     CyclomaticCallback ccnCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &ccnCallback);
@@ -123,8 +107,7 @@ TEST(CyclomaticComplexityMetricTest, OneObjCAtCatchStatement)
     testMatcherOnObjCCode(finder, "void aMethod() { @try {} @catch (id ex) {} }");
 }
 
-TEST(CyclomaticComplexityMetricTest, OneConditionalOperator)
-{
+TEST(CyclomaticComplexityMetricTest, OneConditionalOperator) {
     CyclomaticCallback ccnCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &ccnCallback);
@@ -132,8 +115,7 @@ TEST(CyclomaticComplexityMetricTest, OneConditionalOperator)
     testMatcherOnCode(finder, "void aMethod() { int i = 0 ? 1 : -1; }");
 }
 
-TEST(CyclomaticComplexityMetricTest, OneLogicAndOperator)
-{
+TEST(CyclomaticComplexityMetricTest, OneLogicAndOperator) {
     CyclomaticCallback ccnCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &ccnCallback);
@@ -141,8 +123,7 @@ TEST(CyclomaticComplexityMetricTest, OneLogicAndOperator)
     testMatcherOnCode(finder, "void aMethod() { int b = 1 && 0; }");
 }
 
-TEST(CyclomaticComplexityMetricTest, OneLogicOrOperator)
-{
+TEST(CyclomaticComplexityMetricTest, OneLogicOrOperator) {
     CyclomaticCallback ccnCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &ccnCallback);
@@ -150,8 +131,7 @@ TEST(CyclomaticComplexityMetricTest, OneLogicOrOperator)
     testMatcherOnCode(finder, "void aMethod() { int b = 1 || 0; }");
 }
 
-TEST(CyclomaticComplexityMetricTest, ABinaryOperatorButHasNoEffectOnCCNCouting)
-{
+TEST(CyclomaticComplexityMetricTest, ABinaryOperatorButHasNoEffectOnCCNCouting) {
     CyclomaticCallback ccnCallback(1);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &ccnCallback);
@@ -159,8 +139,7 @@ TEST(CyclomaticComplexityMetricTest, ABinaryOperatorButHasNoEffectOnCCNCouting)
     testMatcherOnCode(finder, "void aMethod() { int b = 1 == 0; }");
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     ::testing::InitGoogleMock(&argc, argv);
     return RUN_ALL_TESTS();
 }

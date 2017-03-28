@@ -18,45 +18,37 @@ using namespace clang;
 using namespace clang::ast_matchers;
 using namespace clang::tooling;
 
-class TestFrontendAction : public clang::ASTFrontendAction
-{
-private:
-    MatchFinder* _finder;
+class TestFrontendAction : public clang::ASTFrontendAction {
+    private:
+        MatchFinder *_finder;
 
-public:
-    TestFrontendAction(MatchFinder &finder)
-    {
-        _finder = &finder;
-    }
+    public:
+        TestFrontendAction(MatchFinder &finder) {
+            _finder = &finder;
+        }
 
-    std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(
-        clang::CompilerInstance &, llvm::StringRef) override
-    {
-        return _finder->newASTConsumer();
-    }
+        std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(
+            clang::CompilerInstance &, llvm::StringRef) override {
+            return _finder->newASTConsumer();
+        }
 };
 
-void testMatcherOnCode(const Twine &fileName, MatchFinder &finder, const string &code)
-{
+void testMatcherOnCode(const Twine &fileName, MatchFinder &finder, const string &code) {
     FrontendAction *action = new TestFrontendAction(finder);
     Twine twine(code);
-    if (!runToolOnCode(action, twine, fileName))
-    {
+    if (!runToolOnCode(action, twine, fileName)) {
         FAIL();
     }
 }
 
-void testMatcherOnCode(MatchFinder &finder, const string &code)
-{
+void testMatcherOnCode(MatchFinder &finder, const string &code) {
     testMatcherOnCode("input.c", finder, code);
 }
 
-void testMatcherOnCXXCode(MatchFinder &finder, const string &code)
-{
+void testMatcherOnCXXCode(MatchFinder &finder, const string &code) {
     testMatcherOnCode("input.cpp", finder, code);
 }
 
-void testMatcherOnObjCCode(MatchFinder &finder, const string &code)
-{
+void testMatcherOnObjCCode(MatchFinder &finder, const string &code) {
     testMatcherOnCode("input.m", finder, code);
 }

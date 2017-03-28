@@ -5,18 +5,16 @@
 
 #include <clang/Basic/LangOptions.h>
 
-namespace oclint
-{
+namespace oclint {
 
-class Analytics
-{
-public:
-  static void send(int exitCode);
+    class Analytics {
+        public:
+            static void send(int exitCode);
 
-public:
-  static void languageOption(clang::LangOptions langOptions);
-  static void ruleConfiguration(std::string key, std::string value);
-};
+        public:
+            static void languageOption(clang::LangOptions langOptions);
+            static void ruleConfiguration(std::string key, std::string value);
+    };
 
 } // end namespace oclint
 

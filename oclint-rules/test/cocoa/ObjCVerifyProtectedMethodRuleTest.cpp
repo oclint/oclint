@@ -19,8 +19,7 @@ static const string testBase = "\
 ";
 
 
-TEST(ObjCVerifyProtectedMethodRule, PropertyTest)
-{
+TEST(ObjCVerifyProtectedMethodRule, PropertyTest) {
     ObjCVerifyProtectedMethodRule rule;
     EXPECT_EQ(1, rule.priority());
     EXPECT_EQ("calling protected method", rule.name());
@@ -29,8 +28,7 @@ TEST(ObjCVerifyProtectedMethodRule, PropertyTest)
     EXPECT_EQ("cocoa", rule.category());
 }
 
-TEST(ObjCVerifyProtectedMethodRule, testOutsideCaller)
-{
+TEST(ObjCVerifyProtectedMethodRule, testOutsideCaller) {
     const string testOutsideCaller = testBase + "\
     @implementation B                                                            \n\
     - (void)bar {                                                                \n\
@@ -40,11 +38,10 @@ TEST(ObjCVerifyProtectedMethodRule, testOutsideCaller)
     ";
 
     testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testOutsideCaller, 0, 16, 9, 16, 20,
-        "calling protected method foo from outside A and its subclasses");
+                       "calling protected method foo from outside A and its subclasses");
 }
 
-TEST(ObjCVerifyProtectedMethodRule, InsideClassTest)
-{
+TEST(ObjCVerifyProtectedMethodRule, InsideClassTest) {
     const string testInsideClass = testBase + "\
     @implementation A                                                            \n\
     - (void)foo {                                                                \n\
@@ -57,8 +54,7 @@ TEST(ObjCVerifyProtectedMethodRule, InsideClassTest)
     testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testInsideClass);
 }
 
-TEST(ObjCVerifyProtectedMethodRule, InsideChildTest)
-{
+TEST(ObjCVerifyProtectedMethodRule, InsideChildTest) {
     const string testInsideChild = testBase + "\
     @interface C : A                                                             \n\
     @end                                                                         \n\
@@ -74,8 +70,7 @@ TEST(ObjCVerifyProtectedMethodRule, InsideChildTest)
     testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testInsideChild);
 }
 
-TEST(ObjCVerifyProtectedMethodRule, InheritedMarkerTest)
-{
+TEST(ObjCVerifyProtectedMethodRule, InheritedMarkerTest) {
     const string testInheritedMarker = testBase + "\
     @interface C : A                            \n\
     @end                                        \n\
@@ -89,11 +84,10 @@ TEST(ObjCVerifyProtectedMethodRule, InheritedMarkerTest)
     @end                                        \n\
     ";
     testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testInheritedMarker, 0, 21, 9, 21, 20,
-        "calling protected method foo from outside A and its subclasses");
+                       "calling protected method foo from outside A and its subclasses");
 }
 
-TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertyGetterOutside)
-{
+TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertyGetterOutside) {
     const string testGetterOutside = testBase + "\
     @interface C : NSObject                                                     \n\
     @property (strong) A* a                                                     \n\
@@ -109,13 +103,12 @@ TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertyGetterOutside)
     @end                                                                        \n\
     ";
     testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testGetterOutside, 0, 23, 23, 23, 23,
-        "calling protected method a from outside C and its subclasses");
+                       "calling protected method a from outside C and its subclasses");
 }
 
 
 
-TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertySetterOutside)
-{
+TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertySetterOutside) {
     const string testSetterOutside = testBase + "\
     @interface C : NSObject                                                     \n\
     @property (strong) A* a                                                     \n\
@@ -131,12 +124,11 @@ TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertySetterOutside)
     @end                                                                        \n\
     ";
     testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testSetterOutside, 0, 23, 16, 23, 16,
-        "calling protected method setA: from outside C and its subclasses");
+                       "calling protected method setA: from outside C and its subclasses");
 }
 
 
-TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertyGetterInside)
-{
+TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertyGetterInside) {
     const string testGetterInside = testBase + "\
     @interface C : NSObject                                                     \n\
     @property (strong) A* a                                                     \n\
@@ -154,8 +146,7 @@ TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertyGetterInside)
     testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testGetterInside);
 }
 
-TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertySetterInside)
-{
+TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertySetterInside) {
     const string testSetterInside = testBase + "\
     @interface C : NSObject                                                     \n\
     @property (strong) A* a                                                     \n\
@@ -174,8 +165,7 @@ TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertySetterInside)
 }
 
 
-TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertyCategoryOutside)
-{
+TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertyCategoryOutside) {
     const string testCategory = testBase + "\
     @interface C : NSObject                                                     \n\
     -(void)setA:(A*)a; \n\
@@ -194,5 +184,5 @@ TEST(ObjCVerifyProtectedMethodRule, ProtectedPropertyCategoryOutside)
     @end                                                                        \n\
     ";
     testRuleOnObjCCode(new ObjCVerifyProtectedMethodRule(), testCategory, 0, 26, 9, 26, 24,
-        "calling protected method setA: from outside C and its subclasses");
+                       "calling protected method setA: from outside C and its subclasses");
 }

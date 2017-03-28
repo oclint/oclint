@@ -8,7 +8,7 @@ namespace oclint { class RuleBase; }
 
 bool declHasEnforceAttribute(
     const clang::Decl *decl,
-    const oclint::RuleBase& rule,
-    std::string* comment = nullptr);
+    const oclint::RuleBase &rule,
+    std::string *comment = nullptr);
 
 #endif

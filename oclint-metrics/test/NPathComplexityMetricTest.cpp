@@ -6,35 +6,28 @@ using namespace oclint;
 
 DeclarationMatcher functionDeclMatcher = functionDecl().bind("functionDecl");
 
-class NPathCallback : public MatchFinder::MatchCallback
-{
-private:
-    int _nPath;
+class NPathCallback : public MatchFinder::MatchCallback {
+    private:
+        int _nPath;
 
-public:
-    NPathCallback(int expectedNPath)
-    {
-        _nPath = expectedNPath;
-    }
+    public:
+        NPathCallback(int expectedNPath) {
+            _nPath = expectedNPath;
+        }
 
-    virtual void run(const MatchFinder::MatchResult &results)
-    {
-        FunctionDecl *functionDecl = (FunctionDecl *)
-            results.Nodes.getNodeAs<FunctionDecl>("functionDecl");
-        if (functionDecl)
-        {
-            NPathComplexityMetric nPathMetric;
-            EXPECT_EQ(_nPath, nPathMetric.nPath(functionDecl->getBody()));
+        virtual void run(const MatchFinder::MatchResult &results) {
+            FunctionDecl *functionDecl = (FunctionDecl *)
+                                         results.Nodes.getNodeAs<FunctionDecl>("functionDecl");
+            if (functionDecl) {
+                NPathComplexityMetric nPathMetric;
+                EXPECT_EQ(_nPath, nPathMetric.nPath(functionDecl->getBody()));
+            } else {
+                FAIL();
+            }
         }
-        else
-        {
-            FAIL();
-        }
-    }
 };
 
-TEST(NPathComplexityMetricTest, EmptyMethod)
-{
+TEST(NPathComplexityMetricTest, EmptyMethod) {
     NPathCallback nPathCallback(1);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -42,8 +35,7 @@ TEST(NPathComplexityMetricTest, EmptyMethod)
     testMatcherOnCode(finder, "void mthd() { }");
 }
 
-TEST(NPathComplexityMetricTest, IfStmtWithConstantConditionAndEmptyThenCompoundStmt)
-{
+TEST(NPathComplexityMetricTest, IfStmtWithConstantConditionAndEmptyThenCompoundStmt) {
     NPathCallback nPathCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -51,8 +43,7 @@ TEST(NPathComplexityMetricTest, IfStmtWithConstantConditionAndEmptyThenCompoundS
     testMatcherOnCode(finder, "void mthd() { if (1) {} }");
 }
 
-TEST(NPathComplexityMetricTest, IfStmtWithOneLogicAndOperatorConditionAndEmptyThenCompoundStmt)
-{
+TEST(NPathComplexityMetricTest, IfStmtWithOneLogicAndOperatorConditionAndEmptyThenCompoundStmt) {
     NPathCallback nPathCallback(3);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -60,8 +51,7 @@ TEST(NPathComplexityMetricTest, IfStmtWithOneLogicAndOperatorConditionAndEmptyTh
     testMatcherOnCode(finder, "void mthd() { if (1 && 0) {} }");
 }
 
-TEST(NPathComplexityMetricTest, IfStmtWithOneLogicOrOperatorConditionAndEmptyThenCompoundStmt)
-{
+TEST(NPathComplexityMetricTest, IfStmtWithOneLogicOrOperatorConditionAndEmptyThenCompoundStmt) {
     NPathCallback nPathCallback(3);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -69,8 +59,8 @@ TEST(NPathComplexityMetricTest, IfStmtWithOneLogicOrOperatorConditionAndEmptyThe
     testMatcherOnCode(finder, "void mthd() { if (1 || 0) {} }");
 }
 
-TEST(NPathComplexityMetricTest, IfStmtWithMultipleLogicAndOrOperatorsConditionAndEmptyThenCompoundStmt)
-{
+TEST(NPathComplexityMetricTest,
+     IfStmtWithMultipleLogicAndOrOperatorsConditionAndEmptyThenCompoundStmt) {
     NPathCallback nPathCallback(4);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -78,8 +68,7 @@ TEST(NPathComplexityMetricTest, IfStmtWithMultipleLogicAndOrOperatorsConditionAn
     testMatcherOnCode(finder, "void mthd() { if (0 || 1 && 0) {} }");
 }
 
-TEST(NPathComplexityMetricTest, IfElseStmtWithConstantConditionAndEmptyThenCompoundStmt)
-{
+TEST(NPathComplexityMetricTest, IfElseStmtWithConstantConditionAndEmptyThenCompoundStmt) {
     NPathCallback nPathCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -87,8 +76,8 @@ TEST(NPathComplexityMetricTest, IfElseStmtWithConstantConditionAndEmptyThenCompo
     testMatcherOnCode(finder, "void mthd() { if (1) {} else {} }");
 }
 
-TEST(NPathComplexityMetricTest, IfElseStmtWithOneLogicAndOperatorConditionAndEmptyThenCompoundStmt)
-{
+TEST(NPathComplexityMetricTest,
+     IfElseStmtWithOneLogicAndOperatorConditionAndEmptyThenCompoundStmt) {
     NPathCallback nPathCallback(3);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -96,8 +85,7 @@ TEST(NPathComplexityMetricTest, IfElseStmtWithOneLogicAndOperatorConditionAndEmp
     testMatcherOnCode(finder, "void mthd() { if (1 && 0) {} else {} }");
 }
 
-TEST(NPathComplexityMetricTest, IfElseStmtWithOneLogicOrOperatorConditionAndEmptyThenCompoundStmt)
-{
+TEST(NPathComplexityMetricTest, IfElseStmtWithOneLogicOrOperatorConditionAndEmptyThenCompoundStmt) {
     NPathCallback nPathCallback(3);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -105,8 +93,8 @@ TEST(NPathComplexityMetricTest, IfElseStmtWithOneLogicOrOperatorConditionAndEmpt
     testMatcherOnCode(finder, "void mthd() { if (1 || 0) {} else {} }");
 }
 
-TEST(NPathComplexityMetricTest, IfElseStmtWithMultipleLogicAndOrOperatorsConditionAndEmptyThenCompoundStmt)
-{
+TEST(NPathComplexityMetricTest,
+     IfElseStmtWithMultipleLogicAndOrOperatorsConditionAndEmptyThenCompoundStmt) {
     NPathCallback nPathCallback(4);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -114,8 +102,7 @@ TEST(NPathComplexityMetricTest, IfElseStmtWithMultipleLogicAndOrOperatorsConditi
     testMatcherOnCode(finder, "void mthd() { if (0 || 1 && 0) {} else {} }");
 }
 
-TEST(NPathComplexityMetricTest, NestedIfStmt)
-{
+TEST(NPathComplexityMetricTest, NestedIfStmt) {
     NPathCallback nPathCallback(3);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -123,17 +110,16 @@ TEST(NPathComplexityMetricTest, NestedIfStmt)
     testMatcherOnCode(finder, "void mthd() { if (1) { if (1) {} } }");
 }
 
-TEST(NPathComplexityMetricTest, NestedIfElseStmt)
-{
+TEST(NPathComplexityMetricTest, NestedIfElseStmt) {
     NPathCallback nPathCallback(4);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
 
-    testMatcherOnCode(finder, "void mthd() { if (1) { if (1) {} else {} } else { if (1) {} else {} } }");
+    testMatcherOnCode(finder,
+                      "void mthd() { if (1) { if (1) {} else {} } else { if (1) {} else {} } }");
 }
 
-TEST(NPathComplexityMetricTest, WhileStmtWithConstantConditionAndEmptyCompoundStmt)
-{
+TEST(NPathComplexityMetricTest, WhileStmtWithConstantConditionAndEmptyCompoundStmt) {
     NPathCallback nPathCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -141,8 +127,7 @@ TEST(NPathComplexityMetricTest, WhileStmtWithConstantConditionAndEmptyCompoundSt
     testMatcherOnCode(finder, "void mthd() { while (1) {} }");
 }
 
-TEST(NPathComplexityMetricTest, WhileStmtWithOneLogicAndOperatorConditionAndEmptyCompoundStmt)
-{
+TEST(NPathComplexityMetricTest, WhileStmtWithOneLogicAndOperatorConditionAndEmptyCompoundStmt) {
     NPathCallback nPathCallback(3);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -150,8 +135,7 @@ TEST(NPathComplexityMetricTest, WhileStmtWithOneLogicAndOperatorConditionAndEmpt
     testMatcherOnCode(finder, "void mthd() { while (1 && 0) {} }");
 }
 
-TEST(NPathComplexityMetricTest, WhileStmtWithOneLogicOrOperatorConditionAndEmptyCompoundStmt)
-{
+TEST(NPathComplexityMetricTest, WhileStmtWithOneLogicOrOperatorConditionAndEmptyCompoundStmt) {
     NPathCallback nPathCallback(3);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -159,8 +143,7 @@ TEST(NPathComplexityMetricTest, WhileStmtWithOneLogicOrOperatorConditionAndEmpty
     testMatcherOnCode(finder, "void mthd() { while (1 || 0) {} }");
 }
 
-TEST(NPathComplexityMetricTest, DoWhileStmtWithConstantConditionAndEmptyCompoundStmt)
-{
+TEST(NPathComplexityMetricTest, DoWhileStmtWithConstantConditionAndEmptyCompoundStmt) {
     NPathCallback nPathCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -168,8 +151,7 @@ TEST(NPathComplexityMetricTest, DoWhileStmtWithConstantConditionAndEmptyCompound
     testMatcherOnCode(finder, "void mthd() { do {} while (1); }");
 }
 
-TEST(NPathComplexityMetricTest, DoWhileStmtWithOneLogicAndOperatorConditionAndEmptyCompoundStmt)
-{
+TEST(NPathComplexityMetricTest, DoWhileStmtWithOneLogicAndOperatorConditionAndEmptyCompoundStmt) {
     NPathCallback nPathCallback(3);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -177,8 +159,7 @@ TEST(NPathComplexityMetricTest, DoWhileStmtWithOneLogicAndOperatorConditionAndEm
     testMatcherOnCode(finder, "void mthd() { do {} while (1 && 0); }");
 }
 
-TEST(NPathComplexityMetricTest, DoWhileStmtWithOneLogicOrOperatorConditionAndEmptyCompoundStmt)
-{
+TEST(NPathComplexityMetricTest, DoWhileStmtWithOneLogicOrOperatorConditionAndEmptyCompoundStmt) {
     NPathCallback nPathCallback(3);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -186,8 +167,7 @@ TEST(NPathComplexityMetricTest, DoWhileStmtWithOneLogicOrOperatorConditionAndEmp
     testMatcherOnCode(finder, "void mthd() { do {} while (1 || 0); }");
 }
 
-TEST(NPathComplexityMetricTest, ForStmtWithSimpleConditionAndEmptyCompoundStmt)
-{
+TEST(NPathComplexityMetricTest, ForStmtWithSimpleConditionAndEmptyCompoundStmt) {
     NPathCallback nPathCallback(3);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -195,8 +175,7 @@ TEST(NPathComplexityMetricTest, ForStmtWithSimpleConditionAndEmptyCompoundStmt)
     testMatcherOnCode(finder, "void mthd() { for (int i = 0; i < 1; i++) {} }");
 }
 
-TEST(NPathComplexityMetricTest, ForStmtWithOneLogicAndOperatorConditionAndEmptyCompoundStmt)
-{
+TEST(NPathComplexityMetricTest, ForStmtWithOneLogicAndOperatorConditionAndEmptyCompoundStmt) {
     NPathCallback nPathCallback(4);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -204,8 +183,7 @@ TEST(NPathComplexityMetricTest, ForStmtWithOneLogicAndOperatorConditionAndEmptyC
     testMatcherOnCode(finder, "void mthd() { for (int i = 0; i < 1 && 0; i++) {} }");
 }
 
-TEST(NPathComplexityMetricTest, ObjCForeachStmtWithEmptyCompoundStmt)
-{
+TEST(NPathComplexityMetricTest, ObjCForeachStmtWithEmptyCompoundStmt) {
     NPathCallback nPathCallback(3);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -213,8 +191,7 @@ TEST(NPathComplexityMetricTest, ObjCForeachStmtWithEmptyCompoundStmt)
     testMatcherOnObjCCode(finder, "void mthd() { id anArray; for (id it in anArray) {} }");
 }
 
-TEST(NPathComplexityMetricTest, ObjCForeachStmtWithCompoundStmtWithIfStmt)
-{
+TEST(NPathComplexityMetricTest, ObjCForeachStmtWithCompoundStmtWithIfStmt) {
     NPathCallback nPathCallback(4);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -222,8 +199,7 @@ TEST(NPathComplexityMetricTest, ObjCForeachStmtWithCompoundStmtWithIfStmt)
     testMatcherOnObjCCode(finder, "void mthd() { id anArray; for (id it in anArray) { if (1) {} } }");
 }
 
-TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndEmptyBody)
-{
+TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndEmptyBody) {
     NPathCallback nPathCallback(0);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -231,8 +207,7 @@ TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndEmptyBody)
     testMatcherOnCode(finder, "void mthd() { int i; switch (i) {} }");
 }
 
-TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneCase)
-{
+TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneCase) {
     NPathCallback nPathCallback(1);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -240,8 +215,7 @@ TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneCase)
     testMatcherOnCode(finder, "void mthd() { int i; switch (i) { case 1: break; } }");
 }
 
-TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneReturn)
-{
+TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneReturn) {
     NPathCallback nPathCallback(1);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -249,8 +223,7 @@ TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneReturn)
     testMatcherOnCode(finder, "void mthd() { int i; switch (i) return; }");
 }
 
-TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneCaseOneDefault)
-{
+TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneCaseOneDefault) {
     NPathCallback nPathCallback(2);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -258,44 +231,43 @@ TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneCaseOneDefaul
     testMatcherOnCode(finder, "void mthd() { int i; switch (i) { case 1: break; default: break; } }");
 }
 
-TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndTwoCasesOneDefault)
-{
+TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndTwoCasesOneDefault) {
     NPathCallback nPathCallback(3);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
 
-    testMatcherOnCode(finder, "void mthd() { int i; switch (i) { case 1: break; case 2: break; default: break; } }");
+    testMatcherOnCode(finder,
+                      "void mthd() { int i; switch (i) { case 1: break; case 2: break; default: break; } }");
 }
 
-TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneCaseOneIfOneDefault)
-{
+TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneCaseOneIfOneDefault) {
     NPathCallback nPathCallback(4);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
 
-    testMatcherOnCode(finder, "void mthd() { int i; switch (i) { case 1: break; if (i > 0 && i < 0) {} default: break; } }");
+    testMatcherOnCode(finder,
+                      "void mthd() { int i; switch (i) { case 1: break; if (i > 0 && i < 0) {} default: break; } }");
 }
 
-TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneCaseAsIfOneDefault)
-{
+TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneCaseAsIfOneDefault) {
     NPathCallback nPathCallback(4);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
 
-    testMatcherOnCode(finder, "void mthd() { int i; switch (i) { case 1: if (i > 0 && i < 0) {} break; default: break; } }");
+    testMatcherOnCode(finder,
+                      "void mthd() { int i; switch (i) { case 1: if (i > 0 && i < 0) {} break; default: break; } }");
 }
 
-TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneCaseAsTwoIfsOneDefault)
-{
+TEST(NPathComplexityMetricTest, SwitchStmtWithSimpleConditionAndOneCaseAsTwoIfsOneDefault) {
     NPathCallback nPathCallback(5);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
 
-    testMatcherOnCode(finder, "void mthd() { int i; switch (i) { case 1: if (i > 0) {} if (i < 0) {} break; default: break; } }");
+    testMatcherOnCode(finder,
+                      "void mthd() { int i; switch (i) { case 1: if (i > 0) {} if (i < 0) {} break; default: break; } }");
 }
 
-TEST(NPathComplexityMetricTest, BasicConditionalOperator)
-{
+TEST(NPathComplexityMetricTest, BasicConditionalOperator) {
     NPathCallback nPathCallback(4);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -303,8 +275,7 @@ TEST(NPathComplexityMetricTest, BasicConditionalOperator)
     testMatcherOnCode(finder, "void mthd() { if (1 ? 2 : 3) {} }");
 }
 
-TEST(NPathComplexityMetricTest, NastingConditionalOperator)
-{
+TEST(NPathComplexityMetricTest, NastingConditionalOperator) {
     NPathCallback nPathCallback(8);
     MatchFinder finder;
     finder.addMatcher(functionDeclMatcher, &nPathCallback);
@@ -312,8 +283,7 @@ TEST(NPathComplexityMetricTest, NastingConditionalOperator)
     testMatcherOnCode(finder, "void mthd() { if (1 ? (2 ? 3 : 4) : (5 ? 6 : 7)) {} }");
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     ::testing::InitGoogleMock(&argc, argv);
     return RUN_ALL_TESTS();
 }

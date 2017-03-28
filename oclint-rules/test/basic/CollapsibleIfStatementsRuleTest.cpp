@@ -2,34 +2,29 @@
 
 #include "rules/basic/CollapsibleIfStatementsRule.cpp"
 
-TEST(CollapsibleIfStatementsRuleTest, PropertyTest)
-{
+TEST(CollapsibleIfStatementsRuleTest, PropertyTest) {
     CollapsibleIfStatementsRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("collapsible if statements", rule.name());
     EXPECT_EQ("basic", rule.category());
 }
 
-TEST(CollapsibleIfStatementsRuleTest, InterveningStatementAboveNestedIfStmt)
-{
+TEST(CollapsibleIfStatementsRuleTest, InterveningStatementAboveNestedIfStmt) {
     testRuleOnCode(new CollapsibleIfStatementsRule(), "void m() { if (1) { int i = 1; if (0) {} } }");
 }
 
-TEST(CollapsibleIfStatementsRuleTest, InterveningStatementBelowNestedIfStmt)
-{
+TEST(CollapsibleIfStatementsRuleTest, InterveningStatementBelowNestedIfStmt) {
     testRuleOnCode(new CollapsibleIfStatementsRule(), "void m() { if (1) { if (0) {} int i = 1; } }");
 }
 
-TEST(CollapsibleIfStatementsRuleTest, IfThenIsIf)
-{
+TEST(CollapsibleIfStatementsRuleTest, IfThenIsIf) {
     testRuleOnCode(new CollapsibleIfStatementsRule(), "void m() { if (1) if (0) {} }",
-        0, 1, 12, 1, 27);
+                   0, 1, 12, 1, 27);
 }
 
-TEST(CollapsibleIfStatementsRuleTest, IfThenIsCompoundContainsOnlyIf)
-{
+TEST(CollapsibleIfStatementsRuleTest, IfThenIsCompoundContainsOnlyIf) {
     testRuleOnCode(new CollapsibleIfStatementsRule(), "void m() { if (1) { if (0) {} } }",
-        0, 1, 12, 1, 31);
+                   0, 1, 12, 1, 31);
 }
 
 /*
@@ -43,33 +38,30 @@ TEST(CollapsibleIfStatementsRuleTest, IfThenIsCompoundContainsOnlyIf)
      0         0       1
 */
 
-TEST(CollapsibleIfStatementsRuleTest, BothOuterAndInnerIfHasElseExistence)
-{
-    testRuleOnCode(new CollapsibleIfStatementsRule(), "void m() { if (1) { if (0) {} else {} } else {} }");
+TEST(CollapsibleIfStatementsRuleTest, BothOuterAndInnerIfHasElseExistence) {
+    testRuleOnCode(new CollapsibleIfStatementsRule(),
+                   "void m() { if (1) { if (0) {} else {} } else {} }");
 }
 
-TEST(CollapsibleIfStatementsRuleTest, OuterIfHasElseInnerDoesNot)
-{
+TEST(CollapsibleIfStatementsRuleTest, OuterIfHasElseInnerDoesNot) {
     testRuleOnCode(new CollapsibleIfStatementsRule(), "void m() { if (1) { if (0) {} } else {} }");
 }
 
-TEST(CollapsibleIfStatementsRuleTest, OuterIfHasNoElseInnerDoes)
-{
+TEST(CollapsibleIfStatementsRuleTest, OuterIfHasNoElseInnerDoes) {
     testRuleOnCode(new CollapsibleIfStatementsRule(), "void m() { if (1) { if (0) {} else {} } }");
 }
 
-TEST(CollapsibleIfStatementsRuleTest, OuterIfHasElseIf)
-{
-    testRuleOnCode(new CollapsibleIfStatementsRule(), "void m() { if (1) { if (0) {} else {} } else if(1) {} }");
+TEST(CollapsibleIfStatementsRuleTest, OuterIfHasElseIf) {
+    testRuleOnCode(new CollapsibleIfStatementsRule(),
+                   "void m() { if (1) { if (0) {} else {} } else if(1) {} }");
 }
 
-TEST(CollapsibleIfStatementsRuleTest, ElseIfCanBeCollapsed)
-{
+TEST(CollapsibleIfStatementsRuleTest, ElseIfCanBeCollapsed) {
     testRuleOnCode(new CollapsibleIfStatementsRule(), "void m() { if (1) {} else if(1) { if (0) {} } }",
-        0, 1, 27, 1, 45);
+                   0, 1, 27, 1, 45);
 }
 
-TEST(CollapsibleIfStatementsRuleTest, ElseIfHasElseAndNestedIfHasElse)
-{
-    testRuleOnCode(new CollapsibleIfStatementsRule(), "void m() { if (1) {} else if (1) { if (0) {} else {} } else {} }");
+TEST(CollapsibleIfStatementsRuleTest, ElseIfHasElseAndNestedIfHasElse) {
+    testRuleOnCode(new CollapsibleIfStatementsRule(),
+                   "void m() { if (1) {} else if (1) { if (0) {} else {} } else {} }");
 }

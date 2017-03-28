@@ -27,8 +27,7 @@ typedef signed char    BOOL;                    \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2;  \n\
 @end\n";
 
-TEST(BrokenNullCheckRuleTest, PropertyTest)
-{
+TEST(BrokenNullCheckRuleTest, PropertyTest) {
     BrokenNullCheckRule nullRule;
     EXPECT_EQ(1, nullRule.priority());
     EXPECT_EQ("broken null check", nullRule.name());
@@ -40,114 +39,97 @@ TEST(BrokenNullCheckRuleTest, PropertyTest)
     EXPECT_EQ("basic", nilRule.category());
 }
 
-TEST(BrokenNullCheckRuleTest, C_CorrectExplicitNullEqCheck)
-{
+TEST(BrokenNullCheckRuleTest, C_CorrectExplicitNullEqCheck) {
     testRuleOnCode(new BrokenNullCheckRule(), cPrefix +
-        "void m(struct A *a, struct B *b) { if (a != NULL && a->foo == 1) { ; } }");
+                   "void m(struct A *a, struct B *b) { if (a != NULL && a->foo == 1) { ; } }");
 }
 
-TEST(BrokenNullCheckRuleTest, C_CorrectEzNullEqCheck)
-{
+TEST(BrokenNullCheckRuleTest, C_CorrectEzNullEqCheck) {
     testRuleOnCode(new BrokenNullCheckRule(), cPrefix +
-        "void m(struct A *a, struct B *b) { if (a && a->foo == 1) { ; } }");
+                   "void m(struct A *a, struct B *b) { if (a && a->foo == 1) { ; } }");
 }
 
-TEST(BrokenNullCheckRuleTest, C_BrokenExplicitNullEqCheck)
-{
+TEST(BrokenNullCheckRuleTest, C_BrokenExplicitNullEqCheck) {
     testRuleOnCode(new BrokenNullCheckRule(), cPrefix +
-        "void m(struct A *a, struct B *b) { if (a != NULL || a->foo == 1) { ; } }",
-        0, 7, 40, 7, 63);
+                   "void m(struct A *a, struct B *b) { if (a != NULL || a->foo == 1) { ; } }",
+                   0, 7, 40, 7, 63);
 }
 
-TEST(BrokenNullCheckRuleTest, C_BrokenEzNullEqCheck)
-{
+TEST(BrokenNullCheckRuleTest, C_BrokenEzNullEqCheck) {
     testRuleOnCode(new BrokenNullCheckRule(), cPrefix +
-        "void m(struct A *a, struct B *b) { if (a || a->foo == 1) { ; } }",
-        0, 7, 40, 7, 55);
+                   "void m(struct A *a, struct B *b) { if (a || a->foo == 1) { ; } }",
+                   0, 7, 40, 7, 55);
 }
 
-TEST(BrokenNullCheckRuleTest, C_CorrectExplicitNullNeCheck)
-{
+TEST(BrokenNullCheckRuleTest, C_CorrectExplicitNullNeCheck) {
     testRuleOnCode(new BrokenNullCheckRule(), cPrefix +
-        "void m(struct A *a, struct B *b) { if (a == NULL || a->foo == 1) { ; } }");
+                   "void m(struct A *a, struct B *b) { if (a == NULL || a->foo == 1) { ; } }");
 }
 
-TEST(BrokenNullCheckRuleTest, C_CorrectEzNullNeCheck)
-{
+TEST(BrokenNullCheckRuleTest, C_CorrectEzNullNeCheck) {
     testRuleOnCode(new BrokenNullCheckRule(), cPrefix +
-        "void m(struct A *a, struct B *b) { if (!a || a->foo == 1) { ; } }");
+                   "void m(struct A *a, struct B *b) { if (!a || a->foo == 1) { ; } }");
 }
 
-TEST(BrokenNullCheckRuleTest, C_BrokenExplicitNullNeCheck)
-{
+TEST(BrokenNullCheckRuleTest, C_BrokenExplicitNullNeCheck) {
     testRuleOnCode(new BrokenNullCheckRule(), cPrefix +
-        "void m(struct A *a, struct B *b) { if (a == NULL && a->foo == 1) { ; } }",
-        0, 7, 40, 7, 63);
+                   "void m(struct A *a, struct B *b) { if (a == NULL && a->foo == 1) { ; } }",
+                   0, 7, 40, 7, 63);
 }
 
-TEST(BrokenNullCheckRuleTest, C_BrokenEzNullNeCheck)
-{
+TEST(BrokenNullCheckRuleTest, C_BrokenEzNullNeCheck) {
     testRuleOnCode(new BrokenNullCheckRule(), cPrefix +
-        "void m(struct A *a, struct B *b) { if (!a && a->foo == 1) { ; } }",
-        0, 7, 40, 7, 56);
+                   "void m(struct A *a, struct B *b) { if (!a && a->foo == 1) { ; } }",
+                   0, 7, 40, 7, 56);
 }
 
-TEST(BrokenNullCheckRuleTest, Cpp_CorrectExplicitNullEqCheck)
-{
+TEST(BrokenNullCheckRuleTest, Cpp_CorrectExplicitNullEqCheck) {
     testRuleOnCXXCode(new BrokenNullCheckRule(), cxxPrefix +
-        "void m(A *a, B *b) { if (a != NULL && a->bar(b)) { ; } }");
+                      "void m(A *a, B *b) { if (a != NULL && a->bar(b)) { ; } }");
 }
 
-TEST(BrokenNullCheckRuleTest, Cpp_CorrectEzNullEqCheck)
-{
+TEST(BrokenNullCheckRuleTest, Cpp_CorrectEzNullEqCheck) {
     testRuleOnCXXCode(new BrokenNullCheckRule(), cxxPrefix +
-        "void m(A *a, B *b) { if (a && a->bar(b)) { ; } }");
+                      "void m(A *a, B *b) { if (a && a->bar(b)) { ; } }");
 }
 
-TEST(BrokenNullCheckRuleTest, Cpp_BrokenExplicitNullEqCheck)
-{
+TEST(BrokenNullCheckRuleTest, Cpp_BrokenExplicitNullEqCheck) {
     testRuleOnCXXCode(new BrokenNullCheckRule(), cxxPrefix +
-        "void m(A *a, B *b) { if (a != NULL || a->bar(b)) { ; } }",
-        0, 8, 26, 8, 47);
+                      "void m(A *a, B *b) { if (a != NULL || a->bar(b)) { ; } }",
+                      0, 8, 26, 8, 47);
 }
 
-TEST(BrokenNullCheckRuleTest, Cpp_BrokenEzNullEqCheck)
-{
+TEST(BrokenNullCheckRuleTest, Cpp_BrokenEzNullEqCheck) {
     testRuleOnCXXCode(new BrokenNullCheckRule(), cxxPrefix +
-        "void m(A *a, B *b) { if (a || a->bar(b)) { ; } }",
-        0, 8, 26, 8, 39);
+                      "void m(A *a, B *b) { if (a || a->bar(b)) { ; } }",
+                      0, 8, 26, 8, 39);
 }
 
-TEST(BrokenNullCheckRuleTest, Cpp_CorrectExplicitNullNeCheck)
-{
+TEST(BrokenNullCheckRuleTest, Cpp_CorrectExplicitNullNeCheck) {
     testRuleOnCXXCode(new BrokenNullCheckRule(), cxxPrefix +
-        "void m(A *a, B *b) { if (a == NULL || a->bar(b)) { ; } }");
+                      "void m(A *a, B *b) { if (a == NULL || a->bar(b)) { ; } }");
 }
 
-TEST(BrokenNullCheckRuleTest, Cpp_CorrectEzNullNeCheck)
-{
+TEST(BrokenNullCheckRuleTest, Cpp_CorrectEzNullNeCheck) {
     testRuleOnCXXCode(new BrokenNullCheckRule(), cxxPrefix +
-        "void m(A *a, B *b) { if (!a || a->bar(b)) { ; } }");
+                      "void m(A *a, B *b) { if (!a || a->bar(b)) { ; } }");
 }
 
-TEST(BrokenNullCheckRuleTest, Cpp_BrokenExplicitNullNeCheck)
-{
+TEST(BrokenNullCheckRuleTest, Cpp_BrokenExplicitNullNeCheck) {
     testRuleOnCXXCode(new BrokenNullCheckRule(), cxxPrefix +
-        "void m(A *a, B *b) { if (a == NULL && a->bar(b)) { ; } }",
-        0, 8, 26, 8, 47);
+                      "void m(A *a, B *b) { if (a == NULL && a->bar(b)) { ; } }",
+                      0, 8, 26, 8, 47);
 }
 
-TEST(BrokenNullCheckRuleTest, Cpp_BrokenEzNullNeCheck)
-{
+TEST(BrokenNullCheckRuleTest, Cpp_BrokenEzNullNeCheck) {
     testRuleOnCXXCode(new BrokenNullCheckRule(), cxxPrefix +
-        "void m(A *a, B *b) { if (!a && a->bar(b)) { ; } }",
-        0, 8, 26, 8, 40);
+                      "void m(A *a, B *b) { if (!a && a->bar(b)) { ; } }",
+                      0, 8, 26, 8, 40);
 }
 
-TEST(BrokenNullCheckRuleTest, ObjC_CorrectNullEqCheck)
-{
+TEST(BrokenNullCheckRuleTest, ObjC_CorrectNullEqCheck) {
     testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
-"@implementation A\n\
+                       "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 { \n\
     if ([obj1 isEqualTo:obj2]) { ; }            \n\
@@ -155,10 +137,9 @@ TEST(BrokenNullCheckRuleTest, ObjC_CorrectNullEqCheck)
 @end");
 }
 
-TEST(BrokenNullCheckRuleTest, ObjC_EzButRedundantNullEqCheck)
-{
+TEST(BrokenNullCheckRuleTest, ObjC_EzButRedundantNullEqCheck) {
     testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
-"@implementation A\n\
+                       "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
     if (obj1 && [obj1 isEqualTo:obj2]) { ; }                    \n\
@@ -166,10 +147,9 @@ TEST(BrokenNullCheckRuleTest, ObjC_EzButRedundantNullEqCheck)
 @end");
 }
 
-TEST(BrokenNullCheckRuleTest, ObjC_ExplicitButRedundantNullEqCheck)
-{
+TEST(BrokenNullCheckRuleTest, ObjC_ExplicitButRedundantNullEqCheck) {
     testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
-"@implementation A\n\
+                       "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
     if (obj1 != nil && [obj1 isEqualTo:obj2]) { ; }             \n\
@@ -177,10 +157,9 @@ TEST(BrokenNullCheckRuleTest, ObjC_ExplicitButRedundantNullEqCheck)
 @end");
 }
 
-TEST(BrokenNullCheckRuleTest, ObjC_BrokenEzButRedundantNullEqCheck)
-{
+TEST(BrokenNullCheckRuleTest, ObjC_BrokenEzButRedundantNullEqCheck) {
     testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
-"@implementation A\n\
+                       "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
     if (obj1 || [obj1 isEqualTo:obj2]) { ; }                    \n\
@@ -193,10 +172,9 @@ TEST(BrokenNullCheckRuleTest, ObjC_BrokenEzButRedundantNullEqCheck)
 // in addition, this at times results in unexpected behaviors
 // we'd rather shout loudly instead of swallow the error
 
-TEST(BrokenNullCheckRuleTest, ObjC_BrokenExplicitButRedundantNullEqCheck)
-{
+TEST(BrokenNullCheckRuleTest, ObjC_BrokenExplicitButRedundantNullEqCheck) {
     testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
-"@implementation A\n\
+                       "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
     if (obj1 != nil || [obj1 isEqualTo:obj2]) { ; }             \n\
@@ -204,10 +182,9 @@ TEST(BrokenNullCheckRuleTest, ObjC_BrokenExplicitButRedundantNullEqCheck)
 @end", 0, 14, 9, 14, 44);
 }
 
-TEST(BrokenNullCheckRuleTest, ObjC_EzButRedundantNullNeCheck)
-{
+TEST(BrokenNullCheckRuleTest, ObjC_EzButRedundantNullNeCheck) {
     testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
-"@implementation A\n\
+                       "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
     if (!obj1 || ![obj1 isEqualTo:obj2]) { ; }                  \n\
@@ -215,10 +192,9 @@ TEST(BrokenNullCheckRuleTest, ObjC_EzButRedundantNullNeCheck)
 @end");
 }
 
-TEST(BrokenNullCheckRuleTest, ObjC_ExplicitButRedundantNullNeCheck)
-{
+TEST(BrokenNullCheckRuleTest, ObjC_ExplicitButRedundantNullNeCheck) {
     testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
-"@implementation A\n\
+                       "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
     if (obj1 == nil || ![obj1 isEqualTo:obj2]) { ; }            \n\
@@ -226,10 +202,9 @@ TEST(BrokenNullCheckRuleTest, ObjC_ExplicitButRedundantNullNeCheck)
 @end");
 }
 
-TEST(BrokenNullCheckRuleTest, ObjC_BrokenEzButRedundantNullNeCheck)
-{
+TEST(BrokenNullCheckRuleTest, ObjC_BrokenEzButRedundantNullNeCheck) {
     testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
-"@implementation A\n\
+                       "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
     if (!obj1 && ![obj1 isEqualTo:obj2]) { ; }                  \n\
@@ -237,10 +212,9 @@ TEST(BrokenNullCheckRuleTest, ObjC_BrokenEzButRedundantNullNeCheck)
 @end", 0, 14, 9, 14, 39);
 }
 
-TEST(BrokenNullCheckRuleTest, ObjC_BrokenExplicitButRedundantNullNeCheck)
-{
+TEST(BrokenNullCheckRuleTest, ObjC_BrokenExplicitButRedundantNullNeCheck) {
     testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
-"@implementation A\n\
+                       "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
     if (obj1 == nil && ![obj1 isEqualTo:obj2]) { ; }            \n\
@@ -248,16 +222,14 @@ TEST(BrokenNullCheckRuleTest, ObjC_BrokenExplicitButRedundantNullNeCheck)
 @end", 0, 14, 9, 14, 45);
 }
 
-TEST(BrokenNullCheckRuleTest, C_ShouldIgnoreDifferentIdentifers)
-{
+TEST(BrokenNullCheckRuleTest, C_ShouldIgnoreDifferentIdentifers) {
     testRuleOnCode(new BrokenNullCheckRule(), cPrefix +
-        "void m(struct A *a, struct B *b) { if (b || a->foo == 1) { ; } }");
+                   "void m(struct A *a, struct B *b) { if (b || a->foo == 1) { ; } }");
 }
 
-TEST(BrokenNullCheckRuleTest, ObjC_ShouldIgnoreDifferentIdentifers)
-{
+TEST(BrokenNullCheckRuleTest, ObjC_ShouldIgnoreDifferentIdentifers) {
     testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
-"@implementation A\n\
+                       "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
     if (obj1 == nil && ![obj2 isEqualTo:obj1]) { ; }            \n\
@@ -265,30 +237,26 @@ TEST(BrokenNullCheckRuleTest, ObjC_ShouldIgnoreDifferentIdentifers)
 @end");
 }
 
-TEST(BrokenNullCheckRuleTest, C_NullEqualsNull)
-{
+TEST(BrokenNullCheckRuleTest, C_NullEqualsNull) {
     testRuleOnCode(new BrokenNullCheckRule(), cPrefix +
-        "void m(struct A *a, struct B *b) { if (NULL == NULL && a->foo == 1) { ; } }");
+                   "void m(struct A *a, struct B *b) { if (NULL == NULL && a->foo == 1) { ; } }");
 }
 
-TEST(BrokenNullCheckRuleTest, Cpp_NullOnTheLeftHandSide)
-{
+TEST(BrokenNullCheckRuleTest, Cpp_NullOnTheLeftHandSide) {
     testRuleOnCXXCode(new BrokenNullCheckRule(), cxxPrefix +
-        "void m(A *a, B *b) { if (0 == a && a->bar(b)) { ; } }",
-        0, 8, 26, 8, 44);
+                      "void m(A *a, B *b) { if (0 == a && a->bar(b)) { ; } }",
+                      0, 8, 26, 8, 44);
 }
 
-TEST(BrokenNullCheckRuleTest, C_MultipleMemberExpr)
-{
+TEST(BrokenNullCheckRuleTest, C_MultipleMemberExpr) {
     testRuleOnCode(new BrokenNullCheckRule(), cPrefix +
-        "struct C { int bar; }; void m(struct A *a, struct C *c) { if (a != NULL || (c->bar == 0 && a->foo == 1)) { ; } }",
-        0, 7, 63, 7, 103);
+                   "struct C { int bar; }; void m(struct A *a, struct C *c) { if (a != NULL || (c->bar == 0 && a->foo == 1)) { ; } }",
+                   0, 7, 63, 7, 103);
 }
 
-TEST(BrokenNullCheckRuleTest, ObjC_MultipleMessageExpr)
-{
+TEST(BrokenNullCheckRuleTest, ObjC_MultipleMessageExpr) {
     testRuleOnObjCCode(new BrokenNilCheckRule(), objcPrefix +
-"@implementation A\n\
+                       "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
     if (obj1 != nil || ([obj2 isEqualTo:obj1] && [obj1 isEqualTo:obj2])) { ; }            \n\
@@ -306,22 +274,19 @@ TEST(BrokenNullCheckRuleTest, ObjC_MultipleMessageExpr)
  * Diplomatic tests
  */
 
-TEST(BrokenNullCheckRuleTest, C_BrokenExplicitNullEqCheck_ShouldIgnoreByObjC)
-{
+TEST(BrokenNullCheckRuleTest, C_BrokenExplicitNullEqCheck_ShouldIgnoreByObjC) {
     testRuleOnCode(new BrokenNilCheckRule(), cPrefix +
-        "void m(struct A *a, struct B *b) { if (a != NULL || a->foo == 1) { ; } }");
+                   "void m(struct A *a, struct B *b) { if (a != NULL || a->foo == 1) { ; } }");
 }
 
-TEST(BrokenNullCheckRuleTest, Cpp_BrokenExplicitNullEqCheck_ShouldIgnoreByObjC)
-{
+TEST(BrokenNullCheckRuleTest, Cpp_BrokenExplicitNullEqCheck_ShouldIgnoreByObjC) {
     testRuleOnCXXCode(new BrokenNilCheckRule(), cxxPrefix +
-        "void m(A *a, B *b) { if (a != NULL || a->bar(b)) { ; } }");
+                      "void m(A *a, B *b) { if (a != NULL || a->bar(b)) { ; } }");
 }
 
-TEST(BrokenNullCheckRuleTest, ObjC_BrokenEzButRedundantNullEqCheck_ShouldIgnoreByC)
-{
+TEST(BrokenNullCheckRuleTest, ObjC_BrokenEzButRedundantNullEqCheck_ShouldIgnoreByC) {
     testRuleOnObjCCode(new BrokenNullCheckRule(), objcPrefix +
-"@implementation A\n\
+                       "@implementation A\n\
 - (BOOL)isEqualTo:(id)obj { return YES; }                       \n\
 + (void)compare:(A *)obj1 withOther:(A *)obj2 {                 \n\
     if (obj1 || [obj1 isEqualTo:obj2]) { ; }                    \n\

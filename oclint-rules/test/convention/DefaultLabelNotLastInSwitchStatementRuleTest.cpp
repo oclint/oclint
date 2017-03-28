@@ -2,8 +2,7 @@
 
 #include "rules/convention/DefaultLabelNotLastInSwitchStatementRule.cpp"
 
-TEST(DefaultLabelNotLastInSwitchStatementRuleTest, PropertyTest)
-{
+TEST(DefaultLabelNotLastInSwitchStatementRuleTest, PropertyTest) {
     DefaultLabelNotLastInSwitchStatementRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("ill-placed default label in switch statement", rule.name());
@@ -11,8 +10,7 @@ TEST(DefaultLabelNotLastInSwitchStatementRuleTest, PropertyTest)
     EXPECT_EQ("convention", rule.category());
 }
 
-TEST(DefaultLabelNotLastInSwitchStatementRuleTest, DefaultIsLast)
-{
+TEST(DefaultLabelNotLastInSwitchStatementRuleTest, DefaultIsLast) {
     testRuleOnCode(new DefaultLabelNotLastInSwitchStatementRule(), "void aMethod(int a) { switch(a){\n\
 case 1:     \n\
 \tbreak;    \n\
@@ -21,8 +19,7 @@ default:    \n\
 } }");
 }
 
-TEST(DefaultLabelNotLastInSwitchStatementRuleTest, DefaultInTheMiddle)
-{
+TEST(DefaultLabelNotLastInSwitchStatementRuleTest, DefaultInTheMiddle) {
     testRuleOnCode(new DefaultLabelNotLastInSwitchStatementRule(), "void aMethod(int a) { switch(a){\n\
 case 1:     \n\
 \tbreak;    \n\
@@ -31,11 +28,10 @@ default:    \n\
 case 2:     \n\
 \tbreak;    \n\
 } }",
-        0, 4, 1, 5, 2);
+                   0, 4, 1, 5, 2);
 }
 
-TEST(DefaultLabelNotLastInSwitchStatementRuleTest, SwitchNoDefault)
-{
+TEST(DefaultLabelNotLastInSwitchStatementRuleTest, SwitchNoDefault) {
     testRuleOnCode(new DefaultLabelNotLastInSwitchStatementRule(), "void aMethod(int a) { switch(a){\n\
 case 1:     \n\
 \tbreak;    \n\

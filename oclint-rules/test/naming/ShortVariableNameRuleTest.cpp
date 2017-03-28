@@ -3,159 +3,137 @@
 #include "rules/naming/ShortVariableNameRule.cpp"
 
 class ShortVariableNameRuleTest : public ::testing::Test {
-protected:
-    virtual void SetUp() override
-    {
-        RuleConfiguration::addConfiguration("SHORT_VARIABLE_NAME", "3");
-    }
+    protected:
+        virtual void SetUp() override {
+            RuleConfiguration::addConfiguration("SHORT_VARIABLE_NAME", "3");
+        }
 
-    virtual void TearDown() override
-    {
-        RuleConfiguration::removeAll();
-    }
+        virtual void TearDown() override {
+            RuleConfiguration::removeAll();
+        }
 };
 
-TEST_F(ShortVariableNameRuleTest, PropertyTest)
-{
+TEST_F(ShortVariableNameRuleTest, PropertyTest) {
     ShortVariableNameRule rule;
     EXPECT_EQ(3, rule.priority());
     EXPECT_EQ("short variable name", rule.name());
     EXPECT_EQ("naming", rule.category());
 }
 
-TEST_F(ShortVariableNameRuleTest, C_NoVar)
-{
+TEST_F(ShortVariableNameRuleTest, C_NoVar) {
     testRuleOnCode(new ShortVariableNameRule(), "void aMethod() { }");
 }
 
-TEST_F(ShortVariableNameRuleTest, C_OneCharName)
-{
+TEST_F(ShortVariableNameRuleTest, C_OneCharName) {
     testRuleOnCode(new ShortVariableNameRule(), "void aMethod(int i) {}",
-        0, 1, 14, 1, 18, "Length of variable name `i` is 1, which is shorter than the threshold of 3");
+                   0, 1, 14, 1, 18, "Length of variable name `i` is 1, which is shorter than the threshold of 3");
 }
 
-TEST_F(ShortVariableNameRuleTest, C_TwoCharsName)
-{
+TEST_F(ShortVariableNameRuleTest, C_TwoCharsName) {
     testRuleOnCode(new ShortVariableNameRule(), "void aMethod() { int ii; }",
-        0, 1, 18, 1, 22, "Length of variable name `ii` is 2, which is shorter than the threshold of 3");
+                   0, 1, 18, 1, 22, "Length of variable name `ii` is 2, which is shorter than the threshold of 3");
 }
 
-TEST_F(ShortVariableNameRuleTest, C_ThreeCharsName)
-{
+TEST_F(ShortVariableNameRuleTest, C_ThreeCharsName) {
     testRuleOnCode(new ShortVariableNameRule(), "void aMethod() { int iii; }");
 }
 
-TEST_F(ShortVariableNameRuleTest, C_FourCharsName)
-{
+TEST_F(ShortVariableNameRuleTest, C_FourCharsName) {
     testRuleOnCode(new ShortVariableNameRule(), "void aMethod() { int iiii; }");
 }
 
-TEST_F(ShortVariableNameRuleTest, Cpp_NoVar)
-{
+TEST_F(ShortVariableNameRuleTest, Cpp_NoVar) {
     testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { }");
 }
 
-TEST_F(ShortVariableNameRuleTest, Cpp_OneCharName)
-{
+TEST_F(ShortVariableNameRuleTest, Cpp_OneCharName) {
     testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod(int i) {}",
-        0, 1, 14, 1, 18, "Length of variable name `i` is 1, which is shorter than the threshold of 3");
+                      0, 1, 14, 1, 18, "Length of variable name `i` is 1, which is shorter than the threshold of 3");
 }
 
-TEST_F(ShortVariableNameRuleTest, Cpp_TwoCharsName)
-{
+TEST_F(ShortVariableNameRuleTest, Cpp_TwoCharsName) {
     testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { int ii; }",
-        0, 1, 18, 1, 22, "Length of variable name `ii` is 2, which is shorter than the threshold of 3");
+                      0, 1, 18, 1, 22, "Length of variable name `ii` is 2, which is shorter than the threshold of 3");
 }
 
-TEST_F(ShortVariableNameRuleTest, Cpp_ThreeCharsName)
-{
+TEST_F(ShortVariableNameRuleTest, Cpp_ThreeCharsName) {
     testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { int iii; }");
 }
 
-TEST_F(ShortVariableNameRuleTest, Cpp_FourCharsName)
-{
+TEST_F(ShortVariableNameRuleTest, Cpp_FourCharsName) {
     testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { int iiii; }");
 }
 
-TEST_F(ShortVariableNameRuleTest, ObjC_NoVar)
-{
+TEST_F(ShortVariableNameRuleTest, ObjC_NoVar) {
     testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { }");
 }
 
-TEST_F(ShortVariableNameRuleTest, ObjC_OneCharName)
-{
+TEST_F(ShortVariableNameRuleTest, ObjC_OneCharName) {
     testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod(id i) {}",
-        0, 1, 14, 1, 17, "Length of variable name `i` is 1, which is shorter than the threshold of 3");
+                       0, 1, 14, 1, 17, "Length of variable name `i` is 1, which is shorter than the threshold of 3");
 }
 
-TEST_F(ShortVariableNameRuleTest, ObjC_TwoCharsName)
-{
+TEST_F(ShortVariableNameRuleTest, ObjC_TwoCharsName) {
     testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { id ii; }",
-        0, 1, 18, 1, 21, "Length of variable name `ii` is 2, which is shorter than the threshold of 3");
+                       0, 1, 18, 1, 21, "Length of variable name `ii` is 2, which is shorter than the threshold of 3");
 }
 
-TEST_F(ShortVariableNameRuleTest, ObjC_ThreeCharsName)
-{
+TEST_F(ShortVariableNameRuleTest, ObjC_ThreeCharsName) {
     testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { id iii; }");
 }
 
-TEST_F(ShortVariableNameRuleTest, ObjC_FourCharsName)
-{
+TEST_F(ShortVariableNameRuleTest, ObjC_FourCharsName) {
     testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { id iiii; }");
 }
 
-TEST_F(ShortVariableNameRuleTest, IgnoreVariableInCXXForInit)
-{
+TEST_F(ShortVariableNameRuleTest, IgnoreVariableInCXXForInit) {
     testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { for(int i = 0;;){} }");
 }
 
-TEST_F(ShortVariableNameRuleTest, IgnoreVariableInCXXForEachInit)
-{
-    testRuleOnCXX11Code(new ShortVariableNameRule(), "void aMethod() { int anArray[100]; for(auto it : anArray){} }");
+TEST_F(ShortVariableNameRuleTest, IgnoreVariableInCXXForEachInit) {
+    testRuleOnCXX11Code(new ShortVariableNameRule(),
+                        "void aMethod() { int anArray[100]; for(auto it : anArray){} }");
 }
 
-TEST_F(ShortVariableNameRuleTest, IgnoreVariableInObjCForInit)
-{
+TEST_F(ShortVariableNameRuleTest, IgnoreVariableInObjCForInit) {
     testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { for(int i = 0;;){} }");
 }
 
-TEST_F(ShortVariableNameRuleTest, IgnoreVariableInObjCForEachInit)
-{
-    testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { id anArray; for(id it in anArray){} }");
+TEST_F(ShortVariableNameRuleTest, IgnoreVariableInObjCForEachInit) {
+    testRuleOnObjCCode(new ShortVariableNameRule(),
+                       "void aMethod() { id anArray; for(id it in anArray){} }");
 }
 
-TEST_F(ShortVariableNameRuleTest, IgnoreMultipleVariablesInCXXForInit)
-{
+TEST_F(ShortVariableNameRuleTest, IgnoreMultipleVariablesInCXXForInit) {
     testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { for(int i = 0, ie = 1;;){} }");
 }
 
-TEST_F(ShortVariableNameRuleTest, NestedForLoopForCXX)
-{
-    testRuleOnCXX11Code(new ShortVariableNameRule(), "void aMethod() { int anArray[100]; for(int i = 0;;){ for(int j = 0, je = 1;;){ for(int k : anArray){} } } }");
+TEST_F(ShortVariableNameRuleTest, NestedForLoopForCXX) {
+    testRuleOnCXX11Code(new ShortVariableNameRule(),
+                        "void aMethod() { int anArray[100]; for(int i = 0;;){ for(int j = 0, je = 1;;){ for(int k : anArray){} } } }");
 }
 
-TEST_F(ShortVariableNameRuleTest, NestedForLoopForObjC)
-{
-    testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { id anArray; for(int i = 0;;){ for(int j = 0, je = 1;;){ for(id k in anArray){} } } }");
+TEST_F(ShortVariableNameRuleTest, NestedForLoopForObjC) {
+    testRuleOnObjCCode(new ShortVariableNameRule(),
+                       "void aMethod() { id anArray; for(int i = 0;;){ for(int j = 0, je = 1;;){ for(id k in anArray){} } } }");
 }
 
-TEST_F(ShortVariableNameRuleTest, IgnoreVariableInCXXException)
-{
+TEST_F(ShortVariableNameRuleTest, IgnoreVariableInCXXException) {
     testRuleOnCXXCode(new ShortVariableNameRule(), "void aMethod() { try {;} catch (int ex) {;} }");
 }
 
-TEST_F(ShortVariableNameRuleTest, IgnoreVariableInObjCException)
-{
-    testRuleOnObjCCode(new ShortVariableNameRule(), "@class NSException; void aMethod() { @try {;} @catch (NSException *ex) {;} }");
+TEST_F(ShortVariableNameRuleTest, IgnoreVariableInObjCException) {
+    testRuleOnObjCCode(new ShortVariableNameRule(),
+                       "@class NSException; void aMethod() { @try {;} @catch (NSException *ex) {;} }");
 }
 
-TEST_F(ShortVariableNameRuleTest, IgnoreMultipleVariablesInObjCException)
-{
-    testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { @try {;} @catch (id ex) {;} @catch (id e) {;} }");
+TEST_F(ShortVariableNameRuleTest, IgnoreMultipleVariablesInObjCException) {
+    testRuleOnObjCCode(new ShortVariableNameRule(),
+                       "void aMethod() { @try {;} @catch (id ex) {;} @catch (id e) {;} }");
 }
 
-TEST_F(ShortVariableNameRuleTest, ShortVariableInsideCatchBlock)
-{
-    testRuleOnObjCCode(new ShortVariableNameRule(), "void aMethod() { @try {;} @catch (id ex) {;} @catch (id e) { id i; } }",
-        0, 1, 62, 1, 65, "Length of variable name `i` is 1, which is shorter than the threshold of 3");
+TEST_F(ShortVariableNameRuleTest, ShortVariableInsideCatchBlock) {
+    testRuleOnObjCCode(new ShortVariableNameRule(),
+                       "void aMethod() { @try {;} @catch (id ex) {;} @catch (id e) { id i; } }",
+                       0, 1, 62, 1, 65, "Length of variable name `i` is 1, which is shorter than the threshold of 3");
 }

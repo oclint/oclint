@@ -6,8 +6,7 @@
 using namespace ::testing;
 using namespace oclint;
 
-TEST(RuleConfigurationTest, AddConfiguration)
-{
+TEST(RuleConfigurationTest, AddConfiguration) {
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
     RuleConfiguration::addConfiguration("foo", "bar");
     EXPECT_TRUE(RuleConfiguration::hasKey("foo"));
@@ -16,8 +15,7 @@ TEST(RuleConfigurationTest, AddConfiguration)
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
 }
 
-TEST(RuleConfigurationTest, AddTwoConfigurations)
-{
+TEST(RuleConfigurationTest, AddTwoConfigurations) {
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
     EXPECT_FALSE(RuleConfiguration::hasKey("bar"));
     RuleConfiguration::addConfiguration("foo", "bar");
@@ -32,20 +30,17 @@ TEST(RuleConfigurationTest, AddTwoConfigurations)
     EXPECT_FALSE(RuleConfiguration::hasKey("bar"));
 }
 
-TEST(RuleConfigurationTest, StringValueNoDefault)
-{
+TEST(RuleConfigurationTest, StringValueNoDefault) {
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
     EXPECT_THAT(RuleConfiguration::stringForKey("foo"), StrEq(""));
 }
 
-TEST(RuleConfigurationTest, StringValueHasDefault)
-{
+TEST(RuleConfigurationTest, StringValueHasDefault) {
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
     EXPECT_THAT(RuleConfiguration::stringForKey("foo", "bar"), StrEq("bar"));
 }
 
-TEST(RuleConfigurationTest, StringValueHasKey)
-{
+TEST(RuleConfigurationTest, StringValueHasKey) {
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
     RuleConfiguration::addConfiguration("foo", "bar");
     EXPECT_TRUE(RuleConfiguration::hasKey("foo"));
@@ -55,20 +50,17 @@ TEST(RuleConfigurationTest, StringValueHasKey)
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
 }
 
-TEST(RuleConfigurationTest, IntValueNoDefault)
-{
+TEST(RuleConfigurationTest, IntValueNoDefault) {
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
     EXPECT_THAT(RuleConfiguration::intForKey("foo"), Eq(0));
 }
 
-TEST(RuleConfigurationTest, IntValueHasDefault)
-{
+TEST(RuleConfigurationTest, IntValueHasDefault) {
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
     EXPECT_THAT(RuleConfiguration::intForKey("foo", 1), Eq(1));
 }
 
-TEST(RuleConfigurationTest, IntValueHasKey)
-{
+TEST(RuleConfigurationTest, IntValueHasKey) {
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
     RuleConfiguration::addConfiguration("foo", "1");
     EXPECT_TRUE(RuleConfiguration::hasKey("foo"));
@@ -78,20 +70,17 @@ TEST(RuleConfigurationTest, IntValueHasKey)
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
 }
 
-TEST(RuleConfigurationTest, DoubleValueNoDefault)
-{
+TEST(RuleConfigurationTest, DoubleValueNoDefault) {
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
     EXPECT_THAT(RuleConfiguration::doubleForKey("foo"), Eq(0.0));
 }
 
-TEST(RuleConfigurationTest, DoubleValueHasDefault)
-{
+TEST(RuleConfigurationTest, DoubleValueHasDefault) {
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
     EXPECT_THAT(RuleConfiguration::doubleForKey("foo", -1.01), Eq(-1.01));
 }
 
-TEST(RuleConfigurationTest, DoubleValueHasKey)
-{
+TEST(RuleConfigurationTest, DoubleValueHasKey) {
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
     RuleConfiguration::addConfiguration("foo", "1.01");
     EXPECT_TRUE(RuleConfiguration::hasKey("foo"));
@@ -101,8 +90,7 @@ TEST(RuleConfigurationTest, DoubleValueHasKey)
     EXPECT_FALSE(RuleConfiguration::hasKey("foo"));
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     ::testing::InitGoogleMock(&argc, argv);
     return RUN_ALL_TESTS();
 }

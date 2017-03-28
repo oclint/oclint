@@ -3,21 +3,18 @@
 
 #include <vector>
 
-namespace clang
-{
+namespace clang {
     class ASTContext;
 }
 
-namespace oclint
-{
+namespace oclint {
 
-class Analyzer
-{
-public:
-    virtual void preprocess(std::vector<clang::ASTContext *> &contexts) {}
-    virtual void analyze(std::vector<clang::ASTContext *> &contexts) = 0;
-    virtual void postprocess(std::vector<clang::ASTContext *> &contexts) {}
-};
+    class Analyzer {
+        public:
+            virtual void preprocess(std::vector<clang::ASTContext *> &contexts) {}
+            virtual void analyze(std::vector<clang::ASTContext *> &contexts) = 0;
+            virtual void postprocess(std::vector<clang::ASTContext *> &contexts) {}
+    };
 
 } // end namespace oclint
 

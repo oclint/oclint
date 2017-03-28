@@ -3,14 +3,12 @@
 
 #include <string>
 
-namespace oclint
-{
+namespace oclint {
 
-class Version
-{
-public:
-    static std::string identifier();
-};
+    class Version {
+        public:
+            static std::string identifier();
+    };
 
 } // end namespace oclint
 

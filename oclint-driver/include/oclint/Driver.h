@@ -3,32 +3,27 @@
 
 #include <string>
 
-namespace llvm
-{
+namespace llvm {
     template<typename T> class ArrayRef;
 }
 
-namespace clang
-{
-namespace tooling
-{
-    class CompilationDatabase;
-}
+namespace clang {
+    namespace tooling {
+        class CompilationDatabase;
+    }
 }
 
 #include "oclint/Analyzer.h"
 
-namespace oclint
-{
+namespace oclint {
 
-class ViolationSet;
+    class ViolationSet;
 
-class Driver
-{
-public:
-    void run(const clang::tooling::CompilationDatabase &compilationDatabase,
-        llvm::ArrayRef<std::string> sourcePaths, oclint::Analyzer &analyzer);
-};
+    class Driver {
+        public:
+            void run(const clang::tooling::CompilationDatabase &compilationDatabase,
+                     llvm::ArrayRef<std::string> sourcePaths, oclint::Analyzer &analyzer);
+    };
 
 } // end namespace oclint
 
