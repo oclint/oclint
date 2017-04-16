@@ -47,17 +47,13 @@ private:
 
     void writeCompilerError(std::ostream &out, const Violation &compilerError)
     {
-        auto ruleDescription = PMDRuleDescription("compiler error",
-                                                  "compiler",
-                                                  1);
+        auto ruleDescription = PMDRuleDescription("compiler error", "clang", 1);
         writeViolation(out, compilerError, &ruleDescription);
     }
 
     void writeCompilerWarning(std::ostream &out, const Violation &compilerWarning)
     {
-        auto ruleDescription = PMDRuleDescription("compiler warning",
-                                                  "compiler",
-                                                  2);
+        auto ruleDescription = PMDRuleDescription("compiler warning", "clang", 2);
         writeViolation(out, compilerWarning, &ruleDescription);
     }
 
@@ -77,9 +73,7 @@ private:
 
     void writeCheckerBug(std::ostream &out, const Violation &violation)
     {
-        auto ruleDescription = PMDRuleDescription("clang static analyzer",
-                                                  "clang static analyzer",
-                                                  2);
+        auto ruleDescription = PMDRuleDescription("clang static analyzer", "clang", 2);
         writeViolation(out, violation, &ruleDescription);
     }
 

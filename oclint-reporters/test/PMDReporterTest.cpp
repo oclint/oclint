@@ -80,7 +80,7 @@ TEST_F(PMDReporterTest, WriteCompilerError)
     EXPECT_THAT(oss.str(), HasSubstr("endline=\"3\""));
     EXPECT_THAT(oss.str(), HasSubstr("priority=\"1\""));
     EXPECT_THAT(oss.str(), HasSubstr("rule=\"compiler error\""));
-    EXPECT_THAT(oss.str(), HasSubstr("ruleset=\"compiler\""));
+    EXPECT_THAT(oss.str(), HasSubstr("ruleset=\"clang\""));
     EXPECT_THAT(oss.str(), HasSubstr("error &lt;message&gt;"));
     delete results;
 }
@@ -101,7 +101,7 @@ TEST_F(PMDReporterTest, WriteCompilerWarning)
     EXPECT_THAT(oss.str(), HasSubstr("endline=\"3\""));
     EXPECT_THAT(oss.str(), HasSubstr("priority=\"2\""));
     EXPECT_THAT(oss.str(), HasSubstr("rule=\"compiler warning\""));
-    EXPECT_THAT(oss.str(), HasSubstr("ruleset=\"compiler\""));
+    EXPECT_THAT(oss.str(), HasSubstr("ruleset=\"clang\""));
     EXPECT_THAT(oss.str(), HasSubstr("warning &lt;message&gt;"));
     delete results;
 }
@@ -170,7 +170,7 @@ TEST_F(PMDReporterTest, WriteCheckerBug)
     EXPECT_THAT(oss.str(), HasSubstr("endline=\"3\""));
     EXPECT_THAT(oss.str(), HasSubstr("priority=\"2\""));
     EXPECT_THAT(oss.str(), HasSubstr("rule=\"clang static analyzer\""));
-    EXPECT_THAT(oss.str(), HasSubstr("ruleset=\"clang static analyzer\""));
+    EXPECT_THAT(oss.str(), HasSubstr("ruleset=\"clang\""));
     EXPECT_THAT(oss.str(), HasSubstr("checker bug &lt;message&gt;"));
     delete results;
 }
