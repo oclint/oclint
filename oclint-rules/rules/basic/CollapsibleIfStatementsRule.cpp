@@ -53,18 +53,18 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.6";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "This rule detects instances where the conditions of two consecutive if statements "
             "can be combined into one in order to increase code cleanness and readability.";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp

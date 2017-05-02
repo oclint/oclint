@@ -1,4 +1,4 @@
 #! /bin/sh -e
 
-./ci -reset
-./ci -setup -release
+./ci -reset "$@"
+./ci -setup -release "$@"

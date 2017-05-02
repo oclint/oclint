@@ -86,24 +86,24 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.8";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "Early exits can reduce the indentation of a block of code, "
             "so that reader do not have to remember all the previous decisions, "
             "therefore, makes it easier to understand the code.";
     }
 
-    virtual const std::string fileName() const override
+    virtual const string fileName() const override
     {
         return "PreferEarlyExitRule.cpp";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp

@@ -57,18 +57,18 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.7";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "Jumbled incrementers are usually typos. If it’s done on purpose, "
             "it’s very confusing for code readers.";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp

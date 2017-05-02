@@ -25,19 +25,19 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.6";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "Checks for bitwise operations in conditionals. Although being written on purpose "
             "in some rare cases, bitwise operations are considered to be too \"smart\". "
             "Smart code is not easy to understand.";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp

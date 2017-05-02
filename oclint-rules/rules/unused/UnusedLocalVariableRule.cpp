@@ -52,9 +52,9 @@ protected:
      * In the regular operation mode, this part should be only triggered within the ctor
      *
      * @param newIgnoreTypes The new types to insert accordingly
-     * @throw std::invalid_argument, in case that the given input contains a failure
+     * @throw invalid_argument, in case that the given input contains a failure
      */
-    void resetSkippedTypes(const std::list<string> & newIgnoreTypes)
+    void resetSkippedTypes(const list<string> & newIgnoreTypes)
     {
         skippedTypes.clear();
         for (auto const & curKeys : newIgnoreTypes)
@@ -150,17 +150,17 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.4";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "This rule detects local variables that are declared, but not used.";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp

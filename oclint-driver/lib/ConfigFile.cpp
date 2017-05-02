@@ -182,6 +182,11 @@ static llvm::Optional<bool> createOptionalBool(const TriState value)
     }
 }
 
+llvm::Optional<bool> oclint::option::ConfigFile::listEnabledRules() const
+{
+    return createOptionalBool(_listEnabledRules);
+}
+
 llvm::Optional<bool> oclint::option::ConfigFile::clangChecker() const
 {
     return createOptionalBool(_clangChecker);
@@ -192,6 +197,21 @@ llvm::Optional<bool> oclint::option::ConfigFile::allowDuplicatedViolations() con
     return createOptionalBool(_allowDuplicatedViolations);
 }
 
+llvm::Optional<bool> oclint::option::ConfigFile::enableGlobalAnalysis() const
+{
+    return createOptionalBool(_enableGlobalAnalysis);
+}
+
+llvm::Optional<bool> oclint::option::ConfigFile::noAnalytics() const
+{
+    return createOptionalBool(_noAnalytics);
+}
+
+llvm::Optional<bool> oclint::option::ConfigFile::enableVerbose() const
+{
+    return createOptionalBool(_enableVerbose);
+}
+
 void oclint::option::ConfigFile::mapping(llvm::yaml::IO& inputOutput)
 {
     inputOutput.mapOptional("rules", _rules);
@@ -200,9 +220,13 @@ void oclint::option::ConfigFile::mapping(llvm::yaml::IO& inputOutput)
     inputOutput.mapOptional("rule-configurations", _ruleConfigurations);
     inputOutput.mapOptional("output", _output);
     inputOutput.mapOptional("report-type", _reportType);
+    inputOutput.mapOptional("list-enabled-rules", _listEnabledRules);
     inputOutput.mapOptional("max-priority-1", _maxP1);
     inputOutput.mapOptional("max-priority-2", _maxP2);
     inputOutput.mapOptional("max-priority-3", _maxP3);
     inputOutput.mapOptional("enable-clang-static-analyzer", _clangChecker);
     inputOutput.mapOptional("allow-duplicated-violations", _allowDuplicatedViolations);
+    inputOutput.mapOptional("enable-global-analysis", _enableGlobalAnalysis);
+    inputOutput.mapOptional("no-analytics", _noAnalytics);
+    inputOutput.mapOptional("enable-verbose", _enableVerbose);
 }

@@ -2,7 +2,9 @@
 #include "oclint/RuleSet.h"
 #include "oclint/util/ASTUtil.h"
 
+using namespace std;
 using namespace clang;
+using namespace oclint;
 
 static bool IsCondNoNullPointerForBinOp(const BinaryOperator& binOp, const Expr** exprPointer)
 {
@@ -94,10 +96,10 @@ static bool IsADeleteBlock(ASTContext& context, const Stmt& stmt, const Expr* ex
 }
 
 class UnnecessaryNullCheckForCXXDeallocRule :
-    public oclint::AbstractASTVisitorRule<UnnecessaryNullCheckForCXXDeallocRule>
+    public AbstractASTVisitorRule<UnnecessaryNullCheckForCXXDeallocRule>
 {
 public:
-    virtual const std::string name() const override
+    virtual const string name() const override
     {
         return "unnecessary null check for dealloc";
     }
@@ -107,34 +109,34 @@ public:
         return 3;
     }
 
-    virtual const std::string category() const override
+    virtual const string category() const override
     {
         return "redundant";
     }
 
     virtual unsigned int supportedLanguages() const override
     {
-        return oclint::LANG_CXX;
+        return LANG_CXX;
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.8";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "``char* p = 0; delete p;`` is valid. "
             "This rule locates unnecessary ``if (p)`` checks.";
     }
 
-    virtual const std::string fileName() const override
+    virtual const string fileName() const override
     {
         return "UnnecessaryNullCheckForCXXDeallocRule.cpp";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp
@@ -168,4 +170,4 @@ public:
     }
 };
 
-static oclint::RuleSet rules(new UnnecessaryNullCheckForCXXDeallocRule);
+static RuleSet rules(new UnnecessaryNullCheckForCXXDeallocRule);

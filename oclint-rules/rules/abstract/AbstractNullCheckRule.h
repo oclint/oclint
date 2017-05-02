@@ -168,6 +168,7 @@ protected:
         }
     };
 
+
     class VariableOfInterestInObjCMessageExpr :
         public clang::RecursiveASTVisitor<VariableOfInterestInObjCMessageExpr>
     {

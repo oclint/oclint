@@ -27,22 +27,22 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.6";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "This rule indicates blocks nested more deeply than the upper limit.";
     }
 
-    virtual const std::string fileName() const override
+    virtual const string fileName() const override
     {
         return "NestedBlockDepthRule.cpp";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp
@@ -57,9 +57,9 @@ public:
         )rst";
     }
 
-    virtual const std::map<std::string, std::string> thresholds() const override
+    virtual const map<string, string> thresholds() const override
     {
-        std::map<std::string, std::string> thresholdMapping;
+        map<string, string> thresholdMapping;
         thresholdMapping["NESTED_BLOCK_DEPTH"] =
             "The depth of a block or compound statement reporting threshold, default value is 5.";
         return thresholdMapping;

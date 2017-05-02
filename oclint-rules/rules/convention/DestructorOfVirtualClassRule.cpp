@@ -1,7 +1,9 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
+using namespace std;
 using namespace clang;
+using namespace oclint;
 
 static bool hasVirtualDestructor(const CXXRecordDecl& cxxRecordDecl)
 {
@@ -10,17 +12,17 @@ static bool hasVirtualDestructor(const CXXRecordDecl& cxxRecordDecl)
     return cxxDestructorDecl != nullptr && cxxDestructorDecl->isVirtual();
 }
 
-static std::string getMessageViolation(const CXXRecordDecl& cxxRecordDecl)
+static string getMessageViolation(const CXXRecordDecl& cxxRecordDecl)
 {
-    const std::string& className = cxxRecordDecl.getNameAsString();
+    const string& className = cxxRecordDecl.getNameAsString();
     return "class " + className + " should have a virtual destructor ~" + className + "()";
 }
 
 class DestructorOfVirtualClassRule :
-    public oclint::AbstractASTVisitorRule<DestructorOfVirtualClassRule>
+    public AbstractASTVisitorRule<DestructorOfVirtualClassRule>
 {
 public:
-    virtual const std::string name() const override
+    virtual const string name() const override
     {
         return "destructor of virtual class";
     }
@@ -30,28 +32,28 @@ public:
         return 2;
     }
 
-    virtual const std::string category() const override
+    virtual const string category() const override
     {
         return "convention";
     }
 
     unsigned int supportedLanguages() const override
     {
-        return oclint::LANG_CXX;
+        return LANG_CXX;
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.8";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "This rule enforces the destructor of a virtual class must be virtual.";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp
@@ -79,4 +81,4 @@ public:
     }
 };
 
-static oclint::RuleSet rules(new DestructorOfVirtualClassRule());
+static RuleSet rules(new DestructorOfVirtualClassRule());

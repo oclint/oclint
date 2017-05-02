@@ -3,6 +3,7 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
+using namespace std;
 using namespace clang;
 using namespace oclint;
 
@@ -89,7 +90,7 @@ static bool isAnyReturnStmt(const Stmt& stmt)
 class DeadCodeRule : public AbstractASTVisitorRule<DeadCodeRule>
 {
 public:
-    virtual const std::string name() const override
+    virtual const string name() const override
     {
         return "dead code";
     }
@@ -99,24 +100,24 @@ public:
         return 2;
     }
 
-    virtual const std::string category() const override
+    virtual const string category() const override
     {
         return "basic";
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.4";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "Code after ``return``, ``break``, ``continue``, and ``throw`` statements "
             "is unreachable and will never be executed.";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: objective-c

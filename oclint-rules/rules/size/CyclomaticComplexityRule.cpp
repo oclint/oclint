@@ -48,12 +48,12 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.4";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return R"rst(
 Cyclomatic complexity is determined by the number of linearly independent paths
@@ -67,12 +67,12 @@ the cyclomatic complexity of 10 is a reasonable upper limit.
         )rst";
     }
 
-    virtual const std::string fileName() const override
+    virtual const string fileName() const override
     {
         return "CyclomaticComplexityRule.cpp";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp
@@ -107,15 +107,15 @@ the cyclomatic complexity of 10 is a reasonable upper limit.
         )rst";
     }
 
-    virtual const std::map<std::string, std::string> thresholds() const override
+    virtual const map<string, string> thresholds() const override
     {
-        std::map<std::string, std::string> thresholdMapping;
+        map<string, string> thresholdMapping;
         thresholdMapping["CYCLOMATIC_COMPLEXITY"] =
             "The cyclomatic complexity reporting threshold, default value is 10.";
         return thresholdMapping;
     }
 
-    virtual const std::string additionalDocument() const override
+    virtual const string additionalDocument() const override
     {
         return R"rst(
 **References:**

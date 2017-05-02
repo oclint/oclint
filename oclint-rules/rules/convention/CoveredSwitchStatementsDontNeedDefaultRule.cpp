@@ -30,12 +30,12 @@ public:
     }
 
 #ifdef DOCGEN
-    virtual const std::string since() const override
+    virtual const string since() const override
     {
         return "0.8";
     }
 
-    virtual const std::string description() const override
+    virtual const string description() const override
     {
         return "When a switch statement covers all possible cases, "
             "a default label is not needed and should be removed. "
@@ -43,12 +43,12 @@ public:
             "the SwitchStatementsShouldHaveDefault rule will report.";
     }
 
-    virtual const std::string fileName() const override
+    virtual const string fileName() const override
     {
         return "CoveredSwitchStatementsDontNeedDefaultRule.cpp";
     }
 
-    virtual const std::string example() const override
+    virtual const string example() const override
     {
         return R"rst(
 .. code-block:: cpp
