@@ -91,9 +91,13 @@ static llvm::cl::opt<bool> argDuplications("allow-duplicated-violations",
     llvm::cl::desc("Allow duplicated violations in the OCLint report"),
     llvm::cl::init(false),
     llvm::cl::cat(OCLintOptionCategory));
-static llvm::cl::opt<bool> argNoAnalytics("no-analytics",
-    llvm::cl::desc("Disable the anonymous analytics"),
+static llvm::cl::opt<bool> argEnableAnalytics("enable-analytics",
+    llvm::cl::desc("Enable the anonymous analytics"),
     llvm::cl::init(false),
+    llvm::cl::cat(OCLintOptionCategory));
+static llvm::cl::opt<bool> argNoAnalytics("no-analytics",
+    llvm::cl::desc("Disable the anonymous analytics (deprecated by enable-analytics, flag kept for backward compatibility)"),
+    llvm::cl::init(true),
     llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<bool> argEnableVerbose("verbose",
     llvm::cl::desc("Enable verbose output"),
@@ -332,9 +336,9 @@ bool oclint::option::allowDuplicatedViolations()
     return argDuplications;
 }
 
-bool oclint::option::disableAnalytics()
+bool oclint::option::enableAnalytics()
 {
-  return argNoAnalytics;
+    return argEnableAnalytics;
 }
 
 bool oclint::option::enableVerbose()
