@@ -1,0 +1,6 @@
+SET(LIST_OF_RULES
+    UseMaxOrMin
+    UseSwap
+    )
+
+BUILD_DYNAMIC_RULES("${LIST_OF_RULES}")

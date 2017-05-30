@@ -1,5 +1,7 @@
 #include "oclint/util/ASTUtil.h"
 
+#include <llvm/Support/raw_os_ostream.h>
+
 bool isObjCMethodDeclaredInSuperClass(clang::ObjCMethodDecl *decl)
 {
     if (decl && !isObjCMethodDeclLocatedInInterfaceContainer(decl))
@@ -21,7 +23,7 @@ bool isObjCMethodDeclaredInProtocol(clang::ObjCMethodDecl *decl)
     {
         return false;
     }
-    
+
     clang::Selector selector = decl->getSelector();
     clang::ObjCInterfaceDecl *interfaceDecl = decl->getClassInterface();
     if (interfaceDecl)
@@ -89,8 +91,10 @@ bool isANullPointerExpr(const clang::Expr& expr)
 {
     for (const clang::CastExpr* castExpr = clang::dyn_cast<clang::CastExpr>(&expr);
          castExpr;
-         castExpr = clang::dyn_cast<clang::CastExpr>(castExpr->getSubExpr())) {
-        if (castExpr->getCastKind() == clang::CK_NullToPointer) {
+         castExpr = clang::dyn_cast_or_null<clang::CastExpr>(castExpr->getSubExpr()))
+    {
+        if (castExpr->getCastKind() == clang::CK_NullToPointer)
+        {
             return true;
         }
     }
@@ -116,7 +120,6 @@ const clang::Expr* ignoreCastExpr(const clang::Expr& expr)
     }
     return last;
 }
-
 int getLineCount(clang::SourceRange sourceRange, const clang::SourceManager& sourceManager)
 {
     clang::SourceLocation startLocation = sourceRange.getBegin();
@@ -125,4 +128,28 @@ int getLineCount(clang::SourceRange sourceRange, const clang::SourceManager& sou
     unsigned startLineNumber = sourceManager.getPresumedLineNumber(startLocation);
     unsigned endLineNumber = sourceManager.getPresumedLineNumber(endLocation);
     return endLineNumber - startLineNumber + 1;
+}
+const clang::Stmt* getSingleStmt(const clang::Stmt& stmt)
+{
+    const clang::CompoundStmt* compoundStmt = clang::dyn_cast<clang::CompoundStmt>(&stmt);
+
+    if (compoundStmt == nullptr)
+    {
+        return &stmt;
+    }
+    if (compoundStmt->size() != 1)
+    {
+        return nullptr;
+    }
+    return *compoundStmt->body_begin();
+}
+
+std::string exprToString(clang::ASTContext& context, const clang::Expr& expr)
+{
+    const clang::Stmt& stmt = static_cast<const clang::Stmt&>(expr);
+    std::string res;
+    llvm::raw_string_ostream outStream(res);
+
+    stmt.printPretty(outStream, nullptr, clang::PrintingPolicy(context.getLangOpts()));
+    return res;
 }
