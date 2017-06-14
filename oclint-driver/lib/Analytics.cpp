@@ -148,14 +148,14 @@ static void sendExitStatus(countly::Countly &cntly, int exitCode)
 void oclint::Analytics::send(int exitCode)
 {
   countly::Countly cntly;
-  cntly.start("countly.ryuichisaito.com", "873c792b2ead515f27f0ccba01a976ae9a4cc425");
-
-  switch (exitCode) //!OCLINT
+  cntly.start("countly.ryuichisaito.com", "873c792b2ead515f27f0ccba01a976ae9a4cc425");//It's not good for Chinese users,for the Website is 502 by the Great Wall.Sometimes, the oclint would never exists after analyzing.
+//Maybe, a choice in the command line could be choosen to disable to request the website.  So....
+ /* switch (exitCode) //!OCLINT
   {
     case SUCCESS:
     case ERROR_WHILE_REPORTING:
       sendLanguageCount(cntly);
-    case ERROR_WHILE_PROCESSING:
+   case ERROR_WHILE_PROCESSING:
     case REPORTER_NOT_FOUND:
       sendLoadedRules(cntly);
     default:
@@ -165,7 +165,7 @@ void oclint::Analytics::send(int exitCode)
       sendExitStatus(cntly, exitCode);
   }
 
-  cntly.suspend();
+  cntly.suspend();*/
 }
 
 void oclint::Analytics::ruleConfiguration(std::string key, std::string value)
