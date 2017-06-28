@@ -68,7 +68,7 @@ script:
   - cd ..
 
 after_success:
-  - if [ $BUILD == test ]; then
+  - if [ $BUILD == test ] && [ $MODULE != driver ]; then
       if [ $TRAVIS_OS_NAME == osx ]; then
         coveralls --gcov $PWD/build/llvm-install/bin/llvm-cov --gcov-options gcov --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test;
       else

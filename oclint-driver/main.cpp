@@ -159,6 +159,22 @@ static void oclintVersionPrinter()
 
 extern llvm::cl::OptionCategory OCLintOptionCategory;
 
+int handleExit(oclint::Results *results)
+{
+  if (results->hasErrors())
+  {
+    return sendAnalyticsAndExit(COMPILATION_ERRORS);
+  }
+
+  if (numberOfViolationsExceedThreshold(results))
+  {
+      printViolationsExceedThresholdError(results);
+      return sendAnalyticsAndExit(VIOLATIONS_EXCEED_THRESHOLD);
+  }
+
+  return sendAnalyticsAndExit(SUCCESS);
+}
+
 int main(int argc, const char **argv)
 {
     llvm::cl::AddExtraVersionPrinter(&oclintVersionPrinter);
@@ -202,11 +218,5 @@ int main(int argc, const char **argv)
         return sendAnalyticsAndExit(ERROR_WHILE_REPORTING);
     }
 
-    if (numberOfViolationsExceedThreshold(results.get()))
-    {
-        printViolationsExceedThresholdError(results.get());
-        return sendAnalyticsAndExit(VIOLATIONS_EXCEED_THRESHOLD);
-    }
-
-    return sendAnalyticsAndExit(SUCCESS);
+    return handleExit(results.get());
 }
