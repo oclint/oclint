@@ -65,7 +65,7 @@ public:
         int threshold = RuleConfiguration::intForKey("LONG_VARIABLE_NAME", 20);
         if (nameLength > threshold)
         {
-            if (nameLength > threshold + 10) varName = varName.substr(0, threshold + 5) + "[...]";
+            if (nameLength > threshold + 10) varName = varName.substr(0, threshold + 3) + "..." + varName.substr(varName.length() - 3, varName.length());
             string description = "Length of variable name `" + varName + "` is " + toString<int>(nameLength) + ", which is longer than the threshold of " + toString<int>(threshold);
             addViolation(varDecl, this, description);
         }
