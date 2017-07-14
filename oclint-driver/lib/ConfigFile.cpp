@@ -202,16 +202,6 @@ llvm::Optional<bool> oclint::option::ConfigFile::enableGlobalAnalysis() const
     return createOptionalBool(_enableGlobalAnalysis);
 }
 
-llvm::Optional<bool> oclint::option::ConfigFile::noAnalytics() const
-{
-    return createOptionalBool(_noAnalytics);
-}
-
-llvm::Optional<bool> oclint::option::ConfigFile::enableVerbose() const
-{
-    return createOptionalBool(_enableVerbose);
-}
-
 void oclint::option::ConfigFile::mapping(llvm::yaml::IO& inputOutput)
 {
     inputOutput.mapOptional("rules", _rules);
@@ -227,6 +217,4 @@ void oclint::option::ConfigFile::mapping(llvm::yaml::IO& inputOutput)
     inputOutput.mapOptional("enable-clang-static-analyzer", _clangChecker);
     inputOutput.mapOptional("allow-duplicated-violations", _allowDuplicatedViolations);
     inputOutput.mapOptional("enable-global-analysis", _enableGlobalAnalysis);
-    inputOutput.mapOptional("no-analytics", _noAnalytics);
-    inputOutput.mapOptional("enable-verbose", _enableVerbose);
 }

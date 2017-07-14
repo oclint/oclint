@@ -76,8 +76,9 @@ void disposeOutStream(ostream* out)
 void listRules()
 {
     cout << "Enabled rules:" << endl;
-    for (const std::string &ruleName : oclint::option::rulesetFilter().filteredRuleNames())
+    for (const std::string &ruleName : oclint::option::rulesetFilter().filteredRuleNames()) {
         cout << " - " << ruleName;
+    }
     cout << endl;
 }
 
