@@ -75,11 +75,12 @@ void disposeOutStream(ostream* out)
 
 void listRules()
 {
-    cerr << "Enabled rules:\n";
+    cout << "Enabled rules:" << endl;
     for (const std::string &ruleName : oclint::option::rulesetFilter().filteredRuleNames())
     {
-        cerr << "- " << ruleName << "\n";
+        cout << "- " << ruleName << endl;
     }
+    cout << endl;
 }
 
 void printErrorLine(const char *errorMessage)
@@ -161,16 +162,16 @@ extern llvm::cl::OptionCategory OCLintOptionCategory;
 
 int handleExit(oclint::Results *results)
 {
-  if (results->hasErrors())
-  {
-    return sendAnalyticsAndExit(COMPILATION_ERRORS);
-  }
+    if (results->hasErrors())
+    {
+        return sendAnalyticsAndExit(COMPILATION_ERRORS);
+    }
 
-  if (numberOfViolationsExceedThreshold(results))
-  {
-      printViolationsExceedThresholdError(results);
-      return sendAnalyticsAndExit(VIOLATIONS_EXCEED_THRESHOLD);
-  }
+    if (numberOfViolationsExceedThreshold(results))
+    {
+        printViolationsExceedThresholdError(results);
+        return sendAnalyticsAndExit(VIOLATIONS_EXCEED_THRESHOLD);
+    }
 
   return sendAnalyticsAndExit(SUCCESS);
 }

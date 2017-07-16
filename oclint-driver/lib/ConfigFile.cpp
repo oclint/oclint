@@ -192,6 +192,11 @@ llvm::Optional<bool> oclint::option::ConfigFile::allowDuplicatedViolations() con
     return createOptionalBool(_allowDuplicatedViolations);
 }
 
+llvm::Optional<bool> oclint::option::ConfigFile::enableGlobalAnalysis() const
+{
+    return createOptionalBool(_enableGlobalAnalysis);
+}
+
 void oclint::option::ConfigFile::mapping(llvm::yaml::IO& inputOutput)
 {
     inputOutput.mapOptional("rules", _rules);
@@ -205,4 +210,5 @@ void oclint::option::ConfigFile::mapping(llvm::yaml::IO& inputOutput)
     inputOutput.mapOptional("max-priority-3", _maxP3);
     inputOutput.mapOptional("enable-clang-static-analyzer", _clangChecker);
     inputOutput.mapOptional("allow-duplicated-violations", _allowDuplicatedViolations);
+    inputOutput.mapOptional("enable-global-analysis", _enableGlobalAnalysis);
 }

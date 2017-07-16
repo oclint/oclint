@@ -174,6 +174,7 @@ static void processConfigFile(const std::string &path)
     updateArgIfSet(argMaxP1, config.maxP1());
     updateArgIfSet(argMaxP2, config.maxP2());
     updateArgIfSet(argMaxP3, config.maxP3());
+    updateArgIfSet(argGlobalAnalysis, config.enableGlobalAnalysis());
     updateArgIfSet(argClangChecker, config.clangChecker());
     updateArgIfSet(argDuplications, config.allowDuplicatedViolations());
 }
