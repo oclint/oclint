@@ -91,6 +91,15 @@ static llvm::cl::opt<bool> argDuplications("allow-duplicated-violations",
     llvm::cl::desc("Allow duplicated violations in the OCLint report"),
     llvm::cl::init(false),
     llvm::cl::cat(OCLintOptionCategory));
+static llvm::cl::opt<bool> argNoAnalytics("no-analytics",
+    llvm::cl::desc("Disable the anonymous analytics"),
+    llvm::cl::init(false),
+    llvm::cl::cat(OCLintOptionCategory));
+static llvm::cl::opt<bool> argEnableVerbose("verbose",
+    llvm::cl::desc("Enable verbose output"),
+    llvm::cl::init(false),
+    llvm::cl::Hidden,
+    llvm::cl::cat(OCLintOptionCategory));
 
 /* -------------
    libTooling cl
@@ -162,7 +171,6 @@ static void processConfigFile(const std::string &path)
 
     updateArgIfSet(argOutput, config.output());
     updateArgIfSet(argReportType, config.reportType());
-    updateArgIfSet(argListEnabledRules, config.listEnabledRules());
     updateArgIfSet(argMaxP1, config.maxP1());
     updateArgIfSet(argMaxP2, config.maxP2());
     updateArgIfSet(argMaxP3, config.maxP3());
