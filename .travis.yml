@@ -61,6 +61,8 @@ before_install:
     sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 50;
   fi
 - sudo pip install cpp-coveralls
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install ninja; fi
+- if [ "$TRAVIS_OS_NAME" == "linux" ]; then apt-get install ninja-build -y; fi
 
 script:
   - cd oclint-scripts
