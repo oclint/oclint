@@ -20,14 +20,17 @@ arg_parser.add_argument('-clean', '--clean', action="store_true")
 arg_parser.add_argument('-j', type=int, default=0)
 arg_parser.add_argument('-use-system-compiler', '--use-system-compiler', action="store_true", default=environment.is_linux())
 arg_parser.add_argument('-as-dep', '--as-dep', action="store_true")
+arg_parser.add_argument('-no-ninja', '--no-ninja', action='store_true')
 args = arg_parser.parse_args()
 
 def clean_module(module_name):
     test_path = path.oclint_module_test_dir(module_name)
     path.rm_f(test_path);
 
-def build_command(module_extras, source_path):
+def build_command(module_extras, no_ninja, source_path):
     cmd_build = cmake.builder(source_path).test_build()
+    if not no_ninja:
+        cmd_build.use_ninja()
     if args.as_dep:
         cmd_build = cmake.builder(source_path)
     if environment.is_unix() and not args.use_system_compiler:
@@ -44,7 +47,7 @@ def display_test_result(module_name):
     with open(testresult_path, 'r') as testresult_file:
         print(testresult_file.read())
 
-def test_module(module_name, multiple_thread):
+def test_module(module_name, no_ninja, multiple_thread):
     build_path = path.oclint_module_test_dir(module_name)
     source_path = path.oclint_module_source_dir(module_name)
 
@@ -56,13 +59,16 @@ def test_module(module_name, multiple_thread):
         module_extras['OCLINT_METRICS_SOURCE_DIR'] = path.source.metrics_dir
         module_extras['OCLINT_METRICS_BUILD_DIR'] = path.build.metrics_test_dir
 
-    command = build_command(module_extras, source_path)
+    command = build_command(module_extras, no_ninja, source_path)
 
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
     path.cd(build_path)
     process.call(command)
-    process.call('make -j ' + multiple_thread)
+    if no_ninja:
+        process.call('make -j ' + multiple_thread)
+    else:
+        process.call('ninja')
     if not args.as_dep:
         run_ctest_command = 'ctest --output-on-failure > ' + test_result_path(module_name)
         ctest_exit_code = subprocess.call(run_ctest_command, shell=True)
@@ -93,4 +99,4 @@ if not args.j is 0:
     multiple_thread = args.j
 
 for module in build_modules:
-    test_module(module, str(multiple_thread))
+    test_module(module, args.no_ninja, str(multiple_thread))
