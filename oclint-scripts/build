@@ -22,14 +22,17 @@ arg_parser.add_argument('-clean', '--clean', action="store_true")
 arg_parser.add_argument('-j', type=int, default=0)
 arg_parser.add_argument('-llvm-root', '--llvm-root', default=path.build.clang_install_dir)
 arg_parser.add_argument('-use-system-compiler', '--use-system-compiler', action="store_true", default=environment.is_linux())
+arg_parser.add_argument('-no-ninja', '--no-ninja', action='store_true')
 args = arg_parser.parse_args()
 
 def clean_module(module_name):
     build_path = path.oclint_module_build_dir(module_name)
     path.rm_f(build_path)
 
-def build_command(module_name, llvm_root, is_release, is_docgen, no_analytics, module_extras, source_path):
+def build_command(module_name, llvm_root, is_release, no_analytics, no_ninja, is_docgen, module_extras, source_path):
     cmd_build = cmake.builder(source_path)
+    if not no_ninja:
+        cmd_build.use_ninja()
     if is_release:
         cmd_build.release_build()
     if is_docgen:
@@ -42,7 +45,7 @@ def build_command(module_name, llvm_root, is_release, is_docgen, no_analytics, m
     extras.update(module_extras)
     return cmd_build.append_dict(extras).str()
 
-def build_module(module_name, llvm_root, is_release, no_analytics, is_docgen, multiple_thread):
+def build_module(module_name, llvm_root, is_release, no_analytics, no_ninja, is_docgen, multiple_thread):
     build_path = path.oclint_module_build_dir(module_name)
     source_path = path.oclint_module_source_dir(module_name)
 
@@ -57,13 +60,16 @@ def build_module(module_name, llvm_root, is_release, no_analytics, is_docgen, mu
         module_extras['COUNTLY_SOURCE_DIR'] = path.source.countly_dir
         module_extras['COUNTLY_BUILD_DIR'] = path.build.countly_build_dir
 
-    command = build_command(module_name, llvm_root, is_release, is_docgen, no_analytics, module_extras, source_path)
+    command = build_command(module_name, llvm_root, is_release, no_analytics, no_ninja, is_docgen, module_extras, source_path)
 
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
     path.cd(build_path)
     process.call(command)
-    process.call('make -j ' + multiple_thread)
+    if no_ninja:
+        process.call('make -j ' + multiple_thread)
+    else:
+        process.call('ninja')
     path.cd(current_dir)
 
 build_modules = []
@@ -83,4 +89,4 @@ if not args.j is 0:
     multiple_thread = args.j
 
 for module in build_modules:
-    build_module(module, args.llvm_root, args.release, args.no_analytics, args.docgen, str(multiple_thread))
+    build_module(module, args.llvm_root, args.release, args.no_analytics, args.no_ninja, args.docgen, str(multiple_thread))

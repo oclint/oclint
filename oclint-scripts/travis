@@ -5,7 +5,7 @@ if [ "$1" = "build" ]
 then
     ./countly co
     ./countly build
-    ./build
+    ./build -no-ninja
     ./bundle -archive
 elif [ "$1" = "docgen" ]
 then
@@ -18,7 +18,7 @@ else
     shift
     for dep in $*
     do
-        ./test "$dep" -as-dep
+        ./test "$dep" -as-dep -no-ninja
     done
     ./test "$MODULE"
 fi
