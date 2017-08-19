@@ -51,8 +51,6 @@ void oclint::option::RuleConfigurationPair::mapping(llvm::yaml::IO& inputOutput)
    ConfigFile
    ---------- */
 
-LLVM_YAML_IS_SEQUENCE_VECTOR(llvm::StringRef)
-
 namespace llvm {
 namespace yaml {
 
