@@ -156,3 +156,31 @@ case 1:     \n\
 \tbreak;    \n\
 } }");
 }
+
+TEST(MissingBreakInSwitchStatementRuleTest, CaseWithCXXCtorThrow)
+{
+	testRuleOnCXXCode(new MissingBreakInSwitchStatementRule(),
+"class ExcClass {public: ExcClass() {} }; \n\
+int aMethod(int a) {                      \n\
+int res = 123;                            \n\
+switch(a) {                               \n\
+case 1:                                   \n\
+\tres = 1;                                \n\
+\tthrow 123;                              \n\
+case 2:                                   \n\
+\tres = 2;                                \n\
+\tthrow \"abc\";                          \n\
+case 3:                                   \n\
+\tres = 3;                                \n\
+\tthrow ExcClass();                       \n\
+case 4:                                   \n\
+\tres += 1;                               \n\
+\t{                                       \n\
+\t\tthrow ExcClass();                     \n\
+\t}                                       \n\
+default:                                  \n\
+\tres += 1;                               \n\
+\tthrow ExcClass();                       \n\
+}                                         \n\
+return res; }");
+}

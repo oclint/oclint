@@ -15,6 +15,10 @@ class MissingBreakInSwitchStatementRule :
         {
             return !TraverseStmt(switchCaseStmt);
         }
+        bool findSubBreak(Stmt *cleanupStmt)
+        {
+            return !TraverseStmt(cleanupStmt);
+        }
 
         bool VisitBreakStmt(BreakStmt *)
         {
@@ -97,11 +101,17 @@ public:
 
     bool isBreakingPoint(Stmt *stmt)
     {
+        bool isSubClean = isa<ExprWithCleanups>(stmt) || isa<CompoundStmt>(stmt);
+        if (isSubClean) {
+            FindingBreak findingBreak;
+            isSubClean = findingBreak.findSubBreak(stmt);
+        }
         return stmt && (isa<BreakStmt>(stmt) ||
                         isa<ReturnStmt>(stmt) ||
                         isa<CXXThrowExpr>(stmt) ||
                         isa<ContinueStmt>(stmt) ||
-                        isa<ObjCAtThrowStmt>(stmt));
+                        isa<ObjCAtThrowStmt>(stmt) ||
+                        isSubClean);
     }
 
     bool VisitSwitchStmt(SwitchStmt *switchStmt)
