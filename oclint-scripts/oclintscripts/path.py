@@ -78,7 +78,7 @@ class url:
     xcodebuild = 'https://github.com/oclint/oclint-xcodebuild.git'
 
     clang_prebuilt_binary_for_xcode_9 = 'http://releases.llvm.org/5.0.0/clang+llvm-5.0.0-x86_64-apple-darwin.tar.xz'
-    clang_prebuilt_binary_for_ubuntu_lts_14 = 'https://dl.dropboxusercontent.com/s/2jrupvuwnrawo2c/llvm-5.0.0-rc2-oclint-dev-snapshot-ubuntu-14.04-17.08.20.tar.gz'
+    clang_prebuilt_binary_for_ubuntu_lts_14 = 'http://releases.llvm.org/5.0.0/clang+llvm-5.0.0-linux-x86_64-ubuntu14.04.tar.xz'
 
 def cd(dir_path):
     os.chdir(dir_path)
