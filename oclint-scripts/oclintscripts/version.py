@@ -19,7 +19,7 @@ def dev_version():
         return "src"
 
 def oclint_version():
-    return "0.13-rc2"
+    return "0.13"
 
 def oclint_dev_version():
     return oclint_version() + '.dev.' + dev_version()
