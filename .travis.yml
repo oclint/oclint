@@ -70,7 +70,7 @@ before_install:
     pip install cpp-coveralls;
     pyenv rehash;
   else
-    sudo pip install cpp-coveralls;
+    sudo pip install --upgrade cpp-coveralls;
   fi
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
     brew install ninja;
