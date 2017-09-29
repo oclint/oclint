@@ -60,9 +60,23 @@ before_install:
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 50;
     sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 50;
   fi
-- sudo pip install cpp-coveralls
-- if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install ninja; fi
-- if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install ninja-build -y; fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+    brew update;
+    brew install pyenv;
+    eval "$(pyenv init -)";
+    pyenv install 2.7.6;
+    pyenv global 2.7.6;
+    pyenv rehash;
+    pip install cpp-coveralls;
+    pyenv rehash;
+  else
+    sudo pip install cpp-coveralls;
+  fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+    brew install ninja;
+  else
+    sudo apt-get install ninja-build -y;
+  fi
 
 script:
   - cd oclint-scripts
