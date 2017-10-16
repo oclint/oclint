@@ -16,8 +16,8 @@ private:
         if (decl->hasBody() &&
             !isCppMethodDeclLocatedInCppRecordDecl(dyn_cast<CXXMethodDecl>(decl)))
         {
-            CompoundStmt *compoundStmt = dyn_cast<CompoundStmt>(decl->getBody());
-            int length = getLineCount(compoundStmt->getSourceRange(), _carrier->getSourceManager());
+            Stmt *stmt = decl->getBody();
+            int length = getLineCount(stmt->getSourceRange(), _carrier->getSourceManager());
             int threshold = RuleConfiguration::intForKey("LONG_METHOD", 50);
             if (length > threshold)
             {
