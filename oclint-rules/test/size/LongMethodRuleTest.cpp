@@ -29,6 +29,12 @@ TEST_F(LongMethodRuleTest, OneLine)
         0, 1, 1, 1, 18, "Method with 1 lines exceeds limit of 0");
 }
 
+TEST_F(LongMethodRuleTest, OneLineWithoutBraces)
+{
+    testRuleOnCXXCode(new LongMethodRule(), "void aMethod() try{} catch(...) {}",
+        0, 1, 1, 1, 34, "Method with 1 lines exceeds limit of 0");
+}
+
 TEST_F(LongMethodRuleTest, TweLines)
 {
     testRuleOnCode(new LongMethodRule(), "void aMethod() {\n}",
