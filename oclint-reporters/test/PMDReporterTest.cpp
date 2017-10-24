@@ -66,7 +66,7 @@ TEST_F(PMDReporterTest, WriteFooter)
 
 TEST_F(PMDReporterTest, WriteCompilerError)
 {
-    const Violation compilerError(nullptr, "error path", 1, 2, 3, 4, "error <message>");
+    const Violation compilerError(nullptr, "error path", 1, 2, 3, 4, "error <message> \"message2\" && 'message3'");
     MockResultCollector resultCollector;
     resultCollector.addError(compilerError);
     Results * const results = new RawResults(resultCollector);
@@ -81,13 +81,13 @@ TEST_F(PMDReporterTest, WriteCompilerError)
     EXPECT_THAT(oss.str(), HasSubstr("priority=\"1\""));
     EXPECT_THAT(oss.str(), HasSubstr("rule=\"compiler error\""));
     EXPECT_THAT(oss.str(), HasSubstr("ruleset=\"clang\""));
-    EXPECT_THAT(oss.str(), HasSubstr("error &lt;message&gt;"));
+    EXPECT_THAT(oss.str(), HasSubstr("error &lt;message&gt; &quot;message2&quot; &amp;&amp; &apos;message3&apos;"));
     delete results;
 }
 
 TEST_F(PMDReporterTest, WriteCompilerWarning)
 {
-    Violation compilerWarning(nullptr, "warning path", 1, 2, 3, 4, "warning <message>");
+    Violation compilerWarning(nullptr, "warning path", 1, 2, 3, 4, "warning <message> \"message2\" && 'message3'");
     MockResultCollector resultCollector;
     resultCollector.addWarning(compilerWarning);
     Results * const results = new RawResults(resultCollector);
@@ -102,14 +102,14 @@ TEST_F(PMDReporterTest, WriteCompilerWarning)
     EXPECT_THAT(oss.str(), HasSubstr("priority=\"2\""));
     EXPECT_THAT(oss.str(), HasSubstr("rule=\"compiler warning\""));
     EXPECT_THAT(oss.str(), HasSubstr("ruleset=\"clang\""));
-    EXPECT_THAT(oss.str(), HasSubstr("warning &lt;message&gt;"));
+    EXPECT_THAT(oss.str(), HasSubstr("warning &lt;message&gt; &quot;message2&quot; &amp;&amp; &apos;message3&apos;"));
     delete results;
 }
 
 TEST_F(PMDReporterTest, WriteViolation)
 {
     RuleBase *rule = new MockRuleBase("rule name", "rule category", 3);
-    Violation violation(rule, "violation path", 1, 2, 3, 4, "violation <message>");
+    Violation violation(rule, "violation path", 1, 2, 3, 4, "violation <message> \"message2\" && 'message3'");
     MockResultCollector resultCollector;
     ViolationSet violationSet;
     violationSet.addViolation(violation);
@@ -126,14 +126,14 @@ TEST_F(PMDReporterTest, WriteViolation)
     EXPECT_THAT(oss.str(), HasSubstr("priority=\"5\""));
     EXPECT_THAT(oss.str(), HasSubstr("rule=\"rule name\""));
     EXPECT_THAT(oss.str(), HasSubstr("ruleset=\"rule category\""));
-    EXPECT_THAT(oss.str(), HasSubstr("violation &lt;message&gt;"));
+    EXPECT_THAT(oss.str(), HasSubstr("violation &lt;message&gt; &quot;message2&quot; &amp;&amp; &apos;message3&apos;"));
     delete results;
     delete rule;
 }
 
 TEST_F(PMDReporterTest, WriteViolationWithoutRule)
 {
-    Violation violation(nullptr, "violation path", 1, 2, 3, 4, "violation <message>");
+    Violation violation(nullptr, "violation path", 1, 2, 3, 4, "violation <message> \"message2\" && 'message3'");
     MockResultCollector resultCollector;
     ViolationSet violationSet;
     violationSet.addViolation(violation);
@@ -150,13 +150,13 @@ TEST_F(PMDReporterTest, WriteViolationWithoutRule)
     EXPECT_THAT(oss.str(), Not(HasSubstr("priority")));
     EXPECT_THAT(oss.str(), Not(HasSubstr("rule")));
     EXPECT_THAT(oss.str(), Not(HasSubstr("ruleset")));
-    EXPECT_THAT(oss.str(), HasSubstr("violation &lt;message&gt;"));
+    EXPECT_THAT(oss.str(), HasSubstr("violation &lt;message&gt; &quot;message2&quot; &amp;&amp; &apos;message3&apos;"));
     delete results;
 }
 
 TEST_F(PMDReporterTest, WriteCheckerBug)
 {
-    Violation checkerBug(nullptr, "checker bug path", 1, 2, 3, 4, "checker bug <message>");
+    Violation checkerBug(nullptr, "checker bug path", 1, 2, 3, 4, "checker bug <message> \"message2\" && 'message3'");
     MockResultCollector resultCollector;
     resultCollector.addCheckerBug(checkerBug);
     Results * const results = new RawResults(resultCollector);
@@ -171,7 +171,7 @@ TEST_F(PMDReporterTest, WriteCheckerBug)
     EXPECT_THAT(oss.str(), HasSubstr("priority=\"2\""));
     EXPECT_THAT(oss.str(), HasSubstr("rule=\"clang static analyzer\""));
     EXPECT_THAT(oss.str(), HasSubstr("ruleset=\"clang\""));
-    EXPECT_THAT(oss.str(), HasSubstr("checker bug &lt;message&gt;"));
+    EXPECT_THAT(oss.str(), HasSubstr("checker bug &lt;message&gt; &quot;message2&quot; &amp;&amp; &apos;message3&apos;"));
     delete results;
 }
 
