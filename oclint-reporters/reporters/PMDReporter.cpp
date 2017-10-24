@@ -111,6 +111,15 @@ private:
                 case '>':
                     output += "&gt;";
                     break;
+                case '"':
+                    output += "&quot;";
+                    break;
+                case '&':
+                    output += "&amp;";
+                    break;
+                case '\'':
+                    output += "&apos;";
+                    break;
                 default:
                     output += c;
             }
