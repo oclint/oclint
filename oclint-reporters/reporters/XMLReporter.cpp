@@ -48,7 +48,7 @@ public:
     {
         time_t now = time(nullptr);
         struct tm *tmNow = gmtime(&now);
-        char charNow[20];
+        char charNow[21];
         sprintf(charNow,
             "%04i-%02i-%02iT%02i:%02i:%02iZ",
             tmNow->tm_year + 1900,
