@@ -45,7 +45,7 @@ def build_command(module_name, llvm_root, is_release, no_analytics, no_ninja, is
     extras.update(module_extras)
     return cmd_build.append_dict(extras).str()
 
-def build_module(module_name, llvm_root, is_release, no_analytics, no_ninja, is_docgen, multiple_thread):
+def build_module(module_name, llvm_root, is_release, no_analytics, no_ninja, is_docgen, j):
     build_path = path.oclint_module_build_dir(module_name)
     source_path = path.oclint_module_source_dir(module_name)
 
@@ -67,9 +67,9 @@ def build_module(module_name, llvm_root, is_release, no_analytics, no_ninja, is_
     path.cd(build_path)
     process.call(command)
     if no_ninja:
-        process.call('make -j ' + multiple_thread)
+        process.make(j)
     else:
-        process.call('ninja')
+        process.ninja()
     path.cd(current_dir)
 
 build_modules = []
@@ -82,11 +82,5 @@ if args.clean:
     for module in build_modules:
         clean_module(module)
 
-multiple_thread = environment.cpu_count()
-if environment.is_mingw32():
-    multiple_thread = 1
-if not args.j is 0:
-    multiple_thread = args.j
-
 for module in build_modules:
-    build_module(module, args.llvm_root, args.release, args.no_analytics, args.no_ninja, args.docgen, str(multiple_thread))
+    build_module(module, args.llvm_root, args.release, args.no_analytics, args.no_ninja, args.docgen, args.j)

@@ -17,6 +17,7 @@ arg_parser.add_argument('-setup', '--setup', action="store_true")
 arg_parser.add_argument('-llvm-branch', '--llvm-branch', nargs='?', choices=version.llvm_branches(), default=version.llvm_default_branch())
 arg_parser.add_argument('-release', '--release', action="store_true")
 arg_parser.add_argument('-archive', '--archive', action="store_true")
+arg_parser.add_argument('-j', type=int, default=0)
 args = arg_parser.parse_args()
 
 def upload_snapshot():
@@ -41,18 +42,18 @@ if args.setup:
     process.call('python clang co -branch ' + args.llvm_branch)
     process.call('python countly co')
     if args.release:
-        process.call('python clang build -release -clean')
+        process.call('python clang build -release -clean' + process.j_flag(args.j))
     else:
         process.call('python googleTest co')
-        process.call('python clang build -clean')
-        process.call('python googleTest build -clean')
-    process.call('python countly build')
+        process.call('python clang build -clean' + process.j_flag(args.j))
+        process.call('python googleTest build -clean' + process.j_flag(args.j))
+    process.call('python countly build' + process.j_flag(args.j))
 
 if args.release:
-    process.call('python build -clean -release')
+    process.call('python build -clean -release' + process.j_flag(args.j))
 else:
-    process.call('python test -clean')
-    process.call('python build -clean')
+    process.call('python test -clean' + process.j_flag(args.j))
+    process.call('python build -clean' + process.j_flag(args.j))
 process.call('python bundle')
 if environment.is_unix() and not args.release:
     process.call('python dogFooding -enable-clang-static-analyzer')

@@ -30,14 +30,14 @@ def build_command():
         cmd_build.use_local_clang_compiler()
     return cmd_build.str()
 
-def build_module(multiple_thread):
+def build_module(j):
     build_path = path.build.countly_build_dir
     command = build_command()
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
     path.cd(build_path)
     process.call(command)
-    process.call('make -j ' + multiple_thread)
+    process.make(j)
     path.cd(current_dir)
 
 def checkout_countly():
@@ -51,11 +51,7 @@ def checkout_countly():
 if args.task_name == 'checkout' or args.task_name == 'co':
     checkout_countly()
 
-multiple_thread = environment.cpu_count()
-if not args.j is 0:
-    multiple_thread = args.j
-
 if args.task_name == 'build':
     if args.clean:
         clean_module()
-    build_module(str(multiple_thread))
+    build_module(args.j)
