@@ -37,4 +37,4 @@ def llvm_latest_release_branch():
     return 'tags/RELEASE_500/final'
 
 def countly_cpp_tag():
-    return '16.9.1'
+    return '17.10'
