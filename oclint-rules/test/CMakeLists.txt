@@ -3,6 +3,7 @@ IF (MINGW)
     SET(TEST_LIBS
         test_helper
         ${GTEST_LIBS}
+        gtest_main
         gmock_main
         ${PROFILE_RT_LIBS}
         ${CLANG_LIBRARIES}
@@ -22,6 +23,7 @@ ELSE()
         OCLintCore
         OCLintRuleSet
         ${GTEST_LIBS}
+        gtest_main
         gmock_main
         ${PROFILE_RT_LIBS}
         ${CLANG_LIBRARIES}
