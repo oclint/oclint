@@ -2,7 +2,7 @@ MACRO(build_test name)
     ADD_EXECUTABLE(${name} ${name}.cpp)
     IF (MINGW)
         TARGET_LINK_LIBRARIES(${name}
-            gmock
+            ${GTEST_LIBS}
             ${PROFILE_RT_LIBS}
             ${CLANG_LIBRARIES}
             ${REQ_LLVM_LIBRARIES}
@@ -12,7 +12,7 @@ MACRO(build_test name)
     ELSE()
         TARGET_LINK_LIBRARIES(${name}
             OCLintMetric
-            gmock
+            ${GTEST_LIBS}
             ${PROFILE_RT_LIBS}
             ${CLANG_LIBRARIES}
             ${REQ_LLVM_LIBRARIES}

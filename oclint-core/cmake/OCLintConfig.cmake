@@ -89,7 +89,11 @@ IF(TEST_BUILD)
         ${GOOGLETEST_SRC}/googlemock/include
         ${GOOGLETEST_SRC}/googletest/include
         )
-    LINK_DIRECTORIES(${GOOGLETEST_BUILD})
+    LINK_DIRECTORIES(
+        ${GOOGLETEST_BUILD}
+        ${GOOGLETEST_BUILD}/gtest
+        )
+    SET(GTEST_LIBS gmock gtest)
 
     # Setup the path for profile_rt library
     STRING(TOLOWER ${CMAKE_SYSTEM_NAME} COMPILER_RT_SYSTEM_NAME)

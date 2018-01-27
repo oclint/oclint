@@ -2,7 +2,7 @@ ADD_LIBRARY(test_helper headers/TestRuleOnCode.cpp)
 IF (MINGW)
     SET(TEST_LIBS
         test_helper
-        gmock
+        ${GTEST_LIBS}
         gmock_main
         ${PROFILE_RT_LIBS}
         ${CLANG_LIBRARIES}
@@ -21,7 +21,7 @@ ELSE()
         OCLintUtil
         OCLintCore
         OCLintRuleSet
-        gmock
+        ${GTEST_LIBS}
         gmock_main
         ${PROFILE_RT_LIBS}
         ${CLANG_LIBRARIES}

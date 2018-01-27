@@ -3,7 +3,7 @@ MACRO(build_test name)
     TARGET_LINK_LIBRARIES(${name}
         OCLintRuleSet
         OCLintCore
-        gmock
+        ${GTEST_LIBS}
         ${PROFILE_RT_LIBS}
         ${CLANG_LIBRARIES}
         ${REQ_LLVM_LIBRARIES}

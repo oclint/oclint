@@ -9,7 +9,7 @@ MACRO(build_test name)
         clangStaticAnalyzerCore
         clangRewriteFrontend
         clangRewrite
-        gmock
+        ${GTEST_LIBS}
         ${PROFILE_RT_LIBS}
         ${CLANG_LIBRARIES}
         ${REQ_LLVM_LIBRARIES}
