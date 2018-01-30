@@ -31,26 +31,26 @@ matrix:
       sudo: required
       env: BUILD="docgen" COMPILER="gcc5"
     - os: osx
-      osx_image: xcode9
-      env: BUILD="test" MODULE="core" COMPILER="apple8"
+      osx_image: xcode9.2
+      env: BUILD="test" MODULE="core" COMPILER="apple9"
     - os: osx
-      osx_image: xcode9
-      env: BUILD="test" MODULE="metrics" COMPILER="apple8"
+      osx_image: xcode9.2
+      env: BUILD="test" MODULE="metrics" COMPILER="apple9"
     - os: osx
-      osx_image: xcode9
-      env: BUILD="test" MODULE="rules" DEP="core metrics" COMPILER="apple8"
+      osx_image: xcode9.2
+      env: BUILD="test" MODULE="rules" DEP="core metrics" COMPILER="apple9"
     - os: osx
-      osx_image: xcode9
-      env: BUILD="test" MODULE="reporters" DEP="core" COMPILER="apple8"
+      osx_image: xcode9.2
+      env: BUILD="test" MODULE="reporters" DEP="core" COMPILER="apple9"
     - os: osx
-      osx_image: xcode9
-      env: BUILD="test" MODULE="driver" DEP="core" COMPILER="apple8"
+      osx_image: xcode9.2
+      env: BUILD="test" MODULE="driver" DEP="core" COMPILER="apple9"
     - os: osx
-      osx_image: xcode9
-      env: BUILD="build" COMPILER="apple8"
+      osx_image: xcode9.2
+      env: BUILD="build" COMPILER="apple9"
     - os: osx
-      osx_image: xcode9
-      env: BUILD="docgen" COMPILER="apple8"
+      osx_image: xcode9.2
+      env: BUILD="docgen" COMPILER="apple9"
 
 before_install:
 - if [ "$COMPILER" == "gcc5" ]; then
