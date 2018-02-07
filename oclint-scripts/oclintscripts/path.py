@@ -77,9 +77,9 @@ class url:
     json_compilation_database = 'https://github.com/oclint/oclint-json-compilation-database.git'
     xcodebuild = 'https://github.com/oclint/oclint-xcodebuild.git'
 
-    clang_prebuilt_binary_for_high_sierra = 'http://releases.llvm.org/5.0.0/clang+llvm-5.0.0-x86_64-apple-darwin.tar.xz'
-    clang_prebuilt_binary_for_macos = 'https://dl.dropboxusercontent.com/s/notyt0sdyejak6b/llvm-5.0.0-mac-10.12.tar.gz'
-    clang_prebuilt_binary_for_ubuntu_lts_14 = 'http://releases.llvm.org/5.0.0/clang+llvm-5.0.0-linux-x86_64-ubuntu14.04.tar.xz'
+    clang_prebuilt_binary_for_high_sierra = 'http://releases.llvm.org/5.0.1/clang+llvm-5.0.1-x86_64-apple-darwin.tar.xz'
+    clang_prebuilt_binary_for_macos = 'https://dl.dropboxusercontent.com/s/dhzae4o0dwa3sep/llvm-5.0.1-mac-10.12.tar.gz'
+    clang_prebuilt_binary_for_ubuntu_lts_14 = 'http://releases.llvm.org/5.0.1/clang+llvm-5.0.1-x86_64-linux-gnu-ubuntu-14.04.tar.xz'
 
 def cd(dir_path):
     os.chdir(dir_path)
