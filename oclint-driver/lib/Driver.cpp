@@ -191,28 +191,16 @@ static clang::CompilerInvocation *newCompilerInvocation(std::string &mainExecuta
     return newInvocation(&diagnosticsEngine, *cc1Args);
 }
 
-static clang::FileManager *newFileManager()
-{
-    clang::FileSystemOptions fileSystemOptions;
-    return new clang::FileManager(fileSystemOptions);
-}
-
 static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *compilerInvocation,
-    clang::FileManager *fileManager, bool runClangChecker = false)
+    bool runClangChecker = false)
 {
     auto compilerInstance = new oclint::CompilerInstance();
     auto invocation = std::make_shared<clang::CompilerInvocation>(*compilerInvocation);
     compilerInstance->setInvocation(std::move(invocation));
-    compilerInstance->setFileManager(fileManager);
     compilerInstance->createDiagnostics(new DiagnosticDispatcher(runClangChecker));
     if (!compilerInstance->hasDiagnostics())
     {
         throw oclint::GenericException("cannot create compiler diagnostics");
-    }
-    compilerInstance->createSourceManager(*fileManager);
-    if (!compilerInstance->hasSourceManager())
-    {
-        throw oclint::GenericException("cannot create compiler source manager");
     }
     return compilerInstance;
 }
@@ -254,8 +242,7 @@ static std::vector<std::string> adjustArguments(std::vector<std::string> &unadju
     return argAdjuster(unadjustedCmdLine, filename);
 }
 
-static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstance *> &compilers,
-    std::vector<clang::FileManager *> &fileManagers,
+static void constructCompilers(std::vector<oclint::CompilerInstance *> &compilers,
     CompileCommandPairs &compileCommands,
     std::string &mainExecutable)
 {
@@ -278,15 +265,13 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
         }
         clang::CompilerInvocation *compilerInvocation =
             newCompilerInvocation(mainExecutable, adjustedCmdLine);
-        clang::FileManager *fileManager = newFileManager();
-        oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation, fileManager);
+        oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation);
 
         compiler->start();
         if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
         {
             LOG_VERBOSE(" - Success");
             compilers.push_back(compiler);
-            fileManagers.push_back(fileManager);
         }
         else
         {
@@ -314,9 +299,7 @@ static void invokeClangStaticAnalyzer(
             adjustArguments(compileCommand.second.CommandLine, compileCommand.first);
         clang::CompilerInvocation *compilerInvocation =
             newCompilerInvocation(mainExecutable, adjustedArguments, true);
-        clang::FileManager *fileManager = newFileManager();
-        oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation,
-            fileManager, true);
+        oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation, true);
 
         compiler->start();
         if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
@@ -328,8 +311,6 @@ static void invokeClangStaticAnalyzer(
             LOG_VERBOSE(" - Finished with Failure");
         }
         compiler->end();
-        compiler->resetAndLeakFileManager();
-        fileManager->clearStatCaches();
         LOG_VERBOSE_LINE("");
     }
 }
@@ -338,8 +319,7 @@ static void invoke(CompileCommandPairs &compileCommands,
     std::string &mainExecutable, oclint::Analyzer &analyzer)
 {
     std::vector<oclint::CompilerInstance *> compilers;
-    std::vector<clang::FileManager *> fileManagers;
-    constructCompilersAndFileManagers(compilers, fileManagers, compileCommands, mainExecutable);
+    constructCompilers(compilers, compileCommands, mainExecutable);
 
     // collect a collection of AST contexts
     std::vector<clang::ASTContext *> localContexts;
@@ -357,10 +337,7 @@ static void invoke(CompileCommandPairs &compileCommands,
     for (size_t compilerIndex = 0; compilerIndex != compilers.size(); ++compilerIndex)
     {
         compilers.at(compilerIndex)->end();
-        compilers.at(compilerIndex)->resetAndLeakFileManager();
-        fileManagers.at(compilerIndex)->clearStatCaches();
         delete compilers.at(compilerIndex);
-        delete fileManagers.at(compilerIndex);
     }
 }
 
