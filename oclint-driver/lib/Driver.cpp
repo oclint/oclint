@@ -254,6 +254,19 @@ static std::vector<std::string> adjustArguments(std::vector<std::string> &unadju
     return argAdjuster(unadjustedCmdLine, filename);
 }
 
+std::string Replace(std::string String1, std::string String2, std::string String3)
+{
+    std::string::size_type Pos(String1.find(String2));
+
+    while ( Pos != std::string::npos )
+    {
+        String1.replace(Pos, String2.length(), String3);
+        Pos = String1.find(String2, Pos + String3.length());
+    }
+
+    return String1;
+}
+
 static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstance *> &compilers,
     std::vector<clang::FileManager *> &fileManagers,
     CompileCommandPairs &compileCommands,
@@ -270,10 +283,12 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
 
         LOG_VERBOSE("Compiling ");
         LOG_VERBOSE(compileCommand.first.c_str());
-        if (chdir(compileCommand.second.Directory.c_str()))
+	std::string targetDir = Replace(compileCommand.second.Directory, "\\ ", " ");
+
+        if(chdir(targetDir.c_str()))
         {
             throw oclint::GenericException("Cannot change dictionary into \"" +
-                compileCommand.second.Directory + "\", "
+                targetDir + "\", "
                 "please make sure the directory exists and you have permission to access!");
         }
         clang::CompilerInvocation *compilerInvocation =
@@ -304,10 +319,11 @@ static void invokeClangStaticAnalyzer(
     {
         LOG_VERBOSE("Clang Static Analyzer ");
         LOG_VERBOSE(compileCommand.first.c_str());
-        if (chdir(compileCommand.second.Directory.c_str()))
+        std::string targetDir = Replace(compileCommand.second.Directory, "\\ ", " ");
+        if (chdir(targetDir.c_str()))
         {
             throw oclint::GenericException("Cannot change dictionary into \"" +
-                compileCommand.second.Directory + "\", "
+                targetDir + "\", "
                 "please make sure the directory exists and you have permission to access!");
         }
         std::vector<std::string> adjustedArguments =
