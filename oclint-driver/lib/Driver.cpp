@@ -254,17 +254,17 @@ static std::vector<std::string> adjustArguments(std::vector<std::string> &unadju
     return argAdjuster(unadjustedCmdLine, filename);
 }
 
-std::string Replace(std::string String1, std::string String2, std::string String3)
+std::string stringReplace(std::string orig, std::string from, std::string to)
 {
-    std::string::size_type Pos(String1.find(String2));
+    std::string::size_type pos(orig.find(from));
 
-    while ( Pos != std::string::npos )
+    while ( pos != std::string::npos )
     {
-        String1.replace(Pos, String2.length(), String3);
-        Pos = String1.find(String2, Pos + String3.length());
+        orig.replace(pos, from.length(), to);
+        pos = orig.find(from, pos + to.length());
     }
 
-    return String1;
+    return orig;
 }
 
 static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstance *> &compilers,
@@ -283,7 +283,7 @@ static void constructCompilersAndFileManagers(std::vector<oclint::CompilerInstan
 
         LOG_VERBOSE("Compiling ");
         LOG_VERBOSE(compileCommand.first.c_str());
-	std::string targetDir = Replace(compileCommand.second.Directory, "\\ ", " ");
+	std::string targetDir = stringReplace(compileCommand.second.Directory, "\\ ", " ");
 
         if(chdir(targetDir.c_str()))
         {
@@ -319,7 +319,7 @@ static void invokeClangStaticAnalyzer(
     {
         LOG_VERBOSE("Clang Static Analyzer ");
         LOG_VERBOSE(compileCommand.first.c_str());
-        std::string targetDir = Replace(compileCommand.second.Directory, "\\ ", " ");
+        std::string targetDir = stringReplace(compileCommand.second.Directory, "\\ ", " ");
         if (chdir(targetDir.c_str()))
         {
             throw oclint::GenericException("Cannot change dictionary into \"" +
