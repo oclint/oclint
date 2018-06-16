@@ -56,7 +56,7 @@ before_install:
 - if [ "$COMPILER" == "gcc5" ]; then
     sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y;
     sudo apt-get update -q;
-    sudo apt-get install gcc-5 g++-5 -y;
+    sudo apt-get install gcc-5 g++-5 -y --allow-unauthenticated;
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 50;
     sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 50;
   fi
