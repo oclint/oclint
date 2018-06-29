@@ -68,7 +68,7 @@ def test_module(module_name, no_ninja, j):
     if no_ninja:
         process.make(j)
     else:
-        process.ninja()
+        process.ninja(j)
     if not args.as_dep:
         run_ctest_command = 'ctest --output-on-failure > ' + test_result_path(module_name)
         ctest_exit_code = subprocess.call(run_ctest_command, shell=True)
