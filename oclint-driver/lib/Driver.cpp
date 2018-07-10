@@ -242,6 +242,19 @@ static std::vector<std::string> adjustArguments(std::vector<std::string> &unadju
     return argAdjuster(unadjustedCmdLine, filename);
 }
 
+std::string stringReplace(std::string orig, std::string from, std::string to)
+{
+    std::string::size_type pos(orig.find(from));
+
+    while ( pos != std::string::npos )
+    {
+        orig.replace(pos, from.length(), to);
+        pos = orig.find(from, pos + to.length());
+    }
+
+    return orig;
+}
+
 static void constructCompilers(std::vector<oclint::CompilerInstance *> &compilers,
     CompileCommandPairs &compileCommands,
     std::string &mainExecutable)
@@ -257,10 +270,12 @@ static void constructCompilers(std::vector<oclint::CompilerInstance *> &compiler
 
         LOG_VERBOSE("Compiling ");
         LOG_VERBOSE(compileCommand.first.c_str());
-        if (chdir(compileCommand.second.Directory.c_str()))
+	std::string targetDir = stringReplace(compileCommand.second.Directory, "\\ ", " ");
+
+        if(chdir(targetDir.c_str()))
         {
             throw oclint::GenericException("Cannot change dictionary into \"" +
-                compileCommand.second.Directory + "\", "
+                targetDir + "\", "
                 "please make sure the directory exists and you have permission to access!");
         }
         clang::CompilerInvocation *compilerInvocation =
@@ -289,10 +304,11 @@ static void invokeClangStaticAnalyzer(
     {
         LOG_VERBOSE("Clang Static Analyzer ");
         LOG_VERBOSE(compileCommand.first.c_str());
-        if (chdir(compileCommand.second.Directory.c_str()))
+        std::string targetDir = stringReplace(compileCommand.second.Directory, "\\ ", " ");
+        if (chdir(targetDir.c_str()))
         {
             throw oclint::GenericException("Cannot change dictionary into \"" +
-                compileCommand.second.Directory + "\", "
+                targetDir + "\", "
                 "please make sure the directory exists and you have permission to access!");
         }
         std::vector<std::string> adjustedArguments =
