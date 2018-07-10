@@ -21,5 +21,8 @@ def j_flag(j=None):
 def make(j=None):
     call('make' + j_flag(j))
 
-def ninja():
-    call('ninja')
+def ninja(j=None):
+    if j is not None and j is not 0:
+        call('ninja' + j_flag(j))
+    else:
+        call('ninja')

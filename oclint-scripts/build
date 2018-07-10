@@ -69,7 +69,7 @@ def build_module(module_name, llvm_root, is_release, no_analytics, no_ninja, is_
     if no_ninja:
         process.make(j)
     else:
-        process.ninja()
+        process.ninja(j)
     path.cd(current_dir)
 
 build_modules = []
