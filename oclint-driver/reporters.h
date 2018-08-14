@@ -3,4 +3,4 @@
 #include "oclint/Reporter.h"
 
 void loadReporter();
-oclint::Reporter* reporter();
+std::vector<oclint::Reporter*> reporter();
