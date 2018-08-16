@@ -3,6 +3,7 @@
 
 #include <clang/AST/AST.h>
 
+#include "clang/Lex/Lexer.h"
 #include "oclint/RuleBase.h"
 
 namespace oclint
@@ -23,6 +24,7 @@ protected:
 
     void addViolation(const clang::Decl *decl, RuleBase *rule, const std::string& message = "");
     void addViolation(const clang::Stmt *stmt, RuleBase *rule, const std::string& message = "");
+    std::string declToStr(clang::Decl *decl);
 
 private:
     bool supportsC() const;

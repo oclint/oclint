@@ -37,6 +37,18 @@ void AbstractASTRuleBase::addViolation(const clang::Decl *decl,
     }
 }
 
+/* Given a clang declaration, find its associated source code */
+std::string AbstractASTRuleBase::declToStr(clang::Decl *decl)
+{
+    clang::SourceManager *sourceManager = &_carrier->getSourceManager();
+    clang::LangOptions langOptions;
+
+    clang::SourceLocation begin(decl->getLocStart()), _end(decl->getLocEnd());
+    clang::SourceLocation end(clang::Lexer::getLocForEndOfToken(_end, 0, *sourceManager, langOptions));
+    return std::string(sourceManager->getCharacterData(begin),
+                  sourceManager->getCharacterData(end)-sourceManager->getCharacterData(begin));
+}
+
 void AbstractASTRuleBase::addViolation(const clang::Stmt *stmt,
     RuleBase *rule, const std::string& message)
 {
