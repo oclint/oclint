@@ -217,7 +217,7 @@ int main(int argc, const char **argv)
 
     try
     {
-        for (auto& reporter : reporter()) {
+        for (auto& reporter : reporters()) {
             ostream *out = outStream(reporter);
             reporter->report(results.get(), *out);
             disposeOutStream(out);

@@ -22,7 +22,7 @@ void loadReporter()
     // Create a set that contains all the report types
     std::unordered_set<std::string> reportTypeSet;
     std::stringstream ss(oclint::option::reportType());
-    
+
     while(ss.good())
     {
         std::string reportType;
@@ -67,7 +67,7 @@ void loadReporter()
     }
 }
 
-std::vector<oclint::Reporter*> reporter()
+std::vector<oclint::Reporter*> reporters()
 {
     return selectedReporterVector;
 }
