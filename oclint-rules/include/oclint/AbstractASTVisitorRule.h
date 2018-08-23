@@ -14,13 +14,20 @@ class AbstractASTVisitorRule : public AbstractASTRuleBase, protected clang::Recu
 private:
     virtual bool shouldTraverseFile(clang::SourceLocation startLocation)
     {
+        if(startLocation.isInvalid())
+        {
+            return false;
+        }
+
         clang::SourceManager *sourceManager = &_carrier->getSourceManager();
 
+        /* If the decl is in the current file, traverse it */
         if (sourceManager->getMainFileID() == sourceManager->getFileID(startLocation))
         {
             return true;
         }
 
+        /* If the user want to lint header files and decl is in the associated header file, traverse it */
         if (!visitHeaders())
         {
             return false;
@@ -30,10 +37,12 @@ private:
         return isAnalyzeFileHeadFile(sourceFileName);
     }
 
+    /* Check if decl is in the associated header file */
     virtual bool isAnalyzeFileHeadFile(llvm::StringRef fileNameStrRef) {
-        return true;
         if (fileNameStrRef.empty())
+        {
             return false;
+        }
 
         std::string currentAnalyzeFilePath = _carrier->getMainFilePath().c_str();
         std::string subString = currentAnalyzeFilePath.erase(currentAnalyzeFilePath.length() - 1);
