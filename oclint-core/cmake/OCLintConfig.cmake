@@ -91,7 +91,7 @@ IF(TEST_BUILD)
         )
     LINK_DIRECTORIES(
         ${GOOGLETEST_BUILD}
-        ${GOOGLETEST_BUILD}/gtest
+        ${GOOGLETEST_BUILD}/lib
         )
     SET(GTEST_LIBS gmock gtest)
 
