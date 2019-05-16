@@ -73,11 +73,11 @@ int prepare()
     return SUCCESS;
 }
 
-static void oclintDocGenVersionPrinter()
+static void oclintDocGenVersionPrinter(raw_ostream &outs)
 {
-    cout << "OCLint DocGen (http://oclint.org/docs/):\n";
-    cout << "  OCLint DocGen version " << oclint::Version::identifier() << ".\n";
-    cout << "  Built " << __DATE__ << " (" << __TIME__ << ").\n";
+    outs << "OCLint DocGen (http://oclint.org/docs/):\n";
+    outs << "  OCLint DocGen version " << oclint::Version::identifier() << ".\n";
+    outs << "  Built " << __DATE__ << " (" << __TIME__ << ").\n";
 }
 
 extern llvm::cl::OptionCategory OCLintOptionCategory;
@@ -176,7 +176,7 @@ void writeFooter(ofstream& out)
 
 int main(int argc, const char **argv)
 {
-    llvm::cl::AddExtraVersionPrinter(&oclintDocGenVersionPrinter);
+    llvm::cl::SetVersionPrinter(oclintDocGenVersionPrinter);
     CommonOptionsParser optionsParser(argc, argv, OCLintOptionCategory);
     oclint::option::process(argv[0]);
 
@@ -206,7 +206,7 @@ int main(int argc, const char **argv)
             rulesMapping[category] = rulesForCategory;
         }
     }
-    sort(categories.begin(), categories.end());
+    std::sort(categories.begin(), categories.end());
 
     string docRulePath = "../build/oclint-docs/rules/";
     string indexPath = docRulePath + "index.rst";
