@@ -187,7 +187,7 @@ void oclint::Analytics::languageOption(clang::LangOptions langOpts)
       _languageCounter->operator[]("cpp") = 0;
       _languageCounter->operator[]("objc") = 0;
   }
-  if (langOpts.ObjC1 || langOpts.ObjC2)
+  if (langOpts.ObjC)
   {
       int objc = _languageCounter->operator[]("objc");
       _languageCounter->operator[]("objc") = objc + 1;

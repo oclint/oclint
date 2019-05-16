@@ -26,7 +26,7 @@ protected:
         for (clang::DeclContext::decl_iterator it = decl->decls_begin(), declEnd = decl->decls_end();
             it != declEnd; ++it)
         {
-            clang::SourceLocation startLocation = (*it)->getLocStart();
+            clang::SourceLocation startLocation = (*it)->getBeginLoc();
             if (startLocation.isValid() &&
                 sourceManager->getMainFileID() == sourceManager->getFileID(startLocation))
             {
