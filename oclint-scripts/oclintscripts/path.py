@@ -28,7 +28,6 @@ def oclint_module_dogfooding_dir(module_name):
 
 class source:
     clang_dir = module_source_dir("llvm")
-    countly_dir = module_source_dir("countly")
     googletest_dir = module_source_dir("googletest")
 
     core_dir = oclint_module_source_dir("core")
@@ -43,7 +42,6 @@ class source:
 class build:
     clang_build_dir = module_build_dir('llvm')
     clang_install_dir = module_build_dir("llvm-install")
-    countly_build_dir = module_build_dir('countly')
     googletest_build_dir = os.path.join(module_build_dir("googletest"), 'lib')
 
     core_build_dir = oclint_module_build_dir("core")
@@ -71,8 +69,6 @@ class url:
     clang_rt = 'http://llvm.org/svn/llvm-project/compiler-rt/'
 
     googletest = 'https://github.com/google/googletest.git'
-
-    countly_cpp = 'http://github.com/ryuichis/countly-cpp.git'
 
     json_compilation_database = 'https://github.com/oclint/oclint-json-compilation-database.git'
     xcodebuild = 'https://github.com/oclint/oclint-xcodebuild.git'

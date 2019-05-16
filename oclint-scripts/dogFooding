@@ -43,9 +43,6 @@ def build_module(module_name):
     if module_name == "rules":
         module_extras['OCLINT_METRICS_SOURCE_DIR'] = path.source.metrics_dir
         module_extras['OCLINT_METRICS_BUILD_DIR'] = path.build.metrics_build_dir
-    if module_name == "driver":
-        module_extras['COUNTLY_SOURCE_DIR'] = path.source.countly_dir
-        module_extras['COUNTLY_BUILD_DIR'] = path.build.countly_build_dir
 
     command = build_command(module_extras, source_path)
 
@@ -71,7 +68,7 @@ def display_result(module_name):
 def dogfooding(module_name, enable_clang_static_analyzer):
     source_path = path.oclint_module_source_dir(module_name)
     oclint_json_compilation_database_path = os.path.join(path.build.bundle_dir, 'bin', 'oclint-json-compilation-database')
-    command = oclint_json_compilation_database_path + ' -- -debug -max-priority-1=0 -max-priority-2=0 -max-priority-3=0'
+    command = oclint_json_compilation_database_path + ' -- -max-priority-1=0 -max-priority-2=0 -max-priority-3=0'
     if enable_clang_static_analyzer:
         command += ' -enable-clang-static-analyzer'
     command += ' -o ' + result_path(module_name)

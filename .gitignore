@@ -3,7 +3,6 @@ oclint-json-compilation-database/
 oclint-xcodebuild/
 
 # Third-party dependencies and build directory
-countly/
 googletest/
 llvm/
 build/
