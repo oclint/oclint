@@ -34,4 +34,4 @@ def llvm_master_branch():
     return 'trunk'
 
 def llvm_latest_release_branch():
-    return 'tags/RELEASE_501/final'
+    return 'tags/RELEASE_800/final'
