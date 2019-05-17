@@ -7,7 +7,6 @@
 
 #include <clang/Tooling/CommonOptionsParser.h>
 
-#include "oclint/Analytics.h"
 #include "oclint/Analyzer.h"
 #include "oclint/CompilerInstance.h"
 #include "oclint/Driver.h"
@@ -142,20 +141,11 @@ int prepare()
     return SUCCESS;
 }
 
-static int sendAnalyticsAndExit(int exitCode)
+static void oclintVersionPrinter(raw_ostream &outs)
 {
-  if (!oclint::option::disableAnalytics())
-  {
-    oclint::Analytics::send(exitCode);
-  }
-  return exitCode;
-}
-
-static void oclintVersionPrinter()
-{
-    outs() << "OCLint (http://oclint.org/):\n";
-    outs() << "  OCLint version " << oclint::Version::identifier() << ".\n";
-    outs() << "  Built " << __DATE__ << " (" << __TIME__ << ").\n";
+    outs << "OCLint (http://oclint.org/):\n";
+    outs << "  OCLint version " << oclint::Version::identifier() << ".\n";
+    outs << "  Built " << __DATE__ << " (" << __TIME__ << ").\n";
 }
 
 extern llvm::cl::OptionCategory OCLintOptionCategory;
@@ -164,28 +154,28 @@ int handleExit(oclint::Results *results)
 {
     if (results->hasErrors())
     {
-        return sendAnalyticsAndExit(COMPILATION_ERRORS);
+        return COMPILATION_ERRORS;
     }
 
     if (numberOfViolationsExceedThreshold(results))
     {
         printViolationsExceedThresholdError(results);
-        return sendAnalyticsAndExit(VIOLATIONS_EXCEED_THRESHOLD);
+        return VIOLATIONS_EXCEED_THRESHOLD;
     }
 
-  return sendAnalyticsAndExit(SUCCESS);
+  return SUCCESS;
 }
 
 int main(int argc, const char **argv)
 {
-    llvm::cl::AddExtraVersionPrinter(&oclintVersionPrinter);
+    llvm::cl::SetVersionPrinter(oclintVersionPrinter);
     CommonOptionsParser optionsParser(argc, argv, OCLintOptionCategory);
     oclint::option::process(argv[0]);
 
     int prepareStatus = prepare();
     if (prepareStatus)
     {
-        return sendAnalyticsAndExit(prepareStatus);
+        return prepareStatus;
     }
 
     if (oclint::option::showEnabledRules())
@@ -202,7 +192,7 @@ int main(int argc, const char **argv)
     catch (const exception& e)
     {
         printErrorLine(e.what());
-        return sendAnalyticsAndExit(ERROR_WHILE_PROCESSING);
+        return ERROR_WHILE_PROCESSING;
     }
 
     std::unique_ptr<oclint::Results> results(std::move(getResults()));
@@ -216,7 +206,7 @@ int main(int argc, const char **argv)
     catch (const exception& e)
     {
         printErrorLine(e.what());
-        return sendAnalyticsAndExit(ERROR_WHILE_REPORTING);
+        return ERROR_WHILE_REPORTING;
     }
 
     return handleExit(results.get());

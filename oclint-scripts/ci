@@ -26,7 +26,6 @@ def upload_snapshot():
 if args.reset:
     path.rm_f(path.build_root)
     path.rm_f(path.source.clang_dir)
-    path.rm_f(path.source.countly_dir)
     path.rm_f(path.source.googletest_dir)
     path.rm_f(path.source.json_compilation_database_dir)
     path.rm_f(path.source.xcodebuild_dir)
@@ -40,14 +39,12 @@ if args.setup:
         process.call('git clone ' + path.url.xcodebuild)
     path.cd(current_dir)
     process.call('python clang co -branch ' + args.llvm_branch)
-    process.call('python countly co')
     if args.release:
         process.call('python clang build -release -clean' + process.j_flag(args.j))
     else:
         process.call('python googleTest co')
         process.call('python clang build -clean' + process.j_flag(args.j))
         process.call('python googleTest build -clean' + process.j_flag(args.j))
-    process.call('python countly build' + process.j_flag(args.j))
 
 if args.release:
     process.call('python build -clean -release' + process.j_flag(args.j))

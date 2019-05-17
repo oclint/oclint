@@ -24,8 +24,8 @@ ELSE()
 ENDIF()
 
 IF(APPLE)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden -mmacosx-version-min=10.12")
-    SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -mmacosx-version-min=10.12")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden -mmacosx-version-min=10.14")
+    SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -mmacosx-version-min=10.14")
 ENDIF()
 
 IF(OCLINT_BUILD_TYPE STREQUAL "Release")
@@ -38,7 +38,7 @@ ENDIF()
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
-SET(OCLINT_VERSION_RELEASE "0.13.1")
+SET(OCLINT_VERSION_RELEASE "0.14")
 
 IF(LLVM_ROOT)
     IF(NOT EXISTS ${LLVM_ROOT}/include/llvm)
@@ -91,7 +91,7 @@ IF(TEST_BUILD)
         )
     LINK_DIRECTORIES(
         ${GOOGLETEST_BUILD}
-        ${GOOGLETEST_BUILD}/gtest
+        ${GOOGLETEST_BUILD}/lib
         )
     SET(GTEST_LIBS gmock gtest)
 

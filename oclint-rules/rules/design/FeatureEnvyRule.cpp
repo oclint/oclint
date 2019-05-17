@@ -48,7 +48,7 @@ class FeatureEnvyRule : public AbstractASTVisitorRule<FeatureEnvyRule>
                 else if (node->getReceiverKind() == ObjCMessageExpr::Class)
                 {
                     QualType qualType = node->getClassReceiver();
-                    countClassName(QualType::getAsString(qualType.split()));
+                    countClassName(qualType.getAsString());
                 }
             }
             return true;

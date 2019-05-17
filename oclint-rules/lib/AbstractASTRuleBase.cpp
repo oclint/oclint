@@ -33,7 +33,7 @@ void AbstractASTRuleBase::addViolation(const clang::Decl *decl,
 {
     if (decl && !shouldSuppress(decl, *_carrier->getASTContext(), rule))
     {
-        addViolation(decl->getLocStart(), decl->getLocEnd(), rule, message);
+        addViolation(decl->getBeginLoc(), decl->getEndLoc(), rule, message);
     }
 }
 
@@ -42,7 +42,7 @@ void AbstractASTRuleBase::addViolation(const clang::Stmt *stmt,
 {
     if (stmt && !shouldSuppress(stmt, *_carrier->getASTContext(), rule))
     {
-        addViolation(stmt->getLocStart(), stmt->getLocEnd(), rule, message);
+        addViolation(stmt->getBeginLoc(), stmt->getEndLoc(), rule, message);
     }
 }
 
@@ -69,7 +69,7 @@ bool AbstractASTRuleBase::supportsObjC() const
 bool AbstractASTRuleBase::isLanguageSupported() const
 {
     const auto &langOpts = _carrier->getASTContext()->getLangOpts();
-    if (langOpts.ObjC1)
+    if (langOpts.ObjC)
     {
         return supportsObjC();
     }

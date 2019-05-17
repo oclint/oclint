@@ -3,8 +3,6 @@
 ./clang prebuilt
 if [ "$1" = "build" ]
 then
-    ./countly co
-    ./countly build
     ./build -no-ninja
     ./bundle -archive
 elif [ "$1" = "docgen" ]

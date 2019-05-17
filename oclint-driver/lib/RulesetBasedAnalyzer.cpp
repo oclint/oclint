@@ -4,7 +4,6 @@
 
 #include <clang/AST/AST.h>
 
-#include "oclint/Analytics.h"
 #include "oclint/Logger.h"
 #include "oclint/ResultCollector.h"
 #include "oclint/RuleBase.h"
@@ -23,8 +22,6 @@ void RulesetBasedAnalyzer::analyze(std::vector<clang::ASTContext *> &contexts)
 {
     for (const auto& context : contexts)
     {
-        Analytics::languageOption(context->getLangOpts());
-        
         LOG_VERBOSE("Analyzing ");
         auto violationSet = new ViolationSet();
         auto carrier = new RuleCarrier(context, violationSet);

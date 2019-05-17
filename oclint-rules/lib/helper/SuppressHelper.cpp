@@ -78,7 +78,7 @@ public:
         for (clang::DeclContext::decl_iterator declIt = decl->decls_begin(),
             declEnd = decl->decls_end(); declIt != declEnd; ++declIt)
         {
-            clang::SourceLocation startLocation = (*declIt)->getLocStart();
+            clang::SourceLocation startLocation = (*declIt)->getBeginLoc();
             if (startLocation.isValid() &&
                 _sourceManager->getMainFileID() == _sourceManager->getFileID(startLocation))
             {
@@ -94,8 +94,8 @@ public:
     {
         if (markedAsSuppress(decl, _rule))
         {
-            clang::SourceLocation startLocation = decl->getLocStart();
-            clang::SourceLocation endLocation = decl->getLocEnd();
+            clang::SourceLocation startLocation = decl->getBeginLoc();
+            clang::SourceLocation endLocation = decl->getEndLoc();
             unsigned startLineNumber = _sourceManager->getPresumedLineNumber(startLocation);
             unsigned endLineNumber = _sourceManager->getPresumedLineNumber(endLocation);
             _range.insert(std::make_pair(startLineNumber, endLineNumber));
@@ -138,7 +138,7 @@ bool lineBasedShouldSuppress(int beginLine, clang::ASTContext &context)
                 comment->getRawText(context.getSourceManager()).find("//!OCLINT"))
 #endif
             {
-                clang::SourceLocation startLocation = comment->getLocStart();
+                clang::SourceLocation startLocation = comment->getBeginLoc();
                 int startLocationLine =
                     context.getSourceManager().getPresumedLineNumber(startLocation);
                 commentLines.insert(startLocationLine);

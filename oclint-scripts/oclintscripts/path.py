@@ -28,7 +28,6 @@ def oclint_module_dogfooding_dir(module_name):
 
 class source:
     clang_dir = module_source_dir("llvm")
-    countly_dir = module_source_dir("countly")
     googletest_dir = module_source_dir("googletest")
 
     core_dir = oclint_module_source_dir("core")
@@ -43,8 +42,7 @@ class source:
 class build:
     clang_build_dir = module_build_dir('llvm')
     clang_install_dir = module_build_dir("llvm-install")
-    countly_build_dir = module_build_dir('countly')
-    googletest_build_dir = module_build_dir("googletest")
+    googletest_build_dir = os.path.join(module_build_dir("googletest"), 'lib')
 
     core_build_dir = oclint_module_build_dir("core")
     metrics_build_dir = oclint_module_build_dir("metrics")
@@ -72,14 +70,11 @@ class url:
 
     googletest = 'https://github.com/google/googletest.git'
 
-    countly_cpp = 'http://github.com/ryuichis/countly-cpp.git'
-
     json_compilation_database = 'https://github.com/oclint/oclint-json-compilation-database.git'
     xcodebuild = 'https://github.com/oclint/oclint-xcodebuild.git'
 
-    clang_prebuilt_binary_for_high_sierra = 'http://releases.llvm.org/5.0.1/clang+llvm-5.0.1-x86_64-apple-darwin.tar.xz'
-    clang_prebuilt_binary_for_macos = 'https://dl.dropboxusercontent.com/s/dhzae4o0dwa3sep/llvm-5.0.1-mac-10.12.tar.gz'
-    clang_prebuilt_binary_for_ubuntu_lts_14 = 'http://releases.llvm.org/5.0.1/clang+llvm-5.0.1-x86_64-linux-gnu-ubuntu-14.04.tar.xz'
+    clang_prebuilt_binary_for_macos = 'http://releases.llvm.org/8.0.0/clang+llvm-8.0.0-x86_64-apple-darwin.tar.xz'
+    clang_prebuilt_binary_for_ubuntu_lts_16 = 'http://releases.llvm.org/8.0.0/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz'
 
 def cd(dir_path):
     os.chdir(dir_path)
