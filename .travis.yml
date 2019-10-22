@@ -3,53 +3,53 @@ language: cpp
 matrix:
   include:
     - os: linux
-      dist: xenial
+      dist: bionic
       sudo: required
       env: BUILD="test" MODULE="core"
     - os: linux
-      dist: xenial
+      dist: bionic
       sudo: required
       env: BUILD="test" MODULE="metrics"
     - os: linux
-      dist: xenial
+      dist: bionic
       sudo: required
       env: BUILD="test" MODULE="rules" DEP="core metrics"
     - os: linux
-      dist: xenial
+      dist: bionic
       sudo: required
       env: BUILD="test" MODULE="reporters" DEP="core"
     - os: linux
-      dist: xenial
+      dist: bionic
       sudo: required
       env: BUILD="test" MODULE="driver" DEP="core"
     - os: linux
-      dist: xenial
+      dist: bionic
       sudo: required
       env: BUILD="build"
     - os: linux
-      dist: xenial
+      dist: bionic
       sudo: required
       env: BUILD="docgen"
     - os: osx
-      osx_image: xcode10.2
+      osx_image: xcode11.1
       env: BUILD="test" MODULE="core"
     - os: osx
-      osx_image: xcode10.2
+      osx_image: xcode11.1
       env: BUILD="test" MODULE="metrics"
     - os: osx
-      osx_image: xcode10.2
+      osx_image: xcode11.1
       env: BUILD="test" MODULE="rules" DEP="core metrics"
     - os: osx
-      osx_image: xcode10.2
+      osx_image: xcode11.1
       env: BUILD="test" MODULE="reporters" DEP="core"
     - os: osx
-      osx_image: xcode10.2
+      osx_image: xcode11.1
       env: BUILD="test" MODULE="driver" DEP="core"
     - os: osx
-      osx_image: xcode10.2
+      osx_image: xcode11.1
       env: BUILD="build"
     - os: osx
-      osx_image: xcode10.2
+      osx_image: xcode11.1
       env: BUILD="docgen"
 
 before_install:
