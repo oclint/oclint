@@ -102,9 +102,9 @@ def setup_prebuilt_binary():
     if environment.is_darwin():
         binary_url = path.url.clang_prebuilt_binary_for_macos
     elif environment.is_linux():
-        binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts_16
+        binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts_18
     else:
-        binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts_16
+        binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts_18
 
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
