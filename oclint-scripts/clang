@@ -66,7 +66,7 @@ def copy_cpp_headers():
 def svn_checkout(url, prefix, root_dir, rev=None):
     current_dir = os.getcwd()
     path.cd(root_dir)
-    svn_command = 'svn checkout ' + url
+    svn_command = 'svn checkout -q ' + url
     if rev:
         svn_command += ' -r ' + rev
     process.call(svn_command + ' ' + prefix)
