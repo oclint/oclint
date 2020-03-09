@@ -122,6 +122,7 @@ private:
                     break;
                 default:
                     output += c;
+                    break;
             }
         }
         return output;
