@@ -23,13 +23,17 @@ public:
         writeHead(out);
         out << "<body>";
         out << "<h1>OCLint Report</h1>";
-        out << "<hr />";
         out << "<h2>Summary</h2>";
         writeSummaryTable(out, *results);
-        out << "<hr />";
-        out << "<table><thead><tr><th>File</th><th>Location</th>"
-            << "<th>Rule Name</th><th>Rule Category</th>"
-            << "<th>Priority</th><th>Message</th></tr></thead><tbody>";
+        out << "<h2>Details</h2>";
+        out << "<table id=\"myTable\"><thead><tr>";
+        out << "<th onclick=\"sortTable(0)\" class=\"sortable\">File</th>"
+            << "<th onclick=\"sortTable(1)\" class=\"sortable\">Location</th>"
+            << "<th onclick=\"sortTable(2)\" class=\"sortable\">Rule Name</th>"
+            << "<th onclick=\"sortTable(3)\" class=\"sortable\">Rule Category</th>"
+            << "<th onclick=\"sortTable(4)\" class=\"sortable\">Priority</th>"
+            << "<th onclick=\"sortTable(5)\" class=\"sortable\">Message</th>"
+            << "</tr></thead><tbody>";
         for (const auto& violation : results->allViolations())
         {
             writeViolation(out, violation);
@@ -123,44 +127,53 @@ public:
         out << "<head>";
         out << "<title>OCLint Report</title>";
         out << "<style type='text/css'>"
-            << "                             \
-.priority1, .priority2, .priority3,          \
-.cmplr-error, .cmplr-warning, .checker-bug { \
-    font-weight: bold;                       \
-    text-align: center;                      \
-}                                            \
-.priority1, .priority2, .priority3 {         \
-    color: #BF0A30;                          \
-}                                            \
-.priority1 { background-color: #FFC200; }    \
-.priority2 { background-color: #FFD3A6; }    \
-.priority3 { background-color: #FFEEB5; }    \
-.cmplr-error, .cmplr-warning {               \
-    background-color: #BF0A30;               \
-}                                            \
-.cmplr-error { color: #FFC200; }             \
-.cmplr-warning { color: #FFD3A6; }           \
-.checker-bug {                               \
-    background-color: #002868;               \
-    color: white;                            \
-}                                            \
-table {                                      \
-    border: 2px solid gray;                  \
-    border-collapse: collapse;               \
-    -moz-box-shadow: 3px 3px 4px #AAA;       \
-    -webkit-box-shadow: 3px 3px 4px #AAA;    \
-    box-shadow: 3px 3px 4px #AAA;            \
-}                                            \
-td, th {                                     \
-    border: 1px solid #D3D3D3;               \
-    padding: 4px 20px 4px 20px;              \
-}                                            \
-th {                                         \
-    text-shadow: 2px 2px 2px white;          \
-    border-bottom: 1px solid gray;           \
-    background-color: #E9F4FF;               \
-}"
+            << "* { color: #4A4A4A ; } \
+.sortable { cursor: pointer; } \
+.priority1, .priority2, .priority3, .cmplr-error, \
+    .cmplr-warning, .checker-bug { font-weight: bold; text-align: center; } \
+.priority1, .priority2, .priority3 { color: #4A4A4A; } \
+.priority1 { background-color: #FFCC96; } \
+.priority2 { background-color: #FFFFD5; } \
+.priority3 { background-color: #75B3DA; } \
+.cmplr-error, .cmplr-warning { background-color: #ED686A; color: #FFFFD5; } \
+.checker-bug { background-color: #75B3DA; color: #4A4A4A; } \
+table { border: 1px solid #2B2B2B; border-collapse: collapse; } \
+td, th { border: 1px solid #2B2B2B; padding: 4px 10px 4px 10px; } \
+th { border-bottom: 1px solid #2B2B2B; text-align: center; background-color: #eaeaea; } \
+hr { border: none; border-top: 1px solid #EAEAEA; } "
             << "</style>";
+        out << "<script>"
+            << "function sortTable(n) {\
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;\
+  table = document.getElementById(\"myTable\");\
+  switching = true;\
+  dir = \"asc\"; \
+  while (switching) {\
+    switching = false;\
+    rows = table.rows;\
+    for (i = 1; i < (rows.length - 1); i++) {\
+      shouldSwitch = false;\
+      x = rows[i].getElementsByTagName(\"TD\")[n];\
+      y = rows[i + 1].getElementsByTagName(\"TD\")[n];\
+      if ((dir == \"asc\" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) || \
+         (dir == \"desc\" && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase())) {\
+          shouldSwitch = true;\
+          break;\
+      }\
+    }\
+    if (shouldSwitch) {\
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);\
+      switching = true;\
+      switchcount++;\
+    } else {\
+      if (switchcount == 0 && dir == \"asc\") {\
+        dir = \"desc\";\
+        switching = true;\
+      }\
+    }\
+  }\
+}"
+            << "</script>";
         out << "</head>";
     }
 };
