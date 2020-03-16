@@ -31,25 +31,25 @@ matrix:
       sudo: required
       env: BUILD="docgen"
     - os: osx
-      osx_image: xcode11.1
+      osx_image: xcode11.3
       env: BUILD="test" MODULE="core"
     - os: osx
-      osx_image: xcode11.1
+      osx_image: xcode11.3
       env: BUILD="test" MODULE="metrics"
     - os: osx
-      osx_image: xcode11.1
+      osx_image: xcode11.3
       env: BUILD="test" MODULE="rules" DEP="core metrics"
     - os: osx
-      osx_image: xcode11.1
+      osx_image: xcode11.3
       env: BUILD="test" MODULE="reporters" DEP="core"
     - os: osx
-      osx_image: xcode11.1
+      osx_image: xcode11.3
       env: BUILD="test" MODULE="driver" DEP="core"
     - os: osx
-      osx_image: xcode11.1
+      osx_image: xcode11.3
       env: BUILD="build"
     - os: osx
-      osx_image: xcode11.1
+      osx_image: xcode11.3
       env: BUILD="docgen"
 
 before_install:
@@ -61,8 +61,7 @@ before_install:
     sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 50;
   fi
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-    brew update;
-    brew install pyenv;
+    HOMEBREW_NO_AUTO_UPDATE=1 brew install pyenv;
     eval "$(pyenv init -)";
     pyenv install 2.7.6;
     pyenv global 2.7.6;
@@ -73,7 +72,7 @@ before_install:
     sudo pip install --upgrade cpp-coveralls;
   fi
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-    brew install ninja;
+    HOMEBREW_NO_AUTO_UPDATE=1 brew install ninja;
   else
     sudo apt-get install ninja-build -y;
   fi
