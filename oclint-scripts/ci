@@ -14,7 +14,6 @@ from oclintscripts import version
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('-reset', '--reset', action="store_true")
 arg_parser.add_argument('-setup', '--setup', action="store_true")
-arg_parser.add_argument('-llvm-branch', '--llvm-branch', nargs='?', choices=version.llvm_branches(), default=version.llvm_default_branch())
 arg_parser.add_argument('-release', '--release', action="store_true")
 arg_parser.add_argument('-archive', '--archive', action="store_true")
 arg_parser.add_argument('-j', type=int, default=0)
@@ -38,12 +37,9 @@ if args.setup:
     if environment.is_darwin():
         process.call('git clone ' + path.url.xcodebuild)
     path.cd(current_dir)
-    process.call('python clang co -branch ' + args.llvm_branch)
-    if args.release:
-        process.call('python clang build -release -clean' + process.j_flag(args.j))
-    else:
+    process.call('python clang')
+    if not args.release:
         process.call('python googleTest co')
-        process.call('python clang build -clean' + process.j_flag(args.j))
         process.call('python googleTest build -clean' + process.j_flag(args.j))
 
 if args.release:

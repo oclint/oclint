@@ -64,10 +64,6 @@ class build:
     driver_dogfooding_dir = oclint_module_dogfooding_dir("driver")
 
 class url:
-    llvm = 'http://llvm.org/svn/llvm-project/llvm/'
-    clang = 'http://llvm.org/svn/llvm-project/cfe/'
-    clang_rt = 'http://llvm.org/svn/llvm-project/compiler-rt/'
-
     googletest = 'https://github.com/google/googletest.git'
 
     json_compilation_database = 'https://github.com/oclint/oclint-json-compilation-database.git'
