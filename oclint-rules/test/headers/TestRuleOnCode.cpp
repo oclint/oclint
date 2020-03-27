@@ -18,7 +18,7 @@ bool computeViolationSet(const Twine &fileName,
     const std::vector<std::string> &args,
     ViolationSet *violationSet)
 {
-    FrontendAction* action = new TestFrontendAction(rule, violationSet);
+    std::unique_ptr<FrontendAction> action(new TestFrontendAction(rule, violationSet));
     Twine twine(code);
 
     const std::size_t randomPrefixLength = 6;
@@ -28,7 +28,7 @@ bool computeViolationSet(const Twine &fileName,
 
     std::generate_n(randomPrefix.begin(), randomPrefixLength,
         [randomChars, randomCharSize]() -> char { return randomChars[rand() % randomCharSize]; });
-    return runToolOnCodeWithArgs(action, twine, args, randomPrefix + fileName);
+    return runToolOnCodeWithArgs(std::move(action), twine, args, randomPrefix + fileName);
 }
 
 void validateViolation(const Violation& violation,

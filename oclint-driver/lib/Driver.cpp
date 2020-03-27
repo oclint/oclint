@@ -118,8 +118,7 @@ static clang::CompilerInvocation *newInvocation(clang::DiagnosticsEngine *diagno
 {
     assert(!argStringList.empty() && "Must at least contain the program name!");
     auto invocation = new clang::CompilerInvocation;
-    clang::CompilerInvocation::CreateFromArgs(*invocation,
-        argStringList.data() + 1, argStringList.data() + argStringList.size(), *diagnostics);
+    clang::CompilerInvocation::CreateFromArgs(*invocation, argStringList, *diagnostics);
     invocation->getFrontendOpts().DisableFree = false;
     return invocation;
 }

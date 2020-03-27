@@ -146,7 +146,7 @@ TEST_F(PreferEarlyExitRuleTest, LongIfAndReturnInsideBlock)
                    PreferEarlyExitRule::getMessage());
 }
 
-INSTANTIATE_TEST_CASE_P(PreferEarlyExit, LoopsTest, ::testing::ValuesIn(loops));
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(PreferEarlyExit, LoopsTest, ::testing::ValuesIn(loops));
+INSTANTIATE_TEST_SUITE_P(
     PreferEarlyExit, FlowControlStatementsTest,
     ::testing::Values("break;", "continue;", "goto LABEL;", "goto *label_ptr;"));
