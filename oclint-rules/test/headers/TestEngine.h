@@ -38,6 +38,6 @@ public:
     std::unique_ptr<clang::ASTConsumer>
         CreateASTConsumer(clang::CompilerInstance &, llvm::StringRef) override
     {
-        return llvm::make_unique<TestProcessor>(_rule, _violationSet);
+        return std::make_unique<TestProcessor>(_rule, _violationSet);
     }
 };

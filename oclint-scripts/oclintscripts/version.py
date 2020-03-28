@@ -23,15 +23,3 @@ def oclint_version():
 
 def oclint_dev_version():
     return oclint_version() + '.dev.' + dev_version()
-
-def llvm_branches():
-    return [llvm_master_branch(), llvm_latest_release_branch()]
-
-def llvm_default_branch():
-    return llvm_latest_release_branch()
-
-def llvm_master_branch():
-    return 'trunk'
-
-def llvm_latest_release_branch():
-    return 'tags/RELEASE_900/final'

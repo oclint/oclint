@@ -121,7 +121,9 @@ public:
             }
         }
 
-        string description = "Length of variable name `" + varName + "` is " + toString<int>(nameLength) + ", which is shorter than the threshold of " + toString<int>(threshold);
+        string description = "Length of variable name `" + varName +
+            "` is " + toString<int>(nameLength) +
+            ", which is shorter than the threshold of " + toString<int>(threshold);
         addViolation(varDecl, this, description);
 
         return true;

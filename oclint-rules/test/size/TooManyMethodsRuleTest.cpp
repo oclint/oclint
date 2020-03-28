@@ -87,5 +87,5 @@ TEST_F(TooManyMethodsRuleTest, ObjCCategoryImplFiveMethods)
 TEST_F(TooManyMethodsRuleTest, ObjCImplementationFourMethodsMethodsWithOneProperty)
 {
     testRuleOnObjCCode(new TooManyMethodsRule(), "@interface a\n{\nint i;\n}\n@property int i;\n@end\n@implementation a\n@synthesize i;\n-(void)m {}\n+(void)n {}\n-(void)o {}\n+(void)p {}\n-(void)q {}\n@end\n",
-        0, 7, 1, 14, 1, "Objective-C implementation with 5 methods exceeds limit of 3");
+        0, 7, 1, 14, 1, "Objective-C implementation with 7 methods exceeds limit of 3"); // NOTE: the property is synthesized with two more methods, a getter and a setter.
 }

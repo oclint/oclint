@@ -118,8 +118,7 @@ static clang::CompilerInvocation *newInvocation(clang::DiagnosticsEngine *diagno
 {
     assert(!argStringList.empty() && "Must at least contain the program name!");
     auto invocation = new clang::CompilerInvocation;
-    clang::CompilerInvocation::CreateFromArgs(*invocation,
-        argStringList.data() + 1, argStringList.data() + argStringList.size(), *diagnostics);
+    clang::CompilerInvocation::CreateFromArgs(*invocation, argStringList, *diagnostics);
     invocation->getFrontendOpts().DisableFree = false;
     return invocation;
 }
@@ -242,14 +241,14 @@ static std::vector<std::string> adjustArguments(std::vector<std::string> &unadju
     return argAdjuster(unadjustedCmdLine, filename);
 }
 
-std::string stringReplace(std::string orig, std::string from, std::string to)
+std::string stringReplace(std::string orig, std::string oldStr, std::string newStr)
 {
-    std::string::size_type pos(orig.find(from));
+    std::string::size_type pos(orig.find(oldStr));
 
-    while ( pos != std::string::npos )
+    while (pos != std::string::npos)
     {
-        orig.replace(pos, from.length(), to);
-        pos = orig.find(from, pos + to.length());
+        orig.replace(pos, oldStr.length(), newStr);
+        pos = orig.find(oldStr, pos + newStr.length());
     }
 
     return orig;

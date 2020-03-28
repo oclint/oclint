@@ -38,9 +38,9 @@ public:
 
 void testMatcherOnCode(const Twine &fileName, MatchFinder &finder, const string &code)
 {
-    FrontendAction *action = new TestFrontendAction(finder);
+    std::unique_ptr<FrontendAction> action(new TestFrontendAction(finder));
     Twine twine(code);
-    if (!runToolOnCode(action, twine, fileName))
+    if (!runToolOnCode(std::move(action), twine, fileName))
     {
         FAIL();
     }

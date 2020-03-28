@@ -1,6 +1,6 @@
 #! /bin/sh -e
 
-./clang prebuilt
+./clang
 if [ "$1" = "build" ]
 then
     ./build -no-ninja

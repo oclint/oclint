@@ -114,6 +114,8 @@ std::string getMainFilePath(clang::ASTContext &context)
 typedef std::unordered_map<std::string, std::set<int>> LineMap;
 static LineMap singleLineMapping;
 
+
+
 bool lineBasedShouldSuppress(int beginLine, clang::ASTContext &context)
 {
     std::string filePath = getMainFilePath(context);
@@ -121,27 +123,35 @@ bool lineBasedShouldSuppress(int beginLine, clang::ASTContext &context)
     std::set<int> commentLines;
     if (commentLinesIt == singleLineMapping.end())
     {
-        clang::RawCommentList commentList = context.getRawCommentList();
-        clang::ArrayRef<clang::RawComment *> commentArray = commentList.getComments();
-
-        for (auto comment : commentArray)
+        auto mainFileID = context.getSourceManager().getMainFileID();
+        auto commentList = context.getRawCommentList();
+        const auto commentMap = commentList.getCommentsInFile(mainFileID);
+        if (commentMap != nullptr)
         {
+            for (auto c : *commentMap)
+            {
+                auto comment = c.second;
+                if (comment == nullptr)
+                {
+                    continue;
+                }
 // g++ 4.8 on Ubuntu 14.04 LTS doesn't support regex yet,
 // so we will ship this once Ubuntu 16.04 releases
 #if defined(__APPLE__) || defined(__MACH__)
-            std::string commentString = comment->getRawText(context.getSourceManager()).str();
-            std::regex oclintRegex =
-                std::regex("//! *OCLINT", std::regex::basic | std::regex::icase);
-            if (std::regex_search(commentString, oclintRegex))
+                std::string commentString = comment->getRawText(context.getSourceManager()).str();
+                std::regex oclintRegex =
+                    std::regex("//! *OCLINT", std::regex::basic | std::regex::icase);
+                if (std::regex_search(commentString, oclintRegex))
 #else
-            if (std::string::npos !=
-                comment->getRawText(context.getSourceManager()).find("//!OCLINT"))
+                if (std::string::npos !=
+                    comment->getRawText(context.getSourceManager()).find("//!OCLINT"))
 #endif
-            {
-                clang::SourceLocation startLocation = comment->getBeginLoc();
-                int startLocationLine =
-                    context.getSourceManager().getPresumedLineNumber(startLocation);
-                commentLines.insert(startLocationLine);
+                {
+                    clang::SourceLocation startLocation = comment->getBeginLoc();
+                    int startLocationLine =
+                        context.getSourceManager().getPresumedLineNumber(startLocation);
+                    commentLines.insert(startLocationLine);
+                }
             }
         }
         singleLineMapping[filePath] = commentLines;

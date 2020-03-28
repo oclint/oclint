@@ -104,7 +104,6 @@ static llvm::cl::extrahelp CommonHelp(clang::tooling::CommonOptionsParser::HelpM
 static llvm::cl::extrahelp MoreHelp(
     "For more information, please visit http://oclint.org\n"
 );
-static std::unique_ptr<llvm::opt::OptTable> Options(clang::driver::createDriverOptTable());
 
 /* -------
    options
