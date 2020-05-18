@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import subprocess
 import os
@@ -10,7 +10,7 @@ def dev_version():
     current_working_folder = os.getcwd()
     try:
         os.chdir(path.root_dir)
-        git_hash = subprocess.check_output(['git', 'log', '-n', '1', '--pretty=%h']).split()[0]
+        git_hash = subprocess.check_output(['git', 'log', '-n', '1', '--pretty=%h'], encoding='utf8').split()[0]
         path.cd(current_working_folder)
         return git_hash
     except:

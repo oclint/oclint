@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import subprocess
 import sys
@@ -14,7 +14,7 @@ def j_flag(j=None):
     multiple_thread = environment.cpu_count()
     if environment.is_mingw32():
         multiple_thread = 1
-    if j is not None and j is not 0:
+    if j != None and j != 0:
         multiple_thread = j
     return ' -j ' + str(multiple_thread)
 
@@ -22,7 +22,7 @@ def make(j=None):
     call('make' + j_flag(j))
 
 def ninja(j=None):
-    if j is not None and j is not 0:
+    if j != None and j != 0:
         call('ninja' + j_flag(j))
     else:
         call('ninja')

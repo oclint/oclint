@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import argparse
 import shutil
@@ -20,7 +20,7 @@ arg_parser.add_argument('-j', type=int, default=0)
 args = arg_parser.parse_args()
 
 def upload_snapshot():
-    process.call('python upload')
+    process.call('python3 upload')
 
 if args.reset:
     path.rm_f(path.build_root)
@@ -37,21 +37,21 @@ if args.setup:
     if environment.is_darwin():
         process.call('git clone ' + path.url.xcodebuild)
     path.cd(current_dir)
-    process.call('python clang')
+    process.call('python3 clang')
     if not args.release:
-        process.call('python googleTest co')
-        process.call('python googleTest build -clean' + process.j_flag(args.j))
+        process.call('python3 googleTest co')
+        process.call('python3 googleTest build -clean' + process.j_flag(args.j))
 
 if args.release:
-    process.call('python build -clean -release' + process.j_flag(args.j))
+    process.call('python3 build -clean -release' + process.j_flag(args.j))
 else:
-    process.call('python test -clean' + process.j_flag(args.j))
-    process.call('python build -clean' + process.j_flag(args.j))
-process.call('python bundle')
+    process.call('python3 test -clean' + process.j_flag(args.j))
+    process.call('python3 build -clean' + process.j_flag(args.j))
+process.call('python3 bundle')
 if environment.is_unix() and not args.release:
-    process.call('python dogFooding -enable-clang-static-analyzer')
+    process.call('python3 dogFooding -enable-clang-static-analyzer')
 if args.archive:
     if args.release:
-        process.call('python bundle -archive -release')
+        process.call('python3 bundle -archive -release')
     else:
-        process.call('python bundle -archive')
+        process.call('python3 bundle -archive')
