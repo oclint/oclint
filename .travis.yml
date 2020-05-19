@@ -31,25 +31,25 @@ matrix:
       sudo: required
       env: BUILD="docgen"
     - os: osx
-      osx_image: xcode11.3
+      osx_image: xcode11.4
       env: BUILD="test" MODULE="core"
     - os: osx
-      osx_image: xcode11.3
+      osx_image: xcode11.4
       env: BUILD="test" MODULE="metrics"
     - os: osx
-      osx_image: xcode11.3
+      osx_image: xcode11.4
       env: BUILD="test" MODULE="rules" DEP="core metrics"
     - os: osx
-      osx_image: xcode11.3
+      osx_image: xcode11.4
       env: BUILD="test" MODULE="reporters" DEP="core"
     - os: osx
-      osx_image: xcode11.3
+      osx_image: xcode11.4
       env: BUILD="test" MODULE="driver" DEP="core"
     - os: osx
-      osx_image: xcode11.3
+      osx_image: xcode11.4
       env: BUILD="build"
     - os: osx
-      osx_image: xcode11.3
+      osx_image: xcode11.4
       env: BUILD="docgen"
 
 before_install:
@@ -63,8 +63,8 @@ before_install:
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
     HOMEBREW_NO_AUTO_UPDATE=1 brew install pyenv;
     eval "$(pyenv init -)";
-    pyenv install 2.7.6;
-    pyenv global 2.7.6;
+    pyenv install 3.8.2;
+    pyenv global 3.8.2;
     pyenv rehash;
     pip install cpp-coveralls;
     pyenv rehash;
@@ -95,3 +95,4 @@ addons:
   artifacts:
     paths:
       - $(ls build/oclint-*.tar.gz)
+
