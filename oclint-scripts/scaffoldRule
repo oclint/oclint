@@ -14,7 +14,6 @@ RULES_SOURCE_ROOT_CMAKELISTS = os.path.join(RULES_SOURCE_ROOT_DIRECTORY, "CMakeL
 RULES_TEST_ROOT_DIRECTORY = os.path.join(RULES_PROJECT_DIRECTORY, "test")
 RULES_TEST_ROOT_CMAKELISTS = os.path.join(RULES_TEST_ROOT_DIRECTORY, "CMakeLists.txt")
 RULES_TEMPLATE_DIRECTORY = os.path.join(RULES_PROJECT_DIRECTORY, "template")
-CLANG_BASIC_DIRECTORY = os.path.join(SCRIPT_WORKING_FOLDER, "../llvm/tools/clang/include/clang/Basic")
 
 def custom_folder_path(folder_name):
     return os.path.join(RULES_SOURCE_ROOT_DIRECTORY, folder_name)
@@ -64,10 +63,10 @@ def generate_code_block(line, node_type = ""):
 
 def visit_ast_nodes():
     visit_nodes = ""
-    with open(os.path.join(CLANG_BASIC_DIRECTORY, "StmtNodes.td"), 'r') as stmt_nodes:
+    with open(os.path.join(RULES_TEMPLATE_DIRECTORY, "ClangStmtNodes"), 'r') as stmt_nodes:
         for each in stmt_nodes:
             visit_nodes += generate_code_block(each)
-    with open(os.path.join(CLANG_BASIC_DIRECTORY, "DeclNodes.td"), 'r') as stmt_nodes:
+    with open(os.path.join(RULES_TEMPLATE_DIRECTORY, "ClangDeclNodes"), 'r') as stmt_nodes:
         for each in stmt_nodes:
             visit_nodes += generate_code_block(each, "Decl")
     return visit_nodes
