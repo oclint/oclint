@@ -23,8 +23,8 @@ def clean_module():
     path.rm_f(build_path)
 
 def build_command():
-    googlemock_dir = os.path.join(path.source.googletest_dir, "googlemock")
-    cmd_build = cmake.builder(googlemock_dir)
+    gtest_dir = path.source.googletest_dir
+    cmd_build = cmake.builder(gtest_dir)
     if environment.is_unix() and not args.use_system_compiler:
         cmd_build.use_local_clang_compiler()
     if environment.is_mingw32():
