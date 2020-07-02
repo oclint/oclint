@@ -75,7 +75,20 @@ void CompilerInstance::start()
         return;// false;
     }
 
+    if ((getLangOpts().CUDA || getLangOpts().OpenMPIsDevice) && !getFrontendOpts().AuxTriple.empty())
+    {
+        auto targetOptions = std::make_shared<clang::TargetOptions>();
+        targetOptions->Triple = llvm::Triple::normalize(getFrontendOpts().AuxTriple);
+        targetOptions->HostTriple = getTarget().getTriple().str();
+        setAuxTarget(clang::TargetInfo::CreateTargetInfo(getDiagnostics(), targetOptions));
+    }
+
     getTarget().adjust(getLangOpts());
+
+    if (auto *auxTarget = getAuxTarget())
+    {
+        getTarget().setAuxTarget(auxTarget);
+    }
 
     for (const auto& input : getFrontendOpts().Inputs)
     {
