@@ -27,8 +27,8 @@ protected:
             it != declEnd; ++it)
         {
             clang::SourceLocation startLocation = (*it)->getBeginLoc();
-            if (startLocation.isValid() &&
-                sourceManager->getMainFileID() == sourceManager->getFileID(startLocation))
+
+            if (startLocation.isValid() && sourceManager->isInMainFile(startLocation))
             {
                 (void) /* explicitly ignore the return of this function */
                     clang::RecursiveASTVisitor<T>::TraverseDecl(*it);
