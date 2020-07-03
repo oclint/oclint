@@ -28,9 +28,9 @@ public:
         return "cuda";
     }
 
-    virtual bool supportsCUDA() const override
+    virtual unsigned int supportedCUDAFunctionAttrs() const override
     {
-        return true;
+        return CUDA_GLOBAL;
     }
 
 #ifdef DOCGEN

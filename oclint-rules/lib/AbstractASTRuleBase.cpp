@@ -66,17 +66,9 @@ bool AbstractASTRuleBase::supportsObjC() const
     return LANG_OBJC & supportedLanguages();
 }
 
-bool AbstractASTRuleBase::supportsCUDA() const
-{
-    return false;
-}
-
 bool AbstractASTRuleBase::isLanguageSupported() const
 {
     const auto &langOpts = _carrier->getASTContext()->getLangOpts();
-    if (langOpts.CUDA) {
-        return supportsCUDA();
-    }
     if (langOpts.ObjC)
     {
         return supportsObjC();
@@ -90,6 +82,17 @@ bool AbstractASTRuleBase::isLanguageSupported() const
         return supportsC();
     }
     return false;
+}
+
+unsigned int AbstractASTRuleBase::supportedCUDAFunctionAttrs() const
+{
+    return CUDA_HOST;
+}
+
+bool AbstractASTRuleBase::isCUDASourceFile()
+{
+    const auto &langOpts = _carrier->getASTContext()->getLangOpts();
+    return langOpts.CUDA;
 }
 
 } // end namespace oclint

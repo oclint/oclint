@@ -5,36 +5,79 @@
 
 #include "oclint/AbstractASTRuleBase.h"
 
-namespace oclint
-{
+namespace oclint {
 
 template<typename T>
-class AbstractASTVisitorRule : public AbstractASTRuleBase, protected clang::RecursiveASTVisitor<T>
-{
+class AbstractASTVisitorRule : public AbstractASTRuleBase, protected clang::RecursiveASTVisitor<T> {
     friend class clang::RecursiveASTVisitor<T>;
 protected:
-    virtual void apply()
-    {
-        if (!isLanguageSupported())
-        {
-            return;
+    virtual void apply() {
+        if (isCUDASourceFile()) {
+            applyCUDA();
+        } else {
+            applyC();
         }
+    }
+
+    void applyC() {
+        if (!isLanguageSupported() || !(supportedCUDAFunctionAttrs() & CUDA_HOST)) { return; }
 
         setUp();
-        clang::SourceManager *sourceManager = &_carrier->getSourceManager();
-        clang::DeclContext *decl = _carrier->getTranslationUnitDecl();
-        for (clang::DeclContext::decl_iterator it = decl->decls_begin(), declEnd = decl->decls_end();
+        clang::DeclContext *tu = getTranslationUnit();
+        for (clang::DeclContext::decl_iterator it = tu->decls_begin(), declEnd = tu->decls_end();
             it != declEnd; ++it)
         {
-            clang::SourceLocation startLocation = (*it)->getBeginLoc();
-
-            if (startLocation.isValid() && sourceManager->isInMainFile(startLocation))
-            {
-                (void) /* explicitly ignore the return of this function */
-                    clang::RecursiveASTVisitor<T>::TraverseDecl(*it);
+            if (isValidDecl(*it)) {
+                traverse(*it);
             }
         }
         tearDown();
+    }
+
+    void applyCUDA() {
+        setUp();
+        clang::DeclContext *tu = getTranslationUnit();
+        for (clang::DeclContext::decl_iterator it = tu->decls_begin(), declEnd = tu->decls_end();
+            it != declEnd; ++it)
+        {
+            applyCUDADecl(*it);
+        }
+        tearDown();
+    }
+
+    void applyCUDADecl(clang::Decl *decl) {
+        if (!isValidDecl(decl)) { return; }
+
+        if (clang::isa<clang::FunctionDecl>(decl)) {
+            auto funcDecl = clang::cast<clang::FunctionDecl>(decl);
+            if (funcDecl->hasAttr<clang::CUDAGlobalAttr>()) {
+                if (supportedCUDAFunctionAttrs() & CUDA_GLOBAL) {
+                    traverse(decl);
+                }
+            } else if (supportedCUDAFunctionAttrs() & CUDA_HOST) {
+                traverse(decl);
+            }
+        } else {
+            traverse(decl);
+        }
+    }
+
+    void traverse(clang::Decl *decl) {
+        (void) /* explicitly ignore the return of this function */
+            clang::RecursiveASTVisitor<T>::TraverseDecl(decl);
+    }
+
+private:
+    clang::DeclContext *getTranslationUnit()
+    {
+        return _carrier->getTranslationUnitDecl();
+    }
+
+    bool isValidDecl(clang::Decl *decl)
+    {
+        clang::SourceManager *sourceManager = &_carrier->getSourceManager();
+        clang::SourceLocation startLocation = decl->getBeginLoc();
+        return startLocation.isValid() && sourceManager->isInMainFile(startLocation);
     }
 
 public:
