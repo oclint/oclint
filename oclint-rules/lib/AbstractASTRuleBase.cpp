@@ -66,9 +66,17 @@ bool AbstractASTRuleBase::supportsObjC() const
     return LANG_OBJC & supportedLanguages();
 }
 
+bool AbstractASTRuleBase::supportsCUDA() const
+{
+    return false;
+}
+
 bool AbstractASTRuleBase::isLanguageSupported() const
 {
     const auto &langOpts = _carrier->getASTContext()->getLangOpts();
+    if (langOpts.CUDA) {
+        return supportsCUDA();
+    }
     if (langOpts.ObjC)
     {
         return supportsObjC();

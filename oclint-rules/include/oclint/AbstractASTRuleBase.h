@@ -30,6 +30,9 @@ private:
     bool supportsObjC() const;
 
 protected:
+    virtual bool supportsCUDA() const;
+
+protected:
     virtual unsigned int supportedLanguages() const;
     bool isLanguageSupported() const;
 
