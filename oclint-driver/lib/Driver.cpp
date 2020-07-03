@@ -119,7 +119,27 @@ static void constructCompileCommands(
     }
 }
 
-static std::vector<clang::CompilerInvocation *> newCompilerInvocations(
+static const llvm::opt::ArgStringList *getCC1Arguments(clang::driver::Compilation *compilation)
+{
+    const clang::driver::JobList &jobList = compilation->getJobs();
+
+    // TODO: need to allow CUDA compilation but prevent bad multiple jobs
+    // if (jobList.size() != 1 || !clang::isa<clang::driver::Command>(*jobList.begin()))
+    // {
+    //     throw oclint::GenericException("one compiler command contains multiple jobs:\n" +
+    //         compilationJobsToString(jobList) + "\n");
+    // }
+
+    const clang::driver::Command &cmd = clang::cast<clang::driver::Command>(*jobList.begin());
+    if (llvm::StringRef(cmd.getCreator().getName()) != "clang")
+    {
+        throw oclint::GenericException("expected a clang compiler command");
+    }
+
+    return &cmd.getArguments();
+}
+
+static clang::CompilerInvocation *newCompilerInvocation(
     std::string &mainExecutable,
     std::vector<std::string> &commandLine,
     bool runClangChecker = false)
@@ -159,22 +179,11 @@ static std::vector<clang::CompilerInvocation *> newCompilerInvocations(
         newDriver(&diagnosticsEngine, mainBinaryPath));
     driver->setCheckInputsExist(false);
 
-    // create compilation invocations
-    std::vector<clang::CompilerInvocation *> invocations;
-
+    // create compilation invocation
     const std::unique_ptr<clang::driver::Compilation> compilation(
         driver->BuildCompilation(llvm::makeArrayRef(argv)));
-    const clang::driver::JobList &jobList = compilation->getJobs();
-    for (auto job : jobList) {
-        const clang::driver::Command &cmd = clang::cast<clang::driver::Command>(job);
-        if (llvm::StringRef(cmd.getCreator().getName()) != "clang")
-        {
-            throw oclint::GenericException("expected a clang compiler command");
-        }
-        invocations.push_back(newInvocation(&diagnosticsEngine, cmd.getArguments()));
-    }
-
-    return invocations;
+    auto cc1Args = getCC1Arguments(compilation.get());
+    return newInvocation(&diagnosticsEngine, *cc1Args);
 }
 
 static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *compilerInvocation,
@@ -266,24 +275,21 @@ static void constructCompilers(std::vector<oclint::CompilerInstance *> &compiler
                 "please make sure the directory exists and you have permission to access!");
         }
 
-        std::vector<clang::CompilerInvocation *> compilerInvocations =
-            newCompilerInvocations(mainExecutable, adjustedCmdLine);
-        for (auto compilerInvocation : compilerInvocations)
-        {
-            oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation);
+        clang::CompilerInvocation *compilerInvocation =
+            newCompilerInvocation(mainExecutable, adjustedCmdLine);
+        oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation);
 
-            compiler->start();
-            if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
-            {
-                LOG_VERBOSE(" - Success");
-                compilers.push_back(compiler);
-            }
-            else
-            {
-                LOG_VERBOSE(" - Failed");
-            }
-            LOG_VERBOSE_LINE("");
+        compiler->start();
+        if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
+        {
+            LOG_VERBOSE(" - Success");
+            compilers.push_back(compiler);
         }
+        else
+        {
+            LOG_VERBOSE(" - Failed");
+        }
+        LOG_VERBOSE_LINE("");
     }
 }
 
@@ -304,24 +310,21 @@ static void invokeClangStaticAnalyzer(
         }
         std::vector<std::string> adjustedArguments =
             adjustArguments(compileCommand.second.CommandLine, compileCommand.first);
-        std::vector<clang::CompilerInvocation *> compilerInvocations =
-            newCompilerInvocations(mainExecutable, adjustedArguments, true);
-        for (auto compilerInvocation : compilerInvocations)
-        {
-            oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation, true);
+        clang::CompilerInvocation *compilerInvocation =
+            newCompilerInvocation(mainExecutable, adjustedArguments, true);
+        oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation, true);
 
-            compiler->start();
-            if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
-            {
-                LOG_VERBOSE(" - Done");
-            }
-            else
-            {
-                LOG_VERBOSE(" - Finished with Failure");
-            }
-            compiler->end();
-            LOG_VERBOSE_LINE("");
+        compiler->start();
+        if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
+        {
+            LOG_VERBOSE(" - Done");
         }
+        else
+        {
+            LOG_VERBOSE(" - Finished with Failure");
+        }
+        compiler->end();
+        LOG_VERBOSE_LINE("");
     }
 }
 
