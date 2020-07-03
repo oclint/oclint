@@ -119,21 +119,56 @@ static void constructCompileCommands(
     }
 }
 
+static std::string compilationJobsToString(const clang::driver::JobList &jobs)
+{
+    clang::SmallString<256> errorMsg;
+    llvm::raw_svector_ostream errorStream(errorMsg);
+    jobs.Print(errorStream, "; ", true);
+    return errorStream.str();
+}
+
 static const llvm::opt::ArgStringList *getCC1Arguments(clang::driver::Compilation *compilation)
 {
     const clang::driver::JobList &jobList = compilation->getJobs();
 
-    // TODO: need to allow CUDA compilation but prevent bad multiple jobs
-    // if (jobList.size() != 1 || !clang::isa<clang::driver::Command>(*jobList.begin()))
-    // {
-    //     throw oclint::GenericException("one compiler command contains multiple jobs:\n" +
-    //         compilationJobsToString(jobList) + "\n");
-    // }
+    auto jobSize = jobList.size();
+
+    if (jobSize == 0)
+    {
+        throw oclint::GenericException("compilation contains no job:\n" +
+            compilationJobsToString(jobList) + "\n");
+    }
+
+    bool offloadCompilation = false;
+    if (jobSize > 1)
+    {
+        auto actions = compilation->getActions();
+        for (auto action : actions)
+        {
+            if (llvm::isa<clang::driver::OffloadAction>(action))
+            {
+                assert(actions.size() > 1);
+                offloadCompilation = true;
+                break;
+            }
+        }
+    }
+    if (jobSize > 1 && !offloadCompilation)
+    {
+        throw oclint::GenericException("compilation contains multiple jobs:\n" +
+            compilationJobsToString(jobList) + "\n");
+    }
+
+    if (!clang::isa<clang::driver::Command>(*jobList.begin()))
+    {
+        throw oclint::GenericException("compilation job does not contain correct command:\n" +
+            compilationJobsToString(jobList) + "\n");
+    }
 
     const clang::driver::Command &cmd = clang::cast<clang::driver::Command>(*jobList.begin());
     if (llvm::StringRef(cmd.getCreator().getName()) != "clang")
     {
-        throw oclint::GenericException("expected a clang compiler command");
+        throw oclint::GenericException("expected a command for clang compiler");
     }
 
     return &cmd.getArguments();
