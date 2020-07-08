@@ -31,25 +31,25 @@ matrix:
       sudo: required
       env: BUILD="docgen"
     - os: osx
-      osx_image: xcode11.4
+      osx_image: xcode11.5
       env: BUILD="test" MODULE="core"
     - os: osx
-      osx_image: xcode11.4
+      osx_image: xcode11.5
       env: BUILD="test" MODULE="metrics"
     - os: osx
-      osx_image: xcode11.4
+      osx_image: xcode11.5
       env: BUILD="test" MODULE="rules" DEP="core metrics"
     - os: osx
-      osx_image: xcode11.4
+      osx_image: xcode11.5
       env: BUILD="test" MODULE="reporters" DEP="core"
     - os: osx
-      osx_image: xcode11.4
+      osx_image: xcode11.5
       env: BUILD="test" MODULE="driver" DEP="core"
     - os: osx
-      osx_image: xcode11.4
+      osx_image: xcode11.5
       env: BUILD="build"
     - os: osx
-      osx_image: xcode11.4
+      osx_image: xcode11.5
       env: BUILD="docgen"
 
 before_install:
@@ -59,6 +59,11 @@ before_install:
     sudo apt-get install gcc-7 g++-7 -y --allow-unauthenticated;
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 50;
     sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 50;
+    CMAKE_VERSION=3.17.3;
+    CMAKE_URL="https://cmake.org/files/v${CMAKE_VERSION%.*}/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz";
+    echo CMAKE_URL=${CMAKE_URL};
+    mkdir cmake-${CMAKE_VERSION} && travis_retry wget --no-check-certificate -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake-${CMAKE_VERSION};
+    export PATH=${PWD}/cmake-${CMAKE_VERSION}/bin:${PATH};
   fi
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
     HOMEBREW_NO_AUTO_UPDATE=1 brew install pyenv;
@@ -95,4 +100,3 @@ addons:
   artifacts:
     paths:
       - $(ls build/oclint-*.tar.gz)
-
