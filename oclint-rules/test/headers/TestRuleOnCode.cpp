@@ -134,6 +134,20 @@ void testRuleOnObjCCode(RuleBase *rule,
         expectStartLine, expectStartColumn, expectEndLine, expectEndColumn, expectMessage);
 }
 
+void testRuleOnCUDACode(RuleBase *rule,
+    const string &code,
+    int violationIndex,
+    int expectStartLine,
+    int expectStartColumn,
+    int expectEndLine,
+    int expectEndColumn,
+    const string& expectMessage)
+{
+    testRuleOnCode("input.cu", rule, code,
+        {"-nocudalib", "--no-cuda-version-check", "-I/tmp/oclint-rules-test/clang"}, violationIndex,
+        expectStartLine, expectStartColumn, expectEndLine, expectEndColumn, expectMessage);
+}
+
 void ComputeLocalisation(const std::string& code, size_t offset, int* line, int* column)
 {
     int currentColumn = 1;
@@ -252,4 +266,12 @@ void testRuleOnObjCCode(RuleBase* rule, std::string code,
     const std::vector<std::string>& messages)
 {
     testRuleOnCode("input.m", {}, rule, code, messages);
+}
+
+void testRuleOnCUDACode(RuleBase* rule, std::string code,
+    const std::vector<std::string>& messages)
+{
+    testRuleOnCode("input.cu",
+        {"-nocudalib", "--no-cuda-version-check", "-I/tmp/oclint-rules-test/clang"},
+        rule, code, messages);
 }

@@ -79,6 +79,15 @@ void testRuleOnObjCCode(RuleBase *rule,
     int expectEndColumn,
     const string& expectMessage = "");
 
+void testRuleOnCUDACode(RuleBase *rule,
+    const string &code,
+    int violationIndex,
+    int expectStartLine,
+    int expectStartColumn,
+    int expectEndLine,
+    int expectEndColumn,
+    const string& expectMessage = "");
+
 #define VIOLATION_START "/*VIOLATION_START*/"
 #define VIOLATION_END "/*VIOLATION_END*/"
 
@@ -113,4 +122,7 @@ void testRuleOnCXX11Code(RuleBase* rule, std::string code,
     const std::vector<std::string>& messages = {});
 
 void testRuleOnObjCCode(RuleBase* rule, std::string code,
+    const std::vector<std::string>& messages = {});
+
+void testRuleOnCUDACode(RuleBase* rule, std::string code,
     const std::vector<std::string>& messages = {});

@@ -90,6 +90,13 @@ IF(TEST_BUILD)
         )
     SET(GTEST_LIBS gmock gtest)
 
+    # Find CUDA
+    include(FindCUDAToolkit)
+    IF(CUDAToolkit_FOUND)
+        MESSAGE(STATUS "Found CUDA in: ${CUDAToolkit_INCLUDE_DIRS}")
+        SET(TEST_CUDA TRUE)
+    ENDIF()
+
     # Setup the path for profile_rt library
     STRING(TOLOWER ${CMAKE_SYSTEM_NAME} COMPILER_RT_SYSTEM_NAME)
     LINK_DIRECTORIES(${LLVM_LIBRARY_DIRS}/clang/${LLVM_VERSION_RELEASE}/lib/${COMPILER_RT_SYSTEM_NAME})
