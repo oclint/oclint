@@ -91,9 +91,9 @@ IF(TEST_BUILD)
     SET(GTEST_LIBS gmock gtest)
 
     # Find CUDA
-    include(FindCUDAToolkit)
-    IF(CUDAToolkit_FOUND)
-        MESSAGE(STATUS "Found CUDA in: ${CUDAToolkit_INCLUDE_DIRS}")
+    FIND_PROGRAM(NVIDIA_SMI_BIN "nvidia-smi")
+    IF (NVIDIA_SMI_BIN)
+        MESSAGE(STATUS "Enable tests for CUDA rules.")
         SET(TEST_CUDA TRUE)
     ENDIF()
 
