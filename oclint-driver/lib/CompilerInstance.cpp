@@ -54,28 +54,16 @@
 
 using namespace oclint;
 
-static clang::FrontendAction *getFrontendAction()
-{
-    if (option::enableClangChecker())
-    {
+static clang::FrontendAction *getFrontendAction() {
+    if (option::enableClangChecker()) {
         return new clang::ento::AnalysisAction();
     }
     return new clang::SyntaxOnlyAction();
 }
 
-void CompilerInstance::start()
-{
-    assert(hasDiagnostics() && "Diagnostics engine is not initialized!");
-    assert(!getFrontendOpts().ShowHelp && "Client must handle '-help'!");
-    assert(!getFrontendOpts().ShowVersion && "Client must handle '-version'!");
-
-    setTarget(clang::TargetInfo::CreateTargetInfo(getDiagnostics(), getInvocation().TargetOpts));
-    if (!hasTarget())
-    {
-        return;// false;
-    }
-
-    if ((getLangOpts().CUDA || getLangOpts().OpenMPIsDevice) && !getFrontendOpts().AuxTriple.empty())
+void CompilerInstance::setupTarget() {
+    if ((getLangOpts().CUDA || getLangOpts().OpenMPIsDevice) &&
+        !getFrontendOpts().AuxTriple.empty())
     {
         auto targetOptions = std::make_shared<clang::TargetOptions>();
         targetOptions->Triple = llvm::Triple::normalize(getFrontendOpts().AuxTriple);
@@ -85,31 +73,35 @@ void CompilerInstance::start()
 
     getTarget().adjust(getLangOpts());
 
-    if (auto *auxTarget = getAuxTarget())
-    {
+    if (auto *auxTarget = getAuxTarget()) {
         getTarget().setAuxTarget(auxTarget);
     }
+}
 
-    for (const auto& input : getFrontendOpts().Inputs)
-    {
-        if (hasSourceManager())
-        {
+void CompilerInstance::start() {
+    assert(hasDiagnostics() && "Diagnostics engine is not initialized!");
+    assert(!getFrontendOpts().ShowHelp && "Client must handle '-help'!");
+    assert(!getFrontendOpts().ShowVersion && "Client must handle '-version'!");
+
+    setTarget(clang::TargetInfo::CreateTargetInfo(getDiagnostics(), getInvocation().TargetOpts));
+    if (!hasTarget()) { return; }
+    setupTarget();
+
+    for (const auto& input : getFrontendOpts().Inputs) {
+        if (hasSourceManager()) {
             getSourceManager().clearIDTables();
         }
 
         clang::FrontendAction *frontendAction = getFrontendAction();
-        if(frontendAction->BeginSourceFile(*this, input))
-        {
+        if(frontendAction->BeginSourceFile(*this, input)) {
             static_cast<void>(frontendAction->Execute());
             _actions.emplace_back(frontendAction);
         }
     }
 }
 
-void CompilerInstance::end()
-{
-    for (const auto& action : _actions)
-    {
+void CompilerInstance::end() {
+    for (const auto& action : _actions) {
         action->EndSourceFile();
     }
 

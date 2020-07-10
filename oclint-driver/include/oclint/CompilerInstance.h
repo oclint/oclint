@@ -20,6 +20,9 @@ public:
     void end();
 
 private:
+    void setupTarget();
+
+private:
     std::vector<std::unique_ptr<clang::FrontendAction>> _actions;
 };
 
