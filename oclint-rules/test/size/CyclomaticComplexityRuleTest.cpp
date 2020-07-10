@@ -109,3 +109,9 @@ TEST_F(CyclomaticComplexityRuleTest, SuppressCyclomaticComplexity)
 {
     testRuleOnCode(new CyclomaticComplexityRule(), "void __attribute__((annotate(\"oclint:suppress[high cyclomatic complexity]\"))) aMethod() { int b = 1 || 0; }");
 }
+
+TEST_F(CyclomaticComplexityRuleTest, CUDASupport)
+{
+    testRuleOnCUDACode(new CyclomaticComplexityRule(), "__global__ void aMethod() { if (1) {} }",
+        0, 1, 1, 1, 39, "Cyclomatic Complexity Number 2 exceeds limit of 1");
+}

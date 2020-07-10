@@ -47,6 +47,11 @@ public:
         return "size";
     }
 
+    virtual unsigned int supportedCUDAFunctionAttrs() const override
+    {
+        return CUDA_GLOBAL | CUDA_HOST;
+    }
+
 #ifdef DOCGEN
     virtual const std::string since() const override
     {
