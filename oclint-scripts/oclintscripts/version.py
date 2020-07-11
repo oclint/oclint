@@ -23,3 +23,6 @@ def oclint_version():
 
 def oclint_dev_version():
     return oclint_version() + '.dev.' + dev_version()
+
+def llvm_version():
+    return "10.0.0"

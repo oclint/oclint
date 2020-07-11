@@ -44,4 +44,3 @@ void AbstractSourceCodeReaderRule::addViolation(int startLine, int startColumn,
 }
 
 } // end namespace oclint
-

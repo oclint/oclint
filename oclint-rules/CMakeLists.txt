@@ -5,7 +5,7 @@ SET(CMAKE_MODULE_PATH
     ${CMAKE_MODULE_PATH}
     "${CMAKE_CURRENT_SOURCE_DIR}/../oclint-core/cmake"
     )
-    
+
 INCLUDE(OCLintConfig)
 
 INCLUDE_DIRECTORIES(

@@ -39,10 +39,6 @@ class builder:
     def doc_gen_build(self):
         return self.append('DOC_GEN_BUILD', '1')
 
-    def use_local_clang_compiler(self, llvm_root = path.build.clang_install_dir):
-        clang_bin_path = os.path.join(llvm_root, 'bin', 'clang')
-        return self.append('CMAKE_CXX_COMPILER', clang_bin_path + '++').append('CMAKE_C_COMPILER', clang_bin_path)
-
     def use_ninja(self):
         if not environment.is_mingw32():
             self.__cmd += ' -G Ninja'

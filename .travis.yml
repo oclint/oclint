@@ -31,25 +31,25 @@ matrix:
       sudo: required
       env: BUILD="docgen"
     - os: osx
-      osx_image: xcode11.4
+      osx_image: xcode11.5
       env: BUILD="test" MODULE="core"
     - os: osx
-      osx_image: xcode11.4
+      osx_image: xcode11.5
       env: BUILD="test" MODULE="metrics"
     - os: osx
-      osx_image: xcode11.4
+      osx_image: xcode11.5
       env: BUILD="test" MODULE="rules" DEP="core metrics"
     - os: osx
-      osx_image: xcode11.4
+      osx_image: xcode11.5
       env: BUILD="test" MODULE="reporters" DEP="core"
     - os: osx
-      osx_image: xcode11.4
+      osx_image: xcode11.5
       env: BUILD="test" MODULE="driver" DEP="core"
     - os: osx
-      osx_image: xcode11.4
+      osx_image: xcode11.5
       env: BUILD="build"
     - os: osx
-      osx_image: xcode11.4
+      osx_image: xcode11.5
       env: BUILD="docgen"
 
 before_install:
@@ -95,4 +95,3 @@ addons:
   artifacts:
     paths:
       - $(ls build/oclint-*.tar.gz)
-

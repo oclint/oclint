@@ -87,32 +87,6 @@ static clang::driver::Driver *newDriver(clang::DiagnosticsEngine *diagnostics,
     return driver;
 }
 
-static std::string compilationJobsToString(const clang::driver::JobList &jobs)
-{
-    clang::SmallString<256> errorMsg;
-    llvm::raw_svector_ostream errorStream(errorMsg);
-    jobs.Print(errorStream, "; ", true);
-    return errorStream.str();
-}
-
-static const llvm::opt::ArgStringList *getCC1Arguments(clang::driver::Compilation *compilation)
-{
-    const clang::driver::JobList &jobList = compilation->getJobs();
-    if (jobList.size() != 1 || !clang::isa<clang::driver::Command>(*jobList.begin()))
-    {
-        throw oclint::GenericException("one compiler command contains multiple jobs:\n" +
-            compilationJobsToString(jobList) + "\n");
-    }
-
-    const clang::driver::Command &cmd = clang::cast<clang::driver::Command>(*jobList.begin());
-    if (llvm::StringRef(cmd.getCreator().getName()) != "clang")
-    {
-        throw oclint::GenericException("expected a clang compiler command");
-    }
-
-    return &cmd.getArguments();
-}
-
 static clang::CompilerInvocation *newInvocation(clang::DiagnosticsEngine *diagnostics,
     const llvm::opt::ArgStringList &argStringList)
 {
@@ -145,8 +119,65 @@ static void constructCompileCommands(
     }
 }
 
-static clang::CompilerInvocation *newCompilerInvocation(std::string &mainExecutable,
-    std::vector<std::string> &commandLine, bool runClangChecker = false)
+static std::string compilationJobsToString(const clang::driver::JobList &jobs)
+{
+    clang::SmallString<256> errorMsg;
+    llvm::raw_svector_ostream errorStream(errorMsg);
+    jobs.Print(errorStream, "; ", true);
+    return errorStream.str();
+}
+
+static const llvm::opt::ArgStringList *getCC1Arguments(clang::driver::Compilation *compilation)
+{
+    const clang::driver::JobList &jobList = compilation->getJobs();
+
+    auto jobSize = jobList.size();
+
+    if (jobSize == 0)
+    {
+        throw oclint::GenericException("compilation contains no job:\n" +
+            compilationJobsToString(jobList) + "\n");
+    }
+
+    bool offloadCompilation = false;
+    if (jobSize > 1)
+    {
+        auto actions = compilation->getActions();
+        for (auto action : actions)
+        {
+            if (llvm::isa<clang::driver::OffloadAction>(action))
+            {
+                assert(actions.size() > 1);
+                offloadCompilation = true;
+                break;
+            }
+        }
+    }
+    if (jobSize > 1 && !offloadCompilation)
+    {
+        throw oclint::GenericException("compilation contains multiple jobs:\n" +
+            compilationJobsToString(jobList) + "\n");
+    }
+
+    if (!clang::isa<clang::driver::Command>(*jobList.begin()))
+    {
+        throw oclint::GenericException("compilation job does not contain correct command:\n" +
+            compilationJobsToString(jobList) + "\n");
+    }
+
+    const clang::driver::Command &cmd = clang::cast<clang::driver::Command>(*jobList.begin());
+    if (llvm::StringRef(cmd.getCreator().getName()) != "clang")
+    {
+        throw oclint::GenericException("expected a command for clang compiler");
+    }
+
+    return &cmd.getArguments();
+}
+
+static clang::CompilerInvocation *newCompilerInvocation(
+    std::string &mainExecutable,
+    std::vector<std::string> &commandLine,
+    bool runClangChecker = false)
 {
     assert(!commandLine.empty() && "Command line must not be empty!");
     commandLine[0] = mainExecutable;
@@ -186,7 +217,7 @@ static clang::CompilerInvocation *newCompilerInvocation(std::string &mainExecuta
     // create compilation invocation
     const std::unique_ptr<clang::driver::Compilation> compilation(
         driver->BuildCompilation(llvm::makeArrayRef(argv)));
-    const llvm::opt::ArgStringList *const cc1Args = getCC1Arguments(compilation.get());
+    auto cc1Args = getCC1Arguments(compilation.get());
     return newInvocation(&diagnosticsEngine, *cc1Args);
 }
 
@@ -269,7 +300,8 @@ static void constructCompilers(std::vector<oclint::CompilerInstance *> &compiler
 
         LOG_VERBOSE("Compiling ");
         LOG_VERBOSE(compileCommand.first.c_str());
-	std::string targetDir = stringReplace(compileCommand.second.Directory, "\\ ", " ");
+        LOG_VERBOSE_LINE(" ...");
+        std::string targetDir = stringReplace(compileCommand.second.Directory, "\\ ", " ");
 
         if(chdir(targetDir.c_str()))
         {
@@ -277,6 +309,7 @@ static void constructCompilers(std::vector<oclint::CompilerInstance *> &compiler
                 targetDir + "\", "
                 "please make sure the directory exists and you have permission to access!");
         }
+
         clang::CompilerInvocation *compilerInvocation =
             newCompilerInvocation(mainExecutable, adjustedCmdLine);
         oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation);

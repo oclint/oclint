@@ -15,6 +15,12 @@ enum LanguageSupportFlags
     LANG_OBJC = 1 << 2
 };
 
+enum CUDAFunctionAttrFlags
+{
+    CUDA_HOST   = 1 << 0,
+    CUDA_GLOBAL = 1 << 1
+};
+
 class AbstractASTRuleBase : public RuleBase
 {
 protected:
@@ -32,6 +38,10 @@ private:
 protected:
     virtual unsigned int supportedLanguages() const;
     bool isLanguageSupported() const;
+
+protected:
+    virtual unsigned int supportedCUDAFunctionAttrs() const;
+    bool isCUDASourceFile();
 
 public:
     virtual ~AbstractASTRuleBase();

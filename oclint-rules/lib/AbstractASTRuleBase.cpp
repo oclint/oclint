@@ -84,4 +84,15 @@ bool AbstractASTRuleBase::isLanguageSupported() const
     return false;
 }
 
+unsigned int AbstractASTRuleBase::supportedCUDAFunctionAttrs() const
+{
+    return CUDA_HOST;
+}
+
+bool AbstractASTRuleBase::isCUDASourceFile()
+{
+    const auto &langOpts = _carrier->getASTContext()->getLangOpts();
+    return langOpts.CUDA;
+}
+
 } // end namespace oclint

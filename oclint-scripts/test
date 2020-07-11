@@ -4,12 +4,14 @@ import argparse
 import shutil
 import subprocess
 import sys
+import tempfile
 import os
 
 from oclintscripts import cmake
 from oclintscripts import environment
 from oclintscripts import path
 from oclintscripts import process
+from oclintscripts import version
 
 OCLINT_MODULES = ['core', 'metrics', 'rules', 'reporters', 'driver']
 
@@ -18,7 +20,6 @@ arg_parser.add_argument('module_name', nargs='?', choices=['all'] + OCLINT_MODUL
 arg_parser.add_argument('-show', '--show', action="store_true")
 arg_parser.add_argument('-clean', '--clean', action="store_true")
 arg_parser.add_argument('-j', type=int, default=0)
-arg_parser.add_argument('-use-system-compiler', '--use-system-compiler', action="store_true", default=environment.is_linux())
 arg_parser.add_argument('-as-dep', '--as-dep', action="store_true")
 arg_parser.add_argument('-no-ninja', '--no-ninja', action='store_true')
 args = arg_parser.parse_args()
@@ -33,8 +34,6 @@ def build_command(module_extras, no_ninja, source_path):
         cmd_build = cmake.builder(source_path)
     if not no_ninja:
         cmd_build.use_ninja()
-    if environment.is_unix() and not args.use_system_compiler:
-        cmd_build.use_local_clang_compiler()
     extras = {'LLVM_ROOT': path.build.clang_install_dir, 'GOOGLETEST_SRC': path.source.googletest_dir, 'GOOGLETEST_BUILD': path.build.googletest_build_dir}
     extras.update(module_extras)
     return cmd_build.append_dict(extras).str()
@@ -46,6 +45,12 @@ def display_test_result(module_name):
     testresult_path = test_result_path(module_name)
     with open(testresult_path, 'r') as testresult_file:
         print(testresult_file.read())
+
+def install_clang_headers_to_tmp():
+    clang_headers_src_path = os.path.join(path.build.clang_install_dir, 'lib', 'clang', version.llvm_version(), 'include')
+    clang_headers_dst_path = os.path.join(tempfile.gettempdir(), 'oclint-rules-test', 'clang')
+    path.rm_f(clang_headers_dst_path)
+    path.cp_r(clang_headers_src_path, clang_headers_dst_path)
 
 def test_module(module_name, no_ninja, j):
     build_path = path.oclint_module_test_dir(module_name)
@@ -70,6 +75,8 @@ def test_module(module_name, no_ninja, j):
     else:
         process.ninja(j)
     if not args.as_dep:
+        if module_name == "rules":
+            install_clang_headers_to_tmp()
         run_ctest_command = 'ctest --output-on-failure > ' + test_result_path(module_name)
         ctest_exit_code = subprocess.call(run_ctest_command, shell=True)
         display_test_result(module_name)
