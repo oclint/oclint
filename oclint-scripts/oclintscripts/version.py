@@ -4,7 +4,6 @@ import subprocess
 import os
 
 from oclintscripts import path
-from oclintscripts import environment
 
 def dev_version():
     current_working_folder = os.getcwd()
