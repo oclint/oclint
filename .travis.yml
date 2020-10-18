@@ -3,63 +3,56 @@ language: cpp
 matrix:
   include:
     - os: linux
-      dist: bionic
+      dist: focal
       sudo: required
       env: BUILD="test" MODULE="core"
     - os: linux
-      dist: bionic
+      dist: focal
       sudo: required
       env: BUILD="test" MODULE="metrics"
     - os: linux
-      dist: bionic
+      dist: focal
       sudo: required
       env: BUILD="test" MODULE="rules" DEP="core metrics"
     - os: linux
-      dist: bionic
+      dist: focal
       sudo: required
       env: BUILD="test" MODULE="reporters" DEP="core"
     - os: linux
-      dist: bionic
+      dist: focal
       sudo: required
       env: BUILD="test" MODULE="driver" DEP="core"
     - os: linux
-      dist: bionic
+      dist: focal
       sudo: required
       env: BUILD="build"
     - os: linux
-      dist: bionic
+      dist: focal
       sudo: required
       env: BUILD="docgen"
     - os: osx
-      osx_image: xcode11.5
+      osx_image: xcode12.2
       env: BUILD="test" MODULE="core"
     - os: osx
-      osx_image: xcode11.5
+      osx_image: xcode12.2
       env: BUILD="test" MODULE="metrics"
     - os: osx
-      osx_image: xcode11.5
+      osx_image: xcode12.2
       env: BUILD="test" MODULE="rules" DEP="core metrics"
     - os: osx
-      osx_image: xcode11.5
+      osx_image: xcode12.2
       env: BUILD="test" MODULE="reporters" DEP="core"
     - os: osx
-      osx_image: xcode11.5
+      osx_image: xcode12.2
       env: BUILD="test" MODULE="driver" DEP="core"
     - os: osx
-      osx_image: xcode11.5
+      osx_image: xcode12.2
       env: BUILD="build"
     - os: osx
-      osx_image: xcode11.5
+      osx_image: xcode12.2
       env: BUILD="docgen"
 
 before_install:
-- if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-    sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y;
-    sudo apt-get update -q;
-    sudo apt-get install gcc-7 g++-7 -y --allow-unauthenticated;
-    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 50;
-    sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 50;
-  fi
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
     HOMEBREW_NO_AUTO_UPDATE=1 brew install pyenv;
     eval "$(pyenv init -)";

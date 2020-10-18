@@ -9,12 +9,12 @@ bool attributeHasAnnotation(
     const std::string& annotation,
     const std::string& attributeName,
     std::string* comment) {
-    // Unqualified actions must compare directly e.g. we don't want to return a match for 
+    // Unqualified actions must compare directly e.g. we don't want to return a match for
     // for 'oclint:suppress' when the annotation is 'oclint::suppress[foo]'
     if(attributeName.find('[') == std::string::npos) {
         return attributeName == annotation;
     }
-    
+
     // Otherwise, check if the attributeName is a prefix of the annotation
     // We need to check prefix and not equality in case there's a comment
     if(annotation.length() < attributeName.length() ||
@@ -25,7 +25,7 @@ bool attributeHasAnnotation(
     // Try to pick out a comment if we need to
     if(comment != nullptr) {
         const auto commentStart = annotation.find('[', attributeName.length());
-    
+
         if(commentStart != std::string::npos && annotation.back() == ']') {
             *comment =
                annotation.substr(commentStart + 1, annotation.length() - commentStart - 2);
@@ -52,8 +52,8 @@ bool declHasAttribute(
         if (!annotate) {
             continue;
         }
-        
-        const std::string annotation = annotate->getAnnotation();
+
+        const std::string annotation = annotate->getAnnotation().str();
         if(attributeHasAnnotation(annotation, attributeName, comment)) {
             return true;
         }
@@ -125,7 +125,7 @@ bool objCMethodDeclHasActionAttributeImpl(
        baseDeclHasActionAttributeImpl(decl->findPropertyDecl(), action, rule, comment)) {
         return true;
     }
-  
+
     // Check if the method comes from a protocol, because then it doesn't have a class
     // interface
     const auto protocol = clang::dyn_cast<clang::ObjCProtocolDecl>(decl->getDeclContext());
@@ -133,7 +133,7 @@ bool objCMethodDeclHasActionAttributeImpl(
        const auto method = protocol->lookupMethod(decl->getSelector(), decl->isInstanceMethod());
        return baseDeclHasActionAttributeImpl(method, action, rule, comment);
     }
- 
+
     return objCMethodDeclHasAttributeFromCategory(decl, action, rule, comment);
 
 }
@@ -149,4 +149,3 @@ bool declHasActionAttribute(
     }
     return baseDeclHasActionAttributeImpl(decl, action, rule, comment);
 }
-
