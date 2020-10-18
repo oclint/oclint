@@ -62,6 +62,7 @@ MESSAGE(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 LLVM_MAP_COMPONENTS_TO_LIBNAMES(REQ_LLVM_LIBRARIES asmparser bitreader instrumentation mcparser option support frontendopenmp)
 
 SET(CLANG_LIBRARIES
+    clangToolingCore
     clangTooling
     clangFrontend
     clangDriver

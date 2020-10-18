@@ -1,5 +1,8 @@
 #include "oclint/AbstractSourceCodeReaderRule.h"
+
 #include <clang/AST/AST.h>
+#include <clang/Basic/SourceManager.h>
+
 #include "oclint/helper/SuppressHelper.h"
 
 namespace oclint

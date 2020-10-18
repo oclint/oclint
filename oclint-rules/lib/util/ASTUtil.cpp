@@ -1,5 +1,7 @@
 #include "oclint/util/ASTUtil.h"
 
+#include <clang/Basic/SourceManager.h>
+
 bool isObjCMethodDeclaredInSuperClass(clang::ObjCMethodDecl *decl)
 {
     if (decl && !isObjCMethodDeclLocatedInInterfaceContainer(decl))
@@ -21,7 +23,7 @@ bool isObjCMethodDeclaredInProtocol(clang::ObjCMethodDecl *decl)
     {
         return false;
     }
-    
+
     clang::Selector selector = decl->getSelector();
     clang::ObjCInterfaceDecl *interfaceDecl = decl->getClassInterface();
     if (interfaceDecl)

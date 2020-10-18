@@ -2,6 +2,7 @@
 #define OCLINT_ABSTRACTASTRULEBASE_H
 
 #include <clang/AST/AST.h>
+#include <clang/Basic/SourceManager.h>
 
 #include "oclint/RuleBase.h"
 

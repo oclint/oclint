@@ -143,7 +143,7 @@ static void processConfigFile(const std::string &path)
     oclint::option::ConfigFile config(path);
     for (const oclint::option::RuleConfigurationPair &ruleConfig : config.ruleConfigurations())
     {
-        consumeRuleConfiguration(ruleConfig.key(), ruleConfig.value());
+        consumeRuleConfiguration(ruleConfig.key().str(), ruleConfig.value().str());
     }
     for (const llvm::StringRef &rulePath : config.rulePaths())
     {

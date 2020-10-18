@@ -5,7 +5,9 @@
 #include <unordered_map>
 #include <utility>
 
+#include <clang/AST/ParentMapContext.h>
 #include <clang/AST/RecursiveASTVisitor.h>
+#include <clang/Basic/SourceManager.h>
 
 #include "oclint/RuleCarrier.h"
 
@@ -23,13 +25,13 @@ bool markedAsSuppress(const clang::Decl *decl, oclint::RuleBase *rule)
 template <typename T>
 bool markedParentsAsSuppress(const T &node, clang::ASTContext &context, oclint::RuleBase *rule)
 {
-    const auto &parents = context.getParents(node);
+    clang::DynTypedNodeList parents = context.getParents(node);
     if (parents.empty())
     {
         return false;
     }
 
-    const clang::ast_type_traits::DynTypedNode* dynTypedNode = parents.begin();
+    const clang::DynTypedNode* dynTypedNode = parents.begin();
     const clang::Decl *aDecl = dynTypedNode->get<clang::Decl>();
     if (aDecl)
     {
@@ -124,7 +126,7 @@ bool lineBasedShouldSuppress(int beginLine, clang::ASTContext &context)
     if (commentLinesIt == singleLineMapping.end())
     {
         auto mainFileID = context.getSourceManager().getMainFileID();
-        auto commentList = context.getRawCommentList();
+        auto commentList = context.Comments;
         const auto commentMap = commentList.getCommentsInFile(mainFileID);
         if (commentMap != nullptr)
         {
