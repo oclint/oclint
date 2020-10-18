@@ -2,7 +2,6 @@
 
 import platform
 import multiprocessing
-import subprocess
 
 def cpu_count():
     return multiprocessing.cpu_count()
