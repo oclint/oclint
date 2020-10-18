@@ -1,6 +1,7 @@
 #include "oclint/RuleCarrier.h"
 
 #include <clang/AST/AST.h>
+#include <clang/Basic/SourceManager.h>
 
 using namespace oclint;
 
