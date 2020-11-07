@@ -4,5 +4,5 @@ using namespace oclint;
 
 std::string Version::identifier()
 {
-    return "20.10";
+    return "20.11";
 }
