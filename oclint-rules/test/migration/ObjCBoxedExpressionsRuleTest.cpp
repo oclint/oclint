@@ -12,18 +12,19 @@ static string newBOOLDef = "\n\
 
 static string objcNSNumberPrefix = "\n\
 typedef signed char BOOL;\n\
-@interface NSObject\n@end                               \n\
-@interface NSNumber : NSObject                          \n\
-+ (NSNumber *)numberWithChar:(char)value;               \n\
-+ (NSNumber *)numberWithInt:(int)value;                 \n\
-+ (NSNumber *)numberWithUnsignedInt:(unsigned int)value;\n\
-+ (NSNumber *)numberWithLong:(long)value;               \n\
-+ (NSNumber *)numberWithUnsignedLong:(unsigned long)value;\n\
-+ (NSNumber *)numberWithLongLong:(long long)value;      \n\
-+ (NSNumber *)numberWithUnsignedLongLong:(unsigned long long)value;\n\
-+ (NSNumber *)numberWithFloat:(float)value;             \n\
-+ (NSNumber *)numberWithDouble:(double)value;           \n\
-+ (NSNumber *)numberWithBool:(BOOL)value;               \n\
+@interface NSObject\n@end                                                   \n\
+@interface NSNumber : NSObject                                              \n\
++ (NSNumber *)numberWithChar:(char)value;                                   \n\
++ (NSNumber *)numberWithInt:(int)value;                                     \n\
++ (NSNumber *)numberWithUnsignedInt:(unsigned int)value;                    \n\
++ (NSNumber *)numberWithLong:(long)value;                                   \n\
++ (NSNumber *)numberWithUnsignedLong:(unsigned long)value;                  \n\
++ (NSNumber *)numberWithLongLong:(long long)value;                          \n\
++ (NSNumber *)numberWithUnsignedLongLong:(unsigned long long)value;         \n\
++ (NSNumber *)numberWithFloat:(float)value;                                 \n\
++ (NSNumber *)numberWithDouble:(double)value;                               \n\
++ (NSNumber *)numberWithBool:(BOOL)value;                                   \n\
++ (NSNumber *)numberWithUnsignedChar:(unsigned char)value;                  \n\
 @end\n";
 
 static string objcNSStringPrefix = "\n\
@@ -62,7 +63,7 @@ TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedChar)
 {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
         "char getZ() { return 'Z'; } void m() { NSNumber *theLetterZ = [NSNumber numberWithChar:(getZ())]; }",
-        0, 17, 63, 17, 96);
+        0, 18, 63, 18, 96);
 }
 
 TEST(ObjCBoxedExpressionsRuleTest, IntLiteral)
@@ -81,7 +82,7 @@ TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedInt)
 {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
         "void m() { NSNumber *fortyTwo = [NSNumber numberWithInt:(43 - 1)]; }",
-        0, 17, 33, 17, 65);
+        0, 18, 33, 18, 65);
 }
 
 TEST(ObjCBoxedExpressionsRuleTest, UnsignedIntLiteral)
@@ -106,7 +107,7 @@ TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedUnsignedInt)
 {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
         "void m() { NSNumber *fortyTwoUnsigned = [NSNumber numberWithUnsignedInt:(43U - 1U)]; }",
-        0, 17, 41, 17, 83);
+        0, 18, 41, 18, 83);
 }
 
 TEST(ObjCBoxedExpressionsRuleTest, LongLiteral)
@@ -125,7 +126,7 @@ TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedLong)
 {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
         "void m() { NSNumber *fortyTwoLong = [NSNumber numberWithLong:(43L - 1L)]; }",
-        0, 17, 37, 17, 72);
+        0, 18, 37, 18, 72);
 }
 
 TEST(ObjCBoxedExpressionsRuleTest, UnsignedLongLiteral)
@@ -144,7 +145,7 @@ TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedUnsignedLong)
 {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
         "void m() { NSNumber *fortyTwoUnsignedLong = [NSNumber numberWithUnsignedLong:(43UL - 1UL)]; }",
-        0, 17, 45, 17, 90);
+        0, 18, 45, 18, 90);
 }
 
 TEST(ObjCBoxedExpressionsRuleTest, LongLongLiteral)
@@ -163,7 +164,7 @@ TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedLongLong)
 {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
         "void m() { NSNumber *fortyTwoLongLong = [NSNumber numberWithLongLong:(43LL - 1LL)]; }",
-        0, 17, 41, 17, 82);
+        0, 18, 41, 18, 82);
 }
 
 TEST(ObjCBoxedExpressionsRuleTest, UnsignedLongLongLiteral)
@@ -182,7 +183,7 @@ TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedUnsignedLongLong)
 {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
         "void m() { NSNumber *fortyTwoUnsignedLongLong = [NSNumber numberWithUnsignedLongLong:(43ULL - 1ULL)]; }",
-        0, 17, 49, 17, 100);
+        0, 18, 49, 18, 100);
 }
 
 TEST(ObjCBoxedExpressionsRuleTest, FloatLiteral)
@@ -201,7 +202,7 @@ TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedFloat)
 {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
         "void m() { NSNumber *fortyTwoFloat = [NSNumber numberWithFloat:(4.1415926535F - 1.0F)]; }",
-        0, 17, 38, 17, 86);
+        0, 18, 38, 18, 86);
 }
 
 TEST(ObjCBoxedExpressionsRuleTest, DoubleLiteral)
@@ -220,7 +221,7 @@ TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedDouble)
 {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
         "void m() { NSNumber *fortyTwoDouble = [NSNumber numberWithDouble:(4.1415926535 - 1.0)]; }",
-        0, 17, 39, 17, 86);
+        0, 18, 39, 18, 86);
 }
 
 TEST(ObjCBoxedExpressionsRuleTest, BOOLYesLiteral_newBOOLDef)
@@ -239,7 +240,7 @@ TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedBOOLYes_newBOOLDef)
 {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix + newBOOLDef +
         "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!YES)]; }",
-        0, 20, 37, 20, 68);
+        0, 21, 37, 21, 68);
 }
 
 TEST(ObjCBoxedExpressionsRuleTest, BOOLNoLiteral_newBOOLDef)
@@ -258,7 +259,7 @@ TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedBOOLNo_newBOOLDef)
 {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix + newBOOLDef +
         "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!NO)]; }",
-        0, 20, 37, 20, 67);
+        0, 21, 37, 21, 67);
 }
 
 TEST(ObjCBoxedExpressionsRuleTest, BOOLYesLiteral_oldBOOLDef)
@@ -277,7 +278,7 @@ TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedBOOLYes_oldBOOLDef)
 {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix + oldBOOLDef +
         "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!YES)]; }",
-        0, 20, 37, 20, 68);
+        0, 21, 37, 21, 68);
 }
 
 TEST(ObjCBoxedExpressionsRuleTest, BOOLNoLiteral_oldBOOLDef)
@@ -296,7 +297,7 @@ TEST(ObjCBoxedExpressionsRuleTest, NumberWithBoxedBOOLNo_oldBOOLDef)
 {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix + oldBOOLDef +
         "void m() { NSNumber *fortyTwoBOOL = [NSNumber numberWithBool:(!NO)]; }",
-        0, 20, 37, 20, 67);
+        0, 21, 37, 21, 67);
 }
 
 TEST(ObjCBoxedExpressionsRuleTest, NumberWithEnumBoxed)
@@ -309,10 +310,10 @@ TEST(ObjCBoxedExpressionsRuleTest, NumberWithEnum)
 {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
         "typedef enum { Red, Green, Blue } Color; void m() { NSNumber *color = [NSNumber numberWithInt:Green]; }",
-        0, 17, 71, 17, 100);
+        0, 18, 71, 18, 100);
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
         "typedef enum { Red, Green, Blue } Color; void m() { NSNumber *color = [NSNumber numberWithInt:(Green)]; }",
-        0, 17, 71, 17, 102);
+        0, 18, 71, 18, 102);
 }
 
 TEST(ObjCBoxedExpressionsRuleTest, NumberWithEnumTypedefBoxed)
@@ -325,10 +326,10 @@ TEST(ObjCBoxedExpressionsRuleTest, NumberWithEnumTypedef)
 {
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
         "enum { Red, Green, Blue }; void m() { NSNumber *color = [NSNumber numberWithInt:Red]; }",
-        0, 17, 57, 17, 84);
+        0, 18, 57, 18, 84);
     testRuleOnObjCCode(new ObjCBoxedExpressionsRule(), objcNSNumberPrefix +
         "enum { Red, Green, Blue }; void m() { NSNumber *color = [NSNumber numberWithInt:(Red)]; }",
-        0, 17, 57, 17, 86);
+        0, 18, 57, 18, 86);
 }
 
 // TODO: fixed underlying type enum like typedef enum : unsigned char { Red, Green, Blue } Color;
