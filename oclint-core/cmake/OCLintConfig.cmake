@@ -19,8 +19,8 @@ ELSE()
 ENDIF()
 
 IF(APPLE)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden -mmacosx-version-min=10.14")
-    SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -mmacosx-version-min=10.14")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden -mmacosx-version-min=10.15")
+    SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -mmacosx-version-min=10.15")
 ENDIF()
 
 IF(OCLINT_BUILD_TYPE STREQUAL "Release")
