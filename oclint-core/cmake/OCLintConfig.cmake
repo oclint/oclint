@@ -92,10 +92,12 @@ IF(TEST_BUILD)
     SET(GTEST_LIBS gmock gtest)
 
     # Find CUDA
-    FIND_PROGRAM(NVIDIA_SMI_BIN "nvidia-smi")
-    IF (NVIDIA_SMI_BIN)
+    FIND_PROGRAM(NVIDIA_NVCC_BIN "nvcc")
+    IF (NVIDIA_NVCC_BIN)
         MESSAGE(STATUS "Enable tests for CUDA rules.")
         SET(TEST_CUDA TRUE)
+    ELSE()
+        SET(TEST_CUDA FALSE)
     ENDIF()
 
     # Setup the path for profile_rt library
