@@ -50,7 +50,7 @@ TEST_F(PMDReporterTest, WriteHeader)
     std::ostringstream oss;
     reporter.report(results, oss);
     EXPECT_THAT(oss.str(), StartsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
-    EXPECT_THAT(oss.str(), HasSubstr("<pmd version=\"oclint-" + Version::identifier() + "\">"));
+    EXPECT_THAT(oss.str(), HasSubstr("<pmd version=\"oclint-" + Constants::version() + "\">"));
     delete results;
 }
 

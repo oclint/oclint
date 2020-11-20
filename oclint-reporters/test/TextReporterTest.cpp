@@ -40,7 +40,7 @@ TEST_F(TextReporterTest, WriteFooter)
 {
     std::ostringstream oss;
     reporter.writeFooter(oss, "-test");
-    EXPECT_THAT(oss.str(), StrEq("[OCLint (http://oclint.org) v-test]"));
+    EXPECT_THAT(oss.str(), StrEq("[OCLint (https://oclint.org) v-test]"));
 }
 
 TEST_F(TextReporterTest, WriteSummary)

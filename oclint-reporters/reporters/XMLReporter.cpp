@@ -1,10 +1,10 @@
 #include <cstdio>
 #include <ctime>
 
+#include "oclint/Constants.h"
 #include "oclint/Results.h"
 #include "oclint/Reporter.h"
 #include "oclint/RuleBase.h"
-#include "oclint/Version.h"
 #include "oclint/ViolationSet.h"
 
 using namespace oclint;
@@ -19,7 +19,7 @@ public:
 
     virtual void report(Results* results, std::ostream& out) override
     {
-        writeHeader(out, Version::identifier());
+        writeHeader(out, Constants::version());
         writeDatetime(out);
         writeSummary(out, *results);
         out << "<violations>";
@@ -41,7 +41,8 @@ public:
     void writeHeader(std::ostream &out, std::string version)
     {
         out << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
-        out << "<oclint version=\"" << version << "\" url=\"http://oclint.org\">";
+        out << "<oclint version=\"" << version << "\" url=\""
+            << Constants::homepage() << "\">";
     }
 
     void writeDatetime(std::ostream &out)

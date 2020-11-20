@@ -9,6 +9,7 @@
 
 #include "oclint/Analyzer.h"
 #include "oclint/CompilerInstance.h"
+#include "oclint/Constants.h"
 #include "oclint/Driver.h"
 #include "oclint/ExitCode.h"
 #include "oclint/GenericException.h"
@@ -21,7 +22,6 @@
 #include "oclint/RulesetFilter.h"
 #include "oclint/RulesetBasedAnalyzer.h"
 #include "oclint/UniqueResults.h"
-#include "oclint/Version.h"
 #include "oclint/ViolationSet.h"
 #include "oclint/Violation.h"
 
@@ -143,8 +143,8 @@ int prepare()
 
 static void oclintVersionPrinter(raw_ostream &outs)
 {
-    outs << "OCLint (http://oclint.org/):\n";
-    outs << "  OCLint version " << oclint::Version::identifier() << ".\n";
+    outs << "OCLint (" << oclint::Constants::homepage() << "):\n";
+    outs << "  OCLint version " << oclint::Constants::version() << ".\n";
     outs << "  Built " << __DATE__ << " (" << __TIME__ << ").\n";
 }
 

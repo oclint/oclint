@@ -66,7 +66,7 @@ TEST_F(HTMLReporterTest, WriteFooter)
 {
     std::ostringstream oss;
     reporter.writeFooter(oss, "-test");
-    EXPECT_THAT(oss.str(), HasSubstr("Generated with <a href='http://oclint.org'>OCLint v-test"));
+    EXPECT_THAT(oss.str(), HasSubstr("Generated with <a href='https://oclint.org'>OCLint v-test"));
 }
 
 TEST_F(HTMLReporterTest, WriteCompilerErrorOrWarning)
