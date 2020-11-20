@@ -47,6 +47,12 @@ jobs:
     #   arch: arm64
     #   dist: focal
     #   env: BUILD="build"
+    - os: linux
+      dist: focal
+      env: BUILD="system-llvm"
+    - os: linux
+      dist: bionic
+      env: BUILD="system-llvm"
     - os: osx
       osx_image: xcode12.2
       env: BUILD="test" MODULE="core"
