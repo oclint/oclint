@@ -1,0 +1,30 @@
+name: Build and Tests on AArch64
+on: [push, pull_request]
+
+jobs:
+  tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        module: ["core", "metrics", "rules core metrics", "reporters core", "driver core"]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+      - uses: uraimo/run-on-arch-action@v2.0.7
+        env: |
+          MODULE: ${{ matrix.module }}
+        with:
+          arch: aarch64
+          distro: ubuntu20.04
+          githubToken: ${{ github.token }}
+          run: cd oclint-scripts && ./gh-actions test $MODULE
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+      - uses: uraimo/run-on-arch-action@v2.0.7
+        with:
+          arch: aarch64
+          distro: ubuntu20.04
+          githubToken: ${{ github.token }}
+          run: cd oclint-scripts && ./gh-actions build
