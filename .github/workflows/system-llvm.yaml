@@ -1,8 +1,8 @@
-name: Run Builds Using System LLVM
+name: Build Using System LLVM
 on: [push, pull_request]
 
 jobs:
-  run-tests:
+  build-with-system-llvm:
     strategy:
       fail-fast: false
       matrix:
