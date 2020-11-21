@@ -1,9 +1,9 @@
 #! /bin/sh -e
 
-./build core -docgen
-./build metrics -docgen
-./build rules -docgen
-./build driver -docgen
+./build core -docgen -no-ninja
+./build metrics -docgen -no-ninja
+./build rules -docgen -no-ninja
+./build driver -docgen -no-ninja
 ./bundle -docgen
 mkdir -p ../build/oclint-docs/rules
 ../build/oclint-release/bin/oclint-docgen docgen

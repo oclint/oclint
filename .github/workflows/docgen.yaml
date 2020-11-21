@@ -2,7 +2,7 @@ name: Documentation Generation
 on: [push, pull_request]
 
 jobs:
-  build:
+  docgen:
     strategy:
       fail-fast: false
       matrix:
