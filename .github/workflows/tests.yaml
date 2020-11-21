@@ -2,11 +2,11 @@ name: Tests
 on: [push, pull_request]
 
 jobs:
-  tests:
+  tests-on-linux:
+    name: Tests on Linux
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-10.15]
         include:
           - module: "core"
             deps: ""
@@ -18,11 +18,38 @@ jobs:
             deps: "core"
           - module: "driver"
             deps: "core"
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v1
       - run: sudo pip install --upgrade cpp-coveralls;
-        if:  matrix.os == 'ubuntu-20.04'
+      - env:
+          MODULE: ${{ matrix.module }}
+          DEPS: ${{ matrix.deps }}
+        run: cd oclint-scripts && ./gh-actions test $MODULE $DEPS && cd ..
+      - env:
+          MODULE: ${{ matrix.module }}
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: coveralls --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test
+        if:  matrix.module != 'driver'
+  tests-on-mac:
+    name: Tests on macOS
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - module: "core"
+            deps: ""
+          - module: "metrics"
+            deps: ""
+          - module: "rules"
+            deps: "core metrics"
+          - module: "reporters"
+            deps: "core"
+          - module: "driver"
+            deps: "core"
+    runs-on: macos-10.15
+    steps:
+      - uses: actions/checkout@v1
       - run: |
           sudo xcode-select -s /Applications/Xcode_12.2.app/Contents/Developer
           HOMEBREW_NO_AUTO_UPDATE=1 brew install pyenv;
@@ -32,7 +59,6 @@ jobs:
           pyenv rehash;
           pip install cpp-coveralls;
           pyenv rehash;
-        if:  matrix.os == 'macos-10.15'
       - env:
           MODULE: ${{ matrix.module }}
           DEPS: ${{ matrix.deps }}
@@ -40,10 +66,5 @@ jobs:
       - env:
           MODULE: ${{ matrix.module }}
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        run: coveralls --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test
-        if:  matrix.os == 'ubuntu-20.04' && matrix.module != 'driver'
-      - env:
-          MODULE: ${{ matrix.module }}
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: coveralls --gcov ./build/llvm-install/bin/llvm-cov --gcov-options gcov --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test
-        if:  matrix.os == 'macos-10.15' && matrix.module != 'driver'
+        if:  matrix.module != 'driver'
