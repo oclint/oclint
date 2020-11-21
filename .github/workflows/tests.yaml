@@ -28,8 +28,10 @@ jobs:
       - env:
           MODULE: ${{ matrix.module }}
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+          TRAVIS_JOB_ID: ${{ github.run_number }}
         run: |
           sudo pip install --upgrade cpp-coveralls
+          echo -e "service_name: gh-actions\n" > .coveralls.yml
           coveralls --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test
         if:  matrix.module != 'driver'
   tests-on-mac:
@@ -59,6 +61,7 @@ jobs:
       - env:
           MODULE: ${{ matrix.module }}
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+          TRAVIS_JOB_ID: ${{ github.run_number }}
         run: |
           HOMEBREW_NO_AUTO_UPDATE=1 brew install pyenv
           eval "$(pyenv init -)"
@@ -67,5 +70,6 @@ jobs:
           pyenv rehash
           pip install cpp-coveralls
           pyenv rehash
+          echo -e "service_name: gh-actions\n" > .coveralls.yml
           coveralls --gcov $(pwd)/build/llvm-install/bin/llvm-cov --gcov-options gcov --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test
         if:  matrix.module != 'driver'
