@@ -21,7 +21,7 @@ jobs:
             apt-get update
             apt-get install -y curl git g++ python python3 cmake zlib1g-dev libncurses-dev
           run: |
-            cd oclint-scripts && ./gh-actions test "${test_module}"
+            cd oclint-scripts && ./gh-actions test ${test_module}
   build:
     runs-on: ubuntu-20.04
     steps:
