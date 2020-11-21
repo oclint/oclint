@@ -20,5 +20,4 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - name: Copy artifacts to AWS S3
-        run: |
-          aws s3 cp build/ s3://travisci-artifacts.oclint.org/${GITHUB_REPOSITORY}/${GITHUB_RUN_ID}/${GITHUB_ACTION} --recursive --exclude "*" --include "oclint-*.tar.gz"
+        run: aws s3 cp build/ s3://travisci-artifacts.oclint.org/${GITHUB_REPOSITORY}/gh-build-${GITHUB_RUN_ID} --recursive --exclude "*" --include "oclint-*.tar.gz"
