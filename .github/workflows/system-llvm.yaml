@@ -1,0 +1,13 @@
+name: Run Builds Using System LLVM
+on: [push, pull_request]
+
+jobs:
+  run-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, ubuntu-18.04, ubuntu-16.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v1
+      - run: cd oclint-scripts && ./gh-actions system-llvm
