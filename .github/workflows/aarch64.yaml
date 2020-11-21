@@ -17,7 +17,10 @@ jobs:
           arch: aarch64
           distro: ubuntu20.04
           githubToken: ${{ github.token }}
-          run: cd oclint-scripts && ./gh-actions test $MODULE
+          install: |
+            sudo apt-get install -y python3 cmake g++
+          run: |
+            cd oclint-scripts && ./gh-actions test ${MODULE}
   build:
     runs-on: ubuntu-20.04
     steps:
@@ -27,4 +30,7 @@ jobs:
           arch: aarch64
           distro: ubuntu20.04
           githubToken: ${{ github.token }}
-          run: cd oclint-scripts && ./gh-actions build
+          install: |
+            sudo apt-get install -y python3 cmake g++
+          run: |
+            cd oclint-scripts && ./gh-actions build
