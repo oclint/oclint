@@ -12,15 +12,15 @@ jobs:
       - uses: actions/checkout@v1
       - uses: uraimo/run-on-arch-action@v2.0.7
         env: |
-          MODULE: ${{ matrix.module }}
+          test_module: ${{ matrix.module }}
         with:
           arch: aarch64
           distro: ubuntu20.04
           githubToken: ${{ github.token }}
           install: |
-            sudo apt-get install -y python3 cmake g++
+            apt-get install -y python3 cmake g++
           run: |
-            cd oclint-scripts && ./gh-actions test ${MODULE}
+            cd oclint-scripts && ./gh-actions test "${test_module}"
   build:
     runs-on: ubuntu-20.04
     steps:
@@ -31,6 +31,6 @@ jobs:
           distro: ubuntu20.04
           githubToken: ${{ github.token }}
           install: |
-            sudo apt-get install -y python3 cmake g++
+            apt-get install -y python3 cmake g++
           run: |
             cd oclint-scripts && ./gh-actions build
