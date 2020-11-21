@@ -19,7 +19,7 @@ jobs:
             test_module: ${{ matrix.module }}
           install: |
             apt-get update
-            apt-get install -y python3 cmake g++
+            apt-get install -y curl git g++ python python3 cmake zlib1g-dev libncurses-dev
           run: |
             cd oclint-scripts && ./gh-actions test "${test_module}"
   build:
@@ -33,6 +33,6 @@ jobs:
           githubToken: ${{ github.token }}
           install: |
             apt-get update
-            apt-get install -y python3 cmake g++
+            apt-get install -y curl git g++ python python3 cmake zlib1g-dev libncurses-dev
           run: |
             cd oclint-scripts && ./gh-actions build
