@@ -1,0 +1,32 @@
+#! /bin/sh -e
+
+if [ "$1" = "build" ]
+then
+    ./clang
+    ./build -no-ninja
+    ./bundle -archive
+elif [ "$1" = "docgen" ]
+then
+    ./clang
+    ./docGen
+elif [ "$1" = "system-llvm" ]
+then
+    wget https://apt.llvm.org/llvm.sh
+    chmod +x llvm.sh
+    sudo ./llvm.sh 11
+    sudo apt-get -y install libllvm11 llvm-11 llvm-11-dev llvm-11-runtime clang-11 clang-tools-11 libclang-common-11-dev libclang-11-dev libclang1-11
+    ./build -no-ninja -llvm-root=/usr/lib/llvm-11
+    ./bundle -archive -llvm-root=/usr/lib/llvm-11
+else
+    ./clang
+    ./googleTest co
+    ./googleTest build
+    shift
+    MODULE="$1"
+    shift
+    for dep in $*
+    do
+        ./test "$dep" -as-dep -no-ninja
+    done
+    ./test "$MODULE" -no-ninja
+fi

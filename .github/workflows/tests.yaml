@@ -1,0 +1,27 @@
+name: Run Tests
+on: [push, pull_request]
+
+jobs:
+  run-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-11.0]
+        module: ["core", "metrics", "rules core metrics", "reporters core", "driver core"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v1
+      - run: sudo pip install --upgrade cpp-coveralls;
+        if:  matrix.os == 'ubuntu-20.04'
+      - run: |
+          HOMEBREW_NO_AUTO_UPDATE=1 brew install pyenv;
+          eval "$(pyenv init -)";
+          pyenv install 3.8.2;
+          pyenv global 3.8.2;
+          pyenv rehash;
+          pip install cpp-coveralls;
+          pyenv rehash;
+        if:  matrix.os == 'macos-11.0'
+      - env:
+          MODULE: ${{ matrix.module }}
+        run: cd oclint-scripts && ./gh-actions test $MODULE
