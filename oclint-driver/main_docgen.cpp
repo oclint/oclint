@@ -8,10 +8,10 @@
 
 #include <clang/Tooling/CommonOptionsParser.h>
 
+#include "oclint/Constants.h"
 #include "oclint/Options.h"
 #include "oclint/RuleBase.h"
 #include "oclint/RuleSet.h"
-#include "oclint/Version.h"
 
 #include "rules.h"
 
@@ -75,8 +75,8 @@ int prepare()
 
 static void oclintDocGenVersionPrinter(raw_ostream &outs)
 {
-    outs << "OCLint DocGen (http://oclint.org/docs/):\n";
-    outs << "  OCLint DocGen version " << oclint::Version::identifier() << ".\n";
+    outs << "OCLint DocGen (" << oclint::Constants::docpage() << "):\n";
+    outs << "  OCLint DocGen version " << oclint::Constants::version() << ".\n";
     outs << "  Built " << __DATE__ << " (" << __TIME__ << ").\n";
 }
 

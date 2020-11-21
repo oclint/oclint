@@ -33,7 +33,7 @@ TEST_F(XMLReporterTest, WriteHeader)
 {
     std::ostringstream oss;
     reporter.writeHeader(oss, "test");
-    EXPECT_THAT(oss.str(), StrEq("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><oclint version=\"test\" url=\"http://oclint.org\">"));
+    EXPECT_THAT(oss.str(), StrEq("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><oclint version=\"test\" url=\"https://oclint.org\">"));
 }
 
 TEST_F(XMLReporterTest, WriteFooter)

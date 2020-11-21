@@ -1,9 +1,9 @@
 #include <ctime>
 
+#include "oclint/Constants.h"
 #include "oclint/Results.h"
 #include "oclint/Reporter.h"
 #include "oclint/RuleBase.h"
-#include "oclint/Version.h"
 #include "oclint/ViolationSet.h"
 
 using namespace oclint;
@@ -52,7 +52,7 @@ public:
         }
         out << "</tbody></table>";
         out << "<hr />";
-        writeFooter(out, Version::identifier());
+        writeFooter(out, Constants::version());
         out << "</body>";
         out << "</html>";
         out << std::endl;
@@ -62,7 +62,8 @@ public:
     {
         time_t now = time(nullptr);
         out << "<p>" << ctime(&now)
-            << "| Generated with <a href='http://oclint.org'>OCLint v" << version << "</a>.</p>";
+            << "| Generated with <a href='" << Constants::homepage() << "'>"
+            << "OCLint v" << version << "</a>.</p>";
     }
 
     void writeViolation(std::ostream &out, const Violation &violation)

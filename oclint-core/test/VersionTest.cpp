@@ -1,14 +1,24 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "oclint/Version.h"
+#include "oclint/Constants.h"
 
 using namespace ::testing;
 using namespace oclint;
 
 TEST(VersionTest, VersionString)
 {
-    EXPECT_THAT(Version::identifier(), StrEq("20.11"));
+    EXPECT_THAT(Constants::version(), StrEq("20.11"));
+}
+
+TEST(VersionTest, HomepageString)
+{
+    EXPECT_THAT(Constants::homepage(), StrEq("https://oclint.org"));
+}
+
+TEST(VersionTest, DocpageString)
+{
+    EXPECT_THAT(Constants::docpage(), StrEq("https://docs.oclint.org/en/stable"));
 }
 
 int main(int argc, char **argv)

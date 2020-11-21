@@ -1,0 +1,32 @@
+name: Build Using System LLVM
+on: [push, pull_request]
+
+jobs:
+  build-on-linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, ubuntu-18.04, ubuntu-16.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v1
+      - run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 11
+          sudo apt-get -y install libllvm11 llvm-11 llvm-11-dev llvm-11-runtime clang-11 clang-tools-11 libclang-common-11-dev libclang-11-dev libclang1-11
+      - run: |
+          cd oclint-scripts
+          ./build -no-ninja -llvm-root=/usr/lib/llvm-11
+          ./bundle -archive -llvm-root=/usr/lib/llvm-11
+  build-on-mac:
+    runs-on: macos-10.15
+    steps:
+      - uses: actions/checkout@v1
+      - run: |
+          sudo xcode-select -s /Applications/Xcode_12.2.app/Contents/Developer
+          HOMEBREW_NO_AUTO_UPDATE=1 brew install llvm@11
+      - run: |
+          cd oclint-scripts
+          ./build -no-ninja -llvm-root=/usr/local/Cellar/llvm/11.0.0
+          ./bundle -archive -llvm-root=/usr/local/Cellar/llvm/11.0.0

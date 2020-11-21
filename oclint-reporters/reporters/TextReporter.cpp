@@ -1,7 +1,7 @@
+#include "oclint/Constants.h"
 #include "oclint/Results.h"
 #include "oclint/Reporter.h"
 #include "oclint/RuleBase.h"
-#include "oclint/Version.h"
 #include "oclint/ViolationSet.h"
 
 using namespace oclint;
@@ -38,7 +38,7 @@ public:
         out << std::endl << std::endl;
         writeViolations(out, results->allViolations());
         out << std::endl;
-        writeFooter(out, Version::identifier());
+        writeFooter(out, Constants::version());
         out << std::endl;
     }
 
@@ -49,7 +49,7 @@ public:
 
     void writeFooter(std::ostream &out, std::string version)
     {
-        out << "[OCLint (http://oclint.org) v" << version << "]";
+        out << "[OCLint (" << Constants::homepage() << ") v" << version << "]";
     }
 
     void writeSummary(std::ostream &out, Results &results)

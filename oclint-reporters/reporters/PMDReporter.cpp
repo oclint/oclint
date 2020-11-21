@@ -1,7 +1,7 @@
+#include "oclint/Constants.h"
 #include "oclint/Results.h"
 #include "oclint/Reporter.h"
 #include "oclint/RuleBase.h"
-#include "oclint/Version.h"
 #include "oclint/ViolationSet.h"
 
 using namespace oclint;
@@ -136,7 +136,7 @@ public:
 
     virtual void report(Results* results, std::ostream& out) override
     {
-        writeHeader(out, Version::identifier());
+        writeHeader(out, Constants::version());
         for (const auto& compilerError : results->allErrors())
         {
             writeCompilerError(out, compilerError);

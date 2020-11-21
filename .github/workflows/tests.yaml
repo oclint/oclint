@@ -1,0 +1,92 @@
+name: Tests
+on: [push, pull_request]
+
+jobs:
+  tests-on-linux:
+    name: Tests on Linux
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - module: "core"
+            deps: ""
+          - module: "metrics"
+            deps: ""
+          - module: "rules"
+            deps: "core metrics"
+          - module: "reporters"
+            deps: "core"
+          - module: "driver"
+            deps: "core"
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+      - env:
+          MODULE: ${{ matrix.module }}
+          DEPS: ${{ matrix.deps }}
+        run: cd oclint-scripts && ./gh-actions test $MODULE $DEPS && cd ..
+      - env:
+          MODULE: ${{ matrix.module }}
+        run: |
+          sudo apt-get install -y lcov
+          lcov --capture --directory build/oclint-${MODULE}-test --output-file lcov.info
+          lcov --extract lcov.info "*oclint-${MODULE}/*" --output-file lcov.info
+          lcov --remove lcov.info "*oclint-${MODULE}/test*" --output-file lcov.info
+          lcov --list lcov.info
+        if:  matrix.module != 'driver'
+      - name: Coveralls Parallel
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          parallel: true
+          flag-name: cov-linux-${{ matrix.module }}
+          path-to-lcov: lcov.info
+        if:  matrix.module != 'driver'
+  tests-on-mac:
+    name: Tests on macOS
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - module: "core"
+            deps: ""
+          - module: "metrics"
+            deps: ""
+          - module: "rules"
+            deps: "core metrics"
+          - module: "reporters"
+            deps: "core"
+          - module: "driver"
+            deps: "core"
+    runs-on: macos-10.15
+    steps:
+      - uses: actions/checkout@v1
+      - run: sudo xcode-select -s /Applications/Xcode_12.2.app/Contents/Developer
+      - env:
+          MODULE: ${{ matrix.module }}
+          DEPS: ${{ matrix.deps }}
+        run: cd oclint-scripts && ./gh-actions test $MODULE $DEPS && cd ..
+      # - env:
+      #     MODULE: ${{ matrix.module }}
+      #     COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      #     TRAVIS_JOB_ID: ${{ github.run_number }}
+      #   run: |
+      #     HOMEBREW_NO_AUTO_UPDATE=1 brew install pyenv
+      #     eval "$(pyenv init -)"
+      #     pyenv install 3.8.2
+      #     pyenv global 3.8.2
+      #     pyenv rehash
+      #     pip install cpp-coveralls PyYAML
+      #     pyenv rehash
+      #     echo -e "service_name: gh-actions\n" > .coveralls.yml
+      #     coveralls --gcov $(pwd)/build/llvm-install/bin/llvm-cov --gcov-options gcov --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test
+      #   if:  matrix.module != 'driver'
+  wrap-up:
+    needs: tests-on-linux
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+        parallel-finished: true

@@ -1,11 +1,11 @@
 ADD_LIBRARY(OCLintCore
     AbstractResults.cpp
+    Constants.cpp
     ResultCollector.cpp
     UniqueResults.cpp
     RawResults.cpp
     RuleBase.cpp
     RuleCarrier.cpp
-    Version.cpp
     Violation.cpp
     ViolationSet.cpp
     )

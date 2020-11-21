@@ -102,7 +102,7 @@ static llvm::cl::opt<bool> argEnableVerbose("verbose",
 
 static llvm::cl::extrahelp CommonHelp(clang::tooling::CommonOptionsParser::HelpMessage);
 static llvm::cl::extrahelp MoreHelp(
-    "For more information, please visit http://oclint.org\n"
+    "For more information, please visit https://oclint.org\n"
 );
 
 /* -------
