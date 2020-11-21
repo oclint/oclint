@@ -21,7 +21,6 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v1
-      - run: sudo pip install --upgrade cpp-coveralls;
       - env:
           MODULE: ${{ matrix.module }}
           DEPS: ${{ matrix.deps }}
@@ -29,7 +28,9 @@ jobs:
       - env:
           MODULE: ${{ matrix.module }}
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        run: coveralls --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test
+        run: |
+          sudo pip install --upgrade cpp-coveralls
+          coveralls --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test
         if:  matrix.module != 'driver'
   tests-on-mac:
     name: Tests on macOS
@@ -50,15 +51,7 @@ jobs:
     runs-on: macos-10.15
     steps:
       - uses: actions/checkout@v1
-      - run: |
-          sudo xcode-select -s /Applications/Xcode_12.2.app/Contents/Developer
-          HOMEBREW_NO_AUTO_UPDATE=1 brew install pyenv;
-          eval "$(pyenv init -)";
-          pyenv install 3.8.2;
-          pyenv global 3.8.2;
-          pyenv rehash;
-          pip install cpp-coveralls;
-          pyenv rehash;
+      - run: sudo xcode-select -s /Applications/Xcode_12.2.app/Contents/Developer
       - env:
           MODULE: ${{ matrix.module }}
           DEPS: ${{ matrix.deps }}
@@ -66,5 +59,13 @@ jobs:
       - env:
           MODULE: ${{ matrix.module }}
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        run: coveralls --gcov ./build/llvm-install/bin/llvm-cov --gcov-options gcov --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test
+        run: |
+          HOMEBREW_NO_AUTO_UPDATE=1 brew install pyenv
+          eval "$(pyenv init -)"
+          pyenv install 3.8.2
+          pyenv global 3.8.2
+          pyenv rehash
+          pip install cpp-coveralls
+          pyenv rehash
+          coveralls --gcov $(pwd)/build/llvm-install/bin/llvm-cov --gcov-options gcov --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test
         if:  matrix.module != 'driver'
