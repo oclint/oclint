@@ -17,7 +17,6 @@ jobs:
         with:
           arch: aarch64
           distro: ubuntu20.04
-          githubToken: ${{ github.token }}
           env: |
             test_module: ${{ matrix.module }}
           install: |
@@ -33,7 +32,6 @@ jobs:
         with:
           arch: aarch64
           distro: ubuntu20.04
-          githubToken: ${{ github.token }}
           install: |
             apt-get update
             apt-get install -y curl git g++ python python3 cmake zlib1g-dev libncurses-dev
