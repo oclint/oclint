@@ -1,6 +1,5 @@
 name: Build and Tests on AArch64
 on:
-  push:
   pull_request:
   schedule:
     - cron:  '0 15 * * 0'
