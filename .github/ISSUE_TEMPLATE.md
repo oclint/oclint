@@ -27,5 +27,5 @@ What currently happens as a result of the reproduction steps?
 
 ### Even Better
 Is your project open sourced? If yes, can you point us to your repository?
-If not, is it possible to make a small project that fails the Travis CI?
+If not, is it possible to make a small project to illustrate the problem?
 If not, can you create a gist with your sample code for us?
