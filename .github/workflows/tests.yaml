@@ -43,7 +43,7 @@ jobs:
         with:
           github-token: ${{ secrets.github_token }}
           parallel: true
-          flag-name: cov-linux-${{ matrix.module }}
+          flag-name: cov-${{ github.run_number }}-linux-${{ matrix.module }}
           path-to-lcov: lcov.info
         if:  matrix.module != 'driver'
   tests-on-mac:
