@@ -13,27 +13,27 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v1
-      - uses: uraimo/run-on-arch-action@v2.0.7
-        with:
-          arch: aarch64
-          distro: ubuntu20.04
-          env: |
-            test_module: ${{ matrix.module }}
-          install: |
-            apt-get update
-            apt-get install -y curl git g++ python python3 cmake zlib1g-dev libncurses-dev
-          run: |
-            cd oclint-scripts && ./gh-actions test ${test_module}
+#       - uses: uraimo/run-on-arch-action@v2.0.7
+#         with:
+#           arch: aarch64
+#           distro: ubuntu20.04
+#           env: |
+#             test_module: ${{ matrix.module }}
+#           install: |
+#             apt-get update
+#             apt-get install -y curl git g++ python python3 cmake zlib1g-dev libncurses-dev
+#           run: |
+#             cd oclint-scripts && ./gh-actions test ${test_module}
   build:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v1
-      - uses: uraimo/run-on-arch-action@v2.0.7
-        with:
-          arch: aarch64
-          distro: ubuntu20.04
-          install: |
-            apt-get update
-            apt-get install -y curl git g++ python python3 cmake zlib1g-dev libncurses-dev
-          run: |
-            cd oclint-scripts && ./gh-actions build
+#       - uses: uraimo/run-on-arch-action@v2.0.7
+#         with:
+#           arch: aarch64
+#           distro: ubuntu20.04
+#           install: |
+#             apt-get update
+#             apt-get install -y curl git g++ python python3 cmake zlib1g-dev libncurses-dev
+#           run: |
+#             cd oclint-scripts && ./gh-actions build
