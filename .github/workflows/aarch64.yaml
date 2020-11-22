@@ -11,15 +11,17 @@ jobs:
       fail-fast: false
       matrix:
         module_args:
-          - "test core"
-          - "test metrics"
-          - "test rules core metrics"
-          - "test reporters core"
-          - "test driver core"
-          - "build"
+          - test core
+          - test metrics
+          - test rules core metrics
+          - test reporters core
+          - test driver core
+          - build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
       - run: docker build --rm -t g_a_ci -f oclint-scripts/Dockerfiles/Dockerfile-aarch64-ubuntu-focal .
-      - run: docker run --name g_a_ci_job -t g_a_ci bash -c "cd oclint-scripts && ./gh-actions ${MODULE_ARGS}"
+      - env:
+          MODULE_ARGS: ${{ matrix.module_args }}
+        run: docker run --name g_a_ci_job -t g_a_ci bash -c "cd oclint-scripts && ./gh-actions ${MODULE_ARGS}"
