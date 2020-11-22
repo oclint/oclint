@@ -3,7 +3,7 @@ on:
   push:
   pull_request:
   schedule:
-  - cron:  '0 15 * * 0'
+    - cron:  '0 15 * * 0'
 
 jobs:
   tests-on-linux:

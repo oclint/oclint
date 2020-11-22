@@ -1,12 +1,12 @@
-name: Builds
+name: Releases
 on:
   push:
-  pull_request:
+  release:
   schedule:
     - cron:  '0 15 * * 0'
 
 jobs:
-  build:
+  release:
     strategy:
       fail-fast: false
       matrix:
@@ -14,16 +14,20 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v1
-      - run: sudo xcode-select -s /Applications/Xcode_12.2.app/Contents/Developer
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build
+        if: matrix.os == 'ubuntu-20.04'
+      - run: |
+          sudo xcode-select -s /Applications/Xcode_12.2.app/Contents/Developer
+          brew install ninja
         if: matrix.os == 'macos-10.15'
-      - run: cd oclint-scripts && ./gh-actions build
+      - run: cd oclint-scripts && ./make && ./bundle -archive -release
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-        if: github.event_name == 'push'
       - name: Copy artifacts to AWS S3
-        run: aws s3 cp build/ s3://travisci-artifacts.oclint.org/${GITHUB_REPOSITORY}/gh-build-${GITHUB_RUN_ID} --recursive --exclude "*" --include "oclint-*.tar.gz"
-        if: github.event_name == 'push'
+        run: aws s3 cp build/ s3://travisci-artifacts.oclint.org/${GITHUB_REPOSITORY}/gh-release-${GITHUB_RUN_ID} --recursive --exclude "*" --include "oclint-*.tar.gz"
