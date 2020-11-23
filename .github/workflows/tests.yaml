@@ -70,23 +70,25 @@ jobs:
           MODULE: ${{ matrix.module }}
           DEPS: ${{ matrix.deps }}
         run: cd oclint-scripts && ./gh-actions test $MODULE $DEPS && cd ..
-      # - env:
-      #     MODULE: ${{ matrix.module }}
-      #     COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-      #     TRAVIS_JOB_ID: ${{ github.run_number }}
-      #   run: |
-      #     HOMEBREW_NO_AUTO_UPDATE=1 brew install pyenv
-      #     eval "$(pyenv init -)"
-      #     pyenv install 3.8.2
-      #     pyenv global 3.8.2
-      #     pyenv rehash
-      #     pip install cpp-coveralls PyYAML
-      #     pyenv rehash
-      #     echo -e "service_name: gh-actions\n" > .coveralls.yml
-      #     coveralls --gcov $(pwd)/build/llvm-install/bin/llvm-cov --gcov-options gcov --include oclint-${MODULE}/ --exclude oclint-${MODULE}/test
-      #   if:  matrix.module != 'driver'
+      - env:
+          MODULE: ${{ matrix.module }}
+        run: |
+          brew install lcov
+          lcov --capture --directory build/oclint-${MODULE}-test --output-file lcov.info
+          lcov --extract lcov.info "*oclint-${MODULE}/*" --output-file lcov.info
+          lcov --remove lcov.info "*oclint-${MODULE}/test*" --output-file lcov.info
+          lcov --list lcov.info
+        if:  matrix.module != 'driver'
+      - name: Coveralls Parallel
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          parallel: true
+          flag-name: cov-${{ github.run_number }}-macos-${{ matrix.module }}
+          path-to-lcov: lcov.info
+        if:  matrix.module != 'driver'
   wrap-up:
-    needs: tests-on-linux
+    needs: [tests-on-linux, tests-on-mac]
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
