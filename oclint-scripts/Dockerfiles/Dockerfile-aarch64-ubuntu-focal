@@ -1,0 +1,10 @@
+ARG OS_NAME=ubuntu
+ARG OS_VERSION=focal
+ARG ARCH=arm64
+FROM multiarch/${OS_NAME}-debootstrap:${ARCH}-${OS_VERSION}
+
+RUN uname -a
+RUN apt-get update
+RUN apt-get install -y curl git g++ python3 cmake zlib1g-dev libncurses-dev
+
+COPY . .
