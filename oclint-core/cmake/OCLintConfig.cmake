@@ -2,21 +2,12 @@ SET(CMAKE_DISABLE_SOURCE_CHANGES ON)
 SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(CMAKE_MACOSX_RPATH ON)
 SET(CMAKE_BUILD_TYPE None)
-IF (${CMAKE_SYSTEM_NAME} MATCHES "Win")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -fno-rtti")
-ELSE()
-    IF(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        SET(CMAKE_CXX_FLAGS "-fcolor-diagnostics")
-    ENDIF()
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -fno-rtti -fPIC ${CMAKE_CXX_FLAGS}")
-ENDIF()
-SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -fno-rtti")
 
-IF(MINGW)
-    SET(CMAKE_CXX_FLAGS "-std=gnu++14 ${CMAKE_CXX_FLAGS}")
-ELSE()
-    SET(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
+IF(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    SET(CMAKE_CXX_FLAGS "-fcolor-diagnostics")
 ENDIF()
+SET(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_LINKER_FLAGS} -fno-rtti -fPIC ${CMAKE_CXX_FLAGS}")
+SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -fno-rtti")
 
 IF(APPLE)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden -mmacosx-version-min=10.15")
@@ -78,9 +69,12 @@ SET(CLANG_LIBRARIES
 
 IF(TEST_BUILD)
     ENABLE_TESTING()
-    ADD_DEFINITIONS(
-        --coverage
-        )
+    IF(NOT APPLE)
+        ADD_DEFINITIONS(
+            --coverage
+            )
+    ENDIF()
+
     INCLUDE_DIRECTORIES(
         ${GOOGLETEST_SRC}/googlemock/include
         ${GOOGLETEST_SRC}/googletest/include
@@ -104,17 +98,11 @@ IF(TEST_BUILD)
     STRING(TOLOWER ${CMAKE_SYSTEM_NAME} COMPILER_RT_SYSTEM_NAME)
     LINK_DIRECTORIES(${LLVM_LIBRARY_DIRS}/clang/${LLVM_VERSION_RELEASE}/lib/${COMPILER_RT_SYSTEM_NAME})
     IF(APPLE)
-        SET(PROFILE_RT_LIBS clang_rt.profile_osx)
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+    ELSEIF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
+        SET(PROFILE_RT_LIBS clang_rt.profile-aarch64 --coverage)
     ELSE()
-        IF(${CMAKE_SYSTEM_NAME} MATCHES "Win")
-            SET(PROFILE_RT_LIBS --coverage)
-        ELSE()
-            IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
-                SET(PROFILE_RT_LIBS clang_rt.profile-aarch64 --coverage)
-            ELSE()
-                SET(PROFILE_RT_LIBS clang_rt.profile-x86_64 --coverage)
-            ENDIF()
-        ENDIF()
+        SET(PROFILE_RT_LIBS clang_rt.profile-x86_64 --coverage)
     ENDIF()
 ENDIF()
 
