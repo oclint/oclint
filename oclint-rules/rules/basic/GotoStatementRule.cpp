@@ -39,7 +39,7 @@ public:
     virtual const std::string description() const override
     {
         return "`\"Go To Statement Considered Harmful\" "
-            "<http://www.cs.utexas.edu/users/EWD/ewd02xx/EWD215.PDF>`_";
+            "<https://www.cs.utexas.edu/users/EWD/ewd02xx/EWD215.PDF>`_";
     }
 
     virtual const std::string example() const override
@@ -62,7 +62,7 @@ public:
 **References:**
 
 Edsger Dijkstra (March 1968). `"Go To Statement Considered Harmful"
-<http://www.cs.utexas.edu/users/EWD/ewd02xx/EWD215.PDF>`_.
+<https://www.cs.utexas.edu/users/EWD/ewd02xx/EWD215.PDF>`_.
 *Communications of the ACM* (PDF) 11 (3): 147–148. doi:10.1145/362929.362947.
     )rst";
     }
