@@ -37,8 +37,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "This rule locates the places that can be migrated to the "
-            "new Objective-C literals with container literals.";
+        return "This rule locates the places that can be migrated to "
+            "the Objective-C container literals.";
     }
 
     virtual const std::string fileName() const override

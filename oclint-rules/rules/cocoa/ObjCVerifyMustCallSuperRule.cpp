@@ -92,7 +92,7 @@ public:
     {
         return "When a method is declared with "
             "``__attribute__((annotate(\"oclint:enforce[base method]\")))`` annotation, "
-            "all of its implementations (including its own and its sub classes) "
+            "all of its implementations (including its own and its subclasses) "
             "must call the method implementation in super class.";
     }
 

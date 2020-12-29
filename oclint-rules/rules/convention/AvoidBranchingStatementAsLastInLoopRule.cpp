@@ -57,8 +57,7 @@ public:
 
     virtual const std::string description() const override
     {
-        return "Having branching statement as the last statement inside a loop is very confusing, "
-            "and could largely be forgetting of something and turning into a bug.";
+        return "Having branching statement as the last statement inside a loop is likely a bug.";
     }
 
     virtual const std::string example() const override

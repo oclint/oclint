@@ -47,12 +47,11 @@ public:
 
     virtual const std::string description() const override
     {
-        return "This rule counts number of lines for a method by "
-            "counting Non Commenting Source Statements (NCSS). "
-            "NCSS only takes actual statements into consideration, "
-            "in other words, ignores empty statements, empty blocks, "
-            "closing brackets or semicolons after closing brackets. "
-            "Meanwhile, a statement that is broken into multiple lines contribute only one count.";
+        return "This rule counts the Non-Commenting Source Statements (NCSS) of a method. "
+            "NCSS only takes actual statements into consideration. "
+            "In other words, it ignores empty statements, empty blocks, "
+            "closing brackets, semicolons after closing brackets, and others. "
+            "Meanwhile, a statement that is broken into multiple lines is counted only once.";
     }
 
     virtual const std::string fileName() const override

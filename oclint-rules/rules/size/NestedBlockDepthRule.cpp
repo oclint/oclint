@@ -34,7 +34,7 @@ public:
 
     virtual const std::string description() const override
     {
-        return "This rule indicates blocks nested more deeply than the upper limit.";
+        return "This rule indicates nested blocks deeper than the threshold.";
     }
 
     virtual const std::string fileName() const override

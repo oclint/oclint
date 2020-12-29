@@ -48,8 +48,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "Long class generally indicates that this class tries to do many things. "
-            "Each class should do one thing and that one thing well.";
+        return "Long class generally indicates that it does too many things. "
+            "Each class should be cohesive: does one thing and that one thing well.";
     }
 
     virtual const std::string example() const override

@@ -78,8 +78,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "This rule locates the places that can be migrated to the "
-            "new Objective-C literals with object subscripting.";
+        return "This rule locates the places that can be migrated to "
+            "the Objective-C literals with object subscripting.";
     }
 
     virtual const std::string fileName() const override

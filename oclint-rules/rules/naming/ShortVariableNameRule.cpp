@@ -75,9 +75,7 @@ public:
 
     virtual const std::string description() const override
     {
-        return "A variable with a short name is hard to understand what it stands for. "
-            "Variable with name, but the name has number of characters less than the "
-            "threshold will be emitted.";
+        return "A variable with a short name is hard to understand what it stands for.";
     }
 
     virtual const std::string example() const override

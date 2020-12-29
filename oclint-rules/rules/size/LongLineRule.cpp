@@ -32,8 +32,7 @@ public:
 
     virtual const std::string description() const override
     {
-        return "When the number of characters for one line of code is very high, "
-            "it largely harms the readability. Break long lines of code into multiple lines.";
+        return "Long lines are hard to read. Break them into multiple lines.";
     }
 
     virtual const std::string example() const override
