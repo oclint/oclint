@@ -100,7 +100,7 @@ def install_cpp_headers():
 
 def install_licenses():
     license_path = os.path.join(bundle_root_dir, 'LICENSE')
-    oclint_license_path = os.path.join(path.source.core_dir, 'LICENSE')
+    oclint_license_path = os.path.join(path.root_dir, 'LICENSE')
     with open(license_path, 'w') as license_file:
         with open(oclint_license_path, 'r') as oclint_license_file:
             # Write OCLint License
