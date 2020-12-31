@@ -106,8 +106,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "This rule locates the places that can be migrated to the "
-            "new Objective-C literals with boxed expressions.";
+        return "This rule locates the places that can be migrated to "
+            "the Objective-C literals with boxed expressions.";
     }
 
     virtual const std::string fileName() const override

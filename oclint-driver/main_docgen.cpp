@@ -224,6 +224,12 @@ int main(int argc, const char **argv)
         writeCategoryHeader(*categoryOut, category);
 
         auto rulesForCategory = rulesMapping[category];
+        std::sort(rulesForCategory.begin(),
+            rulesForCategory.end(),
+            [](oclint::RuleBase *lhs, oclint::RuleBase *rhs)
+            {
+                return lhs->identifier() < rhs->identifier();
+            });
         for (auto rule : rulesForCategory)
         {
             writeRuleToCategory(*categoryOut, rule);

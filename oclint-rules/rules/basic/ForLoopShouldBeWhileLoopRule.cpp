@@ -31,8 +31,8 @@ public:
 
     virtual const std::string description() const override
     {
-        return "Under certain circumstances, some ``for`` loops can be simplified to while "
-            "loops to make code more concise.";
+        return "Under certain circumstances, some ``for`` loops can be simplified to "
+            "``while`` loops to make code more concise.";
     }
 
     virtual const std::string example() const override

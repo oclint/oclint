@@ -108,7 +108,7 @@ an NPath threshold value of 200 has been established for a method.
 **References:**
 
 Brian A. Nejmeh  (1988). `"NPATH: a measure of execution path complexity and its applications"
-<http://dl.acm.org/citation.cfm?id=42379>`_. *Communications of the ACM 31 (2) p. 188-200*
+<https://dl.acm.org/doi/10.1145/42372.42379>`_. *Communications of the ACM 31 (2) p. 188-200*
         )rst";
     }
 

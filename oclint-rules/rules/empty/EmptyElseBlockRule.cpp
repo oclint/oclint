@@ -33,7 +33,7 @@ public:
 
     virtual const std::string description() const override
     {
-        return "This rule detects instances where a else statement does nothing.";
+        return "This rule detects instances where an else statement does nothing.";
     }
 
     virtual const std::string fileName() const override
