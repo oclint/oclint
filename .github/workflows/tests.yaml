@@ -24,7 +24,7 @@ jobs:
             deps: "core"
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - env:
           MODULE: ${{ matrix.module }}
           DEPS: ${{ matrix.deps }}
@@ -62,10 +62,10 @@ jobs:
             deps: "core"
           - module: "driver"
             deps: "core"
-    runs-on: macos-10.15
+    runs-on: macos-11.0
     steps:
-      - uses: actions/checkout@v1
-      - run: sudo xcode-select -s /Applications/Xcode_12.2.app/Contents/Developer
+      - uses: actions/checkout@v2
+      - run: sudo xcode-select -s /Applications/Xcode_12.3.app/Contents/Developer
       - env:
           MODULE: ${{ matrix.module }}
           DEPS: ${{ matrix.deps }}
