@@ -31,5 +31,5 @@ jobs:
           HOMEBREW_NO_AUTO_UPDATE=1 brew install llvm@11
       - run: |
           cd oclint-scripts
-          ./build -no-ninja -llvm-root=/usr/local/Cellar/llvm/11.0.0
-          ./bundle -archive -llvm-root=/usr/local/Cellar/llvm/11.0.0
+          ./build -no-ninja -llvm-root=/usr/local/opt/llvm\@11
+          ./bundle -archive -llvm-root=/usr/local/opt/llvm\@11
