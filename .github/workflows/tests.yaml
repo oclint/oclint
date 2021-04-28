@@ -65,7 +65,7 @@ jobs:
     runs-on: macos-11.0
     steps:
       - uses: actions/checkout@v2
-      - run: sudo xcode-select -s /Applications/Xcode_12.3.app/Contents/Developer
+      - run: sudo xcode-select -s /Applications/Xcode_12.4.app/Contents/Developer
       - env:
           MODULE: ${{ matrix.module }}
           DEPS: ${{ matrix.deps }}

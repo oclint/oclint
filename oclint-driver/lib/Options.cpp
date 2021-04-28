@@ -200,8 +200,7 @@ static void preserveExecutablePath(const char *argv)
         }
     }
     llvm::sys::fs::make_absolute(installedPath);
-    installedPath = llvm::sys::path::parent_path(installedPath);
-    executablePath = std::string(installedPath.c_str());
+    executablePath = llvm::sys::path::parent_path(installedPath).str();
 }
 
 void oclint::option::process(const char *argv)
