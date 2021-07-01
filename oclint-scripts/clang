@@ -36,6 +36,14 @@ def setup_prebuilt_binary():
     process.call('tar xf prebuilt.tar.xz -C ' + install_path + ' --strip-components=1')
     path.cd(current_dir)
 
+    if environment.is_darwin():
+        llvm_exports_cmake_path = os.path.join(install_path, 'lib', 'cmake', 'llvm', 'LLVMExports.cmake')
+        llvm_exports_cmake_file = open(llvm_exports_cmake_path, 'r')
+        llvm_exports_cmake_lines = llvm_exports_cmake_file.readlines()
+        llvm_exports_cmake_lines[59] = '  INTERFACE_LINK_LIBRARIES "m;ZLIB::ZLIB;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/libcurses.tbd;LLVMDemangle"'
+        llvm_exports_cmake_file = open(llvm_exports_cmake_path, 'w')
+        llvm_exports_cmake_file.writelines(llvm_exports_cmake_lines)
+        llvm_exports_cmake_file.close()
 
 if args.clean:
     clean_module()

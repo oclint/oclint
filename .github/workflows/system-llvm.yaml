@@ -23,11 +23,11 @@ jobs:
           ./build -no-ninja -llvm-root=/usr/lib/llvm-12
           ./bundle -archive -llvm-root=/usr/lib/llvm-12
   build-on-mac:
-    runs-on: macos-11.0
+    runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
       - run: |
-          sudo xcode-select -s /Applications/Xcode_12.4.app/Contents/Developer
+          sudo xcode-select -s /Applications/Xcode_12.5.app/Contents/Developer
           HOMEBREW_NO_AUTO_UPDATE=1 brew install llvm@12
       - run: |
           cd oclint-scripts

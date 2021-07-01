@@ -6,12 +6,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-11.0]
+        os: [ubuntu-20.04, macos-11]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - run: sudo xcode-select -s /Applications/Xcode_12.4.app/Contents/Developer
-        if: matrix.os == 'macos-11.0'
+      - run: sudo xcode-select -s /Applications/Xcode_12.5.app/Contents/Developer
+        if: matrix.os == 'macos-11'
       - run: cd oclint-scripts && ./gh-actions docgen
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
