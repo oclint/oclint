@@ -175,7 +175,7 @@ static llvm::Optional<bool> createOptionalBool(const TriState value)
         return llvm::Optional<bool>(false);
     case TRUE:
         return llvm::Optional<bool>(true);
-    default:
+    case UNDEFINED:
         return llvm::Optional<bool>();
     }
 }
