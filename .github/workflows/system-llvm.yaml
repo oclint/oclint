@@ -16,20 +16,20 @@ jobs:
       - run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
-          sudo ./llvm.sh 12
-          sudo apt-get -y install libllvm12 llvm-12 llvm-12-dev llvm-12-runtime clang-12 clang-tools-12 libclang-common-12-dev libclang-12-dev libclang1-12
+          sudo ./llvm.sh 13
+          sudo apt-get -y install libllvm13 llvm-13 llvm-13-dev llvm-13-runtime clang-13 clang-tools-13 libclang-common-13-dev libclang-13-dev libclang1-13
       - run: |
           cd oclint-scripts
-          ./build -no-ninja -llvm-root=/usr/lib/llvm-12
-          ./bundle -archive -llvm-root=/usr/lib/llvm-12
+          ./build -no-ninja -llvm-root=/usr/lib/llvm-13
+          ./bundle -archive -llvm-root=/usr/lib/llvm-13
   build-on-mac:
     runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
       - run: |
-          sudo xcode-select -s /Applications/Xcode_12.5.app/Contents/Developer
-          HOMEBREW_NO_AUTO_UPDATE=1 brew install llvm@12
+          sudo xcode-select -s /Applications/Xcode_13.0.app/Contents/Developer
+          HOMEBREW_NO_AUTO_UPDATE=1 brew install llvm@13
       - run: |
           cd oclint-scripts
-          ./build -no-ninja -llvm-root=/usr/local/opt/llvm\@12
-          ./bundle -archive -llvm-root=/usr/local/opt/llvm\@12
+          ./build -no-ninja -llvm-root=/usr/local/opt/llvm\@13
+          ./bundle -archive -llvm-root=/usr/local/opt/llvm\@13

@@ -4,7 +4,7 @@ using namespace oclint;
 
 std::string Constants::version()
 {
-    return "21.05";
+    return "21.10";
 }
 
 std::string Constants::homepage()
