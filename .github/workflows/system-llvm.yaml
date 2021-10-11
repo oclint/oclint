@@ -28,6 +28,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: |
           sudo xcode-select -s /Applications/Xcode_13.0.app/Contents/Developer
+          brew update
           brew install llvm@13
       - run: |
           cd oclint-scripts
