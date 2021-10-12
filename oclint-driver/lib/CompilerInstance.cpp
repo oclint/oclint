@@ -71,7 +71,7 @@ void CompilerInstance::setupTarget() {
         setAuxTarget(clang::TargetInfo::CreateTargetInfo(getDiagnostics(), targetOptions));
     }
 
-    getTarget().adjust(getLangOpts());
+    getTarget().adjust(getDiagnostics(), getLangOpts());
 
     if (auto *auxTarget = getAuxTarget()) {
         getTarget().setAuxTarget(auxTarget);

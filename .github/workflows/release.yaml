@@ -18,7 +18,7 @@ jobs:
           sudo apt-get install -y ninja-build
         if: matrix.os == 'ubuntu-20.04'
       - run: |
-          sudo xcode-select -s /Applications/Xcode_12.5.app/Contents/Developer
+          sudo xcode-select -s /Applications/Xcode_13.0.app/Contents/Developer
           brew install ninja
         if: matrix.os == 'macos-11'
       - run: cd oclint-scripts && ./make && ./bundle -archive -release

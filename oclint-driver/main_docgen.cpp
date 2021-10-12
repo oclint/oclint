@@ -177,7 +177,8 @@ void writeFooter(ofstream& out)
 int main(int argc, const char **argv)
 {
     llvm::cl::SetVersionPrinter(oclintDocGenVersionPrinter);
-    CommonOptionsParser optionsParser(argc, argv, OCLintOptionCategory);
+    auto expectedParser = CommonOptionsParser::create(argc, argv, OCLintOptionCategory);
+    CommonOptionsParser &optionsParser = expectedParser.get();
     oclint::option::process(argv[0]);
 
     int prepareStatus = prepare();

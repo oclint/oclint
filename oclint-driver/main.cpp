@@ -169,7 +169,13 @@ int handleExit(oclint::Results *results)
 int main(int argc, const char **argv)
 {
     llvm::cl::SetVersionPrinter(oclintVersionPrinter);
-    CommonOptionsParser optionsParser(argc, argv, OCLintOptionCategory);
+    auto expectedParser = CommonOptionsParser::create(argc, argv, OCLintOptionCategory);
+    if (!expectedParser)
+    {
+        llvm::errs() << expectedParser.takeError();
+        return COMMON_OPTIONS_PARSER_ERRORS;
+    }
+    CommonOptionsParser &optionsParser = expectedParser.get();
     oclint::option::process(argv[0]);
 
     int prepareStatus = prepare();

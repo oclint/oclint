@@ -6,7 +6,7 @@ Quick Start
          together, and finally archive everything at ../build folder
 
 Detail description can be found at
-    https://oclint.org/docs/intro/build.html
+    https://docs.oclint.org/en/stable/intro/build.html
 
 Compiling in debug mode and enabling testing, please look at
-    https://oclint.org/docs/devel/compiletest.html
+    https://docs.oclint.org/en/stable/devel/compiletest.html
