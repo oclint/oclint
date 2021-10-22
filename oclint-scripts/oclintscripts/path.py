@@ -71,7 +71,7 @@ class url:
 
     clang_prebuilt_binary_for_macos = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.0/clang+llvm-13.0.0-x86_64-apple-darwin.tar.xz'
     clang_prebuilt_binary_for_ubuntu_lts_20 = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.0/clang+llvm-13.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz'
-    clang_prebuilt_binary_for_aarch64 = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.0-rc4/clang+llvm-13.0.0-rc4-aarch64-linux-gnu.tar.xz'
+    clang_prebuilt_binary_for_aarch64 = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.0/clang+llvm-13.0.0-aarch64-linux-gnu.tar.xz'
 
 def cd(dir_path):
     os.chdir(dir_path)
