@@ -10,8 +10,8 @@ SET(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_LINKER_FLAGS} -fno-rtti -fPIC ${CMAK
 SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -fno-rtti")
 
 IF(APPLE)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden -mmacosx-version-min=11.0")
-    SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -mmacosx-version-min=11.0")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden -mmacosx-version-min=12.0")
+    SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -mmacosx-version-min=12.0")
 ENDIF()
 
 IF(OCLINT_BUILD_TYPE STREQUAL "Release")
