@@ -91,7 +91,7 @@ def install_xcodebuild():
             path.cp(xcodebuild_src_path, xcodebuild_dst_path)
 
 def install_cpp_headers():
-    if environment.is_darwin():
+    if environment.is_darwin() and not environment.is_aarch64_or_arm64():
         install_dir = (path.build.clang_install_dir if not args.llvm_root else args.llvm_root)
         clang_cpp_headers_dir = os.path.join(install_dir, 'include', 'c++')
         oclint_cpp_headers_dir = os.path.join(bundle_include_dir, 'c++')

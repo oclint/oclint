@@ -22,11 +22,15 @@ def setup_prebuilt_binary():
     install_path = path.build.clang_install_dir
 
     if environment.is_darwin():
-        binary_url = path.url.clang_prebuilt_binary_for_macos
-    elif environment.is_aarch64():
-        binary_url = path.url.clang_prebuilt_binary_for_aarch64
+        if environment.is_aarch64_or_arm64():
+            binary_url = path.url.clang_prebuilt_binary_for_macos_arm64
+        else:
+            binary_url = path.url.clang_prebuilt_binary_for_macos
     else:
-        binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts_20
+        if environment.is_aarch64_or_arm64():
+            binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts_20_aarch64
+        else:
+            binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts_20
 
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
