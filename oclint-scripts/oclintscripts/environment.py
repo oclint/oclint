@@ -21,8 +21,8 @@ def linux_distribution():
 def dist_env():
     return arch() + '-' + kernel() + '-' + kernel_version()
 
-def is_aarch64():
-    return arch().startswith("aarch64")
+def is_aarch64_or_arm64():
+    return arch().startswith("aarch64") or arch().startswith("arm64")
 
 def is_mingw32():
     return kernel().startswith("windows")
