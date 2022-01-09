@@ -17,7 +17,7 @@ jobs:
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh 13
-          sudo apt-get -y install libllvm13 llvm-13 llvm-13-dev llvm-13-runtime clang-13 clang-tools-13 libclang-common-13-dev libclang-13-dev libclang1-13 libomp-13-dev
+          sudo apt-get -y install libllvm13 llvm-13 llvm-13-dev llvm-13-runtime clang-13 clang-tools-13 libclang-common-13-dev libclang-13-dev libclang1-13 libomp-13-dev libmlir-13-dev
       - run: |
           cd oclint-scripts
           ./build -no-ninja -llvm-root=/usr/lib/llvm-13
