@@ -24,4 +24,4 @@ def oclint_dev_version():
     return oclint_version() + '.dev.' + dev_version()
 
 def llvm_version():
-    return "13.0.0"
+    return "13.0.1"
