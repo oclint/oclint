@@ -30,7 +30,10 @@ def setup_prebuilt_binary():
         if environment.is_aarch64_or_arm64():
             binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts_20_aarch64
         else:
-            binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts_20
+            if environment.is_ubuntu_18():
+                binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts_18
+            else:
+                binary_url = path.url.clang_prebuilt_binary_for_ubuntu_lts_20
 
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
