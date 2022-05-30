@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 
+import distro
 import platform
 import multiprocessing
 
@@ -16,7 +17,7 @@ def arch():
     return platform.uname()[4].lower()
 
 def linux_distribution():
-    return platform.linux_distribution()
+    return distro.linux_distribution()
 
 def dist_env():
     return arch() + '-' + kernel() + '-' + kernel_version()
