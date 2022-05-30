@@ -34,5 +34,8 @@ def is_darwin():
 def is_linux():
     return kernel().startswith("linux")
 
+def is_ubuntu_18():
+    return linux_distribution()[0] == 'Ubuntu' and linux_distribution()[1] == '18.04'
+
 def is_unix():
     return is_darwin() or is_linux()
