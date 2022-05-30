@@ -71,6 +71,7 @@ class url:
 
     clang_prebuilt_binary_for_macos = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/clang+llvm-13.0.1-x86_64-apple-darwin.tar.xz'
     clang_prebuilt_binary_for_macos_arm64 = 'https://github.com/ryuichis/llvm-builder/releases/download/llvm-13.0.1/llvm-13.0.1-arm64-apple-darwin.tar.xz'
+    clang_prebuilt_binary_for_ubuntu_lts_18 = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/clang+llvm-13.0.1-x86_64-linux-gnu-ubuntu-18.04.tar.xz'
     clang_prebuilt_binary_for_ubuntu_lts_20 = 'https://github.com/ryuichis/llvm-builder/releases/download/llvm-13.0.1/llvm-13.0.1-x86_64-linux-gnu-ubuntu-20.04.tar.xz'
     clang_prebuilt_binary_for_ubuntu_lts_20_aarch64 = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/clang+llvm-13.0.1-aarch64-linux-gnu.tar.xz'
 
