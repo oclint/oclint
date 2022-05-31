@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 
+import distro
 import platform
 import multiprocessing
 
@@ -16,7 +17,7 @@ def arch():
     return platform.uname()[4].lower()
 
 def linux_distribution():
-    return platform.linux_distribution()
+    return distro.linux_distribution()
 
 def dist_env():
     return arch() + '-' + kernel() + '-' + kernel_version()
@@ -33,6 +34,9 @@ def is_darwin():
 
 def is_linux():
     return kernel().startswith("linux")
+
+def is_ubuntu_18():
+    return linux_distribution()[0] == 'Ubuntu' and linux_distribution()[1] == '18.04'
 
 def is_unix():
     return is_darwin() or is_linux()
