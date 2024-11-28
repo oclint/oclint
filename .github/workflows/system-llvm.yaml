@@ -14,6 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
+          sudo apt-get -y install curl zlib1g-dev libzstd-dev libncurses-dev
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh 16
