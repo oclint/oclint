@@ -9,14 +9,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, macos-15]
+        os: [ubuntu-22.04, macos-15]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - run: |
           sudo apt-get update
           sudo apt-get install -y ninja-build
-        if: matrix.os == 'ubuntu-24.04'
+        if: matrix.os == 'ubuntu-22.04'
       - run: |
           sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
           brew install ninja

@@ -1,5 +1,5 @@
 ARG OS_NAME=ubuntu
-ARG OS_VERSION=focal
+ARG OS_VERSION=jammy
 ARG ARCH=arm64
 FROM multiarch/${OS_NAME}-debootstrap:${ARCH}-${OS_VERSION}
 

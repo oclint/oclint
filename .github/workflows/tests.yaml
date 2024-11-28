@@ -22,7 +22,7 @@ jobs:
             deps: "core"
           - module: "driver"
             deps: "core"
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - env:

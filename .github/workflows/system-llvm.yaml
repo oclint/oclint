@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, ubuntu-20.04]
+        os: [ubuntu-22.04, ubuntu-20.04]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -32,5 +32,5 @@ jobs:
           brew install llvm@16
       - run: |
           cd oclint-scripts
-          ./build -no-ninja -llvm-root=/usr/local/opt/llvm\@16
-          ./bundle -archive -llvm-root=/usr/local/opt/llvm\@16
+          ./build -no-ninja -llvm-root=/opt/homebrew/opt/llvm\@16
+          ./bundle -archive -llvm-root=/opt/homebrew/opt/llvm\@16
