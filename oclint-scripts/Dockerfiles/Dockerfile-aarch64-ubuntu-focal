@@ -5,6 +5,6 @@ FROM multiarch/${OS_NAME}-debootstrap:${ARCH}-${OS_VERSION}
 
 RUN uname -a
 RUN apt-get update
-RUN apt-get install -y curl git g++ python3 cmake zlib1g-dev libncurses-dev
+RUN apt-get install -y curl xz-utils build-essential git g++ python3 cmake ninja-build zlib1g-dev libzstd-dev libncurses-dev
 
 COPY . .
