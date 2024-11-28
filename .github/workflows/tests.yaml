@@ -29,8 +29,8 @@ jobs:
           MODULE: ${{ matrix.module }}
           DEPS: ${{ matrix.deps }}
         run: cd oclint-scripts && ./gh-actions test $MODULE $DEPS && cd ..
-      - env:
-          MODULE: ${{ matrix.module }}
+      #- env:
+      #    MODULE: ${{ matrix.module }}
       #   run: |
       #     sudo apt-get install -y lcov
       #     lcov --capture --directory build/oclint-${MODULE}-test --output-file lcov.info
@@ -70,8 +70,8 @@ jobs:
           MODULE: ${{ matrix.module }}
           DEPS: ${{ matrix.deps }}
         run: cd oclint-scripts && ./gh-actions test $MODULE $DEPS && cd ..
-      - env:
-          MODULE: ${{ matrix.module }}
+      # - env:
+      #     MODULE: ${{ matrix.module }}
       #   run: |
       #     brew install lcov
       #     lcov --capture --directory build/oclint-${MODULE}-test --output-file lcov.info
