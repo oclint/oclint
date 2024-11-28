@@ -178,6 +178,7 @@ static std::optional<bool> createOptionalBool(const TriState value)
     case UNDEFINED:
         return std::optional<bool>();
     }
+    return std::optional<bool>();
 }
 
 std::optional<bool> oclint::option::ConfigFile::clangChecker() const

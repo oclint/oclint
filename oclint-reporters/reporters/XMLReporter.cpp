@@ -50,7 +50,8 @@ public:
         time_t now = time(nullptr);
         struct tm *tmNow = gmtime(&now);
         char charNow[28];
-        sprintf(charNow,
+        snprintf(charNow,
+            28,
             "%04i-%02i-%02iT%02i:%02i:%02iZ",
             tmNow->tm_year + 1900,
             tmNow->tm_mon,

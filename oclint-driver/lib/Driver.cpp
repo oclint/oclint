@@ -216,7 +216,7 @@ static clang::CompilerInvocation *newCompilerInvocation(
 
     // create compilation invocation
     const std::unique_ptr<clang::driver::Compilation> compilation(
-        driver->BuildCompilation(llvm::makeArrayRef(argv)));
+        driver->BuildCompilation(llvm::ArrayRef(argv)));
     auto cc1Args = getCC1Arguments(compilation.get());
     return newInvocation(&diagnosticsEngine, *cc1Args);
 }
