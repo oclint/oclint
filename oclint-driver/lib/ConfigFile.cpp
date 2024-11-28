@@ -131,66 +131,66 @@ const std::vector<RuleConfigurationPair> &oclint::option::ConfigFile::ruleConfig
     return _ruleConfigurations;
 }
 
-static llvm::Optional<std::string> createOptionalString(const llvm::StringRef &value)
+static std::optional<std::string> createOptionalString(const llvm::StringRef &value)
 {
     const std::string &string = value.str();
-    return string.size() ? llvm::Optional<std::string>(string) : llvm::Optional<std::string>();
+    return string.size() ? std::optional<std::string>(string) : std::optional<std::string>();
 }
 
-llvm::Optional<std::string> oclint::option::ConfigFile::output() const
+std::optional<std::string> oclint::option::ConfigFile::output() const
 {
     return createOptionalString(_output);
 }
 
-llvm::Optional<std::string> oclint::option::ConfigFile::reportType() const
+std::optional<std::string> oclint::option::ConfigFile::reportType() const
 {
     return createOptionalString(_reportType);
 }
 
-static llvm::Optional<int> createOptionalInt(int value)
+static std::optional<int> createOptionalInt(int value)
 {
-    return value == INT_MIN ? llvm::Optional<int>() : llvm::Optional<int>(value);
+    return value == INT_MIN ? std::optional<int>() : std::optional<int>(value);
 }
 
-llvm::Optional<int> oclint::option::ConfigFile::maxP1() const
+std::optional<int> oclint::option::ConfigFile::maxP1() const
 {
     return createOptionalInt(_maxP1);
 }
 
-llvm::Optional<int> oclint::option::ConfigFile::maxP2() const
+std::optional<int> oclint::option::ConfigFile::maxP2() const
 {
     return createOptionalInt(_maxP2);
 }
 
-llvm::Optional<int> oclint::option::ConfigFile::maxP3() const
+std::optional<int> oclint::option::ConfigFile::maxP3() const
 {
     return createOptionalInt(_maxP3);
 }
 
-static llvm::Optional<bool> createOptionalBool(const TriState value)
+static std::optional<bool> createOptionalBool(const TriState value)
 {
     switch (value)
     {
     case FALSE:
-        return llvm::Optional<bool>(false);
+        return std::optional<bool>(false);
     case TRUE:
-        return llvm::Optional<bool>(true);
+        return std::optional<bool>(true);
     case UNDEFINED:
-        return llvm::Optional<bool>();
+        return std::optional<bool>();
     }
 }
 
-llvm::Optional<bool> oclint::option::ConfigFile::clangChecker() const
+std::optional<bool> oclint::option::ConfigFile::clangChecker() const
 {
     return createOptionalBool(_clangChecker);
 }
 
-llvm::Optional<bool> oclint::option::ConfigFile::allowDuplicatedViolations() const
+std::optional<bool> oclint::option::ConfigFile::allowDuplicatedViolations() const
 {
     return createOptionalBool(_allowDuplicatedViolations);
 }
 
-llvm::Optional<bool> oclint::option::ConfigFile::enableGlobalAnalysis() const
+std::optional<bool> oclint::option::ConfigFile::enableGlobalAnalysis() const
 {
     return createOptionalBool(_enableGlobalAnalysis);
 }

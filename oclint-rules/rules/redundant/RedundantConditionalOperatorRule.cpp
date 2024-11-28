@@ -116,7 +116,7 @@ private:
     {
         StringLiteral *trueStr = extractFromImplicitCastExpr<StringLiteral>(trueExpr);
         StringLiteral *falseStr = extractFromImplicitCastExpr<StringLiteral>(falseExpr);
-        return trueStr && falseStr && trueStr->getString().equals(falseStr->getString());
+        return trueStr && falseStr && trueStr->getString() == falseStr->getString();
     }
 
     bool isNotEquals(Expr *trueExpr, Expr *falseExpr)

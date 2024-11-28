@@ -3,7 +3,6 @@
 
 #include <vector>
 
-#include <llvm/ADT/Optional.h>
 #include <llvm/Support/YAMLTraits.h>
 #include <llvm/Support/MemoryBuffer.h>
 
@@ -52,14 +51,14 @@ public:
     const std::vector<llvm::StringRef> &disableRules() const;
     const std::vector<llvm::StringRef> &rulePaths() const;
     const std::vector<RuleConfigurationPair> &ruleConfigurations() const;
-    llvm::Optional<std::string> output() const;
-    llvm::Optional<std::string> reportType() const;
-    llvm::Optional<int> maxP1() const;
-    llvm::Optional<int> maxP2() const;
-    llvm::Optional<int> maxP3() const;
-    llvm::Optional<bool> clangChecker() const;
-    llvm::Optional<bool> allowDuplicatedViolations() const;
-    llvm::Optional<bool> enableGlobalAnalysis() const;
+    std::optional<std::string> output() const;
+    std::optional<std::string> reportType() const;
+    std::optional<int> maxP1() const;
+    std::optional<int> maxP2() const;
+    std::optional<int> maxP3() const;
+    std::optional<bool> clangChecker() const;
+    std::optional<bool> allowDuplicatedViolations() const;
+    std::optional<bool> enableGlobalAnalysis() const;
 
     void mapping(llvm::yaml::IO& io);
 };

@@ -9,28 +9,28 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-18.04]
+        os: [ubuntu-24.04, ubuntu-20.04]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
-          sudo ./llvm.sh 13
-          sudo apt-get -y install libllvm13 llvm-13 llvm-13-dev llvm-13-runtime clang-13 clang-tools-13 libclang-common-13-dev libclang-13-dev libclang1-13 libomp-13-dev libmlir-13-dev
+          sudo ./llvm.sh 16
+          sudo apt-get -y install libllvm16 llvm-16 llvm-16-dev llvm-16-runtime clang-16 clang-tools-16 libclang-common-16-dev libclang-16-dev libclang1-16 libomp-16-dev libmlir-16-dev
       - run: |
           cd oclint-scripts
-          ./build -no-ninja -llvm-root=/usr/lib/llvm-13
-          ./bundle -archive -llvm-root=/usr/lib/llvm-13
+          ./build -no-ninja -llvm-root=/usr/lib/llvm-16
+          ./bundle -archive -llvm-root=/usr/lib/llvm-16
   build-on-mac:
-    runs-on: macos-11
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v2
       - run: |
-          sudo xcode-select -s /Applications/Xcode_13.0.app/Contents/Developer
+          sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
           brew update
-          brew install llvm@13
+          brew install llvm@16
       - run: |
           cd oclint-scripts
-          ./build -no-ninja -llvm-root=/usr/local/opt/llvm\@13
-          ./bundle -archive -llvm-root=/usr/local/opt/llvm\@13
+          ./build -no-ninja -llvm-root=/usr/local/opt/llvm\@16
+          ./bundle -archive -llvm-root=/usr/local/opt/llvm\@16

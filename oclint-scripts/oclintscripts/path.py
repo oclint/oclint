@@ -70,8 +70,8 @@ class url:
     xcodebuild = 'https://github.com/oclint/oclint-xcodebuild.git'
 
     clang_prebuilt_binary_for_macos = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/clang+llvm-13.0.1-x86_64-apple-darwin.tar.xz'
-    clang_prebuilt_binary_for_macos_arm64 = 'https://github.com/ryuichis/llvm-builder/releases/download/llvm-13.0.1/llvm-13.0.1-arm64-apple-darwin.tar.xz'
-    clang_prebuilt_binary_for_ubuntu_lts_20 = 'https://github.com/ryuichis/llvm-builder/releases/download/llvm-13.0.1/llvm-13.0.1-x86_64-linux-gnu-ubuntu-20.04.tar.xz'
+    clang_prebuilt_binary_for_macos_arm64 = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-16.0.5/clang+llvm-16.0.5-arm64-apple-darwin22.0.tar.xz'
+    clang_prebuilt_binary_for_ubuntu_lts_20 = 'https://github.com/ryuichis/llvm-builder/releases/download/llvm-13.0.1/llvm-13.0.1-x86_64-linux-gnu-ubuntu-24.04.tar.xz'
     clang_prebuilt_binary_for_ubuntu_lts_20_aarch64 = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/clang+llvm-13.0.1-aarch64-linux-gnu.tar.xz'
 
 def cd(dir_path):
