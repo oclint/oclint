@@ -70,11 +70,11 @@ SET(CLANG_LIBRARIES
 
 IF(TEST_BUILD)
     ENABLE_TESTING()
-    IF(NOT APPLE)
-        ADD_DEFINITIONS(
-            --coverage
-            )
-    ENDIF()
+    # IF(NOT APPLE)
+    #     ADD_DEFINITIONS(
+    #         --coverage
+    #         )
+    # ENDIF()
 
     INCLUDE_DIRECTORIES(
         ${GOOGLETEST_SRC}/googlemock/include
@@ -96,15 +96,15 @@ IF(TEST_BUILD)
     ENDIF()
 
     # Setup the path for profile_rt library
-    STRING(TOLOWER ${CMAKE_SYSTEM_NAME} COMPILER_RT_SYSTEM_NAME)
-    LINK_DIRECTORIES(${LLVM_LIBRARY_DIRS}/clang/${LLVM_VERSION_RELEASE}/lib/${COMPILER_RT_SYSTEM_NAME})
-    IF(APPLE)
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
-    ELSEIF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
-        SET(PROFILE_RT_LIBS clang_rt.profile-aarch64 --coverage)
-    ELSE()
-        SET(PROFILE_RT_LIBS clang_rt.profile-x86_64 --coverage)
-    ENDIF()
+    # STRING(TOLOWER ${CMAKE_SYSTEM_NAME} COMPILER_RT_SYSTEM_NAME)
+    # LINK_DIRECTORIES(${LLVM_LIBRARY_DIRS}/clang/${LLVM_VERSION_RELEASE}/lib/${COMPILER_RT_SYSTEM_NAME})
+    # IF(APPLE)
+    #     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+    # ELSEIF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
+    #     SET(PROFILE_RT_LIBS clang_rt.profile-aarch64 --coverage)
+    # ELSE()
+    #     SET(PROFILE_RT_LIBS clang_rt.profile-x86_64 --coverage)
+    # ENDIF()
 ENDIF()
 
 IF(DOC_GEN_BUILD)
