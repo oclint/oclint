@@ -89,7 +89,7 @@ public:
         {
             NamedDecl *returnDeclRef = extractReturnDeclRef(compoundStmt);
             NamedDecl *namedDecl = extractNamedDecl(compoundStmt);
-            if (returnDeclRef && namedDecl && returnDeclRef->getName().equals(namedDecl->getName()))
+            if (returnDeclRef && namedDecl && returnDeclRef->getName() == namedDecl->getName())
             {
                 addViolation(namedDecl, this);
             }

@@ -22,30 +22,30 @@ jobs:
             deps: "core"
           - module: "driver"
             deps: "core"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - env:
           MODULE: ${{ matrix.module }}
           DEPS: ${{ matrix.deps }}
         run: cd oclint-scripts && ./gh-actions test $MODULE $DEPS && cd ..
-      - env:
-          MODULE: ${{ matrix.module }}
-        run: |
-          sudo apt-get install -y lcov
-          lcov --capture --directory build/oclint-${MODULE}-test --output-file lcov.info
-          lcov --extract lcov.info "*oclint-${MODULE}/*" --output-file lcov.info
-          lcov --remove lcov.info "*oclint-${MODULE}/test*" --output-file lcov.info
-          lcov --list lcov.info
-        if:  matrix.module != 'driver'
-      - name: Coveralls Parallel
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.github_token }}
-          parallel: true
-          flag-name: cov-${{ github.run_number }}-linux-${{ matrix.module }}
-          path-to-lcov: lcov.info
-        if:  matrix.module != 'driver'
+      #- env:
+      #    MODULE: ${{ matrix.module }}
+      #   run: |
+      #     sudo apt-get install -y lcov
+      #     lcov --capture --directory build/oclint-${MODULE}-test --output-file lcov.info
+      #     lcov --extract lcov.info "*oclint-${MODULE}/*" --output-file lcov.info
+      #     lcov --remove lcov.info "*oclint-${MODULE}/test*" --output-file lcov.info
+      #     lcov --list lcov.info
+      #   if:  matrix.module != 'driver'
+      # - name: Coveralls Parallel
+      #   uses: coverallsapp/github-action@master
+      #   with:
+      #     github-token: ${{ secrets.github_token }}
+      #     parallel: true
+      #     flag-name: cov-${{ github.run_number }}-linux-${{ matrix.module }}
+      #     path-to-lcov: lcov.info
+      #   if:  matrix.module != 'driver'
   tests-on-mac:
     name: Tests on macOS
     strategy:
@@ -62,37 +62,37 @@ jobs:
             deps: "core"
           - module: "driver"
             deps: "core"
-    runs-on: macos-11
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v2
-      - run: sudo xcode-select -s /Applications/Xcode_13.0.app/Contents/Developer
+      - run: sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
       - env:
           MODULE: ${{ matrix.module }}
           DEPS: ${{ matrix.deps }}
         run: cd oclint-scripts && ./gh-actions test $MODULE $DEPS && cd ..
-      - env:
-          MODULE: ${{ matrix.module }}
-        run: |
-          brew install lcov
-          lcov --capture --directory build/oclint-${MODULE}-test --output-file lcov.info
-          lcov --extract lcov.info "*oclint-${MODULE}/*" --output-file lcov.info
-          lcov --remove lcov.info "*oclint-${MODULE}/test*" --output-file lcov.info
-          lcov --list lcov.info
-        if:  matrix.module != 'driver'
-      - name: Coveralls Parallel
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.github_token }}
-          parallel: true
-          flag-name: cov-${{ github.run_number }}-macos-${{ matrix.module }}
-          path-to-lcov: lcov.info
-        if:  matrix.module != 'driver'
-  wrap-up:
-    needs: [tests-on-linux, tests-on-mac]
-    runs-on: ubuntu-latest
-    steps:
-    - name: Coveralls Finished
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.github_token }}
-        parallel-finished: true
+      # - env:
+      #     MODULE: ${{ matrix.module }}
+      #   run: |
+      #     brew install lcov
+      #     lcov --capture --directory build/oclint-${MODULE}-test --output-file lcov.info
+      #     lcov --extract lcov.info "*oclint-${MODULE}/*" --output-file lcov.info
+      #     lcov --remove lcov.info "*oclint-${MODULE}/test*" --output-file lcov.info
+      #     lcov --list lcov.info
+      #   if:  matrix.module != 'driver'
+      # - name: Coveralls Parallel
+      #   uses: coverallsapp/github-action@master
+      #   with:
+      #     github-token: ${{ secrets.github_token }}
+      #     parallel: true
+      #     flag-name: cov-${{ github.run_number }}-macos-${{ matrix.module }}
+      #     path-to-lcov: lcov.info
+      #   if:  matrix.module != 'driver'
+  # wrap-up:
+  #   needs: [tests-on-linux, tests-on-mac]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Coveralls Finished
+  #     uses: coverallsapp/github-action@master
+  #     with:
+  #       github-token: ${{ secrets.github_token }}
+  #       parallel-finished: true

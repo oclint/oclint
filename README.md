@@ -1,6 +1,6 @@
 # OCLint - https://oclint.org
 
-[![GitHub Actions Status](https://github.com/oclint/oclint/workflows/Builds/badge.svg?branch=master)](https://github.com/oclint/oclint/actions) [![Coverage Status](https://coveralls.io/repos/github/oclint/oclint/badge.svg?branch=master)](https://coveralls.io/github/oclint/oclint?branch=master)
+[![GitHub Actions Status](https://github.com/oclint/oclint/workflows/Builds/badge.svg?branch=master)](https://github.com/oclint/oclint/actions)
 
 OCLint is a static code analysis tool for improving quality and reducing defects
 by inspecting C, C++ and Objective-C code.
