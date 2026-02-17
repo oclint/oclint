@@ -1,7 +1,19 @@
 SET(CMAKE_DISABLE_SOURCE_CHANGES ON)
 SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
-set(CMAKE_MACOSX_RPATH ON)
+SET(CMAKE_MACOSX_RPATH ON)
 SET(CMAKE_BUILD_TYPE None)
+
+# Fix for GitHub issue #665 - avoid hardcoding build machine paths in rpath
+# Use relative paths for distributable binaries
+# macOS: @executable_path/../lib
+# Linux: $ORIGIN/../lib
+IF(APPLE)
+    SET(CMAKE_INSTALL_RPATH "@executable_path/../lib")
+    SET(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
+ELSEIF(UNIX)
+    SET(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+    SET(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
+ENDIF()
 
 IF(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     SET(CMAKE_CXX_FLAGS "-fcolor-diagnostics")
