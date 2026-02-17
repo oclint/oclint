@@ -1,7 +1,10 @@
 #! /usr/bin/env python3
 
 import argparse
+import glob
 import os
+import subprocess
+import tempfile
 
 from oclintscripts import environment
 from oclintscripts import path
@@ -9,6 +12,8 @@ from oclintscripts import process
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('-clean', '--clean', action="store_true")
+arg_parser.add_argument('-skip-convert', '--skip-convert', action="store_true",
+                        help="Skip converting bitcode to native objects")
 args = arg_parser.parse_args()
 
 def clean_module():
@@ -16,6 +21,63 @@ def clean_module():
     path.rm_f(build_path)
     install_dir = path.build.clang_install_dir
     path.rm_f(install_dir)
+
+def is_bitcode(filepath):
+    """Check if a file is LLVM bitcode by reading magic bytes."""
+    try:
+        with open(filepath, 'rb') as f:
+            magic = f.read(4)
+            return magic == b'BC\xc0\xde'
+    except:
+        return False
+
+def convert_bitcode_libraries(install_path):
+    """Convert bitcode in static libraries to native object files."""
+    lib_dir = os.path.join(install_path, 'lib')
+    llc_bin = os.path.join(install_path, 'bin', 'llc')
+
+    if not os.path.exists(llc_bin):
+        print("Warning: llc not found, skipping bitcode conversion")
+        return
+
+    # Find all static libraries
+    libraries = []
+    for pattern in ['libclang*.a', 'libLLVM*.a']:
+        libraries.extend(glob.glob(os.path.join(lib_dir, pattern)))
+
+    print(f"Converting bitcode in {len(libraries)} static libraries...")
+
+    for lib_path in libraries:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Extract library
+            subprocess.run(['ar', 'x', lib_path], cwd=tmpdir, check=True, capture_output=True)
+
+            # Get list of object files
+            obj_files = glob.glob(os.path.join(tmpdir, '*.o'))
+            converted_count = 0
+
+            for obj_file in obj_files:
+                if is_bitcode(obj_file):
+                    # Convert bitcode to native object with PIC relocation model
+                    # required for linking into shared libraries
+                    native_obj = obj_file + '.native'
+                    result = subprocess.run(
+                        [llc_bin, '-filetype=obj', '-relocation-model=pic', obj_file, '-o', native_obj],
+                        capture_output=True
+                    )
+                    if result.returncode == 0:
+                        os.replace(native_obj, obj_file)
+                        converted_count += 1
+
+            if converted_count > 0:
+                obj_files = glob.glob(os.path.join(tmpdir, '*.o'))
+                backup_path = lib_path + '.bc_backup'
+                os.rename(lib_path, backup_path)
+                subprocess.run(
+                    ['ar', 'r', lib_path] + [os.path.basename(f) for f in obj_files],
+                    cwd=tmpdir, check=True, capture_output=True
+                )
+                os.remove(backup_path)
 
 def setup_prebuilt_binary():
     build_path = path.build.clang_build_dir
@@ -35,6 +97,11 @@ def setup_prebuilt_binary():
     process.call('curl -L -o prebuilt.tar.xz ' + binary_url)
     path.mkdir_p(install_path)
     process.call('tar xf prebuilt.tar.xz -C ' + install_path + ' --strip-components=1')
+
+    # Convert bitcode in static libraries to native objects
+    if not args.skip_convert:
+        convert_bitcode_libraries(install_path)
+
     path.cd(current_dir)
 
 if args.clean:
