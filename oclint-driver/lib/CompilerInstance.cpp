@@ -62,16 +62,18 @@ static clang::FrontendAction *getFrontendAction() {
 }
 
 void CompilerInstance::setupTarget() {
-    if ((getLangOpts().CUDA || getLangOpts().OpenMPIsDevice) &&
+    // OpenMPIsDevice has been removed in newer LLVM versions
+    // CUDA/OpenMP offloading is handled differently now
+    if (getLangOpts().CUDA &&
         !getFrontendOpts().AuxTriple.empty())
     {
-        auto targetOptions = std::make_shared<clang::TargetOptions>();
-        targetOptions->Triple = llvm::Triple::normalize(getFrontendOpts().AuxTriple);
-        targetOptions->HostTriple = getTarget().getTriple().str();
+        clang::TargetOptions targetOptions;
+        targetOptions.Triple = llvm::Triple::normalize(getFrontendOpts().AuxTriple);
+        targetOptions.HostTriple = getTarget().getTriple().str();
         setAuxTarget(clang::TargetInfo::CreateTargetInfo(getDiagnostics(), targetOptions));
     }
 
-    getTarget().adjust(getDiagnostics(), getLangOpts());
+    getTarget().adjust(getDiagnostics(), getLangOpts(), /*Target=*/nullptr);
 
     if (auto *auxTarget = getAuxTarget()) {
         getTarget().setAuxTarget(auxTarget);
@@ -83,7 +85,7 @@ void CompilerInstance::start() {
     assert(!getFrontendOpts().ShowHelp && "Client must handle '-help'!");
     assert(!getFrontendOpts().ShowVersion && "Client must handle '-version'!");
 
-    setTarget(clang::TargetInfo::CreateTargetInfo(getDiagnostics(), getInvocation().TargetOpts));
+    setTarget(clang::TargetInfo::CreateTargetInfo(getDiagnostics(), getInvocation().getTargetOpts()));
     if (!hasTarget()) { return; }
     setupTarget();
 

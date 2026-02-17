@@ -24,7 +24,7 @@ def oclint_dev_version():
     return oclint_version() + '.dev.' + dev_version()
 
 def llvm_version():
-    return "16.0.5"
+    return "21.1.8"
 
 def llvm_major_version():
     return llvm_version().split(".")[0]

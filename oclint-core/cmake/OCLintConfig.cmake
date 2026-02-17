@@ -50,7 +50,7 @@ STRING(REGEX MATCH "[0-9]+\\.[0-9]+(\\.[0-9]+)?" LLVM_VERSION_RELEASE ${LLVM_PAC
 
 MESSAGE(STATUS "Found LLVM LLVM_PACKAGE_VERSION: ${LLVM_PACKAGE_VERSION} - LLVM_VERSION_RELEASE: ${LLVM_VERSION_RELEASE}")
 MESSAGE(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
-LLVM_MAP_COMPONENTS_TO_LIBNAMES(REQ_LLVM_LIBRARIES asmparser bitreader instrumentation mcparser option support frontendopenmp windowsdriver)
+LLVM_MAP_COMPONENTS_TO_LIBNAMES(REQ_LLVM_LIBRARIES asmparser bitreader instrumentation mcparser option support frontendopenmp windowsdriver frontendhlsl)
 
 SET(CLANG_LIBRARIES
     clangToolingCore
@@ -65,8 +65,9 @@ SET(CLANG_LIBRARIES
     clangASTMatchers
     clangAST
     clangLex
-    clangBasic
-    clangSupport)
+    clangSupport
+    clangAPINotes
+    clangBasic)
 
 IF(TEST_BUILD)
     ENABLE_TESTING()
