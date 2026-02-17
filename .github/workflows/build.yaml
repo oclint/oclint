@@ -10,15 +10,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, macos-15]
+        os: [ubuntu-24.04, macos-26]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
-      - run: sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
-        if: matrix.os == 'macos-15'
+      - uses: actions/checkout@v4
+      - run: sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer
+        if: matrix.os == 'macos-26'
       - run: cd oclint-scripts && ./gh-actions build
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

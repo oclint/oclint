@@ -9,29 +9,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-20.04]
+        os: [ubuntu-24.04, ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - run: |
           sudo apt-get -y install curl zlib1g-dev libzstd-dev libncurses-dev
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
-          sudo ./llvm.sh 16
-          sudo apt-get -y install libllvm16 llvm-16 llvm-16-dev llvm-16-runtime clang-16 clang-tools-16 libclang-common-16-dev libclang-16-dev libclang1-16 libomp-16-dev libmlir-16-dev
+          sudo ./llvm.sh 21
+          sudo apt-get -y install libllvm21 llvm-21 llvm-21-dev llvm-21-runtime clang-21 clang-tools-21 libclang-common-21-dev libclang-21-dev libclang1-21 libomp-21-dev libmlir-21-dev
       - run: |
           cd oclint-scripts
-          ./build -no-ninja -llvm-root=/usr/lib/llvm-16
-          ./bundle -archive -llvm-root=/usr/lib/llvm-16
+          ./build -no-ninja -llvm-root=/usr/lib/llvm-21
+          ./bundle -archive -llvm-root=/usr/lib/llvm-21
   build-on-mac:
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - run: |
-          sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
+          sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer
           brew update
-          brew install llvm@16
+          brew install llvm@21
       - run: |
           cd oclint-scripts
-          ./build -no-ninja -llvm-root=/opt/homebrew/opt/llvm\@16
-          ./bundle -archive -llvm-root=/opt/homebrew/opt/llvm\@16
+          ./build -no-ninja -llvm-root=/opt/homebrew/opt/llvm\@21
+          ./bundle -archive -llvm-root=/opt/homebrew/opt/llvm\@21
