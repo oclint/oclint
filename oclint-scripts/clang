@@ -123,22 +123,33 @@ def convert_bitcode_libraries(install_path):
 def remove_bundled_libcxx_headers(install_path):
     """Remove bundled libc++ headers on macOS to avoid ABI conflicts.
 
-    The prebuilt LLVM includes its own libc++ headers in include/c++/v1/.
-    On macOS, when building with LLVM_INCLUDE_DIRS, these headers may be
-    picked up instead of the system's libc++ headers, causing ABI mismatches
-    (e.g., [abi:ne200100] symbols not found in system libc++).
+    The prebuilt LLVM includes its own libc++ headers in include/c++/v1/ and
+    include/<platform-triple>/c++/v1/. On macOS, when building with LLVM_INCLUDE_DIRS,
+    these headers may be picked up instead of the system's libc++ headers, causing
+    ABI mismatches (e.g., [abi:ne200100] symbols not found in system libc++).
 
     On Linux, the default C++ library is libstdc++ (with GCC), so the bundled
     libc++ headers won't be used unless explicitly requested with -stdlib=libc++.
     """
+    import shutil
+
     if not environment.is_darwin():
         return
 
+    # Remove include/c++ directory
     libcxx_header_dir = os.path.join(install_path, 'include', 'c++')
     if os.path.exists(libcxx_header_dir):
         print(f"Removing bundled libc++ headers from {libcxx_header_dir}")
-        import shutil
         shutil.rmtree(libcxx_header_dir)
+
+    # Remove platform-specific libc++ config (e.g., include/aarch64-apple-darwin*/c++)
+    include_dir = os.path.join(install_path, 'include')
+    for entry in os.listdir(include_dir):
+        if 'apple' in entry.lower() or 'darwin' in entry.lower():
+            platform_libcxx = os.path.join(include_dir, entry, 'c++')
+            if os.path.exists(platform_libcxx):
+                print(f"Removing platform-specific libc++ headers from {platform_libcxx}")
+                shutil.rmtree(platform_libcxx)
 
 def setup_prebuilt_binary():
     build_path = path.build.clang_build_dir

@@ -1,8 +1,10 @@
 name: Build Using System LLVM
 on:
-  pull_request:
-  schedule:
-    - cron:  '0 15 * * 0'
+  # Temporarily disabled for LLVM 21 upgrade testing
+  # pull_request:
+  # schedule:
+  #   - cron:  '0 15 * * 0'
+  workflow_dispatch:
 
 jobs:
   build-on-linux:

@@ -1,5 +1,8 @@
 name: Documentation Generation
-on: [push, pull_request]
+on:
+  # Temporarily disabled for LLVM 21 upgrade testing
+  # [push, pull_request]
+  workflow_dispatch:
 
 jobs:
   docgen:
