@@ -120,6 +120,26 @@ def convert_bitcode_libraries(install_path):
 
     print(f"Total bitcode objects converted: {total_converted}")
 
+def remove_bundled_libcxx_headers(install_path):
+    """Remove bundled libc++ headers on macOS to avoid ABI conflicts.
+
+    The prebuilt LLVM includes its own libc++ headers in include/c++/v1/.
+    On macOS, when building with LLVM_INCLUDE_DIRS, these headers may be
+    picked up instead of the system's libc++ headers, causing ABI mismatches
+    (e.g., [abi:ne200100] symbols not found in system libc++).
+
+    On Linux, the default C++ library is libstdc++ (with GCC), so the bundled
+    libc++ headers won't be used unless explicitly requested with -stdlib=libc++.
+    """
+    if not environment.is_darwin():
+        return
+
+    libcxx_header_dir = os.path.join(install_path, 'include', 'c++')
+    if os.path.exists(libcxx_header_dir):
+        print(f"Removing bundled libc++ headers from {libcxx_header_dir}")
+        import shutil
+        shutil.rmtree(libcxx_header_dir)
+
 def setup_prebuilt_binary():
     build_path = path.build.clang_build_dir
     install_path = path.build.clang_install_dir
@@ -142,6 +162,10 @@ def setup_prebuilt_binary():
     # Convert bitcode in static libraries to native objects
     if not args.skip_convert:
         convert_bitcode_libraries(install_path)
+
+    # Remove bundled libc++ headers on macOS to avoid ABI conflicts
+    if environment.is_darwin():
+        remove_bundled_libcxx_headers(install_path)
 
     path.cd(current_dir)
 
