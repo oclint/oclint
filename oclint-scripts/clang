@@ -27,17 +27,50 @@ def is_bitcode(filepath):
     try:
         with open(filepath, 'rb') as f:
             magic = f.read(4)
-            return magic == b'BC\xc0\xde'
+            # Traditional LLVM bitcode magic: 0x42 0x43 0xc0 0xde ('BC\xc0\xde')
+            # Also check for bitcode wrapper
+            return magic == b'BC\xc0\xde' or magic[:2] == b'BC'
     except:
         return False
+
+def find_llc(install_path):
+    """Find llc binary, checking multiple locations."""
+    # First check in the prebuilt LLVM directory
+    llc_bin = os.path.join(install_path, 'bin', 'llc')
+    if os.path.exists(llc_bin):
+        return llc_bin
+
+    # Check in PATH
+    import shutil
+    llc_in_path = shutil.which('llc')
+    if llc_in_path:
+        return llc_in_path
+
+    # Check Homebrew LLVM locations on macOS
+    if environment.is_darwin():
+        homebrew_paths = [
+            '/opt/homebrew/opt/llvm@21/bin/llc',
+            '/opt/homebrew/opt/llvm/bin/llc',
+            '/usr/local/opt/llvm@21/bin/llc',
+            '/usr/local/opt/llvm/bin/llc',
+        ]
+        for path in homebrew_paths:
+            if os.path.exists(path):
+                return path
+
+    return None
 
 def convert_bitcode_libraries(install_path):
     """Convert bitcode in static libraries to native object files."""
     lib_dir = os.path.join(install_path, 'lib')
-    llc_bin = os.path.join(install_path, 'bin', 'llc')
+    llc_bin = find_llc(install_path)
 
-    if not os.path.exists(llc_bin):
+    print(f"Looking for llc in: {install_path}/bin/llc")
+    if llc_bin:
+        print(f"Found llc at: {llc_bin}")
+    else:
         print("Warning: llc not found, skipping bitcode conversion")
+        print("Note: On macOS, this may cause linking errors with prebuilt LLVM libraries")
         return
 
     # Find all static libraries
@@ -45,19 +78,25 @@ def convert_bitcode_libraries(install_path):
     for pattern in ['libclang*.a', 'libLLVM*.a']:
         libraries.extend(glob.glob(os.path.join(lib_dir, pattern)))
 
-    print(f"Converting bitcode in {len(libraries)} static libraries...")
+    print(f"Found {len(libraries)} static libraries to check for bitcode")
 
+    total_converted = 0
     for lib_path in libraries:
         with tempfile.TemporaryDirectory() as tmpdir:
             # Extract library
-            subprocess.run(['ar', 'x', lib_path], cwd=tmpdir, check=True, capture_output=True)
+            result = subprocess.run(['ar', 'x', lib_path], cwd=tmpdir, capture_output=True)
+            if result.returncode != 0:
+                print(f"Warning: Failed to extract {lib_path}")
+                continue
 
             # Get list of object files
             obj_files = glob.glob(os.path.join(tmpdir, '*.o'))
             converted_count = 0
+            bitcode_count = 0
 
             for obj_file in obj_files:
                 if is_bitcode(obj_file):
+                    bitcode_count += 1
                     # Convert bitcode to native object with PIC relocation model
                     # required for linking into shared libraries
                     native_obj = obj_file + '.native'
@@ -68,16 +107,26 @@ def convert_bitcode_libraries(install_path):
                     if result.returncode == 0:
                         os.replace(native_obj, obj_file)
                         converted_count += 1
+                    else:
+                        print(f"Failed to convert {os.path.basename(obj_file)}: {result.stderr.decode()}")
 
             if converted_count > 0:
                 obj_files = glob.glob(os.path.join(tmpdir, '*.o'))
                 backup_path = lib_path + '.bc_backup'
                 os.rename(lib_path, backup_path)
-                subprocess.run(
+                result = subprocess.run(
                     ['ar', 'r', lib_path] + [os.path.basename(f) for f in obj_files],
-                    cwd=tmpdir, check=True, capture_output=True
+                    cwd=tmpdir, capture_output=True
                 )
-                os.remove(backup_path)
+                if result.returncode == 0:
+                    os.remove(backup_path)
+                    print(f"Converted {converted_count}/{bitcode_count} bitcode files in {os.path.basename(lib_path)}")
+                    total_converted += converted_count
+                else:
+                    os.rename(backup_path, lib_path)
+                    print(f"Failed to repack {lib_path}: {result.stderr.decode()}")
+
+    print(f"Total bitcode objects converted: {total_converted}")
 
 def setup_prebuilt_binary():
     build_path = path.build.clang_build_dir
