@@ -22,16 +22,17 @@ def clean_module():
     install_dir = path.build.clang_install_dir
     path.rm_f(install_dir)
 
-def is_bitcode(filepath):
-    """Check if a file is LLVM bitcode by reading magic bytes."""
-    try:
-        with open(filepath, 'rb') as f:
-            magic = f.read(4)
-            # Traditional LLVM bitcode magic: 0x42 0x43 0xc0 0xde ('BC\xc0\xde')
-            # Also check for bitcode wrapper
-            return magic == b'BC\xc0\xde' or magic[:2] == b'BC'
-    except:
-        return False
+def try_convert_to_native(llc_bin, obj_file):
+    """Try to convert an object file to native using llc. Returns True if conversion succeeded."""
+    native_obj = obj_file + '.native'
+    result = subprocess.run(
+        [llc_bin, '-filetype=obj', '-relocation-model=pic', obj_file, '-o', native_obj],
+        capture_output=True
+    )
+    if result.returncode == 0 and os.path.exists(native_obj):
+        os.replace(native_obj, obj_file)
+        return True
+    return False
 
 def find_llc(install_path):
     """Find llc binary, checking multiple locations."""
@@ -95,20 +96,11 @@ def convert_bitcode_libraries(install_path):
             bitcode_count = 0
 
             for obj_file in obj_files:
-                if is_bitcode(obj_file):
+                # Try to convert with llc - this works for both raw bitcode and
+                # Mach-O files with embedded bitcode. llc will fail fast on native objects.
+                if try_convert_to_native(llc_bin, obj_file):
+                    converted_count += 1
                     bitcode_count += 1
-                    # Convert bitcode to native object with PIC relocation model
-                    # required for linking into shared libraries
-                    native_obj = obj_file + '.native'
-                    result = subprocess.run(
-                        [llc_bin, '-filetype=obj', '-relocation-model=pic', obj_file, '-o', native_obj],
-                        capture_output=True
-                    )
-                    if result.returncode == 0:
-                        os.replace(native_obj, obj_file)
-                        converted_count += 1
-                    else:
-                        print(f"Failed to convert {os.path.basename(obj_file)}: {result.stderr.decode()}")
 
             if converted_count > 0:
                 obj_files = glob.glob(os.path.join(tmpdir, '*.o'))
