@@ -65,7 +65,17 @@ jobs:
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
-      - run: sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer
+      - name: Install LLVM 21 from Homebrew for ABI compatibility
+        run: |
+          brew install llvm@21
+          echo "Using Homebrew LLVM 21 clang for C++ ABI compatibility with prebuilt LLVM 21 libraries"
+          echo "CC=/opt/homebrew/opt/llvm@21/bin/clang" >> $GITHUB_ENV
+          echo "CXX=/opt/homebrew/opt/llvm@21/bin/clang++" >> $GITHUB_ENV
+          # Add Homebrew LLVM's include and lib directories to flags
+          # This ensures the compiler finds its own libc++ headers and libraries
+          echo "CFLAGS=-isystem /opt/homebrew/opt/llvm@21/include" >> $GITHUB_ENV
+          echo "CXXFLAGS=-isystem /opt/homebrew/opt/llvm@21/include -isystem /opt/homebrew/opt/llvm@21/include/c++/v1" >> $GITHUB_ENV
+          echo "LDFLAGS=-L/opt/homebrew/opt/llvm@21/lib -Wl,-rpath,/opt/homebrew/opt/llvm@21/lib" >> $GITHUB_ENV
       - env:
           MODULE: ${{ matrix.module }}
           DEPS: ${{ matrix.deps }}

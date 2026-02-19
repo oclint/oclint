@@ -1,7 +1,7 @@
 name: Documentation Generation
 on:
-  # Temporarily disabled for LLVM 21 upgrade testing
-  # [push, pull_request]
+  push:
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -9,13 +9,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # os: [ubuntu-22.04, macos-15]
         os: [macos-26]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - run: sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer
+      - name: Install LLVM 21 from Homebrew
         if: matrix.os == 'macos-26'
+        run: |
+          brew install llvm@21
+          echo "CC=/opt/homebrew/opt/llvm@21/bin/clang" >> $GITHUB_ENV
+          echo "CXX=/opt/homebrew/opt/llvm@21/bin/clang++" >> $GITHUB_ENV
       - run: cd oclint-scripts && ./gh-actions docgen
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
