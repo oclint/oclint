@@ -9,6 +9,10 @@ MACRO(build_test name)
         ${REQ_LLVM_LIBRARIES}
         ${CMAKE_DL_LIBS}
         )
+    # On macOS with prebuilt LLVM, explicitly link libc++ for ABI compatibility
+    IF(APPLE)
+        TARGET_LINK_LIBRARIES(${name} c++ c++abi)
+    ENDIF()
 
     ADD_TEST(${name} ${EXECUTABLE_OUTPUT_PATH}/${name})
 ENDMACRO(build_test)
