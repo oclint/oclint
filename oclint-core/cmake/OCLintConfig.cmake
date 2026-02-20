@@ -88,6 +88,11 @@ SET(CLANG_LIBRARIES
 
 IF(TEST_BUILD)
     ENABLE_TESTING()
+    # Disable typed new/delete for tests to avoid libc++abi compatibility issues
+    # gtest/gmock static initializers call operator new before libc++abi initializes
+    IF(APPLE)
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-typed-cxx-new-delete")
+    ENDIF()
     # IF(NOT APPLE)
     #     ADD_DEFINITIONS(
     #         --coverage
