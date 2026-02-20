@@ -174,12 +174,8 @@ def setup_prebuilt_binary():
     if not args.skip_convert:
         convert_bitcode_libraries(install_path)
 
-    # Remove bundled libc++ headers on macOS to avoid conflicts
-    # When using Homebrew's LLVM 21 clang, we must use Homebrew's libc++ headers
-    # not the prebuilt LLVM's headers. The prebuilt libraries already have correct ABI,
-    # and Homebrew's clang will provide matching headers.
-    if environment.is_darwin():
-        remove_bundled_libcxx_headers(install_path)
+    # Keep bundled libc++ headers - we use the prebuilt clang as compiler,
+    # so the bundled headers are needed and are ABI-compatible.
 
     path.cd(current_dir)
 
