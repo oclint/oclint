@@ -13,20 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Setup and run docgen
-        run: |
-          cd oclint-scripts
-          # Download prebuilt LLVM first
-          ./clang
-          # Use prebuilt LLVM's clang as compiler for ABI compatibility
-          export CC="$(pwd)/../build/llvm-install/bin/clang"
-          export CXX="$(pwd)/../build/llvm-install/bin/clang++"
-          echo "Using prebuilt clang: $CC"
-          # Run docgen
-          ./build core -docgen -no-ninja
-          ./build metrics -docgen -no-ninja
-          ./build rules -docgen -no-ninja
-          ./build driver -docgen -no-ninja
+      - run: cd oclint-scripts && ./gh-actions docgen
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:

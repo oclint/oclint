@@ -1,10 +1,8 @@
 name: Releases
 on:
-  # Temporarily disabled for LLVM 21 upgrade testing
-  # release:
-  # schedule:
-  #   - cron:  '0 15 * * 0'
-  workflow_dispatch:
+  release:
+  schedule:
+    - cron:  '0 15 * * 0'
 
 jobs:
   release:

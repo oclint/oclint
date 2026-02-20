@@ -1,11 +1,9 @@
 name: Builds
 on:
-  # Temporarily disabled for LLVM 21 upgrade testing
-  # push:
-  # pull_request:
-  # schedule:
-  #   - cron:  '0 15 * * 0'
-  workflow_dispatch:
+  push:
+  pull_request:
+  schedule:
+    - cron:  '0 15 * * 0'
 
 jobs:
   build:

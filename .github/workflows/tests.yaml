@@ -68,23 +68,7 @@ jobs:
       - env:
           MODULE: ${{ matrix.module }}
           DEPS: ${{ matrix.deps }}
-        run: |
-          cd oclint-scripts
-          # Download prebuilt LLVM first
-          ./clang
-          # Use prebuilt LLVM's clang as compiler for ABI compatibility
-          export CC="$(pwd)/../build/llvm-install/bin/clang"
-          export CXX="$(pwd)/../build/llvm-install/bin/clang++"
-          echo "Using prebuilt clang: $CC"
-          # Checkout and build googletest
-          ./googleTest co
-          ./googleTest build
-          # Build dependencies first (with -as-dep flag)
-          for dep in $DEPS; do
-            ./test "$dep" -as-dep -no-ninja
-          done
-          # Build and run the main module test
-          ./test "$MODULE" -no-ninja
+        run: cd oclint-scripts && ./gh-actions test $MODULE $DEPS
       # - env:
       #     MODULE: ${{ matrix.module }}
       #   run: |

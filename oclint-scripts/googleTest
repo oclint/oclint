@@ -11,6 +11,15 @@ from oclintscripts import environment
 from oclintscripts import path
 from oclintscripts import process
 
+# On macOS, use prebuilt LLVM's clang as compiler for ABI compatibility
+if environment.is_darwin():
+    clang_path = os.path.join(path.build.clang_install_dir, 'bin', 'clang')
+    clangxx_path = os.path.join(path.build.clang_install_dir, 'bin', 'clang++')
+    if os.path.exists(clang_path):
+        os.environ['CC'] = clang_path
+        os.environ['CXX'] = clangxx_path
+        print(f"Using prebuilt clang: {clang_path}")
+
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('task_name', choices=['checkout', 'co', 'update', 'up', 'build'])
 arg_parser.add_argument('-clean', '--clean', action="store_true")
