@@ -10,15 +10,6 @@ from oclintscripts import process
 
 OCLINT_MODULES = ['core', 'metrics', 'rules', 'reporters', 'driver']
 
-# On macOS, use prebuilt LLVM's clang as compiler for ABI compatibility
-if environment.is_darwin():
-    clang_path = os.path.join(path.build.clang_install_dir, 'bin', 'clang')
-    clangxx_path = os.path.join(path.build.clang_install_dir, 'bin', 'clang++')
-    if os.path.exists(clang_path):
-        os.environ['CC'] = clang_path
-        os.environ['CXX'] = clangxx_path
-        print(f"Using prebuilt clang: {clang_path}")
-
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('module_name', nargs='?', choices=['all'] + OCLINT_MODULES, default='all')
 arg_parser.add_argument('-docgen', '--docgen', action='store_true')
@@ -27,6 +18,9 @@ arg_parser.add_argument('-clean', '--clean', action="store_true")
 arg_parser.add_argument('-j', type=int, default=0)
 arg_parser.add_argument('-llvm-root', '--llvm-root', default=path.build.clang_install_dir)
 arg_parser.add_argument('-no-ninja', '--no-ninja', action='store_true')
+arg_parser.add_argument('--use-llvm-clang', dest='use_llvm_clang', action='store_true')
+arg_parser.add_argument('--no-llvm-clang', dest='use_llvm_clang', action='store_false')
+arg_parser.set_defaults(use_llvm_clang=environment.is_darwin())
 args = arg_parser.parse_args()
 
 def clean_module(module_name):
@@ -74,6 +68,14 @@ if args.module_name == 'all':
     build_modules.extend(OCLINT_MODULES)
 else:
     build_modules.append(args.module_name)
+
+if args.use_llvm_clang:
+    clang_path = os.path.join(args.llvm_root, 'bin', 'clang')
+    clangxx_path = os.path.join(args.llvm_root, 'bin', 'clang++')
+    if os.path.exists(clang_path):
+        os.environ['CC'] = clang_path
+        os.environ['CXX'] = clangxx_path
+        print(f"Using clang: {clang_path}")
 
 if args.clean:
     for module in build_modules:

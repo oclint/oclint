@@ -11,6 +11,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
+        module: ["core", "metrics", "rules", "reporters", "driver"]
         include:
           - module: "core"
             deps: ""
@@ -22,7 +24,7 @@ jobs:
             deps: "core"
           - module: "driver"
             deps: "core"
-    runs-on: ubuntu-24.04
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - env:
