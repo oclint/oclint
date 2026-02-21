@@ -1,24 +1,13 @@
 MACRO(build_test name)
     ADD_EXECUTABLE(${name} ${name}.cpp)
-    IF (MINGW)
-        TARGET_LINK_LIBRARIES(${name}
-            ${GTEST_LIBS}
-            ${PROFILE_RT_LIBS}
-            ${CLANG_LIBRARIES}
-            ${REQ_LLVM_LIBRARIES}
-            ${CMAKE_DL_LIBS}
-            OCLintMetric
-        )
-    ELSE()
-        TARGET_LINK_LIBRARIES(${name}
-            OCLintMetric
-            ${GTEST_LIBS}
-            ${PROFILE_RT_LIBS}
-            ${CLANG_LIBRARIES}
-            ${REQ_LLVM_LIBRARIES}
-            ${CMAKE_DL_LIBS}
-        )
-    ENDIF()
+    TARGET_LINK_LIBRARIES(${name}
+        OCLintMetric
+        ${GTEST_LIBS}
+        ${PROFILE_RT_LIBS}
+        ${CLANG_LIBRARIES}
+        ${REQ_LLVM_LIBRARIES}
+        ${CMAKE_DL_LIBS}
+    )
     # On macOS with prebuilt LLVM, explicitly link libc++ for ABI compatibility
     IF(APPLE)
         TARGET_LINK_LIBRARIES(${name} c++ c++abi)

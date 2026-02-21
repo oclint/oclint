@@ -36,8 +36,6 @@ def clean_module():
 def build_command():
     gtest_dir = path.source.googletest_dir
     cmd_build = cmake.builder(gtest_dir)
-    if environment.is_mingw32():
-        cmd_build.append('gtest_disable_pthreads:BOOL', 'ON')
     if environment.is_darwin():
         cmd_build.append('CMAKE_CXX_FLAGS', '-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}', True)
     return cmd_build.str()
