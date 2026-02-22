@@ -25,7 +25,7 @@ arg_parser.add_argument('-llvm-root', '--llvm-root', default=path.build.clang_in
 arg_parser.add_argument('-no-ninja', '--no-ninja', action='store_true')
 arg_parser.add_argument('--use-llvm-clang', dest='use_llvm_clang', action='store_true')
 arg_parser.add_argument('--no-llvm-clang', dest='use_llvm_clang', action='store_false')
-arg_parser.set_defaults(use_llvm_clang=environment.is_darwin())
+arg_parser.set_defaults(use_llvm_clang=False)
 args = arg_parser.parse_args()
 
 def clean_module(module_name):
