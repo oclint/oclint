@@ -151,6 +151,26 @@ def remove_bundled_libcxx_headers(install_path):
                 print(f"Removing platform-specific libc++ headers from {platform_libcxx}")
                 shutil.rmtree(platform_libcxx)
 
+def remove_bundled_libcxx_dylibs(install_path):
+    """Remove prebuilt LLVM's libc++/libc++abi/libunwind dylibs on macOS.
+
+    On macOS 26+, system frameworks (CoreFoundation, Swift) transitively load
+    the system libc++abi. If the prebuilt LLVM's libc++abi is also loaded via
+    @rpath, two different libc++abi coexist in the process. The system one
+    initializes late, causing TMO (typed operator new) checks to abort.
+
+    Removing the prebuilt dylibs forces the linker to use system libc++ (via
+    SDK tbd stubs), so only one libc++abi is loaded at runtime.
+    """
+    lib_dir = os.path.join(install_path, 'lib')
+    removed = []
+    for pattern in ['libc++*.dylib', 'libc++abi*.dylib', 'libunwind*.dylib']:
+        for f in glob.glob(os.path.join(lib_dir, pattern)):
+            os.remove(f)
+            removed.append(os.path.basename(f))
+    if removed:
+        print(f"Removed bundled dylibs to use system libc++: {', '.join(removed)}")
+
 def setup_prebuilt_binary():
     build_path = path.build.clang_build_dir
     install_path = path.build.clang_install_dir
@@ -174,8 +194,12 @@ def setup_prebuilt_binary():
     if not args.skip_convert:
         convert_bitcode_libraries(install_path)
 
-    # Keep bundled libc++ headers - we use the prebuilt clang as compiler,
-    # so the bundled headers are needed and are ABI-compatible.
+    # On macOS, remove the prebuilt LLVM's libc++/libc++abi/libunwind dylibs
+    # so the compiler and linker fall back to the system's. This avoids loading
+    # two different libc++abi at runtime (prebuilt + system via CoreFoundation),
+    # which causes TMO static initialization ordering crashes on macOS 26.
+    if environment.is_darwin():
+        remove_bundled_libcxx_dylibs(install_path)
 
     path.cd(current_dir)
 

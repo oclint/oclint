@@ -24,15 +24,6 @@ SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -fno-rtti")
 IF(APPLE)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden")
     SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}")
-
-    # Disable typed operator new/delete to avoid static initialization ordering
-    # issues with libc++abi. Rule files use static RuleSet constructors that call
-    # operator new before libc++abi's initializer has run, causing a runtime abort.
-    INCLUDE(CheckCXXCompilerFlag)
-    CHECK_CXX_COMPILER_FLAG("-fno-typed-cxx-new-delete" HAS_NO_TYPED_NEW_DELETE)
-    IF(HAS_NO_TYPED_NEW_DELETE)
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-typed-cxx-new-delete")
-    ENDIF()
 ENDIF()
 
 IF(OCLINT_BUILD_TYPE STREQUAL "Release")
@@ -67,10 +58,6 @@ INCLUDE_DIRECTORIES( ${LLVM_INCLUDE_DIRS} )
 LINK_DIRECTORIES( ${LLVM_LIBRARY_DIRS} )
 ADD_DEFINITIONS( ${LLVM_DEFINITIONS} )
 
-# On macOS, add LLVM library directory to rpath so libc++.dylib can be found at runtime
-IF(APPLE)
-    SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH};${LLVM_LIBRARY_DIRS}")
-ENDIF()
 
 STRING(REGEX MATCH "[0-9]+\\.[0-9]+(\\.[0-9]+)?" LLVM_VERSION_RELEASE ${LLVM_PACKAGE_VERSION})
 

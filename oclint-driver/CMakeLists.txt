@@ -40,10 +40,6 @@ TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
     ${REQ_LLVM_LIBRARIES}
     ${CMAKE_DL_LIBS}
     )
-# On macOS with prebuilt LLVM, explicitly link libc++ for ABI compatibility
-IF(APPLE)
-    TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE} c++ c++abi)
-ENDIF()
 
 IF(TEST_BUILD)
     TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
@@ -70,8 +66,4 @@ IF(DOC_GEN_BUILD)
         ${REQ_LLVM_LIBRARIES}
         ${CMAKE_DL_LIBS}
         )
-    # On macOS with prebuilt LLVM, explicitly link libc++ for ABI compatibility
-    IF(APPLE)
-        TARGET_LINK_LIBRARIES(oclint-docgen c++ c++abi)
-    ENDIF()
 ENDIF()

@@ -14,10 +14,6 @@ SET(TEST_LIBS
     ${CLANG_LIBRARIES}
     ${REQ_LLVM_LIBRARIES}
 )
-# On macOS with prebuilt LLVM, explicitly link libc++ for ABI compatibility
-IF(APPLE)
-    LIST(APPEND TEST_LIBS c++ c++abi)
-ENDIF()
 MACRO(build_test name)
     ADD_EXECUTABLE(${name} ${ARGN})
     TARGET_LINK_LIBRARIES(${name} ${TEST_LIBS})
