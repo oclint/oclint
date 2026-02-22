@@ -151,25 +151,26 @@ def remove_bundled_libcxx_headers(install_path):
                 print(f"Removing platform-specific libc++ headers from {platform_libcxx}")
                 shutil.rmtree(platform_libcxx)
 
-def remove_bundled_libcxx_dylibs(install_path):
-    """Remove prebuilt LLVM's libc++/libc++abi/libunwind dylibs on macOS.
+def remove_bundled_libcxx(install_path):
+    """Remove all prebuilt LLVM's libc++/libc++abi/libunwind libraries on macOS.
 
     On macOS 26+, system frameworks (CoreFoundation, Swift) transitively load
     the system libc++abi. If the prebuilt LLVM's libc++abi is also loaded via
     @rpath, two different libc++abi coexist in the process. The system one
     initializes late, causing TMO (typed operator new) checks to abort.
 
-    Removing the prebuilt dylibs forces the linker to use system libc++ (via
-    SDK tbd stubs), so only one libc++abi is loaded at runtime.
+    Removing all bundled libc++ files (both .dylib and .a) forces the compiler
+    to fall back to the system SDK's tbd stubs, so only one libc++/libc++abi
+    is used at both link time and runtime.
     """
     lib_dir = os.path.join(install_path, 'lib')
     removed = []
-    for pattern in ['libc++*.dylib', 'libc++abi*.dylib', 'libunwind*.dylib']:
+    for pattern in ['libc++*', 'libc++abi*', 'libunwind*']:
         for f in glob.glob(os.path.join(lib_dir, pattern)):
             os.remove(f)
             removed.append(os.path.basename(f))
     if removed:
-        print(f"Removed bundled dylibs to use system libc++: {', '.join(removed)}")
+        print(f"Removed bundled libc++ libraries to use system libc++: {', '.join(removed)}")
 
 def setup_prebuilt_binary():
     build_path = path.build.clang_build_dir
@@ -199,7 +200,7 @@ def setup_prebuilt_binary():
     # two different libc++abi at runtime (prebuilt + system via CoreFoundation),
     # which causes TMO static initialization ordering crashes on macOS 26.
     if environment.is_darwin():
-        remove_bundled_libcxx_dylibs(install_path)
+        remove_bundled_libcxx(install_path)
 
     path.cd(current_dir)
 
