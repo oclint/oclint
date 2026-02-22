@@ -201,6 +201,7 @@ def setup_prebuilt_binary():
     # which causes TMO static initialization ordering crashes on macOS 26.
     if environment.is_darwin():
         remove_bundled_libcxx(install_path)
+        remove_bundled_libcxx_headers(install_path)
 
     path.cd(current_dir)
 
