@@ -24,6 +24,15 @@ SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -fno-rtti")
 IF(APPLE)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden")
     SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}")
+
+    # Disable typed operator new/delete to avoid static initialization ordering
+    # issues with libc++abi. Rule files use static RuleSet constructors that call
+    # operator new before libc++abi's initializer has run, causing a runtime abort.
+    INCLUDE(CheckCXXCompilerFlag)
+    CHECK_CXX_COMPILER_FLAG("-fno-typed-cxx-new-delete" HAS_NO_TYPED_NEW_DELETE)
+    IF(HAS_NO_TYPED_NEW_DELETE)
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-typed-cxx-new-delete")
+    ENDIF()
 ENDIF()
 
 IF(OCLINT_BUILD_TYPE STREQUAL "Release")

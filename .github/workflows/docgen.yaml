@@ -13,7 +13,26 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - name: Debug - check compiler TMO flag support
+        run: |
+          cd oclint-scripts && ./clang
+          echo "=== Compiler version ==="
+          ../build/llvm-install/bin/clang++ --version
+          echo "=== Check -fno-typed-cxx-new-delete support ==="
+          echo 'int main() { return 0; }' > /tmp/test.cpp
+          ../build/llvm-install/bin/clang++ -fno-typed-cxx-new-delete /tmp/test.cpp -o /tmp/test 2>&1 && echo "FLAG SUPPORTED" || echo "FLAG NOT SUPPORTED"
+          echo "=== Check -ftyped-cxx-new-delete support ==="
+          ../build/llvm-install/bin/clang++ -ftyped-cxx-new-delete /tmp/test.cpp -o /tmp/test 2>&1 && echo "FLAG SUPPORTED" || echo "FLAG NOT SUPPORTED"
+          echo "=== libc++ libraries in prebuilt LLVM ==="
+          ls -la ../build/llvm-install/lib/libc++* ../build/llvm-install/lib/libunwind* 2>/dev/null || echo "none found"
       - run: cd oclint-scripts && ./gh-actions docgen
+        continue-on-error: true
+      - name: Debug - inspect built binary linkage
+        run: |
+          echo "=== otool -L on oclint-docgen ==="
+          otool -L build/oclint-driver/bin/oclint-docgen 2>/dev/null || echo "binary not found"
+          echo "=== otool -L on oclint main binary ==="
+          otool -L build/oclint-driver/bin/oclint-26.02 2>/dev/null || echo "binary not found"
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
