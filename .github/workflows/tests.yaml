@@ -71,29 +71,6 @@ jobs:
           MODULE: ${{ matrix.module }}
           DEPS: ${{ matrix.deps }}
         run: cd oclint-scripts && ./gh-actions test $MODULE $DEPS
-        continue-on-error: true
-      - name: Debug - inspect test binaries and runtime
-        env:
-          MODULE: ${{ matrix.module }}
-        run: |
-          echo "=== System clang version ==="
-          clang++ --version
-          echo "=== Prebuilt clang version ==="
-          build/llvm-install/bin/clang++ --version 2>/dev/null || echo "not found"
-          echo "=== Find test binaries ==="
-          find build/oclint-${MODULE}-test -type f -perm +111 -name '*Test*' -o -name '*test*' 2>/dev/null | head -10 || echo "none found"
-          echo "=== otool -L on test binaries ==="
-          for bin in $(find build/oclint-${MODULE}-test -type f -perm +111 -name '*Test*' -o -name '*test*' 2>/dev/null | head -3); do
-            echo "--- $bin ---"
-            otool -L "$bin" 2>/dev/null || true
-          done
-          echo "=== otool -l rpaths on first test binary ==="
-          FIRST_BIN=$(find build/oclint-${MODULE}-test -type f -perm +111 -name '*Test*' 2>/dev/null | head -1)
-          if [ -n "$FIRST_BIN" ]; then
-            otool -l "$FIRST_BIN" 2>/dev/null | grep -A2 LC_RPATH || echo "no rpaths"
-            echo "=== DYLD_PRINT_LIBRARIES - run test binary ==="
-            DYLD_PRINT_LIBRARIES=1 "$FIRST_BIN" --gtest_list_tests 2>&1 | head -50 || true
-          fi
       # - env:
       #     MODULE: ${{ matrix.module }}
       #   run: |

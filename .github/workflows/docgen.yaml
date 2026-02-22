@@ -13,37 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Debug - check environment
-        run: |
-          echo "=== System clang version ==="
-          clang++ --version
-          echo "=== System libc++ ==="
-          ls -la /usr/lib/libc++* 2>/dev/null || echo "none in /usr/lib"
-          otool -L /usr/lib/libc++abi.dylib 2>/dev/null || echo "no system libc++abi.dylib"
-          echo "=== Prebuilt LLVM setup ==="
-          cd oclint-scripts && ./clang
-          echo "=== Prebuilt clang version ==="
-          ../build/llvm-install/bin/clang++ --version
-          echo "=== Prebuilt libc++ libraries ==="
-          ls -la ../build/llvm-install/lib/libc++* ../build/llvm-install/lib/libunwind* 2>/dev/null || echo "none found"
       - run: cd oclint-scripts && ./gh-actions docgen
-        continue-on-error: true
-      - name: Debug - inspect binaries and runtime
-        run: |
-          echo "=== otool -L on oclint-docgen (build dir) ==="
-          otool -L build/oclint-driver/bin/oclint-docgen 2>/dev/null || echo "binary not found"
-          echo "=== otool -l rpaths on oclint-docgen (build dir) ==="
-          otool -l build/oclint-driver/bin/oclint-docgen 2>/dev/null | grep -A2 LC_RPATH || echo "no rpaths found"
-          echo "=== otool -L on oclint-docgen (release bundle) ==="
-          otool -L build/oclint-release/bin/oclint-docgen 2>/dev/null || echo "binary not found"
-          echo "=== otool -l rpaths on oclint-docgen (release bundle) ==="
-          otool -l build/oclint-release/bin/oclint-docgen 2>/dev/null | grep -A2 LC_RPATH || echo "no rpaths found"
-          echo "=== Contents of release lib dir ==="
-          ls -la build/oclint-release/lib/ 2>/dev/null || echo "dir not found"
-          echo "=== DYLD_PRINT_LIBRARIES - run oclint-docgen from release bundle ==="
-          DYLD_PRINT_LIBRARIES=1 build/oclint-release/bin/oclint-docgen docgen 2>&1 | head -50 || true
-          echo "=== DYLD_PRINT_LIBRARIES - run oclint-docgen from build dir ==="
-          DYLD_PRINT_LIBRARIES=1 build/oclint-driver/bin/oclint-docgen docgen 2>&1 | head -50 || true
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
