@@ -23,6 +23,9 @@ arg_parser.add_argument('-j', type=int, default=0)
 arg_parser.add_argument('-as-dep', '--as-dep', action="store_true")
 arg_parser.add_argument('-llvm-root', '--llvm-root', default=path.build.clang_install_dir)
 arg_parser.add_argument('-no-ninja', '--no-ninja', action='store_true')
+arg_parser.add_argument('--use-llvm-clang', dest='use_llvm_clang', action='store_true')
+arg_parser.add_argument('--no-llvm-clang', dest='use_llvm_clang', action='store_false')
+arg_parser.set_defaults(use_llvm_clang=False)
 args = arg_parser.parse_args()
 
 def clean_module(module_name):
@@ -90,6 +93,14 @@ if args.module_name == 'all':
     build_modules.extend(OCLINT_MODULES)
 else:
     build_modules.append(args.module_name)
+
+if args.use_llvm_clang:
+    clang_path = os.path.join(args.llvm_root, 'bin', 'clang')
+    clangxx_path = os.path.join(args.llvm_root, 'bin', 'clang++')
+    if os.path.exists(clang_path):
+        os.environ['CC'] = clang_path
+        os.environ['CXX'] = clangxx_path
+        print(f"Using clang: {clang_path}")
 
 if args.show:
     for module in build_modules:

@@ -23,10 +23,6 @@ BUILD_TEST(RuleSetTest)
 BUILD_TEST(UniqueResultsTest)
 TARGET_LINK_LIBRARIES(RuleSetTest OCLintRuleSet)
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Win")
-add_custom_command(TARGET RuleSetTest PRE_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:OCLintRuleSet> $<TARGET_FILE_DIR:RuleSetTest>)
-ENDIF()
 BUILD_TEST(VersionTest)
 BUILD_TEST(ViolationSetTest)
 BUILD_TEST(ViolationTest)

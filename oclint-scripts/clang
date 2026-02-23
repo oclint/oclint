@@ -1,7 +1,10 @@
 #! /usr/bin/env python3
 
 import argparse
+import glob
 import os
+import subprocess
+import tempfile
 
 from oclintscripts import environment
 from oclintscripts import path
@@ -9,6 +12,8 @@ from oclintscripts import process
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('-clean', '--clean', action="store_true")
+arg_parser.add_argument('-skip-convert', '--skip-convert', action="store_true",
+                        help="Skip converting bitcode to native objects")
 args = arg_parser.parse_args()
 
 def clean_module():
@@ -16,6 +21,156 @@ def clean_module():
     path.rm_f(build_path)
     install_dir = path.build.clang_install_dir
     path.rm_f(install_dir)
+
+def try_convert_to_native(llc_bin, obj_file):
+    """Try to convert an object file to native using llc. Returns True if conversion succeeded."""
+    native_obj = obj_file + '.native'
+    result = subprocess.run(
+        [llc_bin, '-filetype=obj', '-relocation-model=pic', obj_file, '-o', native_obj],
+        capture_output=True
+    )
+    if result.returncode == 0 and os.path.exists(native_obj):
+        os.replace(native_obj, obj_file)
+        return True
+    return False
+
+def find_llc(install_path):
+    """Find llc binary, checking multiple locations."""
+    # First check in the prebuilt LLVM directory
+    llc_bin = os.path.join(install_path, 'bin', 'llc')
+    if os.path.exists(llc_bin):
+        return llc_bin
+
+    # Check in PATH
+    import shutil
+    llc_in_path = shutil.which('llc')
+    if llc_in_path:
+        return llc_in_path
+
+    # Check Homebrew LLVM locations on macOS
+    if environment.is_darwin():
+        homebrew_paths = [
+            '/opt/homebrew/opt/llvm@21/bin/llc',
+            '/opt/homebrew/opt/llvm/bin/llc',
+            '/usr/local/opt/llvm@21/bin/llc',
+            '/usr/local/opt/llvm/bin/llc',
+        ]
+        for path in homebrew_paths:
+            if os.path.exists(path):
+                return path
+
+    return None
+
+def convert_bitcode_libraries(install_path):
+    """Convert bitcode in static libraries to native object files."""
+    lib_dir = os.path.join(install_path, 'lib')
+    llc_bin = find_llc(install_path)
+
+    print(f"Looking for llc in: {install_path}/bin/llc")
+    if llc_bin:
+        print(f"Found llc at: {llc_bin}")
+    else:
+        print("Warning: llc not found, skipping bitcode conversion")
+        print("Note: On macOS, this may cause linking errors with prebuilt LLVM libraries")
+        return
+
+    # Find all static libraries
+    libraries = []
+    for pattern in ['libclang*.a', 'libLLVM*.a']:
+        libraries.extend(glob.glob(os.path.join(lib_dir, pattern)))
+
+    print(f"Found {len(libraries)} static libraries to check for bitcode")
+
+    total_converted = 0
+    for lib_path in libraries:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Extract library
+            result = subprocess.run(['ar', 'x', lib_path], cwd=tmpdir, capture_output=True)
+            if result.returncode != 0:
+                print(f"Warning: Failed to extract {lib_path}")
+                continue
+
+            # Get list of object files
+            obj_files = glob.glob(os.path.join(tmpdir, '*.o'))
+            converted_count = 0
+            bitcode_count = 0
+
+            for obj_file in obj_files:
+                # Try to convert with llc - this works for both raw bitcode and
+                # Mach-O files with embedded bitcode. llc will fail fast on native objects.
+                if try_convert_to_native(llc_bin, obj_file):
+                    converted_count += 1
+                    bitcode_count += 1
+
+            if converted_count > 0:
+                obj_files = glob.glob(os.path.join(tmpdir, '*.o'))
+                backup_path = lib_path + '.bc_backup'
+                os.rename(lib_path, backup_path)
+                result = subprocess.run(
+                    ['ar', 'r', lib_path] + [os.path.basename(f) for f in obj_files],
+                    cwd=tmpdir, capture_output=True
+                )
+                if result.returncode == 0:
+                    os.remove(backup_path)
+                    print(f"Converted {converted_count}/{bitcode_count} bitcode files in {os.path.basename(lib_path)}")
+                    total_converted += converted_count
+                else:
+                    os.rename(backup_path, lib_path)
+                    print(f"Failed to repack {lib_path}: {result.stderr.decode()}")
+
+    print(f"Total bitcode objects converted: {total_converted}")
+
+def remove_bundled_libcxx_headers(install_path):
+    """Remove bundled libc++ headers on macOS to avoid ABI conflicts.
+
+    The prebuilt LLVM includes its own libc++ headers in include/c++/v1/ and
+    include/<platform-triple>/c++/v1/. On macOS, when building with LLVM_INCLUDE_DIRS,
+    these headers may be picked up instead of the system's libc++ headers, causing
+    ABI mismatches (e.g., [abi:ne200100] symbols not found in system libc++).
+
+    On Linux, the default C++ library is libstdc++ (with GCC), so the bundled
+    libc++ headers won't be used unless explicitly requested with -stdlib=libc++.
+    """
+    import shutil
+
+    if not environment.is_darwin():
+        return
+
+    # Remove include/c++ directory
+    libcxx_header_dir = os.path.join(install_path, 'include', 'c++')
+    if os.path.exists(libcxx_header_dir):
+        print(f"Removing bundled libc++ headers from {libcxx_header_dir}")
+        shutil.rmtree(libcxx_header_dir)
+
+    # Remove platform-specific libc++ config (e.g., include/aarch64-apple-darwin*/c++)
+    include_dir = os.path.join(install_path, 'include')
+    for entry in os.listdir(include_dir):
+        if 'apple' in entry.lower() or 'darwin' in entry.lower():
+            platform_libcxx = os.path.join(include_dir, entry, 'c++')
+            if os.path.exists(platform_libcxx):
+                print(f"Removing platform-specific libc++ headers from {platform_libcxx}")
+                shutil.rmtree(platform_libcxx)
+
+def remove_bundled_libcxx(install_path):
+    """Remove all prebuilt LLVM's libc++/libc++abi/libunwind libraries on macOS.
+
+    On macOS 26+, system frameworks (CoreFoundation, Swift) transitively load
+    the system libc++abi. If the prebuilt LLVM's libc++abi is also loaded via
+    @rpath, two different libc++abi coexist in the process. The system one
+    initializes late, causing TMO (typed operator new) checks to abort.
+
+    Removing all bundled libc++ files (both .dylib and .a) forces the compiler
+    to fall back to the system SDK's tbd stubs, so only one libc++/libc++abi
+    is used at both link time and runtime.
+    """
+    lib_dir = os.path.join(install_path, 'lib')
+    removed = []
+    for pattern in ['libc++*', 'libc++abi*', 'libunwind*']:
+        for f in glob.glob(os.path.join(lib_dir, pattern)):
+            os.remove(f)
+            removed.append(os.path.basename(f))
+    if removed:
+        print(f"Removed bundled libc++ libraries to use system libc++: {', '.join(removed)}")
 
 def setup_prebuilt_binary():
     build_path = path.build.clang_build_dir
@@ -35,6 +190,19 @@ def setup_prebuilt_binary():
     process.call('curl -L -o prebuilt.tar.xz ' + binary_url)
     path.mkdir_p(install_path)
     process.call('tar xf prebuilt.tar.xz -C ' + install_path + ' --strip-components=1')
+
+    # Convert bitcode in static libraries to native objects
+    if not args.skip_convert:
+        convert_bitcode_libraries(install_path)
+
+    # On macOS, remove the prebuilt LLVM's libc++/libc++abi/libunwind dylibs
+    # so the compiler and linker fall back to the system's. This avoids loading
+    # two different libc++abi at runtime (prebuilt + system via CoreFoundation),
+    # which causes TMO static initialization ordering crashes on macOS 26.
+    if environment.is_darwin():
+        remove_bundled_libcxx(install_path)
+        remove_bundled_libcxx_headers(install_path)
+
     path.cd(current_dir)
 
 if args.clean:

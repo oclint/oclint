@@ -114,7 +114,7 @@ static std::string absoluteWorkingPath("");
 static std::string executablePath("");
 
 template <typename T>
-void updateArgIfSet(llvm::cl::opt<T> &argValue, const llvm::Optional<T> &configValue)
+void updateArgIfSet(llvm::cl::opt<T> &argValue, const std::optional<T> &configValue)
 {
     if (configValue.has_value() && argValue.getNumOccurrences() == 0)
     {

@@ -12,8 +12,6 @@ def call(command):
 
 def j_flag(j=None):
     multiple_thread = environment.cpu_count()
-    if environment.is_mingw32():
-        multiple_thread = 1
     if j != None and j != 0:
         multiple_thread = j
     return ' -j ' + str(multiple_thread)

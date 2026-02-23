@@ -1,7 +1,19 @@
 SET(CMAKE_DISABLE_SOURCE_CHANGES ON)
 SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
-set(CMAKE_MACOSX_RPATH ON)
+SET(CMAKE_MACOSX_RPATH ON)
 SET(CMAKE_BUILD_TYPE None)
+
+# Fix for GitHub issue #665 - avoid hardcoding build machine paths in rpath
+# Use relative paths for distributable binaries
+# macOS: @executable_path/../lib
+# Linux: $ORIGIN/../lib
+IF(APPLE)
+    SET(CMAKE_INSTALL_RPATH "@executable_path/../lib")
+    SET(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
+ELSEIF(UNIX)
+    SET(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+    SET(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
+ENDIF()
 
 IF(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     SET(CMAKE_CXX_FLAGS "-fcolor-diagnostics")
@@ -24,7 +36,7 @@ ENDIF()
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
-SET(OCLINT_VERSION_RELEASE "24.11")
+SET(OCLINT_VERSION_RELEASE "26.02")
 
 IF(LLVM_ROOT)
     IF(NOT EXISTS ${LLVM_ROOT}/include/llvm)
@@ -50,7 +62,7 @@ STRING(REGEX MATCH "[0-9]+\\.[0-9]+(\\.[0-9]+)?" LLVM_VERSION_RELEASE ${LLVM_PAC
 
 MESSAGE(STATUS "Found LLVM LLVM_PACKAGE_VERSION: ${LLVM_PACKAGE_VERSION} - LLVM_VERSION_RELEASE: ${LLVM_VERSION_RELEASE}")
 MESSAGE(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
-LLVM_MAP_COMPONENTS_TO_LIBNAMES(REQ_LLVM_LIBRARIES asmparser bitreader instrumentation mcparser option support frontendopenmp windowsdriver)
+LLVM_MAP_COMPONENTS_TO_LIBNAMES(REQ_LLVM_LIBRARIES asmparser bitreader instrumentation mcparser option support frontendopenmp windowsdriver frontendhlsl)
 
 SET(CLANG_LIBRARIES
     clangToolingCore
@@ -65,8 +77,9 @@ SET(CLANG_LIBRARIES
     clangASTMatchers
     clangAST
     clangLex
-    clangBasic
-    clangSupport)
+    clangSupport
+    clangAPINotes
+    clangBasic)
 
 IF(TEST_BUILD)
     ENABLE_TESTING()

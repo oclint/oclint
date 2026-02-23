@@ -24,10 +24,6 @@ def dist_env():
 def is_aarch64_or_arm64():
     return arch().startswith("aarch64") or arch().startswith("arm64")
 
-def is_mingw32():
-    return kernel().startswith("windows")
-    # Cygwin should say CYGWIN_NT-6.1-WOW64
-
 def is_darwin():
     return kernel().startswith("darwin")
 

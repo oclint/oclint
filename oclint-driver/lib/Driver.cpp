@@ -54,7 +54,8 @@
 #include <llvm/ADT/StringRef.h>
 #include <llvm/Option/ArgList.h>
 #include <llvm/Support/FileSystem.h>
-#include <llvm/Support/Host.h>
+#include <llvm/Support/VirtualFileSystem.h>
+#include <llvm/TargetParser/Host.h>
 #include <llvm/Support/raw_ostream.h>
 #include <clang/Basic/Diagnostic.h>
 #include <clang/Driver/Compilation.h>
@@ -201,11 +202,10 @@ static clang::CompilerInvocation *newCompilerInvocation(
     argv.push_back("-D__OCLINT__");
 
     // create diagnostic engine
-    llvm::IntrusiveRefCntPtr<clang::DiagnosticOptions> diagOpts =
-        new clang::DiagnosticOptions();
+    auto diagOpts = std::make_unique<clang::DiagnosticOptions>();
     clang::DiagnosticsEngine diagnosticsEngine(
         llvm::IntrusiveRefCntPtr<clang::DiagnosticIDs>(new clang::DiagnosticIDs()),
-        &*diagOpts,
+        *diagOpts,
         new clang::DiagnosticConsumer());
 
     // create driver
@@ -225,9 +225,9 @@ static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *
     bool runClangChecker = false)
 {
     auto compilerInstance = new oclint::CompilerInstance();
-    auto invocation = std::make_shared<clang::CompilerInvocation>(*compilerInvocation);
-    compilerInstance->setInvocation(std::move(invocation));
-    compilerInstance->createDiagnostics(new DiagnosticDispatcher(runClangChecker));
+    compilerInstance->getInvocation() = *compilerInvocation;
+    compilerInstance->createDiagnostics(*llvm::vfs::getRealFileSystem(),
+                                        new DiagnosticDispatcher(runClangChecker));
     if (!compilerInstance->hasDiagnostics())
     {
         throw oclint::GenericException("cannot create compiler diagnostics");

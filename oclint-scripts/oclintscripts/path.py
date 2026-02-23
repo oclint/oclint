@@ -69,9 +69,9 @@ class url:
     json_compilation_database = 'https://github.com/oclint/oclint-json-compilation-database.git'
     xcodebuild = 'https://github.com/oclint/oclint-xcodebuild.git'
 
-    clang_prebuilt_binary_for_macos_arm64 = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-16.0.5/clang+llvm-16.0.5-arm64-apple-darwin22.0.tar.xz'
-    clang_prebuilt_binary_for_ubuntu_amd64 = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-16.0.4/clang+llvm-16.0.4-x86_64-linux-gnu-ubuntu-22.04.tar.xz'
-    clang_prebuilt_binary_for_ubuntu_aarch64 = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-16.0.6/clang+llvm-16.0.6-aarch64-linux-gnu.tar.xz'
+    clang_prebuilt_binary_for_macos_arm64 = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.8/LLVM-21.1.8-macOS-ARM64.tar.xz'
+    clang_prebuilt_binary_for_ubuntu_amd64 = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.8/LLVM-21.1.8-Linux-X64.tar.xz'
+    clang_prebuilt_binary_for_ubuntu_aarch64 = 'https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.8/LLVM-21.1.8-Linux-ARM64.tar.xz'
 
 def cd(dir_path):
     os.chdir(dir_path)

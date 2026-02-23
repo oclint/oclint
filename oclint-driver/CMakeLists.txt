@@ -19,19 +19,11 @@ INCLUDE_DIRECTORIES(${OCLINT_DRIVER_SOURCE_DIR}/include)
 
 ADD_SUBDIRECTORY(lib)
 
-IF(MINGW)
-    ADD_EXECUTABLE(oclint-${OCLINT_VERSION_RELEASE}
-        main.cpp
-        reporters_windows_port.cpp
-        rules_windows_port.cpp
-        )
-ELSE()
-    ADD_EXECUTABLE(oclint-${OCLINT_VERSION_RELEASE}
-        main.cpp
-        reporters_dlfcn_port.cpp
-        rules_dlfcn_port.cpp
-        )
-ENDIF()
+ADD_EXECUTABLE(oclint-${OCLINT_VERSION_RELEASE}
+    main.cpp
+    reporters_dlfcn_port.cpp
+    rules_dlfcn_port.cpp
+    )
 
 TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
     OCLintDriver

@@ -17,15 +17,27 @@ arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('module_name', nargs='?', choices=['all'] + OCLINT_MODULES, default='all')
 arg_parser.add_argument('-enable-clang-static-analyzer', '--enable-clang-static-analyzer', action="store_true")
 arg_parser.add_argument('-show', '--show', action="store_true")
+arg_parser.add_argument('-llvm-root', '--llvm-root', default=path.build.clang_install_dir)
+arg_parser.add_argument('--use-llvm-clang', dest='use_llvm_clang', action='store_true')
+arg_parser.add_argument('--no-llvm-clang', dest='use_llvm_clang', action='store_false')
+arg_parser.set_defaults(use_llvm_clang=False)
 args = arg_parser.parse_args()
+
+if args.use_llvm_clang:
+    clang_path = os.path.join(args.llvm_root, 'bin', 'clang')
+    clangxx_path = os.path.join(args.llvm_root, 'bin', 'clang++')
+    if os.path.exists(clang_path):
+        os.environ['CC'] = clang_path
+        os.environ['CXX'] = clangxx_path
+        print(f"Using clang: {clang_path}")
 
 def clean_module(module_name):
     dogfooding_path = path.oclint_module_dogfooding_dir(module_name)
     path.rm_f(dogfooding_path)
 
-def build_command(module_extras, source_path):
+def build_command(module_extras, llvm_root, source_path):
     cmd_build = cmake.builder(source_path).append('CMAKE_EXPORT_COMPILE_COMMANDS', 'ON')
-    extras = {'LLVM_ROOT': path.build.clang_install_dir}
+    extras = {'LLVM_ROOT': llvm_root}
     extras.update(module_extras)
     return cmd_build.append_dict(extras).str()
 
@@ -41,7 +53,7 @@ def build_module(module_name):
         module_extras['OCLINT_METRICS_SOURCE_DIR'] = path.source.metrics_dir
         module_extras['OCLINT_METRICS_BUILD_DIR'] = path.build.metrics_build_dir
 
-    command = build_command(module_extras, source_path)
+    command = build_command(module_extras, args.llvm_root, source_path)
 
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
