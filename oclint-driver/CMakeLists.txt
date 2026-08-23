@@ -25,6 +25,11 @@ ADD_EXECUTABLE(oclint-${OCLINT_VERSION_RELEASE}
     rules_dlfcn_port.cpp
     )
 
+# Rules and reporters are dlopen'd and resolve LLVM/Clang symbols against this
+# executable, so its symbols must be in the dynamic symbol table. On ELF that
+# needs -rdynamic, which CMake emits for targets that ENABLE_EXPORTS.
+SET_TARGET_PROPERTIES(oclint-${OCLINT_VERSION_RELEASE} PROPERTIES ENABLE_EXPORTS TRUE)
+
 TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
     OCLintDriver
     OCLintRuleSet
@@ -53,6 +58,7 @@ IF(DOC_GEN_BUILD)
         main_docgen.cpp
         rules_dlfcn_port.cpp
         )
+    SET_TARGET_PROPERTIES(oclint-docgen PROPERTIES ENABLE_EXPORTS TRUE)
     TARGET_LINK_LIBRARIES(oclint-docgen
         OCLintDriver
         OCLintRuleSet
