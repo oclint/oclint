@@ -30,3 +30,9 @@ RuleBase* RuleSet::getRuleAtIndex(int index)
     }
     return _rules->at(index);
 }
+
+std::unordered_set<unsigned int>& RuleSet::getMacroFilterPresumedLOC()
+{
+    static std::unordered_set<unsigned int> macroFilterPresumedLOC = {};
+    return macroFilterPresumedLOC;
+}

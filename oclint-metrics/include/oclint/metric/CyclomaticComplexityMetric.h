@@ -4,6 +4,8 @@
 #include <clang/AST/AST.h>
 #include <clang/AST/RecursiveASTVisitor.h>
 
+#include <unordered_set>
+
 /*
  * References:
  * - McCabe (December 1976). “A Complexity Measure”.
@@ -18,11 +20,16 @@ class CyclomaticComplexityMetric : public clang::RecursiveASTVisitor<CyclomaticC
 private:
     int _count;
 
+    clang::SourceManager *_sourceManager;
+    std::unordered_set<unsigned int> _macroFilterPresumedLOC;
+
 public:
+    CyclomaticComplexityMetric(std::unordered_set<unsigned int> macroFilterPresumedLOC);
     int calculate(clang::Decl *decl);
 
     bool VisitIfStmt(clang::IfStmt *stmt);
     bool VisitForStmt(clang::ForStmt *stmt);
+    bool VisitCXXForRangeStmt(clang::CXXForRangeStmt *stmt);
     bool VisitObjCForCollectionStmt(clang::ObjCForCollectionStmt *stmt);
     bool VisitWhileStmt(clang::WhileStmt *stmt);
     bool VisitDoStmt(clang::DoStmt *stmt);
@@ -31,10 +38,14 @@ public:
     bool VisitCXXCatchStmt(clang::CXXCatchStmt *stmt);
     bool VisitConditionalOperator(clang::ConditionalOperator *op);
     bool VisitBinaryOperator(clang::BinaryOperator *op);
+
+private:
+    template<class T>
+    bool isFilteredMacro(T *stmt);
 };
 
 } // end namespace oclint
 
-extern "C" int getCyclomaticComplexity(clang::Decl *decl);
+extern "C" int getCyclomaticComplexity(clang::Decl *decl, std::unordered_set<unsigned int> macroFilterPresumedLOC);
 
 #endif

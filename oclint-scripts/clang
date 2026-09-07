@@ -187,7 +187,7 @@ def setup_prebuilt_binary():
     current_dir = os.getcwd()
     path.mkdir_p(build_path)
     path.cd(build_path)
-    process.call('curl -L -o prebuilt.tar.xz ' + binary_url)
+    process.call('curl -L --fail --retry 10 --retry-all-errors --retry-delay 3 -C - -o prebuilt.tar.xz ' + binary_url)
     path.mkdir_p(install_path)
     process.call('tar xf prebuilt.tar.xz -C ' + install_path + ' --strip-components=1')
 

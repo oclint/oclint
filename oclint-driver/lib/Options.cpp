@@ -1,6 +1,10 @@
 #include "oclint/Options.h"
 
-#include <unistd.h>
+#ifdef _MSC_VER
+#include <direct.h>  // _getcwd
+#else
+#include <unistd.h>  // getcwd
+#endif
 
 #include <llvm/Option/OptTable.h>
 #include <llvm/Option/Option.h>
@@ -8,7 +12,6 @@
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/Path.h>
 #include <llvm/Support/Program.h>
-#include <clang/Driver/Options.h>
 #include <clang/Tooling/CommonOptionsParser.h>
 
 #include "oclint/ConfigFile.h"
@@ -32,6 +35,16 @@ static llvm::cl::opt<std::string> argOutput("o",
    oclint configuration
    -------------------- */
 
+static llvm::cl::list<std::string> suppressionMacroStr("suppression-macro-str",
+    llvm::cl::desc("Specify suppression macro strings"),
+    llvm::cl::value_desc("string match for supressing MACRO"),
+    llvm::cl::ZeroOrMore,
+    llvm::cl::cat(OCLintOptionCategory));
+static llvm::cl::list<std::string> suppressionMacroRegex("suppression-macro-regex",
+    llvm::cl::desc("Specify suppression macro regex"),
+    llvm::cl::value_desc("regex match for supressing MACRO"),
+    llvm::cl::ZeroOrMore,
+    llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<std::string> argReportType("report-type",
     llvm::cl::desc("Change output report type"),
     llvm::cl::value_desc("name"),
@@ -181,7 +194,11 @@ static void processConfigFiles()
 static void preserveWorkingPath()
 {
     char path[300];
+#ifdef _MSC_VER
+    if (_getcwd(path, 300))
+#else
     if (getcwd(path, 300))
+#endif
     {
         absoluteWorkingPath = std::string(path);
     }
@@ -328,4 +345,14 @@ bool oclint::option::allowDuplicatedViolations()
 bool oclint::option::enableVerbose()
 {
     return argEnableVerbose;
+}
+
+std::vector<std::string> oclint::option::getSuppressionMacroStr()
+{
+    return suppressionMacroStr;
+}
+
+std::vector<std::string> oclint::option::getSuppressionMacroRegex()
+{
+    return suppressionMacroRegex;
 }

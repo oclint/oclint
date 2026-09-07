@@ -9,6 +9,8 @@ MACRO(build_test name)
         clangStaticAnalyzerCore
         clangRewriteFrontend
         clangRewrite
+        clangCrossTU
+        clangIndex
         ${GTEST_LIBS}
         ${PROFILE_RT_LIBS}
         ${CLANG_LIBRARIES}

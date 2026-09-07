@@ -19,13 +19,45 @@ INCLUDE_DIRECTORIES(${OCLINT_DRIVER_SOURCE_DIR}/include)
 
 ADD_SUBDIRECTORY(lib)
 
-ADD_EXECUTABLE(oclint-${OCLINT_VERSION_RELEASE}
-    main.cpp
-    reporters_dlfcn_port.cpp
-    rules_dlfcn_port.cpp
-    )
+IF(MINGW OR MSVC)
+    ADD_EXECUTABLE(oclint-${OCLINT_VERSION_RELEASE}
+        main.cpp
+        reporters_windows_port.cpp
+        rules_windows_port.cpp
+        )
+ELSE()
+    ADD_EXECUTABLE(oclint-${OCLINT_VERSION_RELEASE}
+        main.cpp
+        reporters_dlfcn_port.cpp
+        rules_dlfcn_port.cpp
+        )
+ENDIF()
 
-TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
+IF(MSVC)
+  TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
+    OCLintDriver
+    OCLintRuleSet
+    OCLintCore
+    clangStaticAnalyzerFrontend
+    clangStaticAnalyzerCheckers
+    clangStaticAnalyzerCore
+    clangRewriteFrontend
+    clangRewrite
+    clangCrossTU
+    clangIndex
+    clangOptions
+    clangFormat
+    clangAnalysisLifetimeSafety
+    clangToolingInclusions
+    clangToolingInclusionsStdlib
+    ${CLANG_LIBRARIES}
+    ${REQ_LLVM_LIBRARIES}
+    LLVMPasses
+    LLVMPlugins
+    version
+  )
+ELSE()
+  TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
     OCLintDriver
     OCLintRuleSet
     OCLintCore
@@ -39,7 +71,12 @@ TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}
     ${CLANG_LIBRARIES}
     ${REQ_LLVM_LIBRARIES}
     ${CMAKE_DL_LIBS}
-    )
+  )
+ENDIF()
+
+IF(UNIX AND NOT APPLE)
+  set_target_properties(oclint-${OCLINT_VERSION_RELEASE} PROPERTIES LINK_FLAGS "-Wl,-export-dynamic")
+ENDIF()
 
 IF(TEST_BUILD)
     TARGET_LINK_LIBRARIES(oclint-${OCLINT_VERSION_RELEASE}

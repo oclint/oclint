@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 
+import sysconfig
 import platform
 import multiprocessing
 
@@ -23,6 +24,12 @@ def dist_env():
 
 def is_aarch64_or_arm64():
     return arch().startswith("aarch64") or arch().startswith("arm64")
+
+def is_mingw32():
+    return  sysconfig.get_platform().startswith('mingw')
+
+def is_windows():
+    return sysconfig.get_platform().startswith('win')
 
 def is_darwin():
     return kernel().startswith("darwin")

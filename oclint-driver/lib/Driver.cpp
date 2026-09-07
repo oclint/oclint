@@ -46,7 +46,11 @@
  */
 #include "oclint/Driver.h"
 
-#include <unistd.h>
+#ifdef _MSC_VER
+#include <direct.h>  // _getcwd
+#else
+#include <unistd.h>  // getcwd
+#endif
 
 #include <sstream>
 
@@ -224,10 +228,8 @@ static clang::CompilerInvocation *newCompilerInvocation(
 static oclint::CompilerInstance *newCompilerInstance(clang::CompilerInvocation *compilerInvocation,
     bool runClangChecker = false)
 {
-    auto compilerInstance = new oclint::CompilerInstance();
-    compilerInstance->getInvocation() = *compilerInvocation;
-    compilerInstance->createDiagnostics(*llvm::vfs::getRealFileSystem(),
-                                        new DiagnosticDispatcher(runClangChecker));
+    auto compilerInstance = new oclint::CompilerInstance(compilerInvocation);
+    compilerInstance->createDiagnostics(new DiagnosticDispatcher(runClangChecker));
     if (!compilerInstance->hasDiagnostics())
     {
         throw oclint::GenericException("cannot create compiler diagnostics");
@@ -303,7 +305,11 @@ static void constructCompilers(std::vector<oclint::CompilerInstance *> &compiler
         LOG_VERBOSE_LINE(" ...");
         std::string targetDir = stringReplace(compileCommand.second.Directory, "\\ ", " ");
 
-        if(chdir(targetDir.c_str()))
+#if _MSC_VER
+        if (_chdir(targetDir.c_str()))
+#else
+        if (chdir(targetDir.c_str()))
+#endif
         {
             throw oclint::GenericException("Cannot change dictionary into \"" +
                 targetDir + "\", "
@@ -314,7 +320,7 @@ static void constructCompilers(std::vector<oclint::CompilerInstance *> &compiler
             newCompilerInvocation(mainExecutable, adjustedCmdLine);
         oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation);
 
-        compiler->start();
+        compiler->start(compileCommand.first /* source file */);
         if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
         {
             LOG_VERBOSE(" - Success");
@@ -337,7 +343,11 @@ static void invokeClangStaticAnalyzer(
         LOG_VERBOSE("Clang Static Analyzer ");
         LOG_VERBOSE(compileCommand.first.c_str());
         std::string targetDir = stringReplace(compileCommand.second.Directory, "\\ ", " ");
+#if _MSC_VER
+        if (_chdir(targetDir.c_str()))
+#else
         if (chdir(targetDir.c_str()))
+#endif
         {
             throw oclint::GenericException("Cannot change dictionary into \"" +
                 targetDir + "\", "
@@ -349,7 +359,7 @@ static void invokeClangStaticAnalyzer(
             newCompilerInvocation(mainExecutable, adjustedArguments, true);
         oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation, true);
 
-        compiler->start();
+        compiler->start(compileCommand.first);
         if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
         {
             LOG_VERBOSE(" - Done");
