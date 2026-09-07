@@ -23,7 +23,7 @@ public:
             results.Nodes.getNodeAs<FunctionDecl>("functionDecl");
         if (functionDecl)
         {
-            CyclomaticComplexityMetric ccnMetric;
+            CyclomaticComplexityMetric ccnMetric({});
             EXPECT_EQ(_ccn, ccnMetric.calculate(functionDecl));
         }
         else
