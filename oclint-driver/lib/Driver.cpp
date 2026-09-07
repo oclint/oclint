@@ -320,7 +320,7 @@ static void constructCompilers(std::vector<oclint::CompilerInstance *> &compiler
             newCompilerInvocation(mainExecutable, adjustedCmdLine);
         oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation);
 
-        compiler->start();
+        compiler->start(compileCommand.first /* source file */);
         if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
         {
             LOG_VERBOSE(" - Success");
@@ -359,7 +359,7 @@ static void invokeClangStaticAnalyzer(
             newCompilerInvocation(mainExecutable, adjustedArguments, true);
         oclint::CompilerInstance *compiler = newCompilerInstance(compilerInvocation, true);
 
-        compiler->start();
+        compiler->start(compileCommand.first);
         if (!compiler->getDiagnostics().hasErrorOccurred() && compiler->hasASTContext())
         {
             LOG_VERBOSE(" - Done");

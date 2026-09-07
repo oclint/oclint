@@ -19,7 +19,8 @@ class CyclomaticComplexityRule : public AbstractASTVisitorRule<CyclomaticComplex
 private:
     void applyDecl(Decl *decl)
     {
-        int ccn = getCyclomaticComplexity(decl);
+        // pass the macroFilter that is accumulated by the preprocessor callback in MacroLocationRecorder class
+        int ccn = getCyclomaticComplexity(decl, RuleSet::getMacroFilterPresumedLOC());
 
         // In McBABE, 1976, A Complexity Measure, he suggested a reasonable number of 10
         int threshold = RuleConfiguration::intForKey("CYCLOMATIC_COMPLEXITY", 10);

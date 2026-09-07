@@ -33,6 +33,8 @@ namespace option
     bool enableClangChecker();
     bool allowDuplicatedViolations();
     bool enableVerbose();
+    std::vector<std::string> getSuppressionMacroStr();
+    std::vector<std::string> getSuppressionMacroRegex();
 } // end namespace option
 } // end namespace oclint
 

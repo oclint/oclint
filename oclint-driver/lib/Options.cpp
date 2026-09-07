@@ -35,6 +35,16 @@ static llvm::cl::opt<std::string> argOutput("o",
    oclint configuration
    -------------------- */
 
+static llvm::cl::list<std::string> suppressionMacroStr("suppression-macro-str",
+    llvm::cl::desc("Specify suppression macro strings"),
+    llvm::cl::value_desc("string match for supressing MACRO"),
+    llvm::cl::ZeroOrMore,
+    llvm::cl::cat(OCLintOptionCategory));
+static llvm::cl::list<std::string> suppressionMacroRegex("suppression-macro-regex",
+    llvm::cl::desc("Specify suppression macro regex"),
+    llvm::cl::value_desc("regex match for supressing MACRO"),
+    llvm::cl::ZeroOrMore,
+    llvm::cl::cat(OCLintOptionCategory));
 static llvm::cl::opt<std::string> argReportType("report-type",
     llvm::cl::desc("Change output report type"),
     llvm::cl::value_desc("name"),
@@ -335,4 +345,14 @@ bool oclint::option::allowDuplicatedViolations()
 bool oclint::option::enableVerbose()
 {
     return argEnableVerbose;
+}
+
+std::vector<std::string> oclint::option::getSuppressionMacroStr()
+{
+    return suppressionMacroStr;
+}
+
+std::vector<std::string> oclint::option::getSuppressionMacroRegex()
+{
+    return suppressionMacroRegex;
 }

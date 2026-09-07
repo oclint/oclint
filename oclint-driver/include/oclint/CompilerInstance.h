@@ -17,7 +17,7 @@ class CompilerInstance : public clang::CompilerInstance
 {
 public:
     CompilerInstance(clang::CompilerInvocation *compilerInvocation);
-    void start();
+    void start(std::string sourcePath);
     void end();
 
 private:
