@@ -15,7 +15,10 @@ class builder:
 
     def str(self):
         cmd = self.__cmd + ' '
-        return cmd + self.__source_path
+        if environment.is_mingw32() or environment.is_windows():
+            return cmd + self.__wrap_double_quote(self.__source_path)
+        else:
+            return cmd + self.__source_path
 
     def append(self, key, value, double_quote = False):
         self.__cmd += ' -D ' + key + '='
@@ -35,10 +38,11 @@ class builder:
         return self.append('DOC_GEN_BUILD', '1')
 
     def use_ninja(self):
-        self.__cmd += ' -G Ninja'
+        if (not environment.is_mingw32()) and (not environment.is_windows()):
+            self.__cmd += ' -G Ninja'
         return self
 
     def append_dict(self, dict):
         for key, value in dict.items():
-            self.append(key, value, False)
+            self.append(key, value, environment.is_mingw32() or environment.is_windows())
         return self

@@ -48,6 +48,7 @@
 
 #include <clang/Basic/TargetInfo.h>
 #include <clang/Frontend/FrontendActions.h>
+#include "clang/Frontend/PCHContainerOperations.h"
 #include <clang/StaticAnalyzer/Frontend/FrontendActions.h>
 
 #include "oclint/Options.h"
@@ -59,6 +60,13 @@ static clang::FrontendAction *getFrontendAction() {
         return new clang::ento::AnalysisAction();
     }
     return new clang::SyntaxOnlyAction();
+}
+
+CompilerInstance::CompilerInstance(clang::CompilerInvocation *compilerInvocation)
+    : clang::CompilerInstance(
+      std::shared_ptr<clang::CompilerInvocation>(compilerInvocation),
+      std::make_shared<clang::PCHContainerOperations>(),
+      nullptr) {
 }
 
 void CompilerInstance::setupTarget() {

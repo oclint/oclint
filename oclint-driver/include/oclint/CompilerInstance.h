@@ -16,6 +16,7 @@ namespace oclint
 class CompilerInstance : public clang::CompilerInstance
 {
 public:
+    CompilerInstance(clang::CompilerInvocation *compilerInvocation);
     void start();
     void end();
 

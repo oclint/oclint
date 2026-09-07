@@ -38,17 +38,29 @@ def install_binary(is_release):
     driver_bin_dir = os.path.join(path.build.driver_build_dir, 'bin')
     path.cp_r(driver_bin_dir, bundle_bin_dir)
     path.cd(bundle_bin_dir)
-    process.call('ln -s oclint-' + version.oclint_version() + ' oclint')
-    if not is_release:
-        process.call('ln -s oclint-' + version.oclint_version() + ' oclint-' + version.oclint_dev_version())
+    if environment.is_unix():
+        process.call('ln -s oclint-' + version.oclint_version() + ' oclint')
+        if not is_release:
+            process.call('ln -s oclint-' + version.oclint_version() + ' oclint-' + version.oclint_dev_version())
+    elif environment.is_windows():
+        ruleset_dll_name = 'OCLintRuleSet.dll'
+        ruleset_dll_path = os.path.join(path.build.core_build_dir, 'lib', 'Release', ruleset_dll_name)
+        ruleset_dll_dst_path = os.path.join(bundle_bin_dir, ruleset_dll_name)
+        path.cp(ruleset_dll_path, ruleset_dll_dst_path)
+
+        path.mv(os.path.join(bundle_bin_dir, 'Release', 'oclint-' + version.oclint_version() + '.exe'), os.path.join(bundle_bin_dir, 'oclint.exe'))
 
 def install_rules():
     rules_src_path = os.path.join(path.build.rules_build_dir, 'rules.dl')
+    if environment.is_windows():
+        rules_src_path = os.path.join(rules_src_path, 'Release')
     rules_dst_path = os.path.join(bundle_lib_oclint_dir, 'rules')
     path.cp_r(rules_src_path, rules_dst_path)
 
 def install_reporters():
     reporters_src_path = os.path.join(path.build.reporters_build_dir, 'reporters.dl')
+    if environment.is_windows():
+        reporters_src_path = os.path.join(reporters_src_path, 'Release')
     reporters_dst_path = os.path.join(bundle_lib_oclint_dir, 'reporters')
     path.cp_r(reporters_src_path, reporters_dst_path)
 

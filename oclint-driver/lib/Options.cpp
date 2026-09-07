@@ -1,6 +1,10 @@
 #include "oclint/Options.h"
 
-#include <unistd.h>
+#ifdef _MSC_VER
+#include <direct.h>  // _getcwd
+#else
+#include <unistd.h>  // getcwd
+#endif
 
 #include <llvm/Option/OptTable.h>
 #include <llvm/Option/Option.h>
@@ -8,7 +12,6 @@
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/Path.h>
 #include <llvm/Support/Program.h>
-#include <clang/Driver/Options.h>
 #include <clang/Tooling/CommonOptionsParser.h>
 
 #include "oclint/ConfigFile.h"
@@ -181,7 +184,11 @@ static void processConfigFiles()
 static void preserveWorkingPath()
 {
     char path[300];
+#ifdef _MSC_VER
+    if (_getcwd(path, 300))
+#else
     if (getcwd(path, 300))
+#endif
     {
         absoluteWorkingPath = std::string(path);
     }

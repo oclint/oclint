@@ -10,7 +10,14 @@ ADD_LIBRARY(OCLintCore
     ViolationSet.cpp
     )
 
-ADD_LIBRARY(OCLintRuleSet
-    RuleConfiguration.cpp
-    RuleSet.cpp
-    )
+IF(MSVC)
+    ADD_LIBRARY(OCLintRuleSet SHARED
+        RuleConfiguration.cpp
+        RuleSet.cpp
+        )
+ELSE()
+    ADD_LIBRARY(OCLintRuleSet
+        RuleConfiguration.cpp
+        RuleSet.cpp
+        )
+ENDIF()

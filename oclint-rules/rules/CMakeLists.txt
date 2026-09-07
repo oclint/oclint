@@ -1,35 +1,50 @@
 MACRO(build_dynamic_rule name)
-    IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-        SET(CMAKE_SHARED_LINKER_FLAGS "-undefined dynamic_lookup")
-    ENDIF()
+  IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    SET(CMAKE_SHARED_LINKER_FLAGS "-undefined dynamic_lookup")
+  ENDIF()
 
-    ADD_LIBRARY(${name}Rule SHARED ${name}Rule.cpp)
+  ADD_LIBRARY(${name}Rule SHARED ${name}Rule.cpp)
 
-    SET_TARGET_PROPERTIES(${name}Rule
-        PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/rules.dl
-                   RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/rules.dl
-        )
+  SET_TARGET_PROPERTIES(${name}Rule
+    PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/rules.dl
+    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/rules.dl
+  )
 
+  IF (MINGW)
+    TARGET_LINK_LIBRARIES(${name}Rule
+      OCLintAbstractRule
+      OCLintMetric
+    )
+  ELSEIF(MSVC)
     TARGET_LINK_LIBRARIES(${name}Rule OCLintAbstractRule)
 
     TARGET_LINK_LIBRARIES(${name}Rule
-        clangASTMatchers
-    ) # TODO: might be redundant
+      OCLintMetric
+      OCLintHelper
+      OCLintUtil
+      OCLintCore
+      OCLintRuleSet
+      ${CLANG_LIBRARIES}
+      ${REQ_LLVM_LIBRARIES}
+    )
+  ELSE()
+    TARGET_LINK_LIBRARIES(${name}Rule OCLintAbstractRule)
 
     TARGET_LINK_LIBRARIES(${name}Rule
-        OCLintMetric
-        OCLintHelper
-        OCLintUtil
-        OCLintCore
+      OCLintMetric
+      OCLintHelper
+      OCLintUtil
+      OCLintCore
     )
 
     IF (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
-        TARGET_LINK_LIBRARIES(${name}Rule
-            ${CLANG_LIBRARIES}
-            ${REQ_LLVM_LIBRARIES}
-            OCLintRuleSet
-        )
+      TARGET_LINK_LIBRARIES(${name}Rule
+        ${CLANG_LIBRARIES}
+        ${REQ_LLVM_LIBRARIES}
+        OCLintRuleSet
+      )
     ENDIF()
+  ENDIF()
 
 ENDMACRO(build_dynamic_rule)
 
