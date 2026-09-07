@@ -71,7 +71,13 @@ STRING(REGEX MATCH "[0-9]+\\.[0-9]+(\\.[0-9]+)?" LLVM_VERSION_RELEASE ${LLVM_PAC
 
 MESSAGE(STATUS "Found LLVM LLVM_PACKAGE_VERSION: ${LLVM_PACKAGE_VERSION} - LLVM_VERSION_RELEASE: ${LLVM_VERSION_RELEASE}")
 MESSAGE(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
-LLVM_MAP_COMPONENTS_TO_LIBNAMES(REQ_LLVM_LIBRARIES asmparser bitreader instrumentation mcparser option support frontendopenmp windowsdriver frontendhlsl)
+# The official prebuilt LLVM release (downloaded by the build scripts) and the
+# Windows static build both link the LLVM/clang component archives statically,
+# so enumerate the required libraries explicitly.
+LLVM_MAP_COMPONENTS_TO_LIBNAMES(REQ_LLVM_LIBRARIES asmparser bitreader instrumentation mcparser option support frontendopenmp windowsdriver frontendhlsl passes)
+# clang::CompilerInstance::LoadRequestedPlugins references llvm::PassPlugin::Load,
+# which lives in libLLVMPlugins (no "plugins" component alias), so add it explicitly.
+LIST(APPEND REQ_LLVM_LIBRARIES LLVMPlugins)
 
 SET(CLANG_LIBRARIES
     clangToolingCore
@@ -81,7 +87,13 @@ SET(CLANG_LIBRARIES
     clangSerialization
     clangParse
     clangSema
+    clangAnalysisLifetimeSafety
     clangAnalysis
+    clangFormat
+    clangToolingInclusions
+    clangToolingInclusionsStdlib
+    clangRewrite
+    clangOptions
     clangEdit
     clangASTMatchers
     clangAST

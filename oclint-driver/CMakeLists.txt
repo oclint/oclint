@@ -61,10 +61,15 @@ ELSE()
     OCLintDriver
     OCLintRuleSet
     OCLintCore
-    clang
-    clang-cpp
-    LTO
-    LLVM
+    clangStaticAnalyzerFrontend
+    clangStaticAnalyzerCheckers
+    clangStaticAnalyzerCore
+    clangRewriteFrontend
+    clangRewrite
+    clangCrossTU
+    clangIndex
+    ${CLANG_LIBRARIES}
+    ${REQ_LLVM_LIBRARIES}
     ${CMAKE_DL_LIBS}
   )
 ENDIF()
