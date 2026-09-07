@@ -21,6 +21,12 @@ bool CyclomaticComplexityMetric::VisitForStmt(clang::ForStmt *)
     return true;
 }
 
+bool CyclomaticComplexityMetric::VisitCXXForRangeStmt(clang::CXXForRangeStmt *)
+{
+    _count++;
+    return true;
+}
+
 bool CyclomaticComplexityMetric::VisitObjCForCollectionStmt(clang::ObjCForCollectionStmt *)
 {
     _count++;

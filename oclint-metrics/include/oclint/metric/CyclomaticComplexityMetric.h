@@ -23,6 +23,7 @@ public:
 
     bool VisitIfStmt(clang::IfStmt *stmt);
     bool VisitForStmt(clang::ForStmt *stmt);
+    bool VisitCXXForRangeStmt(clang::CXXForRangeStmt *stmt);
     bool VisitObjCForCollectionStmt(clang::ObjCForCollectionStmt *stmt);
     bool VisitWhileStmt(clang::WhileStmt *stmt);
     bool VisitDoStmt(clang::DoStmt *stmt);
